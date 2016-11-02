@@ -1,0 +1,59 @@
+Na spotrebitelsku anketu odpovedalo 16 respondentov pomocou
+7 bodovej Likertovej skaly. Na otazky ako velmi su pre nich dolezite
+atributy potraviny pri jej nakupe (senzoricka kvalita, cena, designobalu,
+znacka) Na skale predstavovala 1 - silny nesuhlas a 7 bodov - silny suhlas.
+
+#PCA analyza hlavnych komponentov
+# naposledy modifikovane 11.11.12
+# =====================================================
+menaproduktov=c("A","B","C","D","E","F","G","H","A2","B2","C2","D2","E2","F2","G2","H2")
+senzorika = c(3,7,7,5,5,6,5,6,3,3,2,5,2,7,1,2)
+cena = c(5,3,4,7,7,4,7,5,5,3,6,7,4,5,6,3)
+designobalu = c(3,2,4,1,5,4,2,4,6,5,6,7,5,5,5,7)
+znacka = c(7,3,3,3,5,3,3,4,3,5,3,3,6,5,5,7)
+data = data.frame(senzorika,cena,designobalu,znacka)
+pca = princomp(data, cor=T)
+summary(pca, loadings=T)
+pca$scores
+biplot(pca, xlabs=menaproduktov, cex=0.8, col = c("black", "magenta"), main = "Mapa hlavných komponentov", xlab = "Komp.1", ylab = "Komp.2")
+
+
+Na spotrebitelsku anketu odpovedalo 16 respondentov pomocou
+7 bodovej Likertovej skaly. Na otazky ako velmi su pre nich dolezite
+atributy potraviny pri jej nakupe (senzoricka kvalita,cena,estetika,znacka,priatel,rodina) 
+Na skale predstavovala 1 - silny nesuhlas a 7 bodov - silny suhlas.
+
+#FA faktorova analyza
+cena = c(6,7,6,5,7,6,5,6,3,1,2,5,2,3,1,2)
+senzorickakvalita = c(5,3,4,7,7,4,7,5,5,3,6,7,4,5,6,3)
+estetika = c(3,2,4,1,5,2,2,4,6,7,6,7,5,6,5,7)
+znacka = c(4,2,5,3,5,3,1,4,7,5,7,6,6,5,5,7)
+priatel = c(7,2,5,6,2,4,1,7,3,2,6,7,6,2,4,5)
+rodina = c(6,3,4,7,1,5,4,5,4,4,5,7,2,3,5,6)
+data = data.frame(senzorickakvalita,cena,estetika,znacka,priatel,rodina)
+
+
+# I. posudenie poctu faktorov podla kaiserovho kriteria,(k>1 urcuje pocet faktorov)
+ev = eigen(cor(data))
+ev$values
+fa = factanal(data, factor=2)
+fa
+
+
+
+ULOHA1:
+----------------
+
+Pri hodnotení parfémov sa 60 respondentiek rozhodovalo pomocou urèitých kritérií. Pri vývoji nového parfumu
+použije firma následné vône (kosatec, levandula,bergamot,jazmín,céder,vanilka,vetiver a santal) 
+Urèite poèet faktorov získaných z prieskumu a pomenujte ich. Ktorá vôòa patrí pod ktorý faktor? V prípade, že je prvý faktor najvýznamnejší ...
+atï, atï, ktoré vône opýtané ob¾ubujú a v akom poradí? Aký parfum preferuje skupina respondentiek (7,16,17,19,46 - teenagerky) Tvoria významnú skupinu?
+
+kosatec = c(4,7,6,6,5,2,3,1,2,6,7,6,5,5,6,3,2,5,2,3,7,2,4,5,7,2,3,5,1,6,6,5,2,3,1,2,6,7,6,5,5,6,3,2,5,2,3,7,2,4,4,4,2,3,5,1,2,1,7,3)
+levandula = c(3,3,4,5,4,4,7,5,5,7,4,5,6,3,6,7,6,4,5,6,3,1,2,5,2,3,6,5,1,3,2,3,2,3,5,5,7,4,5,6,3,6,7,6,4,5,6,3,1,2,2,4,3,6,5,1,3,2,3,2)
+bergamot = c(6,1,5,3,3,5,6,5,5,7,6,6,3,5,6,3,1,2,5,2,3,1,2,4,5,7,2,3,5,1,1,5,4,3,6,1,5,3,5,6,5,3,1,2,5,2,3,1,2,4,2,7,2,3,5,1,1,5,4,3)
+jazmin = c(5,2,5,1,1,3,6,5,6,3,1,2,5,2,3,1,2,7,6,7,5,6,1,2,1,2,3,5,2,5,1,1,6,2,4,5,6,7,3,6,5,6,3,1,2,5,2,3,1,2,7,6,3,3,3,3,3,3,3,3)
+ceder = c(3,2,5,1,4,7,5,4,6,6,5,5,7,6,7,6,6,5,6,3,1,2,5,2,3,7,2,6,1,1,2,5,1,3,2,5,1,4,5,7,6,7,6,6,5,6,3,1,2,5,2,3,2,4,3,1,1,2,5,1)
+vetiver = c(4,2,5,3,1,4,4,5,7,6,6,5,5,6,3,1,2,5,2,3,1,4,4,5,7,2,3,5,1,5,7,2,5,4,2,5,3,1,4,4,5,7,6,2,5,2,1,1,1,1,1,1,2,3,5,1,5,7,2,5)
+vanilka = c(6,7,6,2,4,1,7,3,2,6,2,4,5,6,7,6,6,5,6,3,1,2,5,2,3,4,7,1,2,5,3,5,6,7,1,6,2,4,1,7,3,2,6,2,4,5,6,2,1,2,5,2,3,4,3,3,3,3,3,5)
+santal = c(2,2,2,2,3,5,4,5,3,2,3,5,6,6,5,7,6,5,6,3,1,3,4,5,7,3,5,6,1,2,1,2,5,2,2,2,2,3,5,4,5,3,2,3,5,6,3,1,3,4,2,2,2,1,3,1,2,1,2,5)
