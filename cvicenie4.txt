@@ -1,0 +1,53 @@
+# dnesne data// 9 hodnotitelov hodnotilo 4 produkty (a,b,c,d), hodnoty predstavuju celkovu kvalitu
+# (priemer vlastnosti)
+hodnotitel= c("hod1","hod2","hod3","hod4", "hod5", "hod6","hod7", "hod8", "hod9")
+a = c(7.5, 6.9,7,7,6.9,7.1,7.2,7.5,6.9)
+b = c(7.5, 8.1,7.5,7.4,7.1,7.5,7.2,7.2,6.9)
+c = c(7, 6.1,6.7,6.1,6.9,7.1,7.2,7.2,6.9)
+d = c(7.5, 6.9,7,7,6.9,7.1,7.2,7.2,6.9)
+tabulka=data.frame(a,b,c,d)
+
+# pocet potravinarskych ustavov vo vychodnej europe(fiktivne cisla)
+staty= c("Slovensko","Polsko","Cesko","Madarsko", "Ukrajina", "Bulharsko","Slovinsko", "Srbsko", "Rumunsko")
+pocet= c(7,21,15,13,19,7,9,6,6)
+ustavy=data.frame(staty,pocet)
+
+# 2 plniace linky na napoje (udavane v ml, 2 minuty)
+lin1=rnorm(120, mean=1000, sd=0.6)
+lin2=rnorm(120, mean=1000, sd=0.6)
+
+
+#grafy
+================================
+plot(a)
+dotchart(a)
+barplot(a,b,horiz=T, col="lavender") #1:2 atd atd
+barplot(c(a,b,c,d),col = c("lightblue", "mistyrose","lightcyan", "lavender"))
+pie(a)
+pie(pocet, labels=staty)
+hist(a)
+plot(density(a))
+
+# trosku zlozitejsi graf
+================================
+plot(lin1, type="l",main="testovací graf", xlab="sekundy (plnenia)", ylab="linky (1-èervená, 2 - modrá)")
+lines(lin2,col="lightblue")
+abline (h=mean(lin1),col="red")
+abline (h=mean(lin2),col="blue")
+grid(nx=6, ny=NA,col="gray")
+
+# az po grafy komplexne
+================================
+source("http://senzorika.com/sait/datasety/stock.r")
+#X <- BollingerBands("KO")
+
+
+#porovnanie suborov
+boxplot(a,b,c,d)
+wilcox.test(a,b) # neparametricky test
+t.test(a,b) # parametricky t.test
+
+
+PRAKTICKA CAST
+=================================================
+senzorika.com/sait/slide1.pdf
