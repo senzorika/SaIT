@@ -1,0 +1,14 @@
+# download a instalacia statistickeho balika R
+http://cran.at.r-project.org/bin/windows/base/
+
+# download a instalacia grafickeho IDE Rstudio
+http://rstudio.org/download/desktop
+
+# instalacia grafickeho prostredia Rcmdr, balikov Sensominer a Factominer (cvicenie.4)
+source("http://sensominer.free.fr/install-senso.r")
+
+# tvorba Latinskych stvorcov, design balancovanych blokov
+library(SensoMineR)
+# nbPanelist=pocet hodnotitelov,nbProd = pocet produktov,nbProdByPanelist= pocet produktov na hodnotitela
+optimaldesign(nbPanelist=10,nbProd=5,nbProdByPanelist=5)
+
