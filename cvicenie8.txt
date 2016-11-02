@@ -1,0 +1,78 @@
+#------------------------------------------------------------
+#CA korespondencna analyza (kniznica MASS)
+# -----------------------------------------------------------
+# definicia kategorialnych dat v matici
+data = matrix(c(15,2,8,7,14,4,5,5,15,11,5,9), ncol=3, byrow=T) # ncol=pocet cisiel v riadku, byrow=T 
+colnames(data) = c("A", "B", "C") #pomenovanie stlpcov (produktov)
+rownames(data) = c("Muzi", "Zeny", "Deti", "Dochodcovia") #pomenovanie riadkov (cielova skupina vyrobku)
+
+# samotny program R nedokaze pocitat korespondencnu analyzu, preto je nutne vyuzit kniznicu MASS
+library(MASS)
+
+# vypocet korespondencnej analyzy (jednoduchej)
+vek = corresp(data, nf=2) #nf= pocet faktorov
+
+# vykreslenie grafu
+biplot(vek)
+
+
+#------------------------------------------------------------
+# Zhlukova analyza a kategorizacia produktov 
+# -----------------------------------------------------------
+# nacitame si dataset z interbetovej adresy
+senzorika = read.table("http://senzorika.com/sait/datasety/senzorika.txt", sep=",")
+
+# Wardovo hierarchicke zhlukovanie
+d = dist(senzorika, method = "euclidean") # prepocet matice vzdialenosti
+fit = hclust(d, method="ward.D") 
+plot(fit,main="Dendrogram produktov", yla="váhy znakov", xlab="Produkty") # display dendogram
+groups = cutree(fit, k=3) # rozdelenie skupiny na tri skupiny
+rect.hclust(fit, k=3, border="red", )
+
+
+
+#------------------------------------------------------------
+# PREFERENCE MAPPING (Externy)
+
+#------------------------------------------------------------
+
+Potravinarska firma vo svojom senzorickom laboratoriu analyzovala pomocou profilovej metody
+svoju (1) a konkurencnych 15 vyrobkov na trhu. Senzoricka komisia v pocte 8 clenov analyzovala
+13 stanovenych deskriptorov na nestrukturovanej intenzitnej skale. Vysledky za jednotlive deskriptory predstavuju priemer pre panel. 
+Nasledne vybrani anketari poziadali 100 respondentov, aby sa vyjadrili na 5 bodovej (skolskej) skale v celemu sortimentu vyrobkov. 
+Analyzujte pomocou techniky preference mappingu (mapy preferencii) sortiment trhu a okomentujte vyrobok sledovanej potravinarskej firmy.
+
+
+# nacitanie dat z internetovej adresy (profilove + hedonicke data)
+# zdrojovy kod si mozete pozriet tu:
+senzorika<-read.table("http://senzorika.com/sait/datasety/senzorika.txt", sep=",")
+hedonika<-read.table("http://senzorika.com/sait/datasety/hedonika.txt", sep=",")
+
+# overenie datasetov
+senzorika
+hedonika
+
+# vypocet Preference mappingu
+library(SensoMineR)
+res.pca <- PCA(senzorika)
+carto(res.pca$ind$coord[,1:2],hedonika)
+
+
+ULOHA1:
+------------------------------------------------------------------------------
+Kozmeticka firma vyrabajuca sampony sa rozhodla, ze spravi prieskum medzi
+niekolkymi stovkami respondentov a zisti, ktore sampony su preferovane jednotlivymi
+skupinami klientov. Na zaklade vysledkov sa rozhodne na obaly umiestnit fotografiu
+konkretnej farby vlasov.Ako budu vyzerat obaly pre zihlavovy, brezovy a tropicky sampon?
+
+pouzite hodnoty:
+Nagenerujte odpovede respondentov (10-90 odpovedi)
+sampony = Brezovy,Zihlavovy,Ovocny,Vajickovy,Orechovy,Cokoladovy,Mentolovy,Tropicky
+farba.vlasov = Blond,Hnedovlase,Ciernovlase,Cervenovlase,Muzi
+
+
+
+
+
+
+
