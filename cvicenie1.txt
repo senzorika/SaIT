@@ -4,7 +4,7 @@ http://cran.at.r-project.org/bin/windows/base/
 # download a instalacia grafickeho IDE Rstudio
 http://rstudio.org/download/desktop
 
-# instalacia grafickeho prostredia Rcmdr, balikov Sensominer a Factominer (cvicenie.4)
+# instalacia grafickeho prostredia Rcmdr, balikov Sensominer a Factominer (cca cvicenie.4)
 source("http://sensominer.free.fr/install-senso.r")
 
 # tvorba Latinskych stvorcov, design balancovanych blokov
