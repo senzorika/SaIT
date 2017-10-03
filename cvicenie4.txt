@@ -54,16 +54,9 @@ library(gsheet)
 preferencie=gsheet2tbl('https://docs.google.com/spreadsheets/d/1DqIcZD1bDUV8cP_UJvVNeQL8Pq97UgIf-nt_fsWC5gY/edit?usp=sharing')
 
 #definície vektorov z online databázy
-cocacola=(preferencie$CocaCola)
-kofola=(preferencie$Kofola)
+vysledky=list(mean(preferencie$CocaCola),mean(preferencie$Kofola),mean(preferencie$RCCola),mean(preferencie$Pepsi),mean(preferencie$Freeway))
+boxplot(preferencie$CocaCola,preferencie$Kofola,preferencie$RCCola,preferencie$Pepsi,preferencie$Freeway, main="Preferencia kolových nápojov")
 
-#nejake stredne hodnoty :)
-mean(cocacola)
-mean(kofola)
-
-#vykreslenie grafu
-barplot(c(mean(cocacola),mean(kofola)),col=c("gray","brown"))
-boxplot(cocacola,kofola)
 
 
 
