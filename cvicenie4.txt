@@ -41,7 +41,6 @@ grid(nx=6, ny=NA,col="gray")
 source("http://senzorika.com/sait/datasety/stock.r")
 #X <- BollingerBands("KO")
 
-
 #porovnanie suborov
 boxplot(a,b,c,d)
 wilcox.test(a,b) # neparametricky test
@@ -49,5 +48,29 @@ t.test(a,b) # parametricky t.test
 
 
 PRAKTICKA CAST
-=================================================
-senzorika.com/sait/slide1.pdf
+==================================
+#Zistite preferencie jednotlivých kolových nápojov pomocou online formulárov
+# nainštalovanie knižnice pre èítanie googlesheets
+install.packages('gsheet')
+# pridanie knižnice googlesheets do programu R
+library(gsheet)
+# naèítanie dát z online prieskumu
+preferencie=gsheet2tbl('https://docs.google.com/spreadsheets/d/1DqIcZD1bDUV8cP_UJvVNeQL8Pq97UgIf-nt_fsWC5gY/edit?usp=sharing')
+
+#definície vektorov z online databázy
+cocacola=(preferencie$CocaCola)
+kofola=(preferencie$Kofola)
+
+#nejake stredne hodnoty :)
+mean(cocacola)
+mean(kofola)
+
+#vykreslenie grafu
+barplot(c(mean(cocacola),mean(kofola)),col=c("gray","brown"))
+boxplot(cocacola,kofola)
+
+
+
+
+
+
