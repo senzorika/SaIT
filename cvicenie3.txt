@@ -1,74 +1,54 @@
-#nastavenie domaceho adresara
-setwd("D:/R/")
+# Cvièenie 3. Práca s dátami 
 
-#vypis premennych (objektov)
-ls() 
-
-# vycistenie pamate od vsetkych predchadzajucich premennych
-rm(list = ls())
-
--------------------------------------------------------------------------------
+#--------------------------------------------------------------
 # definicia premennej/objektu (skalar)
+#--------------------------------------------------------------
 januar = 31
 februar = 28
 marec = 31
 stvrtrok = (januar+februar+marec)
 
+#--------------------------------------------------------------
 #definicia vektora
+#--------------------------------------------------------------
 vektor =c(10.2,11,10.3,14,10.1,7,8,8,8,8,9,10.2)
 
+#--------------------------------------------------------------
 #definicia matice
+#--------------------------------------------------------------
 matica <- matrix(c(1,2,5,4,5,1,4,5,3), nrow = 3, ncol=3) # matica - 3rady,3stlpce
 t(matica) #transpozicia matice
 solve(matica) #inverzna matica
 
+#--------------------------------------------------------------
 #definicia data.framu
+#--------------------------------------------------------------
 mesiace =c("januar","februar","marec","april","maj","jun","jul","august","september","oktober","november","december")
 pocetdni =c(31,28,31,30,31,30,31,30,30,31,30,31)
 spotrebacokolady = c(1520,1780,1530,1440,1265,1489,1583,1699,1530,1667,1863,1688)
 naklady=spotrebacokolady*1.75 # 1.75€ su naklady na liter cokoladovej zmesy
 rok = data.frame(mesiace,pocetdni,spotrebacokolady,naklady)
 
---------------------------------------------------------------
-# generovanie nahodnej premennej (cele cislo)
-a = c(sample(1:9, size=5, replace=TRUE)) #zo skaly 1-9 bodov, velkost suboru 5 udajov
+#--------------------------------------------------------------
+# generovanie nahodnej premennej
+#--------------------------------------------------------------
+set.seed(24) #nastavenie generatora
+pismena= sample(LETTERS, 5) #z abecedy vygeneruje nahodne 5 pismen
+a = c(sample(1:9, size=5, replace=TRUE)) # generovanie celeho cisla
+b=rnorm(200, mean=10, sd=0.2) # generovanie cisla v normalnom rozdeleni podla parametrov
 
-# generovanie nahodnej premennej (normalne rozdelenie)
-b=rnorm(200, mean=10, sd=0.2)
-
-# generovanie slovnej premennej
+# generovanie slovnej premennej SO ZMENAMI PARAMETROV
 hodnotitel= rep(c("H1","H2","H3","H4"),times=1, each=4) # kazda premenna 4x po sebe v jednom cykle
 produkt= rep(c("A","B","C","D"),times=4) # kazda premenna 1x po sebe v styroch cykloch 
 
 # nacitanie dat zo vzdialenej (internetovej) adresy (MOLOVE HMOTNOSTI)
 source("http://senzorika.com/sait/datasety/mol.txt")
-
-----------------------------------------------------------------
-
-# zapis premennych do externej tabulky
-write.table(rok,"export.txt", sep=",")
-
-# nacitanie dat z externej tabulky
-vysledky = read.table("export.txt", header = TRUE, sep="," )
-
-#  nacitanie dat z internetu
 vysledky<-read.table("http://senzorika.com/sait/datasety/export.txt", sep=",")
-
 
 # ----------------------------------------------------------------------------------------------------
 # POZOR V OBOCH PRIPADOCH JE NASLEDNE NUTNE PRISTUPOVAT K DATAM POMOCOU VNORENIA (vysledky$premenna)
 # mozme to eliminovat pomocou prikazu
 # ----------------------------------------------------------------------------------------------------
-
-attach(vysledky)
-
-# zobrazenie sumarnej statistiky
-summary()
-
-# ciastkove vysledky za jednotlive ukazovatele v datovej matici
-tapply(vysledky$chut, list(vyrobok=vysledky$vyrobok),median)
-
-
 
 PRAKTICKA CAST:
 #=================================================

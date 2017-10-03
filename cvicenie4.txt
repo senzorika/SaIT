@@ -1,3 +1,9 @@
+# Cvicenie 4. Generovanie grafov
+#--------------------------------------------------------------
+
+#--------------------------------------------------------------
+# Dnesne datasety
+#--------------------------------------------------------------
 # dnesne data// 9 hodnotitelov hodnotilo 4 produkty (a,b,c,d), hodnoty predstavuju celkovu kvalitu
 # (priemer vlastnosti)
 hodnotitel= c("hod1","hod2","hod3","hod4", "hod5", "hod6","hod7", "hod8", "hod9")
@@ -16,9 +22,9 @@ ustavy=data.frame(staty,pocet)
 lin1=rnorm(120, mean=1000, sd=0.6)
 lin2=rnorm(120, mean=1000, sd=0.6)
 
-
+#--------------------------------------------------------------
 #grafy
-================================
+#--------------------------------------------------------------
 plot(a)
 dotchart(a)
 barplot(a,b,horiz=T, col="lavender") #1:2 atd atd
@@ -29,22 +35,12 @@ hist(a)
 plot(density(a))
 
 # trosku zlozitejsi graf
-================================
+#================================
 plot(lin1, type="l",main="testovací graf", xlab="sekundy (plnenia)", ylab="linky (1-èervená, 2 - modrá)")
 lines(lin2,col="lightblue")
 abline (h=mean(lin1),col="red")
 abline (h=mean(lin2),col="blue")
 grid(nx=6, ny=NA,col="gray")
-
-# az po grafy komplexne
-================================
-source("http://senzorika.com/sait/datasety/stock.r")
-#X <- BollingerBands("KO")
-
-#porovnanie suborov
-boxplot(a,b,c,d)
-wilcox.test(a,b) # neparametricky test
-t.test(a,b) # parametricky t.test
 
 
 PRAKTICKA CAST
