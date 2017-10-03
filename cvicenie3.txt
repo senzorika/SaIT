@@ -50,7 +50,7 @@ vysledky<-read.table("http://senzorika.com/sait/datasety/export.txt", sep=",")
 #--------------------------------------------------------------
 x = c("a", "b", "c", "d", "e")
 y=x[-c(2:4)]; # bez elementov od 2 po 4
-z=x[-c(2,3,5)]; # bez elementov od 2 po 4
+z=x[-c(2,3,5)]; # bez elementov 2,3,5
 
 
 # ----------------------------------------------------------------------------------------------------
