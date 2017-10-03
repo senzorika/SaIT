@@ -45,10 +45,18 @@ produkt= rep(c("A","B","C","D"),times=4) # kazda premenna 1x po sebe v styroch c
 source("http://senzorika.com/sait/datasety/mol.txt")
 vysledky<-read.table("http://senzorika.com/sait/datasety/export.txt", sep=",")
 
+#--------------------------------------------------------------
+# ostranenie niektorych elementov z vektora/ datasetu
+#--------------------------------------------------------------
+x = c("a", "b", "c", "d", "e")
+y=x[-c(2:4)]; # bez elementov od 2 po 4
+z=x[-c(2,3,5)]; # bez elementov od 2 po 4
+
+
 # ----------------------------------------------------------------------------------------------------
-# POZOR V OBOCH PRIPADOCH JE NASLEDNE NUTNE PRISTUPOVAT K DATAM POMOCOU VNORENIA (vysledky$premenna)
-# mozme to eliminovat pomocou prikazu
+# POZOR:  JE NUTNE PRISTUPOVAT K DATAM POMOCOU VNORENIA (vysledky$premenna)
 # ----------------------------------------------------------------------------------------------------
+
 
 PRAKTICKA CAST:
 #=================================================
