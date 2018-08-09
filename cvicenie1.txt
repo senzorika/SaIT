@@ -1,5 +1,5 @@
 #-------------------------------------------------------------
-# Inštalácia potrebného softwaru
+# Instalï¿½cia potrebneho softwaru
 #-------------------------------------------------------------
 
 # download a instalacia statistickeho balika R
@@ -9,15 +9,14 @@ http://cran.at.r-project.org/bin/windows/base/
 http://rstudio.org/download/desktop
 
 #-------------------------------------------------------------
-# Groupware nástroje a kooperatívna práca (na projekte resp. predmete)
+# Groupware nastroje a kooperativna praca (na projekte resp. predmete)
 #-------------------------------------------------------------
 
-# Slack 
+# Slack
 https://join.slack.com/t/sait2017/shared_invite/enQtMjUwNDM2NDg4ODM1LTU1OGIwZmI2ZTVjYTQyMWZhMDIwZjQxMDE2MDlmMmY3OTJiMjQ3ZDAzNDJhNzY4OGJiOTJlYWZmZWNkM2NiOWY
 
-#Trello (vhodné pre individuálne projekty)
+#Trello (vhodna pre individualne projekty)
 https://trello.com/
 
-# github 
+# github
 https://github.com/
-
