@@ -18,7 +18,7 @@ https://join.slack.com/t/sait2017/shared_invite/enQtMjUwNDM2NDg4ODM1LTU1OGIwZmI2
 #Trello (vhodna pre individualne projekty)
 https://trello.com/
 
-# github (repozitar, na riadenu dokumentaciu/ verzovanie dokumentov)
+# github (repozitar, na riadenu dokumentaciu/ verziovanie dokumentov)
 https://github.com/
 
 #webkonferencie a online chat
