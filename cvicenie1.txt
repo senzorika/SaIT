@@ -1,6 +1,6 @@
-#-------------------------------------------------------------
-# Instal�cia potrebneho softwaru
-#-------------------------------------------------------------
+﻿#--------------------------------------------------------------------------
+# Instalacia potrebneho softwaru
+#--------------------------------------------------------------------------
 
 # download a instalacia statistickeho balika R
 http://cran.at.r-project.org/bin/windows/base/
@@ -8,9 +8,9 @@ http://cran.at.r-project.org/bin/windows/base/
 # download a instalacia grafickeho IDE Rstudio
 http://rstudio.org/download/desktop
 
-#-------------------------------------------------------------
+#--------------------------------------------------------------------------
 # Groupware nastroje a kooperativna praca (na projekte resp. predmete)
-#-------------------------------------------------------------
+#--------------------------------------------------------------------------
 
 # Slack
 https://join.slack.com/t/sait2017/shared_invite/enQtMjUwNDM2NDg4ODM1LTU1OGIwZmI2ZTVjYTQyMWZhMDIwZjQxMDE2MDlmMmY3OTJiMjQ3ZDAzNDJhNzY4OGJiOTJlYWZmZWNkM2NiOWY
@@ -18,5 +18,11 @@ https://join.slack.com/t/sait2017/shared_invite/enQtMjUwNDM2NDg4ODM1LTU1OGIwZmI2
 #Trello (vhodna pre individualne projekty)
 https://trello.com/
 
-# github
+# github (repozitar, na riadenu dokumentaciu/ verzovanie dokumentov)
 https://github.com/
+
+#webkonferencie a online chat
+https://meet.jit.si/sait2018online
+
+# materialy k predmetu
+http://t.me/sapsait
