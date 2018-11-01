@@ -13,7 +13,7 @@ http://rstudio.org/download/desktop
 #--------------------------------------------------------------------------
 
 # Slack
-https://join.slack.com/t/sait2017/shared_invite/enQtMjUwNDM2NDg4ODM1LTU1OGIwZmI2ZTVjYTQyMWZhMDIwZjQxMDE2MDlmMmY3OTJiMjQ3ZDAzNDJhNzY4OGJiOTJlYWZmZWNkM2NiOWY
+https://join.slack.com/t/sait2017/shared_invite/enQtNDY5MjYzNDc0MzM2LTJmOTAxYTFjNzhlMjBlNmE1NmY4OGVhMjNhZjJkMTI1YzFlN2E2NjBhMjFhNTU4OTcyMjMwZGFmYWVhNjdmMTI
 
 #Trello (vhodna pre individualne projekty)
 https://trello.com/
@@ -25,4 +25,5 @@ https://github.com/
 https://meet.jit.si/sait2018online
 
 # materialy k predmetu
-http://t.me/sapsait
+https://t.me/joinchat/AAAAAEwEm22R8FWooTV8SQ
+
