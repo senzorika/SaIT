@@ -18,9 +18,6 @@ staty= c("Slovensko","Polsko","Cesko","Madarsko", "Ukrajina", "Bulharsko","Slovi
 pocet= c(7,21,15,13,19,7,9,6,6)
 ustavy=data.frame(staty,pocet)
 
-# 2 plniace linky na napoje (udavane v ml, 2 minuty)
-lin1=rnorm(120, mean=1000, sd=0.6)
-lin2=rnorm(120, mean=1000, sd=0.6)
 
 #--------------------------------------------------------------
 #grafy
@@ -36,6 +33,9 @@ plot(density(a))
 
 # trosku zlozitejsi graf
 #================================
+# 2 plniace linky na napoje (udavane v ml, 2 minuty)
+lin1=rnorm(120, mean=1000, sd=0.6)
+lin2=rnorm(120, mean=1000, sd=0.6)
 plot(lin1, type="l",main="testovací graf", xlab="sekundy (plnenia)", ylab="linky (1-èervená, 2 - modrá)")
 lines(lin2,col="lightblue")
 abline (h=mean(lin1),col="red")
@@ -43,9 +43,16 @@ abline (h=mean(lin2),col="blue")
 grid(nx=6, ny=NA,col="gray")
 
 
+# trosku o kusok zlozitejsi graf
+#================================
+library(quantmod)
+# akcie +indikatory
+getSymbols("LHA.DE",src="yahoo" , from ="2018-01-01", to = Sys.Date())
+candleChart(LHA.DE, TA=c(addMACD(),addRSI(),addBBands(),addVo()),subset = '2018::2019',theme="white")
+
 PRAKTICKA CAST
 ==================================
-#Zistite preferencie jednotlivých kolových nápojov pomocou online formulárov
+#1 Zistite preferencie jednotlivých kolových nápojov pomocou online formulárov
 # nainštalovanie knižnice pre èítanie googlesheets
 install.packages('gsheet')
 # pridanie knižnice googlesheets do programu R
@@ -56,6 +63,8 @@ preferencie=gsheet2tbl('https://docs.google.com/spreadsheets/d/1DqIcZD1bDUV8cP_U
 #definície vektorov z online databázy
 vysledky=list(mean(preferencie$CocaCola),mean(preferencie$Kofola),mean(preferencie$RCCola),mean(preferencie$Pepsi),mean(preferencie$Freeway))
 boxplot(preferencie$CocaCola,preferencie$Kofola,preferencie$RCCola,preferencie$Pepsi,preferencie$Freeway, main="Preferencia kolových nápojov")
+
+#2 ktore akcie kolovych napojov momentalne vedu akciovy trh? :)
 
 
 

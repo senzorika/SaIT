@@ -60,11 +60,12 @@ z=x[-c(2,3,5)]; # bez elementov 2,3,5
 
 PRAKTICKA CAST:
 #=================================================
+CV2: kazda skupina by mala mat vlastne data zo senzorickych merani :) 
+
 
 uloha1:
 ----------------
 *vypocitajte Molove hmotnosti sorbanu draselneho a kyseliny citronovej a urcite gramaz na pripravu nalevu (0,25 Mol/ 0,1 Mol)  :)
-
 
 uloha2:
 -------------------
