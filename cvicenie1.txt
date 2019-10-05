@@ -1,5 +1,5 @@
 ﻿#--------------------------------------------------------------------------
-# Instalacia potrebneho softwaru
+ Instalacia potrebneho softwaru
 #--------------------------------------------------------------------------
 
 # download a instalacia statistickeho balika R
@@ -22,7 +22,7 @@ devtools::install_github("Ram-N/weatherData")
 devtools::install_github("m-dev-/likert")
 
 #--------------------------------------------------------------------------
-# Groupware nastroje a kooperativna praca (na projekte resp. predmete)
+ Groupware nastroje a kooperativna praca (na projekte resp. predmete)
 #--------------------------------------------------------------------------
 
 # Slack
