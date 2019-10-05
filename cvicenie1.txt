@@ -8,6 +8,19 @@ http://cran.at.r-project.org/bin/windows/base/
 # download a instalacia grafickeho IDE Rstudio
 http://rstudio.org/download/desktop
 
+# instalacia balikov (nie vsetky su potrebne k cviceniam)
+install.packages('devtools')
+install.packages('quantmod')
+install.packages('sensR')
+install.packages('gsheet')
+install.packages('telegram')
+install.packages('telegram.bot')
+install.packages("rmarkdown")
+library("devtools")
+devtools::install_github("leonawicz/rockchain")
+devtools::install_github("Ram-N/weatherData")
+devtools::install_github("m-dev-/likert")
+
 #--------------------------------------------------------------------------
 # Groupware nastroje a kooperativna praca (na projekte resp. predmete)
 #--------------------------------------------------------------------------
