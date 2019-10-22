@@ -63,6 +63,7 @@ TukeyHSD(anovavysledok)
 #TukeyHSD(anovavysledok2)
 
 ULOHA1:
+Vyhodnotte ktore testy je potrebne vyuzit z dat v subore 001_datasety.txt (github.repozitar)
 Vypocitajte rozdiel medzi vzorkami kecupu podla Vami hodnotenych udajov.
 
 
