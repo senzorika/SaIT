@@ -1,4 +1,4 @@
-# Prakticke testovanie vyberu statistickej metody.
+# Prakticke testovanie vyberu statistickej metody/overenie Normality (2019).
 #
 # Pondelok, sedenie 1
 A1=c(8,2,9,4,3,1,8,9,6,8,2,8,5)
@@ -23,9 +23,9 @@ C6=c(5,8,5,8,5,7,7,5,5,7,5,5,6)
 D1=c(8,4,5,9,8,3,9,7,3,7,2,9,3)
 D2=c(4,2,5,5,2,1,4,3,3,5,3,4,3)
 
-Zistite, ktoru statisticku metodu je potrebne pouzit pre nasledovne testovania:
-1/ A1,B1,C1,D1
-2/ B1,B2,B3,B4
-3/ D1,D2
-4/ C1,C2,C3,C4
-5/ C4,C5,C6
+# Zistite, ktoru statisticku metodu je potrebne pouzit pre nasledovne testovania:
+# 1/ A1,B1,C1,D1
+# 2/ B1,B2,B3,B4
+# 3/ D1,D2
+# 4/ C1,C2,C3,C4
+# 5/ C4,C5
