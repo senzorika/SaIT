@@ -1,4 +1,4 @@
-# Cvièenie 5. Overenie normality a párové porovnania vzoriek.
+# Cvicenie 5. Overenie normality a párové porovnania vzoriek.
 
 # Skupina hodnotitelov hodnotila 5 druhov syra a dosiahli nasledovne vysledky.
 # Dataset: syry
