@@ -44,10 +44,10 @@ fa
 ULOHA1:
 ----------------
 
-Pri hodnotení parfémov sa 60 respondentiek rozhodovalo pomocou urèitých kritérií. Pri vývoji nového parfumu
-použije firma následné vône (kosatec, levandula,bergamot,jazmín,céder,vanilka,vetiver a santal) 
-Urèite poèet faktorov získaných z prieskumu a pomenujte ich. Ktorá vôòa patrí pod ktorý faktor? V prípade, že je prvý faktor najvýznamnejší ...
-atï, atï, ktoré vône opýtané ob¾ubujú a v akom poradí? Aký parfum preferuje skupina respondentiek (7,16,17,19,46 - teenagerky) Tvoria významnú skupinu?
+Pri hodnoteni parfemov sa 60 respondentiek rozhodovalo pomocou urcitych kriterii. Pri vvvoji noveho parfumu
+pouzije firma nasledne vone (kosatec, levandula,bergamot,jazmin,ceder,vanilka,vetiver a santal) 
+Urcite pocet faktorov ziskanych z prieskumu a pomenujte ich. Ktora vona patri pod ktory faktor? V pripade, ze je prvy faktor najvyznamnejsi ...
+atd, atd, ktore vone opytane oblubuju a v akom poradi? Aky parfum preferuje skupina respondentiek (7,16,17,19,46 - teenagerky) Tvoria vyznamnu skupinu?
 
 kosatec = c(4,7,6,6,5,2,3,1,2,6,7,6,5,5,6,3,2,5,2,3,7,2,4,5,7,2,3,5,1,6,6,5,2,3,1,2,6,7,6,5,5,6,3,2,5,2,3,7,2,4,4,4,2,3,5,1,2,1,7,3)
 levandula = c(3,3,4,5,4,4,7,5,5,7,4,5,6,3,6,7,6,4,5,6,3,1,2,5,2,3,6,5,1,3,2,3,2,3,5,5,7,4,5,6,3,6,7,6,4,5,6,3,1,2,2,4,3,6,5,1,3,2,3,2)
