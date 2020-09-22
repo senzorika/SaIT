@@ -25,8 +25,8 @@ devtools::install_github("m-dev-/likert")
  Groupware nastroje a kooperativna praca (na projekte resp. predmete)
 #--------------------------------------------------------------------------
 
-# Slack
-https://join.slack.com/
+# Slack - vo svete popularny... skola skor vyuziva Teams
+# https://join.slack.com/
 
 #Trello (vhodna pre individualne/skupinove projekty)
 https://trello.com/
@@ -39,4 +39,5 @@ https://meet.jit.si/sait2019online
 
 # materialy k predmetu
 https://t.me/joinchat/AAAAAEwEm22R8FWooTV8SQ
+
 
