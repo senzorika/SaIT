@@ -1,4 +1,6 @@
 #komplikovane nacitanie excelu online :)
+
+# bude treba doinstalovat tento balik
 library(readxl)
 url = "http://senzorika.com/sait/datasety/potraviny.xlsx"
 destfile = "potraviny.xlsx"
