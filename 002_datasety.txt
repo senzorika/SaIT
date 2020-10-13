@@ -12,11 +12,11 @@ library(psych)
 preferencie=gsheet2tbl('https://docs.google.com/spreadsheets/d/1kgkYYyHDcoLsPU1Rrde2rXcMbEtuuaPzcE-9RN462q0/edit?usp=sharing')
 
 #ideme si vybrat nejaky subset na analyzu
-mlieko=subset(preferencie,`Produkt`= Mlieko)
+pivo=subset(preferencie,preferencie$Produkt =="Pivo")
 
 #deskriptivna analyza
 # najprv vseobecna o celom dasete
-summary(mlieko)
+summary(pivo)
 
 # a teraz po skupinach, ktore tam doplnil balik psych
-describeBy(mlieko,mlieko$Vyrobca) 
+describeBy(pivo,pivo$Vyrobca) 
