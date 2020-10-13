@@ -1,0 +1,22 @@
+# na uvod je potrebne vyplnit formular
+https://docs.google.com/forms/d/e/1FAIpQLSfeyIq-PkRxDa9w_1YuouG45A-0RTBelR8iqBtt_NDwxe_lmw/viewform
+
+# nainštalovanie knižnice pre čítanie googlesheets a psych
+install.packages('gsheet')
+install.packages('psych')
+# pridanie knižnice googlesheets a psych do programu R
+library(gsheet)
+library(psych)
+
+# nacitanie dat z internetu
+preferencie=gsheet2tbl('https://docs.google.com/spreadsheets/d/1kgkYYyHDcoLsPU1Rrde2rXcMbEtuuaPzcE-9RN462q0/edit?usp=sharing')
+
+#ideme si vybrat nejaky subset na analyzu
+mlieko=subset(preferencie,`Produkt`= Mlieko)
+
+#deskriptivna analyza
+# najprv vseobecna o celom dasete
+summary(mlieko)
+
+# a teraz po skupinach, ktore tam doplnil balik psych
+describeBy(mlieko,mlieko$Vyrobca) 
