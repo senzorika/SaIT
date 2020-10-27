@@ -1,5 +1,4 @@
 # Prakticke testovanie vyberu statistickej metody/overenie Normality (2019).
-#
 # Pondelok, sedenie 1
 A1=c(8,2,9,4,3,1,8,9,6,8,2,8,5)
 A2=c(8,2,9,3,3,1,7,9,6,7,2,8,1)
