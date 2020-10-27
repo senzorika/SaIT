@@ -1,4 +1,5 @@
 # Porovnanie 3+ vzoriek, VV2020
+
 # nacitanie kniznic pre pracu s google sheets a friedmanovym testom
 library(gsheet)
 library(PMCMRplus)
@@ -7,7 +8,7 @@ library(PMCMRplus)
 senzorika=gsheet2tbl("https://docs.google.com/spreadsheets/d/1p4BvPonFJkBRvwfKxb4mWS37PTASk5sCx7eVhHrKtYw/edit?usp=sharing")
 
 
-#friedmanov test porovnanie celeho datasetu
+#Friedmanov test porovnanie celeho datasetu
 Friedman_kola=friedman.test(ck ~ produkt | hodnotitel,data = senzorika)
 Friedman_kola$p.value
 #porovnanie jednotlivych dvojic ak vypocitane p<0.05 (treba vykonat viacnasobne porovnanie)
@@ -15,13 +16,13 @@ FriedmanPARY=frdAllPairsConoverTest(y = senzorika$ck,groups = senzorika$produkt,
 FriedmanPARY
 
 #Kruskal Wallisov test
-kruskal.test(produkt ~ ck, data=senzorika) 
+Kruskal_kola=kruskal.test(produkt ~ ck, data=senzorika) 
+Kruskal_kola$p.value
 # ak vypocitane p<0.05 (treba vykonat viacnasobne porovnanie vzoriek pomocou Wilcoxonovho testu)
 pairwise.wilcox.test(senzorika$ck,senzorika$produkt, p.adj="bonferroni", exact=F)
 
-
 # ANOVA
-anovavysledok = aov(chut ~ produkt, data = senzorika)
-summary(anovavysledok)
+ANOVA_kola = aov(chut ~ produkt, data = senzorika)
+summary(ANOVA_kola)
 # ak vypocitane p<0.05 (treba vykonat viacnasobne porovnanie vzoriek pomocou Tukeyovho HSD)
-TukeyHSD(anovavysledok)
+TukeyHSD(ANOVA_kola)
