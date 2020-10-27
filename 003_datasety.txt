@@ -8,7 +8,7 @@ library(PMCMRplus)
 senzorika=gsheet2tbl("https://docs.google.com/spreadsheets/d/1p4BvPonFJkBRvwfKxb4mWS37PTASk5sCx7eVhHrKtYw/edit?usp=sharing")
 
 
-#Friedmanov test porovnanie celeho datasetu
+#Friedmanov test 
 Friedman_kola=friedman.test(ck ~ produkt | hodnotitel,data = senzorika)
 Friedman_kola$p.value
 #porovnanie jednotlivych dvojic ak vypocitane p<0.05 (treba vykonat viacnasobne porovnanie)
