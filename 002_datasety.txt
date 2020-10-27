@@ -20,3 +20,4 @@ summary(pivo)
 
 # a teraz po skupinach, ktore tam doplnil balik psych
 describeBy(pivo,pivo$Vyrobca) 
+
