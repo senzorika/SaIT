@@ -15,3 +15,9 @@ phodnota_Spolu=Friedman_kola$p.value
 #porovnanie jednotlivych dvojic
 FriedmanPARY=frdAllPairsConoverTest(y = senzorika$ck,groups = senzorika$produkt,blocks = senzorika$hodnotitel,p.adjust.method="bonferroni")
 FriedmanPARY
+
+# ANOVA
+anovavysledok = aov(ck ~ produkt, data = senzorika)
+summary(anovavysledok)
+# ak vypocitane p<0.05 (treba vykonat viacnasobne porovnanie vzoriek pomocou Tukeyovho HSD)
+TukeyHSD(anovavysledok)
