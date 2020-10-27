@@ -1,0 +1,17 @@
+#Friedmanov test, VV2020
+
+# nacitanie kniznic pre pracu s google sheets a friedmanovym testom
+library(gsheet)
+library(PMCMRplus)
+
+# nacitanie dat
+senzorika=gsheet2tbl("https://docs.google.com/spreadsheets/d/1p4BvPonFJkBRvwfKxb4mWS37PTASk5sCx7eVhHrKtYw/edit?usp=sharing")
+
+
+#friedmanov test porovnanie celeho datasetu
+Friedman_kola=friedman.test(ck ~ produkt | hodnotitel,data = senzorika)
+phodnota_Spolu=Friedman_kola$p.value
+
+#porovnanie jednotlivych dvojic
+FriedmanPARY=frdAllPairsConoverTest(y = senzorika$ck,groups = senzorika$produkt,blocks = senzorika$hodnotitel,p.adjust.method="bonferroni")
+FriedmanPARY
