@@ -1,10 +1,15 @@
 # Porovnanie 3+ vzoriek, VV2020
 # nacitanie kniznic pre pracu s google sheets a friedmanovym testom
 library(gsheet)
+library(readxl)
+library(xlsx)
 library(PMCMRplus)
 
-# nacitanie dat
+# nacitanie dat z google formulara
 senzorika=gsheet2tbl("https://docs.google.com/spreadsheets/d/1p4BvPonFJkBRvwfKxb4mWS37PTASk5sCx7eVhHrKtYw/edit?usp=sharing")
+
+# nacitanie dat z offline excelu /import dataset
+senzorika <- read_excel("C:/Users/vvr24/Desktop/test.xlsx")
 
 # testovanie normality pre vsetky produkty (ck)
 CocaCola=subset(senzorika, produkt == "CocaCola")
@@ -32,5 +37,3 @@ ANOVA_kola = aov(chut ~ produkt, data = senzorika)
 summary(ANOVA_kola)
 # ak vypocitane p<0.05 (treba vykonat viacnasobne porovnanie vzoriek pomocou Tukeyovho HSD)
 TukeyHSD(ANOVA_kola)
-
-
