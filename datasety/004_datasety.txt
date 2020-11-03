@@ -61,7 +61,10 @@ library(gsheet)
 formular=gsheet2tbl("https://docs.google.com/spreadsheets/d/19156fnSt3JrW79frs8ufYcE5PYJlf8qioSns0sb_LHY/edit?usp=sharing")
 cor(formular,method="spearman")
 nalada <- formular[,-1]  # odstranenie stlpca s casovou znackou
+
 cor(nalada,method="spearman") #kendall,pearson
+#pripadne
+cor(nalada$Nalada,nalada$Motivacia,method="spearman") #kendall,pearson
 
 
 
