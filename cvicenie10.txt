@@ -1,5 +1,7 @@
-# NPD
+# NPD, Vietoris 2020
 
+
+# JAR skala pre optimalizaciu produktov
 # nacitanie potrebnych kniznic
 require(grid)
 require(lattice)
