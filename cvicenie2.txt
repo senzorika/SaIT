@@ -18,7 +18,6 @@ abline(v=7.14, col="red")
 abline(h=6.6, col="red")
 text(cena,kvalita,produkt,pos=4)
 
-
 #Vypocet Intervalu spolahlivosti v senzorickej analyze
 # =====================================================
 # vysledky za chut od 7 hodnotitelov
