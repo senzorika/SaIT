@@ -1,6 +1,7 @@
 #------------------------------------------------------------
 #CA korespondencna analyza (kniznica MASS)
 # -----------------------------------------------------------
+
 # definicia kategorialnych dat v matici
 data = matrix(c(15,2,8,7,14,4,5,5,15,11,5,9), ncol=3, byrow=T) # ncol=pocet cisiel v riadku, byrow=T 
 colnames(data) = c("A", "B", "C") #pomenovanie stlpcov (produktov)
@@ -33,7 +34,6 @@ rect.hclust(fit, k=3, border="red", )
 
 #------------------------------------------------------------
 # PREFERENCE MAPPING (Externy)
-
 #------------------------------------------------------------
 
 Potravinarska firma vo svojom senzorickom laboratoriu analyzovala pomocou profilovej metody
