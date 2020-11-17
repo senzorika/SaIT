@@ -1,0 +1,18 @@
+# zhlukova analyza rocnika :)
+
+library(gsheet)
+formular=gsheet2tbl("https://docs.google.com/spreadsheets/d/1O009WcPdmp-ynVjXIeQl6nwkezd0TQiKdmj700oQnkM/edit?usp=sharing")
+podobnosti = formular[,c(-1,-2)]  # odstranenie stlpca s casovou znackou a menami
+rownames(podobnosti) = formular$Inicialky # pridanie inicialok ako nazvov riadkov (kvoli vizualizacii na grafe)
+
+#vypocet vzdialenosti medzi spoluziakmi_spotrebitelmi + vizualizacia
+distance <- get_dist(podobnosti)
+fviz_dist(distance, gradient = list(low = "#00AFBB", mid = "white", high = "#FC4E07"),show_labels = TRUE)
+
+#k-mean zhlukovanie z realnych dat
+fviz_nbclust(podobnosti, kmeans, method = "silhouette")
+k3 <- kmeans(podobnosti, centers = 3, nstart = 25)
+fviz_cluster(k3,data = podobnosti) + ggtitle("Segmentácia ročníka 2020 Covid-19 edícia :)")
+cor(k3$centers)
+k3$centers
+k3$size
