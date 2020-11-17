@@ -15,3 +15,15 @@ vek = corresp(data, nf=2) #nf= pocet faktorov
 # vykreslenie grafu
 biplot(vek)
 
+ULOHA1:
+------------------------------------------------------------------------------
+Kozmeticka firma vyrabajuca sampony sa rozhodla, ze spravi prieskum medzi
+niekolkymi stovkami respondentov a zisti, ktore sampony su preferovane jednotlivymi
+skupinami klientov. Na zaklade vysledkov sa rozhodne na obaly umiestnit fotografiu
+konkretnej farby vlasov.Ako budu vyzerat obaly pre zihlavovy, brezovy a tropicky sampon?
+
+pouzite hodnoty:
+Nagenerujte odpovede respondentov (10-90 odpovedi)
+sampony = Brezovy,Zihlavovy,Ovocny,Vajickovy,Orechovy,Cokoladovy,Mentolovy,Tropicky
+farba.vlasov = Blond,Hnedovlase,Ciernovlase,Cervenovlase,Muzi
+

@@ -1,29 +1,43 @@
+# --------------------------------------------------
+# TURF Analyza, Vietoris 2020
+#---------------------------------------------------
+library(turfR)
+vajce = c(sample(0:1, size=150, replace=TRUE))
+syr = c(sample(0:1, size=150, replace=TRUE))
+sunka = c(sample(0:1, size=150, replace=TRUE))
+olivy = c(sample(0:1, size=150, replace=TRUE))
+pretlak = c(sample(0:1, size=150, replace=TRUE))
+salam = c(sample(0:1, size=150, replace=TRUE))
+cibula = c(sample(0:1, size=150, replace=TRUE))
+slanina = c(sample(0:1, size=150, replace=TRUE))
+cesnak = c(sample(0:1, size=150, replace=TRUE))
+rajciny = c(sample(0:1, size=150, replace=TRUE))
+kukurica = c(sample(0:1, size=150, replace=TRUE))
+wgt=c(vajce+syr+sunka+olivy+pretlak+salam+cibula+slanina+cesnak+rajciny+kukurica)/10
+respid= c(1:150)
+pizza=data.frame(respid,wgt,vajce,syr,sunka,olivy,pretlak,salam,cibula,slanina,cesnak,rajciny,kukurica)
+View(pizza)
+
+# vypocet REACH: percento ludi, pre ktorych je vybrane mnozstvo ingrediencii pritazlive
+# vypocet FREQUENCY: priemerny pocet pritazlivych ingrediencii na respondenta 
+# vyberieme si teda 3 az 4 ingrediencie
+vysledky <- turf(pizza, 11, 3:4)
+
+#tabulka s 3 ingredienciami
+TURFtabulka3=vysledky$turf[[1]]
+colnames(TURFtabulka3)=c("Kombo","Reach","Freq","vajce","syr","sunka","olivy","pretlak",
+			 "salam","cibula","slanina","cesnak","rajciny","kukurica")
+View(TURFtabulka3)
+
+#tabulka so 4 ingredienciami
+TURFtabulka4=vysledky$turf[[2]]
+colnames(TURFtabulka4)=c("Kombo","Reach","Freq","vajce","syr","sunka","olivy","pretlak",
+		         "salam","cibula","slanina","cesnak","rajciny","kukurica")
+View(TURFtabulka4)
+
+
 #------------------------------------------------------------
-# NPD techniky, Vietoris 2020
-#------------------------------------------------------------
-
-# JAR skala pre optimalizaciu produktov
-
-# nacitanie potrebnych kniznic
-require(grid)
-require(lattice)
-require(latticeExtra)
-require(HH)
-
-# produkt a jeho atributy v matici
-produkt <-  matrix(c(3,2,10,2,0
-                    ,3,2,12,0,0
-                    ,1,3,9,0,1
-                    ,3,9,2,1,2
-                    ,0,1,8,3,1
-                    ,4,2,10,1,0), ncol=5,byrow = TRUE) 
-
-rownames(produkt) <- c("vzhľad","pach","textúra","chuť", "dochuť", "celkový dojem") 
-colnames(produkt) <- c("- -","-","JAR","+", "+ +")
-likert(produkt,main='Vybraný produkt',sub="")
-
-#------------------------------------------------------------
-# PREFERENCE MAPPING (Externy)
+# PREFERENCE MAPPING (Externy), Vietoris 2020
 #------------------------------------------------------------
 
 Potravinarska firma vo svojom senzorickom laboratoriu analyzovala pomocou profilovej metody
@@ -48,14 +62,4 @@ res.pca <- PCA(senzorika)
 carto(res.pca$ind$coord[,1:2],hedonika)
 
 
-ULOHA1:
-------------------------------------------------------------------------------
-Kozmeticka firma vyrabajuca sampony sa rozhodla, ze spravi prieskum medzi
-niekolkymi stovkami respondentov a zisti, ktore sampony su preferovane jednotlivymi
-skupinami klientov. Na zaklade vysledkov sa rozhodne na obaly umiestnit fotografiu
-konkretnej farby vlasov.Ako budu vyzerat obaly pre zihlavovy, brezovy a tropicky sampon?
 
-pouzite hodnoty:
-Nagenerujte odpovede respondentov (10-90 odpovedi)
-sampony = Brezovy,Zihlavovy,Ovocny,Vajickovy,Orechovy,Cokoladovy,Mentolovy,Tropicky
-farba.vlasov = Blond,Hnedovlase,Ciernovlase,Cervenovlase,Muzi
