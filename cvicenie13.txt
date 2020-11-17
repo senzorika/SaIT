@@ -50,7 +50,8 @@ td_new <- data.frame(rowSums(td[2:53])) # tu treba nastavit pocet riadkov z data
 names(td_new)[1] <- "count"
 td_new <- cbind("sentiment" = rownames(td_new), td_new)
 rownames(td_new) <- NULL
-td_new2<-td_new[1:8,]
+row.names(td_new) <- c("hnev","očakávanie","hnus","strach","radosť","smútok","prekvapenie","dôvera","negatívne","pozitívne")
+td_new2<-td_new[1:8,] #v premennej je este aj sumarizacia negativne/pozitivne ale to nejde do grafu :)
 
 # Stlpcovy graf pre vsetky emocie
 quickplot(sentiment, data=td_new2, weight=count, geom="bar", fill=sentiment, ylab="count")+ggtitle("Analýza sentimentu (vybraný produkt")
