@@ -1,68 +1,17 @@
-# -----------------------------------------------------
-# JEDNODUCHA LINEARNA REGRESIA II. (Vietoris,2020)
-# -----------------------------------------------------
-# zistite regresny model medzi teplotou spracovania a udajmi z texturometra
-# kde x su data z texturometra a y je teplota v stupnoch Celzia.
-x <- c(18,20,21,23,27,30,34,39)
-y <- c(57,60,64,65,68,71,74,77)
-lm(x~y)
+#------------------------------------------------------------
+#CA korespondencna analyza (kniznica MASS)
+# -----------------------------------------------------------
+# definicia kategorialnych dat v matici
+data = matrix(c(15,2,8,7,14,4,5,5,15,11,5,9), ncol=3, byrow=T) # ncol=pocet cisiel v riadku, byrow=T 
+colnames(data) = c("A", "B", "C") #pomenovanie stlpcov (produktov)
+rownames(data) = c("Muzi", "Zeny", "Deti", "Dochodcovia") #pomenovanie riadkov (cielova skupina vyrobku)
 
-# takze toto je regresna rovnica y = mx + b y = 1.055x - 44.177
-# a ideme programovat nasu prvu funkciu v zivote :)
+# samotny program R nedokaze pocitat korespondencnu analyzu, preto je nutne vyuzit kniznicu MASS
+library(MASS)
 
-model <- function(x){1.055 * x - 44.177}
-data.frame(x,y)
+# vypocet korespondencnej analyzy (jednoduchej)
+vek = corresp(data, nf=2) #nf= pocet faktorov
 
-#overenie linearneho modelu
-model(68)
-model(50)
+# vykreslenie grafu
+biplot(vek)
 
-# a je este potrebne zistit koeficient determinacie (r2) celeho modelu a sme za vodou :)
-# + plny sumar vysledkov
-
-reg <- lm(x~y)
-summary(reg)
-
-# a na zaver nejaka grafika
-plot(y,x)
-abline(reg)
-
-# alebo o nieco krajsia grafika :)
-library(ggplot2)
-qplot(y, x, geom = c("point", "smooth"), method="lm")
-
-# ------------------------------------------------------------------------
-# Analyza prezitia (Survival analysis, Kaplan-Maier model) (Vietoris,2017)
-# ------------------------------------------------------------------------
-
-# odhad senzorickej trvanlivosti pomocou neparametrickej analyzy prezitia podla Kaplan-Maiera
-# Piati hodnotitelia analyzovali vzorky jogurtu skladovane 0,4,8,12,23,36 a 48 hodin pri izbovej teplote.
-# Vysledkom je skala (zamietnutia/nezjedol) a (akceptacie/zjedol). Aka je odhadovana senzoricka trvanlivost
-# jogurtov, resp. kedu uz bude jogurt neakceptovatelny po senzorickej stranke?
-# ----------------------------------------------------------------------------------------
-# ------------------------------------------------------------------------
-# Analyza prezitia (Survival analysis, Kaplan-Maier model) (Vietoris,2013)
-# ------------------------------------------------------------------------
-
-# odhad senzorickej trvanlivosti pomocou neparametrickej analyzy prezitia podla Kaplan-Maiera
-# Piati hodnotitelia analyzovali vzorky jogurtu skladovane 0,4,8,12,23,36 a 48 hodin pri izbovej teplote.
-# Vysledkom je skala (zamietnutia/nezjedol) a (akceptacie/zjedol). Aka je odhadovana senzoricka trvanlivost
-# jogurtov, resp. kedu uz bude jogurt neakceptovatelny po senzorickej stranke?
-# ----------------------------------------------------------------------------------------
-# Nacitanie kniznice pre analyzu prezitia
-library(survival)
-time =c(0,4,8,12,24,36,48,0,4,8,12,24,36,48,0,4,8,12,24,36,48,0,4,8,12,24,36,48,0,4,8,12,24,36,48)
-event=c(TRUE,TRUE,TRUE,TRUE,FALSE,FALSE,FALSE,
-        TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
-        TRUE,TRUE,FALSE,TRUE,FALSE,FALSE,FALSE,
-        TRUE,FALSE,TRUE,FALSE,FALSE,FALSE,FALSE,
-        FALSE,FALSE,TRUE,TRUE,TRUE,TRUE,FALSE)
-# vytvorenie datasetu a nastavenie zakladnych parametrov
-foodshelflife= Surv(time,event)
-foodshelflife
-fit = survfit(foodshelflife~1,conf.int=TRUE)
-# vysledky a vizualizacia grafu
-fit
-summary(fit)
-plot(fit, main="Senzorická stabilita produktu (A)",xlab=" èas(h)",col="blue")
-abline(v=median, col="red")

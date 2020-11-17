@@ -1,0 +1,61 @@
+#------------------------------------------------------------
+# NPD techniky, Vietoris 2020
+#------------------------------------------------------------
+
+# JAR skala pre optimalizaciu produktov
+
+# nacitanie potrebnych kniznic
+require(grid)
+require(lattice)
+require(latticeExtra)
+require(HH)
+
+# produkt a jeho atributy v matici
+produkt <-  matrix(c(3,2,10,2,0
+                    ,3,2,12,0,0
+                    ,1,3,9,0,1
+                    ,3,9,2,1,2
+                    ,0,1,8,3,1
+                    ,4,2,10,1,0), ncol=5,byrow = TRUE) 
+
+rownames(produkt) <- c("vzhľad","pach","textúra","chuť", "dochuť", "celkový dojem") 
+colnames(produkt) <- c("- -","-","JAR","+", "+ +")
+likert(produkt,main='Vybraný produkt',sub="")
+
+#------------------------------------------------------------
+# PREFERENCE MAPPING (Externy)
+#------------------------------------------------------------
+
+Potravinarska firma vo svojom senzorickom laboratoriu analyzovala pomocou profilovej metody
+svoju (1) a konkurencnych 15 vyrobkov na trhu. Senzoricka komisia v pocte 8 clenov analyzovala
+13 stanovenych deskriptorov na nestrukturovanej intenzitnej skale. Vysledky za jednotlive deskriptory predstavuju priemer pre panel. 
+Nasledne vybrani anketari poziadali 100 respondentov, aby sa vyjadrili na 5 bodovej (skolskej) skale v celemu sortimentu vyrobkov. 
+Analyzujte pomocou techniky preference mappingu (mapy preferencii) sortiment trhu a okomentujte vyrobok sledovanej potravinarskej firmy.
+
+
+# nacitanie dat z internetovej adresy (profilove + hedonicke data)
+# zdrojovy kod si mozete pozriet tu:
+senzorika<-read.table("http://senzorika.com/sait/datasety/senzorika.txt", sep=",")
+hedonika<-read.table("http://senzorika.com/sait/datasety/hedonika.txt", sep=",")
+
+# overenie datasetov
+senzorika
+hedonika
+
+# vypocet Preference mappingu
+library(SensoMineR)
+res.pca <- PCA(senzorika)
+carto(res.pca$ind$coord[,1:2],hedonika)
+
+
+ULOHA1:
+------------------------------------------------------------------------------
+Kozmeticka firma vyrabajuca sampony sa rozhodla, ze spravi prieskum medzi
+niekolkymi stovkami respondentov a zisti, ktore sampony su preferovane jednotlivymi
+skupinami klientov. Na zaklade vysledkov sa rozhodne na obaly umiestnit fotografiu
+konkretnej farby vlasov.Ako budu vyzerat obaly pre zihlavovy, brezovy a tropicky sampon?
+
+pouzite hodnoty:
+Nagenerujte odpovede respondentov (10-90 odpovedi)
+sampony = Brezovy,Zihlavovy,Ovocny,Vajickovy,Orechovy,Cokoladovy,Mentolovy,Tropicky
+farba.vlasov = Blond,Hnedovlase,Ciernovlase,Cervenovlase,Muzi

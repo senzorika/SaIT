@@ -1,23 +1,61 @@
-#------------------------------------------------------------
-# NPD techniky, Vietoris 2020
-#------------------------------------------------------------
+# ------------------------------------------------------------------------
+# Analyza prezitia (Survival analysis, Kaplan-Maier model) (Vietoris,2013)
+# + predikcne modelovanie
+# ------------------------------------------------------------------------
 
-# JAR skala pre optimalizaciu produktov
+# odhad senzorickej trvanlivosti pomocou neparametrickej analyzy prezitia podla Kaplan-Maiera
+# Piati hodnotitelia analyzovali vzorky jogurtu skladovane 0,4,8,12,23,36 a 48 hodin pri izbovej teplote.
+# Vysledkom je skala (zamietnutia/nezjedol) a (akceptacie/zjedol). Aka je odhadovana senzoricka trvanlivost
+# jogurtov, resp. kedu uz bude jogurt neakceptovatelny po senzorickej stranke?
+# ----------------------------------------------------------------------------------------
+# Nacitanie kniznice pre analyzu prezitia
+library(survival)
+time =c(0,4,8,12,24,36,48,0,4,8,12,24,36,48,0,4,8,12,24,36,48,0,4,8,12,24,36,48,0,4,8,12,24,36,48)
+event=c(TRUE,TRUE,TRUE,TRUE,FALSE,FALSE,FALSE,
+        TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
+        TRUE,TRUE,FALSE,TRUE,FALSE,FALSE,FALSE,
+        TRUE,FALSE,TRUE,FALSE,FALSE,FALSE,FALSE,
+        FALSE,FALSE,TRUE,TRUE,TRUE,TRUE,FALSE)
+vizualizacia=data.frame(time)
+cut(vizualizacia, breaks = 7)
+# vytvorenie datasetu a nastavenie zakladnych parametrov
+foodshelflife= Surv(time,event)
+foodshelflife
 
-# nacitanie potrebnych kniznic
-require(grid)
-require(lattice)
-require(latticeExtra)
-require(HH)
+fit = survfit(foodshelflife~1,conf.int=F)
+# vysledky a vizualizacia grafu
+fit
+summary(fit)
+plot(fit, main="Senzorická stabilita produktu (A)",xlab=" čas(h)",col="blue")
+abline(h=0.5, col="red")
 
-# produkt a jeho atributy v matici
-produkt <-  matrix(c(3,2,10,2,0
-                    ,3,2,12,0,0
-                    ,1,3,9,0,1
-                    ,3,9,2,1,2
-                    ,0,1,8,3,1
-                    ,4,2,10,1,0), ncol=5,byrow = TRUE) 
 
-rownames(produkt) <- c("vzhľad","pach","textúra","chuť", "dochuť", "celkový dojem") 
-colnames(produkt) <- c("- -","-","JAR","+", "+ +")
-likert(produkt,main='Vybraný produkt',sub="")
+# -----------------------------------------------------
+# + LINEARNA REGRESIA (Vietoris,2020)
+# -----------------------------------------------------
+# ideme predikovat cut-off point pre jogurty z predchadzajuceho prikladu
+# kde x sa casove data (dni) a y (je survival hodnota)
+y <- fit$surv
+x <- fit$time
+linear=data.frame(x,y)
+linear
+
+# linearny model: regresna rovnica y = ax + b 
+regresia=lm(x~y)
+regresia
+
+# a ideme programovat nasu prvu funkciu v zivote :)
+model <- function(odhad){regresia$coefficients[2]*odhad +regresia$coefficients[1]}
+
+# a je este potrebne zistit koeficient determinacie (r2) celeho modelu a sme za vodou :)
+reg <- lm(x~y)
+summary(reg)
+
+#overenie linearneho modelu, ideme zistit kolko dni je cut-off point (hodnota=0.5)
+model(0.5)
+abline(v=model(0.5), col="red")
+
+# dokreslime si nejaky vizual :)
+abline(v=0, col="green")
+rect(0, 1, model(0.5), 0, density = 5, col="green", border = "transparent") # coloured
+text(model(0.5),0.52,round(model(0.5),digit=2),pos=4)
