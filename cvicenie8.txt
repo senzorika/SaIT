@@ -1,0 +1,51 @@
+#------------------------------------------------------------
+# Zhlukova analyza (hierarchicka) a kategorizacia produktov 
+# -----------------------------------------------------------
+
+# definicia kategorialnych dat v matici
+data = matrix(c(15,2,8,7,14,4,5,5,15,11,5,9), ncol=3, byrow=T) # ncol=pocet cisiel v riadku, byrow=T 
+colnames(data) = c("A", "B", "C") #pomenovanie stlpcov (produktov)
+rownames(data) = c("Muzi", "Zeny", "Deti", "Dochodcovia") #pomenovanie riadkov (cielova skupina vyrobku)
+
+# samotny program R nedokaze pocitat korespondencnu analyzu, preto je nutne vyuzit kniznicu MASS
+library(MASS)
+
+# vypocet korespondencnej analyzy (jednoduchej)
+vek = corresp(data, nf=2) #nf= pocet faktorov
+
+# vykreslenie grafu
+biplot(vek)
+
+
+# -----------------------------------------------------------
+#k-mean zhlukovanie
+#------------------------------------------------------------
+# nacitanie potrebnych kniznic
+library(tidyverse)  # manipulacia s datami
+library(cluster)    # balik pre zhlukovacie techniky
+library(factoextra) # clustering 
+
+#nacitanie dat
+senzorika = read.table("http://senzorika.com/sait/datasety/senzorika.txt", sep=",")
+test=distance <- get_dist(senzorika)
+fviz_dist(distance, gradient = list(low = "#00AFBB", mid = "white", high = "#FC4E07"))
+k2 <- kmeans(senzorika, centers = 2, nstart = 25)
+k3 <- kmeans(senzorika, centers = 3, nstart = 25)
+k5 <- kmeans(senzorika, centers = 5, nstart = 25)
+fviz_cluster(k2, data = senzorika)
+fviz_cluster(k5, geom = "point",  data = senzorika) + ggtitle("k = 5")
+
+#vypocet optimalneho mnozstva zhlukov (klastrov)
+fviz_nbclust(senzorika, kmeans, method = "silhouette")
+# vizualizacia s tromi klastrami
+fviz_cluster(k3,data = senzorika) + ggtitle("Optimálna segmentácia produktov do skupín")
+cor(k3$centers)
+k3$centers
+k3$size
+
+
+
+
+
+
+
