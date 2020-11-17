@@ -1,5 +1,28 @@
 #------------------------------------------------------------
+<<<<<<< HEAD
 # Zhlukova analyza (hierarchicka) a kategorizacia produktov 
+=======
+#CA korespondencna analyza (kniznica MASS)
+# -----------------------------------------------------------
+
+# definicia kategorialnych dat v matici
+data = matrix(c(15,2,8,7,14,4,5,5,15,11,5,9), ncol=3, byrow=T) # ncol=pocet cisiel v riadku, byrow=T 
+colnames(data) = c("A", "B", "C") #pomenovanie stlpcov (produktov)
+rownames(data) = c("Muzi", "Zeny", "Deti", "Dochodcovia") #pomenovanie riadkov (cielova skupina vyrobku)
+
+# samotny program R nedokaze pocitat korespondencnu analyzu, preto je nutne vyuzit kniznicu MASS
+library(MASS)
+
+# vypocet korespondencnej analyzy (jednoduchej)
+vek = corresp(data, nf=2) #nf= pocet faktorov
+
+# vykreslenie grafu
+biplot(vek)
+
+
+#------------------------------------------------------------
+# Zhlukova analyza a kategorizacia produktov 
+>>>>>>> 3463b3f6337d365c025909994aaf3f7377647d04
 # -----------------------------------------------------------
 # nacitame si dataset z interbetovej adresy
 senzorika = read.table("http://senzorika.com/sait/datasety/senzorika.txt", sep=",")
@@ -11,8 +34,15 @@ plot(fit,main="Dendrogram produktov", yla="váhy znakov", xlab="Produkty") # disp
 groups = cutree(fit, k=3) # rozdelenie skupiny na tri skupiny
 rect.hclust(fit, k=3, border="red", )
 
+<<<<<<< HEAD
 # -----------------------------------------------------------
 #k-mean zhlukovanie
+=======
+
+
+#------------------------------------------------------------
+# PREFERENCE MAPPING (Externy)
+>>>>>>> 3463b3f6337d365c025909994aaf3f7377647d04
 #------------------------------------------------------------
 # nacitanie potrebnych kniznic
 library(tidyverse)  # manipulacia s datami
@@ -36,6 +66,7 @@ fviz_cluster(k3,data = senzorika) + ggtitle("Optimálna segmentácia produktov do 
 cor(k3$centers)
 k3$centers
 k3$size
+
 
 
 

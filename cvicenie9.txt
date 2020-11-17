@@ -1,5 +1,5 @@
 # -----------------------------------------------------
-# JEDNODUCHA LINEARNA REGRESIA II. (Vietoris,2017)
+# JEDNODUCHA LINEARNA REGRESIA II. (Vietoris,2020)
 # -----------------------------------------------------
 # zistite regresny model medzi teplotou spracovania a udajmi z texturometra
 # kde x su data z texturometra a y je teplota v stupnoch Celzia.

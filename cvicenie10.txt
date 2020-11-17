@@ -1,0 +1,23 @@
+#------------------------------------------------------------
+# NPD techniky, Vietoris 2020
+#------------------------------------------------------------
+
+# JAR skala pre optimalizaciu produktov
+
+# nacitanie potrebnych kniznic
+require(grid)
+require(lattice)
+require(latticeExtra)
+require(HH)
+
+# produkt a jeho atributy v matici
+produkt <-  matrix(c(3,2,10,2,0
+                    ,3,2,12,0,0
+                    ,1,3,9,0,1
+                    ,3,9,2,1,2
+                    ,0,1,8,3,1
+                    ,4,2,10,1,0), ncol=5,byrow = TRUE) 
+
+rownames(produkt) <- c("vzhľad","pach","textúra","chuť", "dochuť", "celkový dojem") 
+colnames(produkt) <- c("- -","-","JAR","+", "+ +")
+likert(produkt,main='Vybraný produkt',sub="")
