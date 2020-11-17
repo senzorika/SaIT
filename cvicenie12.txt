@@ -22,7 +22,7 @@ likert(produkt,main='Vybraný produkt',sub="")
 
 
 #----------------------------------------------------
-# vizualizacia pavucinoveho grafu
+# vizualizacia pavucinoveho grafu (profilogram)
 #----------------------------------------------------
 
 # nacitanie kniznice
