@@ -4,7 +4,7 @@
 
 # nacitame si dataset z interbetovej adresy
 senzorika = read.table("http://senzorika.com/sait/datasety/senzorika.txt", sep=",")
-mena=c("pizza_1",pizza_2",pizza_3",pizza_4",pizza_5",pizza_6",pizza_7",pizza_8",pizza_9",pizza_10",pizza_11",pizza_12",pizza_13",pizza_14",pizza_15",pizza_16")
+mena=c("pizza_1","pizza_2","pizza_3","pizza_4","pizza_5","pizza_6","pizza_7","pizza_8","pizza_9","pizza_10","pizza_11","pizza_12","pizza_13","pizza_14","pizza_15","pizza_16")
 row.names(senzorika)=mena
 # Wardovo hierarchicke zhlukovanie
 d = dist(senzorika, method = "euclidean") # prepocet matice vzdialenosti
