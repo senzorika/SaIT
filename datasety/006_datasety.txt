@@ -1,5 +1,9 @@
 # zhlukova analyza rocnika :)
 
+library(tidyverse)  # manipulacia s datami
+library(cluster)    # balik pre zhlukovacie techniky
+library(factoextra) # clustering 
+
 library(gsheet)
 formular=gsheet2tbl("https://docs.google.com/spreadsheets/d/1O009WcPdmp-ynVjXIeQl6nwkezd0TQiKdmj700oQnkM/edit?usp=sharing")
 podobnosti = formular[,c(-1,-2)]  # odstranenie stlpca s casovou znackou a menami
