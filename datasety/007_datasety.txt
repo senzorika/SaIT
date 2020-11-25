@@ -1,0 +1,16 @@
+Kozmeticka firma vyrabajuca sampony sa rozhodla, ze spravi prieskum medzi
+niekolkymi stovkami respondentov a zisti,
+ktore sampony su preferovane jednotlivymi
+skupinami klientov. Na zaklade vysledkov sa rozhodne na obaly umiestnit 
+fotografiu
+konkretneho vlasoveho typu.Ako budu vyzerat obaly pre zihlavovy, vajickovy a tropicky sampon?
+
+nahodnecisla = c(sample(10:90, size=40, replace=TRUE))
+vlasy = matrix(nahodnecisla, ncol=8, byrow=T)
+
+colnames(vlasy) = c("Brezovy", "Zihlavovy", "Ovocny","Vajickovy", "Orechovy", "Cokoladovy","Mentolovy", "Tropicky")
+rownames(vlasy) = c("Blond", "Brunetky", "Ciernovlase", "Cervenovlase","Muzi")
+sum(vlasy)
+library(MASS)
+ca = corresp(vlasy, nf=2)
+biplot(ca)
