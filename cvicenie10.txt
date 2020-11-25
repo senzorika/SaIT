@@ -16,8 +16,9 @@ event=c(TRUE,TRUE,TRUE,TRUE,FALSE,FALSE,FALSE,
         TRUE,TRUE,FALSE,TRUE,FALSE,FALSE,FALSE,
         TRUE,FALSE,TRUE,FALSE,FALSE,FALSE,FALSE,
         FALSE,FALSE,TRUE,TRUE,TRUE,TRUE,FALSE)
-vizualizacia=data.frame(time)
-cut(vizualizacia, breaks = 7)
+cut(time, breaks = 7)
+cut(event, breaks = 7)
+
 # vytvorenie datasetu a nastavenie zakladnych parametrov
 foodshelflife= Surv(time,event)
 foodshelflife
