@@ -2,12 +2,12 @@
 # Analyza sentimentu + textminig a wordcloud, Vietoris, 2020
 #------------------------------------------------------------
 # Instalacia potrebnych balikov
-# install.packages("tm")  # for text mining
-# install.packages("SnowballC") # for text stemming
+# install.packages("tm")  # balik na text mining
+# install.packages("SnowballC") # parsovanie textov
 # install.packages("wordcloud") # word-cloud generator 
-# install.packages("RColorBrewer") # color palettes
-# install.packages("syuzhet") # for sentiment analysis
-# install.packages("ggplot2") # for plotting graphs
+# install.packages("RColorBrewer") # farbne palety
+# install.packages("syuzhet") # balik na analyzu sentimentu
+# install.packages("ggplot2") # balik na vykreslovanie grafov
 
  # nacitanie kniznic 
 library("tm")
