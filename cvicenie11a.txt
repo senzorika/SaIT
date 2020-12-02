@@ -59,7 +59,7 @@ hedonika
 # vypocet Preference mappingu
 library(SensoMineR)
 res.pca <- PCA(senzorika)
-carto(res.pca$ind$coord[,1:2],hedonika)
+carto(res.pca$ind$coord[,1:2],hedonika) # parametre farby ,col.min = 0,col.max = 1
 
 
 
