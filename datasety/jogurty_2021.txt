@@ -1,0 +1,4 @@
+library(readxl)
+jogurty <- read_excel("C:/Users/vvr24/OneDrive/Počítač/jogurty.xlsx")
+View(jogurty)
+
