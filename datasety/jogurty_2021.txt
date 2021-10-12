@@ -2,7 +2,7 @@
 # zistite ako sa javi spotrebitelom nas vyrobeny jogurt (C) oproti konkurencii.
 # jogurty boli hodnotene v DVOCH SEDENIACH v ROZDIELNYCH CASOCH
 # https://github.com/senzorika/SaIT/blob/master/datasety/jogurty.xlsx
-jogurty <- read.csv("https://github.com/senzorika/SaIT/blob/master/datasety/jogurty.csv", sep=";")
+jogurty <- read.csv("http://senzorika.com/sait/datasety/jogurty.csv", sep=";")
 
 # vytvorenie filtra(subsetov)
 A=subset(jogurty,jogurty$Vyrobca =="A")
