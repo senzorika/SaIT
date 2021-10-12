@@ -22,6 +22,8 @@ shapiro.test(D$chut)
 
 #porovnanie celeho suboru
 # vyber statistickej metody
+# http://senzorika.com/sait/prednasky/intro.pdf
+
 
 kruskal.test(A$chut,B$chut,C$chut,D$chut)
 
