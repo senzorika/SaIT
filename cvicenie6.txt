@@ -28,15 +28,16 @@ plot (mcukru,prijemnost, type="b")
 
 # linearne regresne modely (prijemnost/sladkost)
 # y = b2*x + b1
-# lm(mcukru~prijemnost)
-# plot(mcukru~prijemnost)
-#abline(lm(mcukru~prijemnost))
-# summary(lm(mcukru~prijemnost))
+lm(mcukru~prijemnost)
+plot(mcukru~prijemnost)
+abline(lm(mcukru~prijemnost))
+summary(lm(mcukru~prijemnost))
  
 ----------------------------------------------------------------------------------------------
 
 ULOHA 1:
 Vypocitajte korelacne koeficienty medzi instrumentalnymi a senzorickymi udajmi,ak je dane:
+Ktore znaky maju najvyssiu negativnu korelaciu? Ku ktoremu znaku je najviac korelovana se_stavnatost?
 tm_tvrdost=c(1,2,1,1,3,5,5,2,3,3,5,2,5,4,4,4,4)
 tm_pevnost=c(1,1,1,3,5,5,3,3,3,2,3,5,2,5,4,4,3)
 tm_vodivost=c(3,2,4,5,5,5,2,3,2,3,3,3,4,7,5,5,5)
@@ -46,4 +47,4 @@ se_prehltavost=c(4,4,5,5,5,4,2,2,3,4,3,3,4,6,5,4,3)
 se_zutelnost=c(3,2,4,1,1,2,6,6,6,3,5,3,1,2,1,2,1)
 
 ULOHA 2:
-Zistite vztahy a zostrojte linearny model pre Vami zadany priklad.
+Zistite vztahy medzi oboma znakmi z prikladu 1 (se_stavnatost+neznamy) a zostrojte linearny model predikujte stavnatost, je vobec mozna?
