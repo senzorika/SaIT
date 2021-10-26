@@ -32,7 +32,6 @@ lm(mcukru~prijemnost)
 plot(mcukru~prijemnost)
 abline(lm(mcukru~prijemnost))
 summary(lm(mcukru~prijemnost))
- 
 ----------------------------------------------------------------------------------------------
 
 ULOHA 1:
