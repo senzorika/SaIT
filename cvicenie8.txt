@@ -41,12 +41,13 @@ cor(k3$centers)
 k3$centers
 k3$size
 
-# Priklad:
+# Priklad :
 # Senzoricka Komisia hodnotila nas produkt A, oproti konkurecnym 15 produktom na trhu. Cielom analyzy bolo zistit, ktory je nasmu produktu 
 najviac podobny, ked skupina hodnotitelov zaradila cely sortiment do 5 skupin. Okomentujete vysledky.
 
 senzorika = read.table("http://senzorika.com/sait/datasety/senzorika.txt", sep=",")
 mena=c("A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","X")
+
 
 
 
