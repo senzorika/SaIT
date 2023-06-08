@@ -26,7 +26,7 @@ https://notion.so/
 https://github.com/
 
 #webkonferencie a online chat
-https://meet.jit.si/sait2020
+https://meet.jit.si/sait2024
 
 # instalacia balikov (nie vsetky su potrebne k cviceniam)
 install.packages('devtools')
