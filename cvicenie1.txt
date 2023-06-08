@@ -19,6 +19,9 @@ http://rstudio.org/download/desktop
 #Trello (vhodna pre individualne/skupinove projekty)
 https://trello.com/
 
+# Notion (sprava projektov)
+https://notion.so/
+
 # github (repozitar, na riadenu dokumentaciu/ verziovanie dokumentov)
 https://github.com/
 
