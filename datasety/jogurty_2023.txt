@@ -1,4 +1,4 @@
-# jogurtovy subor, VV_2021
+# jogurtovy subor, VV_2024
 # zistite ako sa javi spotrebitelom nas vyrobeny jogurt (C) oproti konkurencii.
 # jogurty boli hodnotene v DVOCH SEDENIACH v ROZDIELNYCH CASOCH
 # https://github.com/senzorika/SaIT/blob/master/datasety/jogurty.xlsx
