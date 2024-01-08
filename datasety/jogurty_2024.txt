@@ -9,9 +9,10 @@ A=subset(jogurty,jogurty$Vyrobca =="A")
 B=subset(jogurty,jogurty$Vyrobca =="B")
 C=subset(jogurty,jogurty$Vyrobca =="C")
 D=subset(jogurty,jogurty$Vyrobca =="D")
+produkty=subset(jogurty, select = c(-Vyrobca,-Produkt))
 
 #vizualizacia vysledkov
-boxplot(A$chut,B$chut,C$chut,D$chut,col=c("white","white","gold","white"),xlab="Vzorky",ylab="chut (9 bodova skala)")
+boxplot(A$chut,B$chut,C$chut,D$chut,col=c("white","white","gray","gold"),xlab="Vzorky",ylab="chut (9 bodova skala)")
 priemer=c(mean(A$chut),mean(B$chut),mean(C$chut),mean(D$chut))
 priemer
 
@@ -26,13 +27,12 @@ shapiro.test(D$chut)
 # http://senzorika.com/sait/prednasky/intro.pdf
 
 
-kruskal.test(A$chut,B$chut,C$chut,D$chut)
+# Porovnanie celeho datasetu pomocou n-parametrickej 1F ANOVA
+# ostatne parametre: vzhlad, vona, textura, celkovydojem
+kruskal.test(jogurty$chut ~ jogurty$Vyrobca, data=jogurty) 
+pairwise.wilcox.test(jogurty$chut,jogurty$Vyrobca, p.adj="bonferroni", exact=F)
 
-#ak p<0.05 parove porovnanie dvojic (BH90210 kazdy s kazdym)
-wilcox.test(A$chut,B$chut) 
-wilcox.test(A$chut,C$chut)
-wilcox.test(A$chut,D$chut)
-wilcox.test(B$chut,C$chut)
-wilcox.test(B$chut,D$chut)
-wilcox.test(C$chut,D$chut)
+
+# korelacie
+cor(produkty, method="spearman")
 
