@@ -1,3 +1,4 @@
+# Openfoodfacts explorer, V.Vietoris 2024
 # Načítanie potrebných knižníc
 library(shiny)
 library(httr)
@@ -69,14 +70,16 @@ server <- function(input, output, session) {
             product_name = .x$product_name,
             brand = .x$brands,
             category = .x$categories_tags %>% paste(collapse = ", "),
-            country = .x$countries_tags %>% paste(collapse = ", "),  # Pridanie krajiny
+            country = .x$countries_tags %>% paste(collapse = ", "),
             ingredients = .x$ingredients_text,
             energy_kcal = as.numeric(.x$nutriments$energy_100g),
             fat_g = as.numeric(.x$nutriments$fat_100g),
             carbs_g = as.numeric(.x$nutriments$carbohydrates_100g),
             sugars_g = as.numeric(.x$nutriments$sugars_100g),
             proteins_g = as.numeric(.x$nutriments$proteins_100g),
-            salt_g = as.numeric(.x$nutriments$salt_100g)
+            salt_g = as.numeric(.x$nutriments$salt_100g),
+            nutriscore = .x$nutriscore_grade,  # Pridanie nutriscore
+            weblink = ifelse(!is.null(.x$url), paste0('<a href="', .x$url, '" target="_blank">Odkaz</a>'), NA)  # Pridanie HTML odkazu na produkt
           )
         })
       return(df)
@@ -110,8 +113,16 @@ server <- function(input, output, session) {
     df_filtered <- df %>%
       filter(energy_kcal >= input$energy_range[1] & energy_kcal <= input$energy_range[2])
     
-    # Vykreslenie dátovej tabuľky vrátane krajiny
-    datatable(df_filtered, options = list(pageLength = 10, autoWidth = TRUE))
+    # Vykreslenie dátovej tabuľky s nutriscore a odkazom na produkt
+    datatable(
+      df_filtered, 
+      options = list(pageLength = 10, autoWidth = TRUE), 
+      escape = FALSE,  # Escape = FALSE umožňuje vykresliť HTML odkazy
+      rownames = FALSE
+    ) %>% 
+      formatStyle("nutriscore", 
+                  backgroundColor = styleEqual(c("a", "b", "c", "d", "e"), 
+                                               c("green", "lightgreen", "yellow", "orange", "red")))
   })
   
   # Vykreslenie sumárneho textu
@@ -125,13 +136,15 @@ server <- function(input, output, session) {
     avg_fat <- mean(filtered_df$fat_g, na.rm = TRUE)
     avg_carbs <- mean(filtered_df$carbs_g, na.rm = TRUE)
     total_countries <- filtered_df$country %>% unique() %>% length()
+    nutriscore_distribution <- table(filtered_df$nutriscore)
     
     paste(
       "Sumár vybraných dát:",
       sprintf("\nPriemerná energia: %.2f kcal", avg_energy),
       sprintf("\nPriemerný obsah tuku: %.2f g", avg_fat),
       sprintf("\nPriemerné množstvo sacharidov: %.2f g", avg_carbs),
-      sprintf("\nPočet krajín: %d", total_countries),  # Zobrazenie počtu krajín
+      sprintf("\nPočet krajín: %d", total_countries),
+      sprintf("\nRozdelenie nutriscore: %s", paste(names(nutriscore_distribution), nutriscore_distribution, sep = ": ", collapse = ", ")),  # Rozdelenie nutriscore
       sep = "\n"
     )
   })
