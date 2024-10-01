@@ -1,4 +1,5 @@
 # Openfoodfacts explorer, V.Vietoris 2024
+# online verzia: https://pr020a-sensorylab-fbp.shinyapps.io/kody_R/
 # Načítanie potrebných knižníc
 library(shiny)
 library(httr)
