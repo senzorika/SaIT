@@ -4,8 +4,7 @@
 #--------------------------------------------------------------
 # Dnesne datasety
 #--------------------------------------------------------------
-# dnesne data// 9 hodnotitelov hodnotilo 4 produkty (a,b,c,d), hodnoty predstavuju celkovu kvalitu
-# (priemer vlastnosti)
+# dnesne data// 9 hodnotitelov hodnotilo 4 produkty (a,b,c,d), hodnoty predstavuju celkovu kvalitu (priemer vlastnosti)
 hodnotitel= c("hod1","hod2","hod3","hod4", "hod5", "hod6","hod7", "hod8", "hod9")
 a = c(7.5, 6.9,7,7,6.9,7.1,7.2,7.5,6.9)
 b = c(7.5, 8.1,7.5,7.4,7.1,7.5,7.2,7.2,6.9)
@@ -36,7 +35,7 @@ plot(density(a))
 # 2 plniace linky na napoje (udavane v ml, 2 minuty)
 lin1=rnorm(120, mean=1000, sd=0.6)
 lin2=rnorm(120, mean=1000, sd=0.6)
-plot(lin1, type="l",main="testovací graf", xlab="sekundy (plnenia)", ylab="linky (1-èervená, 2 - modrá)")
+plot(lin1, type="l",main="testovaci graf", xlab="sekundy (plnenia)", ylab="linky (1-cervena, 2 - modra)")
 lines(lin2,col="lightblue")
 abline (h=mean(lin1),col="red")
 abline (h=mean(lin2),col="blue")
@@ -52,19 +51,24 @@ candleChart(LHA.DE, TA=c(addMACD(),addRSI(),addBBands(),addVo()),subset = '2018:
 
 PRAKTICKA CAST
 ==================================
-#1 Zistite preferencie jednotlivých kolových nápojov pomocou online formulárov
-# nainštalovanie knižnice pre èítanie googlesheets
+# Uloha 1
+# z databazy OpenFactsData si vyberte lubovolnu skupinu potravin (3+)
+a vytvorte graf podla Vase preferencie a vÃ½sledok poslite na mail: senzorickelaboratoriumfbp@gmail.com
+
+# Uloha 2
+# Zistite preferencie jednotliv ch kolov ch n pojov pomocou online formul rov
+# nainstalovanie kniznice pre citanie googlesheets
 install.packages('gsheet')
-# pridanie knižnice googlesheets do programu R
+# pridanie kniznice googlesheets do programu R
 library(gsheet)
-# naèítanie dát z online prieskumu
+# nacitanie dat z online prieskumu
 preferencie=gsheet2tbl('https://docs.google.com/spreadsheets/d/1DqIcZD1bDUV8cP_UJvVNeQL8Pq97UgIf-nt_fsWC5gY/edit?usp=sharing')
 
-#definície vektorov z online databázy
+#definicie vektorov z online databazy
 vysledky=list(mean(preferencie$CocaCola),mean(preferencie$Kofola),mean(preferencie$RCCola),mean(preferencie$Pepsi),mean(preferencie$Freeway))
-boxplot(preferencie$CocaCola,preferencie$Kofola,preferencie$RCCola,preferencie$Pepsi,preferencie$Freeway, main="Preferencia kolových nápojov")
+boxplot(preferencie$CocaCola,preferencie$Kofola,preferencie$RCCola,preferencie$Pepsi,preferencie$Freeway, main="Preferencia kolov ch n pojov")
 
-#2 ktore akcie kolovych napojov momentalne vedu akciovy trh? :)
+#3 ktore akcie kolovych napojov momentalne vedu akciovy trh? :)
 
 
 
