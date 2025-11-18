@@ -1,0 +1,860 @@
+# ============================================================================
+# SENSORY ANALYSIS: TWO-SAMPLE TESTS - COMPLETE EXERCISE
+# ============================================================================
+# Author: Sensometrics Course
+# Topic: Statistical methods for comparing two samples in sensory evaluation
+# ============================================================================
+
+# ============================================================================
+# TABLE OF CONTENTS
+# ============================================================================
+# PART 1: Discrimination Tests (Binomial Test)
+# PART 2: Paired Preference Test
+# PART 3: Continuous Data - Dependent Samples
+# PART 4: Continuous Data - Independent Samples
+# PART 5: McNemar Test (Before/After)
+# PART 6: Power Analysis
+# EXERCISES 1-6
+# SOLUTIONS 1-6
+# ============================================================================
+
+
+# ============================================================================
+# THEORETICAL BACKGROUND
+# ============================================================================
+# Types of Two-Sample Discrimination Tests:
+# 
+# 1. Paired Comparison Test (Duo-Test)
+#    - Probability of guessing: p = 0.5 (50%)
+#    - Panelists compare two samples and indicate which has more of a specific attribute
+#
+# 2. Directional Difference Test
+#    - Probability of guessing: p = 0.5 (50%)
+#    - Panelists indicate which sample is stronger/more intense
+#
+# 3. Duo-Trio Test
+#    - Three samples: one reference, two unknowns (one matches reference)
+#    - Probability: p = 0.5 (50%)
+#
+# Statistical Methods:
+# A. For Discrete Data: Binomial Test, McNemar Test, Chi-square Test
+# B. For Continuous Data:
+#    - Parametric: Paired t-test, Independent t-test
+#    - Non-parametric: Wilcoxon Signed-Rank, Mann-Whitney U
+# ============================================================================
+
+
+# ============================================================================
+# PART 1: DISCRIMINATION TESTS (BINOMIAL TEST)
+# ============================================================================
+
+# Example 1: Paired Comparison Test
+# Question: Which yogurt is creamier?
+# 80 panelists participated, 52 chose sample A
+
+binom.test(52, 80, p=0.5)
+# Interpretation: If p-value < 0.05, there is significant difference
+
+# Calculate minimum number of correct responses needed
+# For significance at α = 0.05
+# Rule of thumb: For n=80, need at least 50 correct responses
+
+# Check different values
+for(i in 45:55) {
+  result = binom.test(i, 80, p=0.5)
+  cat("n =", i, ", p-value =", round(result$p.value, 4), 
+      ifelse(result$p.value < 0.05, " *SIGNIFICANT*", ""), "\n")
+}
+
+
+# ============================================================================
+# PART 2: PAIRED PREFERENCE TEST
+# ============================================================================
+
+# Preference test between old and new chocolate formulation
+# 100 consumers tested both, 63 preferred new formulation
+
+binom.test(63, 100, p=0.5, alternative="greater")
+# alternative="greater" tests if new is significantly better
+
+# Calculate confidence interval for proportion
+prop.test(63, 100, p=0.5)
+
+
+# ============================================================================
+# PART 3: CONTINUOUS DATA - DEPENDENT SAMPLES
+# ============================================================================
+
+# Same panelists evaluated two beer samples on 9-point scale
+beer_A = c(7.2, 6.5, 7.8, 6.9, 7.1, 6.8, 7.5, 7.0, 6.7, 7.3,
+           6.9, 7.4, 7.1, 6.8, 7.2, 7.6, 6.9, 7.0, 7.3, 6.8)
+
+beer_B = c(6.8, 6.2, 7.0, 6.5, 6.9, 6.4, 7.1, 6.7, 6.3, 6.9,
+           6.5, 7.0, 6.8, 6.4, 6.9, 7.2, 6.5, 6.6, 6.8, 6.4)
+
+# Create data frame
+beer_data = data.frame(beer_A, beer_B)
+
+# 1. Check normality
+cat("\n=== NORMALITY TESTS ===\n")
+shapiro_A = shapiro.test(beer_A)
+shapiro_B = shapiro.test(beer_B)
+cat("Beer A - Shapiro-Wilk: p =", round(shapiro_A$p.value, 4), "\n")
+cat("Beer B - Shapiro-Wilk: p =", round(shapiro_B$p.value, 4), "\n")
+
+# Visual inspection
+par(mfrow=c(2,2))
+qqnorm(beer_A, main="Beer A - Q-Q Plot")
+qqline(beer_A, col="red", lwd=2)
+qqnorm(beer_B, main="Beer B - Q-Q Plot")
+qqline(beer_B, col="red", lwd=2)
+hist(beer_A, main="Beer A - Histogram", col="lightblue", breaks=8)
+hist(beer_B, main="Beer B - Histogram", col="lightgreen", breaks=8)
+par(mfrow=c(1,1))
+
+# 2. Boxplot comparison
+boxplot(beer_data, 
+        names=c("Beer A", "Beer B"),
+        main="Beer Quality Comparison",
+        ylab="Hedonic Score",
+        col=c("lightblue", "lightgreen"))
+
+# Add mean points
+points(1:2, c(mean(beer_A), mean(beer_B)), col="red", pch=19, cex=1.5)
+legend("topright", legend="Mean", col="red", pch=19)
+
+# 3. PARAMETRIC TEST (if normal)
+cat("\n=== PARAMETRIC TEST ===\n")
+t_test_paired = t.test(beer_A, beer_B, paired=TRUE)
+print(t_test_paired)
+
+# 4. NON-PARAMETRIC TEST (if not normal or ordinal data)
+cat("\n=== NON-PARAMETRIC TEST ===\n")
+wilcox_paired = wilcox.test(beer_A, beer_B, paired=TRUE)
+print(wilcox_paired)
+
+# Calculate descriptive statistics
+cat("\n=== DESCRIPTIVE STATISTICS ===\n")
+cat("Beer A - Mean:", round(mean(beer_A), 2), "SD:", round(sd(beer_A), 2), 
+    "Median:", round(median(beer_A), 2), "\n")
+cat("Beer B - Mean:", round(mean(beer_B), 2), "SD:", round(sd(beer_B), 2), 
+    "Median:", round(median(beer_B), 2), "\n")
+
+
+# ============================================================================
+# PART 4: CONTINUOUS DATA - INDEPENDENT SAMPLES
+# ============================================================================
+
+# Two different groups of panelists evaluated different cheese samples
+
+# Group 1 evaluated Cheese X (n=25)
+set.seed(123)
+cheese_X = rnorm(25, mean=6.5, sd=1.2)
+
+# Group 2 evaluated Cheese Y (n=30)
+cheese_Y = rnorm(30, mean=7.1, sd=1.1)
+
+# Check normality
+cat("\n=== NORMALITY TESTS FOR INDEPENDENT SAMPLES ===\n")
+cat("Cheese X - Shapiro-Wilk: p =", round(shapiro.test(cheese_X)$p.value, 4), "\n")
+cat("Cheese Y - Shapiro-Wilk: p =", round(shapiro.test(cheese_Y)$p.value, 4), "\n")
+
+# Check homogeneity of variances
+cat("\n=== TEST FOR EQUAL VARIANCES ===\n")
+var_test = var.test(cheese_X, cheese_Y)
+print(var_test)
+
+# PARAMETRIC TEST
+cat("\n=== INDEPENDENT T-TEST ===\n")
+t_test_ind = t.test(cheese_X, cheese_Y)
+print(t_test_ind)
+
+# NON-PARAMETRIC TEST
+cat("\n=== MANN-WHITNEY U TEST ===\n")
+wilcox_ind = wilcox.test(cheese_X, cheese_Y)
+print(wilcox_ind)
+
+# Visualize
+boxplot(cheese_X, cheese_Y, 
+        names=c("Cheese X", "Cheese Y"),
+        main="Independent Samples Comparison",
+        ylab="Score",
+        col=c("lightyellow", "lightpink"))
+
+
+# ============================================================================
+# PART 5: McNEMAR TEST (Before/After with same subjects)
+# ============================================================================
+
+# Consumer acceptance before and after reformulation
+# Same consumers tested both versions
+
+acceptance_data = matrix(c(45, 12, 18, 25), 
+                        nrow=2,
+                        dimnames=list(
+                          "Old Formula" = c("Accept", "Reject"),
+                          "New Formula" = c("Accept", "Reject")))
+
+cat("\n=== MCNEMAR TEST ===\n")
+print(acceptance_data)
+mcnemar_result = mcnemar.test(acceptance_data, correct=FALSE)
+print(mcnemar_result)
+
+# Calculate proportions
+cat("\nProportions:\n")
+cat("Old Formula Acceptance:", sum(acceptance_data[,1])/sum(acceptance_data), "\n")
+cat("New Formula Acceptance:", sum(acceptance_data[1,])/sum(acceptance_data), "\n")
+
+
+# ============================================================================
+# PART 6: POWER ANALYSIS
+# ============================================================================
+
+# Install package if needed
+if(!require(pwr)) install.packages("pwr")
+library(pwr)
+
+# How many panelists needed for paired comparison?
+# For detecting medium effect size (Cohen's h = 0.5)
+cat("\n=== POWER ANALYSIS ===\n")
+power_result = pwr.p.test(h=0.5, sig.level=0.05, power=0.80)
+print(power_result)
+
+# For binomial test - minimum detectable difference
+# If 60 panelists, what's minimum proportion for significance?
+cat("\nFor n=60 panelists:\n")
+for(i in 35:40) {
+  p_val = binom.test(i, 60, p=0.5)$p.value
+  cat("Correct responses:", i, "Proportion:", round(i/60, 3), 
+      "p-value:", round(p_val, 4), 
+      ifelse(p_val < 0.05, " *SIGNIFICANT*", ""), "\n")
+}
+
+
+# ============================================================================
+# ============================================================================
+# EXERCISES
+# ============================================================================
+# ============================================================================
+
+
+# ============================================================================
+# EXERCISE 1: DUO-TRIO TEST
+# ============================================================================
+# A food company reformulated their orange juice. In a duo-trio test:
+# - 120 panelists participated
+# - 71 correctly identified which sample matched the reference
+#
+# Tasks:
+# a) Perform appropriate statistical test
+# b) Is there a significant difference between old and new formulation?
+# c) How many correct responses would be needed for significance at α = 0.05?
+# ============================================================================
+
+cat("\n\n")
+cat("========================================\n")
+cat("EXERCISE 1: DUO-TRIO TEST\n")
+cat("========================================\n")
+
+# Your code here:
+
+
+
+
+# ============================================================================
+# EXERCISE 2: DIRECTIONAL DIFFERENCE TEST
+# ============================================================================
+# Two coffee blends were evaluated for bitterness intensity:
+# - 85 trained panelists participated
+# - 58 indicated that Blend A was more bitter than Blend B
+#
+# Tasks:
+# a) Test if Blend A is significantly more bitter
+# b) Calculate the proportion who chose A
+# c) What would be the minimum number at n=85 for significance?
+# ============================================================================
+
+cat("\n\n")
+cat("========================================\n")
+cat("EXERCISE 2: DIRECTIONAL DIFFERENCE TEST\n")
+cat("========================================\n")
+
+# Your code here:
+
+
+
+
+# ============================================================================
+# EXERCISE 3: PAIRED HEDONIC SCORES
+# ============================================================================
+# The same 15 panelists evaluated two wine samples on a 9-point hedonic scale
+#
+# Tasks:
+# a) Check normality of both datasets
+# b) Create boxplots and describe the distributions
+# c) Perform appropriate paired test
+# d) Calculate mean difference and 95% confidence interval
+# e) Interpret the results: Is organic wine significantly preferred?
+# ============================================================================
+
+cat("\n\n")
+cat("========================================\n")
+cat("EXERCISE 3: PAIRED HEDONIC SCORES\n")
+cat("========================================\n")
+
+wine_conventional = c(7.5, 6.8, 7.2, 6.9, 7.8, 7.1, 6.5, 7.4, 
+                     7.0, 6.9, 7.3, 7.6, 6.8, 7.2, 7.1)
+
+wine_organic = c(7.8, 7.2, 7.5, 7.3, 8.1, 7.4, 6.9, 7.7, 
+                7.3, 7.2, 7.6, 7.9, 7.1, 7.5, 7.4)
+
+# Your code here:
+
+
+
+
+# ============================================================================
+# EXERCISE 4: INDEPENDENT SAMPLES
+# ============================================================================
+# Two different panels evaluated crispiness of potato chips:
+# - Panel A (trained): 20 panelists, Brand X
+# - Panel B (trained): 18 panelists, Brand Y
+#
+# Tasks:
+# a) Check assumptions (normality, equal variances)
+# b) Perform appropriate independent samples test
+# c) Is there a significant difference in crispiness?
+# d) Calculate effect size (Cohen's d)
+# ============================================================================
+
+cat("\n\n")
+cat("========================================\n")
+cat("EXERCISE 4: INDEPENDENT SAMPLES\n")
+cat("========================================\n")
+
+brand_X_crispiness = c(7.2, 6.8, 7.5, 7.1, 6.9, 7.4, 7.0, 6.7, 
+                      7.3, 7.1, 6.8, 7.6, 7.2, 6.9, 7.4, 
+                      7.0, 7.3, 6.8, 7.1, 7.5)
+
+brand_Y_crispiness = c(6.5, 6.2, 6.8, 6.4, 6.7, 6.3, 6.9, 6.5, 
+                      6.6, 6.4, 6.8, 6.5, 6.7, 6.2, 6.9, 
+                      6.4, 6.6, 6.3)
+
+# Your code here:
+
+
+
+
+# ============================================================================
+# EXERCISE 5: McNEMAR TEST APPLICATION
+# ============================================================================
+# A company wants to know if packaging change affects purchase intent:
+# - 100 consumers evaluated both old and new packaging
+# 
+# Results:
+#                     New: Would Buy    New: Would Not Buy
+# Old: Would Buy              55                 15
+# Old: Would Not Buy          20                 10
+#
+# Tasks:
+# a) Set up the contingency table in R
+# b) Perform McNemar test
+# c) Interpret: Did packaging change affect purchase intent?
+# d) Calculate the proportion who changed their mind (both directions)
+# ============================================================================
+
+cat("\n\n")
+cat("========================================\n")
+cat("EXERCISE 5: McNEMAR TEST\n")
+cat("========================================\n")
+
+# Your code here:
+
+
+
+
+# ============================================================================
+# EXERCISE 6: SAMPLE SIZE DETERMINATION
+# ============================================================================
+# You're planning a paired comparison test for saltiness.
+#
+# Tasks:
+# a) How many panelists needed to detect a difference with 80% power?
+# b) If you can only recruit 50 panelists, what's the minimum number 
+#    of correct responses needed for significance?
+# c) Calculate the power for n=40 if 27 choose sample A
+# ============================================================================
+
+cat("\n\n")
+cat("========================================\n")
+cat("EXERCISE 6: SAMPLE SIZE DETERMINATION\n")
+cat("========================================\n")
+
+# Your code here:
+
+
+
+
+# ============================================================================
+# ============================================================================
+# SOLUTIONS
+# ============================================================================
+# ============================================================================
+
+
+# ============================================================================
+# SOLUTION 1: DUO-TRIO TEST
+# ============================================================================
+
+cat("\n\n")
+cat("========================================\n")
+cat("SOLUTION 1: DUO-TRIO TEST\n")
+cat("========================================\n")
+
+# a) Statistical test
+result1 = binom.test(71, 120, p=0.5)
+print(result1)
+
+# b) Interpretation
+if(result1$p.value < 0.05) {
+  cat("\nYes, significant difference exists (p =", 
+      round(result1$p.value, 4), ")\n")
+  cat("Conclusion: Panelists can detect a difference between formulations.\n")
+} else {
+  cat("\nNo significant difference (p =", 
+      round(result1$p.value, 4), ")\n")
+  cat("Conclusion: Panelists cannot reliably detect a difference.\n")
+}
+
+# c) Minimum number needed
+cat("\nFinding minimum correct responses for significance:\n")
+critical_values = sapply(60:75, function(x) {
+  binom.test(x, 120, p=0.5)$p.value
+})
+min_needed = which(critical_values < 0.05)[1] + 59
+cat("Minimum correct responses needed:", min_needed, "out of 120\n")
+cat("This is", round(min_needed/120*100, 1), "% success rate\n")
+
+
+# ============================================================================
+# SOLUTION 2: DIRECTIONAL DIFFERENCE
+# ============================================================================
+
+cat("\n\n")
+cat("========================================\n")
+cat("SOLUTION 2: DIRECTIONAL DIFFERENCE TEST\n")
+cat("========================================\n")
+
+# a) One-sided test (A more bitter than B)
+result2 = binom.test(58, 85, p=0.5, alternative="greater")
+print(result2)
+
+# b) Proportion
+proportion = 58/85
+cat("\nProportion choosing A as more bitter:", round(proportion, 3), 
+    "or", round(proportion*100, 1), "%\n")
+
+# c) Minimum for n=85
+cat("\nFinding minimum for n=85:\n")
+for(i in 48:54) {
+  p_val = binom.test(i, 85, p=0.5)$p.value
+  cat("n =", i, "(", round(i/85*100, 1), "%), p =", round(p_val, 4),
+      ifelse(p_val < 0.05, " *SIGNIFICANT*", ""), "\n")
+}
+
+
+# ============================================================================
+# SOLUTION 3: PAIRED HEDONIC SCORES
+# ============================================================================
+
+cat("\n\n")
+cat("========================================\n")
+cat("SOLUTION 3: PAIRED HEDONIC SCORES\n")
+cat("========================================\n")
+
+wine_conventional = c(7.5, 6.8, 7.2, 6.9, 7.8, 7.1, 6.5, 7.4, 
+                     7.0, 6.9, 7.3, 7.6, 6.8, 7.2, 7.1)
+wine_organic = c(7.8, 7.2, 7.5, 7.3, 8.1, 7.4, 6.9, 7.7, 
+                7.3, 7.2, 7.6, 7.9, 7.1, 7.5, 7.4)
+
+# a) Normality
+cat("\n=== a) NORMALITY TESTS ===\n")
+shapiro_conv = shapiro.test(wine_conventional)
+shapiro_org = shapiro.test(wine_organic)
+shapiro_diff = shapiro.test(wine_organic - wine_conventional)
+
+cat("Conventional wine: p =", round(shapiro_conv$p.value, 4), "\n")
+cat("Organic wine: p =", round(shapiro_org$p.value, 4), "\n")
+cat("Differences: p =", round(shapiro_diff$p.value, 4), "\n")
+cat("Interpretation: All p-values >", ifelse(min(shapiro_conv$p.value, 
+    shapiro_org$p.value, shapiro_diff$p.value) > 0.05, "0.05, data are normal", 
+    "0.05 in all cases, parametric test appropriate"), "\n")
+
+# b) Boxplots
+par(mfrow=c(1,2))
+boxplot(wine_conventional, wine_organic,
+        names=c("Conventional", "Organic"),
+        main="Wine Preference Comparison",
+        ylab="Hedonic Score (1-9)",
+        col=c("lightyellow", "lightgreen"))
+points(1:2, c(mean(wine_conventional), mean(wine_organic)), 
+       col="red", pch=19, cex=1.5)
+
+# Differences plot
+differences = wine_organic - wine_conventional
+hist(differences, 
+     main="Distribution of Differences",
+     xlab="Organic - Conventional",
+     col="lightblue",
+     breaks=8)
+abline(v=0, col="red", lwd=2, lty=2)
+par(mfrow=c(1,1))
+
+cat("\n=== b) DESCRIPTIVE STATISTICS ===\n")
+cat("Conventional - Mean:", round(mean(wine_conventional), 2), 
+    "SD:", round(sd(wine_conventional), 2), "\n")
+cat("Organic - Mean:", round(mean(wine_organic), 2), 
+    "SD:", round(sd(wine_organic), 2), "\n")
+
+# c) Paired t-test
+cat("\n=== c) PAIRED T-TEST ===\n")
+t_result = t.test(wine_organic, wine_conventional, paired=TRUE)
+print(t_result)
+
+# Alternative: Wilcoxon
+cat("\n=== ALTERNATIVE: WILCOXON TEST ===\n")
+wilcox_result = wilcox.test(wine_organic, wine_conventional, paired=TRUE)
+print(wilcox_result)
+
+# d) Mean difference and CI
+cat("\n=== d) MEAN DIFFERENCE AND CONFIDENCE INTERVAL ===\n")
+mean_diff = mean(wine_organic - wine_conventional)
+cat("Mean difference (Organic - Conventional):", round(mean_diff, 3), "\n")
+cat("95% Confidence Interval: [", 
+    round(t_result$conf.int[1], 3), ",", 
+    round(t_result$conf.int[2], 3), "]\n")
+
+# e) Interpretation
+cat("\n=== e) INTERPRETATION ===\n")
+cat("Organic wine scored", round(mean_diff, 2), 
+    "points higher on average (on 9-point scale)\n")
+cat("This difference is", 
+    ifelse(t_result$p.value < 0.05, "STATISTICALLY SIGNIFICANT", "NOT significant"),
+    "(p =", round(t_result$p.value, 4), ")\n")
+cat("\nConclusion:", ifelse(t_result$p.value < 0.05,
+    "Consumers significantly prefer organic wine over conventional wine.",
+    "There is no significant preference between organic and conventional wine."), "\n")
+
+# Effect size (Cohen's d for paired samples)
+cohens_d_paired = mean_diff / sd(differences)
+cat("Effect size (Cohen's d):", round(cohens_d_paired, 3), "\n")
+cat("Effect interpretation:", 
+    ifelse(abs(cohens_d_paired) > 0.8, "Large effect",
+    ifelse(abs(cohens_d_paired) > 0.5, "Medium effect", "Small effect")), "\n")
+
+
+# ============================================================================
+# SOLUTION 4: INDEPENDENT SAMPLES
+# ============================================================================
+
+cat("\n\n")
+cat("========================================\n")
+cat("SOLUTION 4: INDEPENDENT SAMPLES\n")
+cat("========================================\n")
+
+brand_X_crispiness = c(7.2, 6.8, 7.5, 7.1, 6.9, 7.4, 7.0, 6.7, 
+                      7.3, 7.1, 6.8, 7.6, 7.2, 6.9, 7.4, 
+                      7.0, 7.3, 6.8, 7.1, 7.5)
+brand_Y_crispiness = c(6.5, 6.2, 6.8, 6.4, 6.7, 6.3, 6.9, 6.5, 
+                      6.6, 6.4, 6.8, 6.5, 6.7, 6.2, 6.9, 
+                      6.4, 6.6, 6.3)
+
+# a) Check assumptions
+cat("\n=== a) CHECKING ASSUMPTIONS ===\n")
+
+# Normality
+cat("Normality tests:\n")
+shapiro_X = shapiro.test(brand_X_crispiness)
+shapiro_Y = shapiro.test(brand_Y_crispiness)
+cat("Brand X: p =", round(shapiro_X$p.value, 4), 
+    ifelse(shapiro_X$p.value > 0.05, " (Normal)", " (Not normal)"), "\n")
+cat("Brand Y: p =", round(shapiro_Y$p.value, 4), 
+    ifelse(shapiro_Y$p.value > 0.05, " (Normal)", " (Not normal)"), "\n")
+
+# Equal variances
+cat("\nTest for equal variances (F-test):\n")
+var_test = var.test(brand_X_crispiness, brand_Y_crispiness)
+print(var_test)
+cat("Conclusion:", ifelse(var_test$p.value > 0.05, 
+    "Variances are equal (p > 0.05)", 
+    "Variances are not equal (p < 0.05)"), "\n")
+
+# Visual inspection
+par(mfrow=c(2,2))
+qqnorm(brand_X_crispiness, main="Brand X Q-Q Plot")
+qqline(brand_X_crispiness, col="red", lwd=2)
+qqnorm(brand_Y_crispiness, main="Brand Y Q-Q Plot")
+qqline(brand_Y_crispiness, col="red", lwd=2)
+boxplot(brand_X_crispiness, brand_Y_crispiness,
+        names=c("Brand X", "Brand Y"),
+        main="Crispiness Comparison",
+        col=c("lightblue", "lightpink"))
+hist(brand_X_crispiness, main="Brand X Distribution", 
+     col="lightblue", breaks=8)
+par(mfrow=c(1,1))
+
+# b) Independent t-test
+cat("\n=== b) INDEPENDENT T-TEST ===\n")
+t_ind = t.test(brand_X_crispiness, brand_Y_crispiness)
+print(t_ind)
+
+# Alternative: Mann-Whitney U
+cat("\n=== ALTERNATIVE: MANN-WHITNEY U TEST ===\n")
+wilcox_ind = wilcox.test(brand_X_crispiness, brand_Y_crispiness)
+print(wilcox_ind)
+
+# c) Interpretation
+cat("\n=== c) INTERPRETATION ===\n")
+cat("Brand X mean:", round(mean(brand_X_crispiness), 2), 
+    "± SD", round(sd(brand_X_crispiness), 2), "\n")
+cat("Brand Y mean:", round(mean(brand_Y_crispiness), 2), 
+    "± SD", round(sd(brand_Y_crispiness), 2), "\n")
+cat("Mean difference:", round(mean(brand_X_crispiness) - mean(brand_Y_crispiness), 2), "\n")
+cat("\nConclusion:", ifelse(t_ind$p.value < 0.05,
+    "Brand X is significantly crispier than Brand Y",
+    "No significant difference in crispiness between brands"), 
+    "(p =", round(t_ind$p.value, 4), ")\n")
+
+# d) Cohen's d
+cat("\n=== d) EFFECT SIZE (COHEN'S d) ===\n")
+n1 = length(brand_X_crispiness)
+n2 = length(brand_Y_crispiness)
+pooled_sd = sqrt(((n1-1)*var(brand_X_crispiness) + 
+                  (n2-1)*var(brand_Y_crispiness)) / (n1 + n2 - 2))
+cohens_d = (mean(brand_X_crispiness) - mean(brand_Y_crispiness)) / pooled_sd
+cat("Cohen's d:", round(cohens_d, 3), "\n")
+cat("Effect size interpretation:", 
+    ifelse(abs(cohens_d) > 0.8, "Large (d > 0.8)", 
+    ifelse(abs(cohens_d) > 0.5, "Medium (0.5 < d < 0.8)", 
+           "Small (d < 0.5)")), "\n")
+cat("Practical significance: A Cohen's d of", round(cohens_d, 2), 
+    "represents a", 
+    ifelse(abs(cohens_d) > 0.8, "substantial", 
+    ifelse(abs(cohens_d) > 0.5, "moderate", "small")), 
+    "practical difference.\n")
+
+
+# ============================================================================
+# SOLUTION 5: McNEMAR TEST
+# ============================================================================
+
+cat("\n\n")
+cat("========================================\n")
+cat("SOLUTION 5: McNEMAR TEST\n")
+cat("========================================\n")
+
+# a) Set up contingency table
+packaging_data = matrix(c(55, 15, 20, 10), nrow=2,
+                       dimnames=list(
+                         "Old Package" = c("Would Buy", "Would Not"),
+                         "New Package" = c("Would Buy", "Would Not")))
+
+cat("\n=== a) CONTINGENCY TABLE ===\n")
+print(packaging_data)
+
+# Add marginal totals
+cat("\nWith marginal totals:\n")
+addmargins(packaging_data)
+
+# b) McNemar test
+cat("\n=== b) McNEMAR TEST ===\n")
+mcnemar_result = mcnemar.test(packaging_data, correct=FALSE)
+print(mcnemar_result)
+
+# With continuity correction
+cat("\nWith continuity correction:\n")
+mcnemar_corrected = mcnemar.test(packaging_data, correct=TRUE)
+print(mcnemar_corrected)
+
+# c) Interpretation
+cat("\n=== c) INTERPRETATION ===\n")
+positive_change = packaging_data[2,1]  # Didn't buy → Buy
+negative_change = packaging_data[1,2]  # Buy → Didn't buy
+net_change = positive_change - negative_change
+
+cat("Consumers who changed from 'Would Not Buy' to 'Would Buy':", 
+    positive_change, "\n")
+cat("Consumers who changed from 'Would Buy' to 'Would Not Buy':", 
+    negative_change, "\n")
+cat("Net change:", net_change, "consumers gained\n")
+
+cat("\nProportions:\n")
+total = sum(packaging_data)
+old_accept = sum(packaging_data[,1])/total
+new_accept = sum(packaging_data[1,])/total
+cat("Old packaging acceptance rate:", round(old_accept*100, 1), "%\n")
+cat("New packaging acceptance rate:", round(new_accept*100, 1), "%\n")
+cat("Change:", round((new_accept - old_accept)*100, 1), "percentage points\n")
+
+cat("\nConclusion:", ifelse(mcnemar_result$p.value < 0.05,
+    "The packaging change SIGNIFICANTLY affected purchase intent.",
+    "The packaging change did NOT significantly affect purchase intent."),
+    "(p =", round(mcnemar_result$p.value, 4), ")\n")
+
+# d) Calculate proportions who changed
+cat("\n=== d) PROPORTION WHO CHANGED MINDS ===\n")
+changed = positive_change + negative_change
+unchanged = packaging_data[1,1] + packaging_data[2,2]
+cat("Total who changed their mind:", changed, "out of", total, 
+    "(", round(changed/total*100, 1), "%)\n")
+cat("Total who remained consistent:", unchanged, "out of", total, 
+    "(", round(unchanged/total*100, 1), "%)\n")
+
+
+# ============================================================================
+# SOLUTION 6: SAMPLE SIZE AND POWER
+# ============================================================================
+
+cat("\n\n")
+cat("========================================\n")
+cat("SOLUTION 6: SAMPLE SIZE DETERMINATION\n")
+cat("========================================\n")
+
+# Load package
+if(!require(pwr)) {
+  install.packages("pwr")
+  library(pwr)
+}
+
+# a) Sample size for 80% power
+cat("\n=== a) SAMPLE SIZE FOR 80% POWER ===\n")
+# Assuming we want to detect if 60% choose one option (vs 50% by chance)
+observed_prop = 0.60
+null_prop = 0.50
+effect_size = ES.h(observed_prop, null_prop)
+cat("Effect size (Cohen's h) for detecting 60% vs 50%:", round(effect_size, 3), "\n")
+
+power_result = pwr.p.test(h=effect_size, sig.level=0.05, power=0.80)
+print(power_result)
+cat("\nSample size needed:", ceiling(power_result$n), "panelists\n")
+
+# For different effect sizes
+cat("\nSample sizes for different detectable proportions:\n")
+for(prop in c(0.55, 0.60, 0.65, 0.70)) {
+  h = ES.h(prop, 0.50)
+  n = pwr.p.test(h=h, sig.level=0.05, power=0.80)$n
+  cat("To detect", round(prop*100, 0), "% (vs 50%):", 
+      ceiling(n), "panelists needed\n")
+}
+
+# b) Minimum for n=50
+cat("\n=== b) MINIMUM CORRECT RESPONSES FOR n=50 ===\n")
+for(i in 28:33) {
+  p_val = binom.test(i, 50, p=0.5)$p.value
+  cat("Correct responses:", i, "out of 50 (", round(i/50*100, 0), "%), p =", 
+      round(p_val, 4), ifelse(p_val < 0.05, " *SIGNIFICANT*", ""), "\n")
+}
+min_50 = which(sapply(26:50, function(x) {
+  binom.test(x, 50, p=0.5)$p.value < 0.05
+}))[1] + 25
+cat("\nMinimum needed for significance at n=50:", min_50, 
+    "(", round(min_50/50*100, 1), "%)\n")
+
+# c) Power for n=40, 27 correct
+cat("\n=== c) POWER FOR n=40, 27 CORRECT ===\n")
+observed_prop_40 = 27/40
+cat("Observed proportion:", round(observed_prop_40, 3), 
+    "(", round(observed_prop_40*100, 1), "%)\n")
+
+effect_size_40 = ES.h(observed_prop_40, 0.5)
+cat("Effect size (Cohen's h):", round(effect_size_40, 3), "\n")
+
+power_40 = pwr.p.test(h=effect_size_40, n=40, sig.level=0.05)
+print(power_40)
+cat("\nPower:", round(power_40$power, 3), 
+    "(", round(power_40$power*100, 1), "%)\n")
+cat("Interpretation: There is a", round(power_40$power*100, 1), 
+    "% chance of detecting this effect size with n=40.\n")
+
+# Actual test result
+actual_test = binom.test(27, 40, p=0.5)
+cat("\nActual test result for 27/40:\n")
+print(actual_test)
+
+
+# ============================================================================
+# SUMMARY TABLE: CHOOSING THE RIGHT TEST
+# ============================================================================
+
+cat("\n\n")
+cat("========================================\n")
+cat("SUMMARY: CHOOSING THE RIGHT TEST\n")
+cat("========================================\n")
+
+cat("
++-------------------------+------------+---------------+-----------+-------------------------+
+| Situation               | Data Type  | Same Panel?   | Normal?   | Test                    |
++-------------------------+------------+---------------+-----------+-------------------------+
+| Discrimination          | Binary     | -             | -         | Binomial Test           |
+| (correct/incorrect)     |            |               |           |                         |
++-------------------------+------------+---------------+-----------+-------------------------+
+| Before/After acceptance | Binary     | Yes           | -         | McNemar Test            |
++-------------------------+------------+---------------+-----------+-------------------------+
+| Hedonic scores          | Continuous | Yes           | Yes       | Paired t-test           |
++-------------------------+------------+---------------+-----------+-------------------------+
+| Hedonic scores          | Continuous | Yes           | No        | Wilcoxon Signed-Rank    |
++-------------------------+------------+---------------+-----------+-------------------------+
+| Intensity scores        | Continuous | No            | Yes       | Independent t-test      |
++-------------------------+------------+---------------+-----------+-------------------------+
+| Intensity scores        | Continuous | No            | No        | Mann-Whitney U          |
++-------------------------+------------+---------------+-----------+-------------------------+
+")
+
+
+# ============================================================================
+# KEY CONCEPTS TO REMEMBER
+# ============================================================================
+
+cat("\n\n")
+cat("========================================\n")
+cat("KEY CONCEPTS\n")
+cat("========================================\n")
+
+cat("
+1. PROBABILITY VALUES FOR DISCRIMINATION TESTS:
+   - Paired comparison / Duo-trio: p = 0.5 (50%)
+   - Triangle / Tetrad: p = 1/3 (33.3%)
+   
+2. ALWAYS CHECK NORMALITY:
+   - Use Shapiro-Wilk test (shapiro.test)
+   - Visual inspection: Q-Q plots, histograms
+   - If p > 0.05, data are normally distributed
+   
+3. PAIRED VS. INDEPENDENT:
+   - Paired: Same panelists evaluate both samples
+   - Independent: Different panelists for each sample
+   
+4. EFFECT SIZE INTERPRETATION (Cohen's d):
+   - Small: d = 0.2
+   - Medium: d = 0.5
+   - Large: d = 0.8
+   
+5. STATISTICAL VS. PRACTICAL SIGNIFICANCE:
+   - p < 0.05 = Statistical significance
+   - Effect size = Practical significance
+   - Both are important!
+   
+6. ALPHA LEVELS:
+   - α = 0.05 (standard)
+   - α = 0.10 (exploratory studies)
+   - α = 0.01 (confirmatory studies)
+   
+7. POWER ANALYSIS:
+   - Conduct BEFORE the study
+   - Typical power = 0.80 (80%)
+   - Ensures adequate sample size
+")
+
+cat("\n========================================\n")
+cat("END OF EXERCISE\n")
+cat("========================================\n")
