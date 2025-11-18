@@ -1,0 +1,973 @@
+# ============================================================================
+# CONSUMER TESTING & PREFERENCE METHODS – COMPLETE EXERCISE
+# ============================================================================
+# Author: Sensometrics Course
+# Topic: Consumer Testing, JAR, CATA, Preference Mapping
+# ============================================================================
+
+# ============================================================================
+# TABLE OF CONTENTS
+# ============================================================================
+# PART 0: Packages & Setup
+# PART 1: Theoretical Background – Consumer Testing, JAR, CATA, Preference Mapping
+# PART 2: JAR (Just-About-Right) – Example & Penalty Analysis
+# PART 3: CATA (Check-All-That-Apply) – Example & Basic Analysis
+# PART 4: Preference Mapping – Internal (IPM) & External (EPM)
+# EXERCISES 1–6
+# SOLUTIONS 1–6
+# SUMMARY & KEY CONCEPTS
+# ============================================================================
+
+
+# ============================================================================
+# PART 0: PACKAGES & SETUP
+# ============================================================================
+
+required_packages = c("dplyr", "tidyr", "ggplot2", "FactoMineR", "factoextra",
+                      "reshape2", "ggrepel")
+for (pkg in required_packages) {
+  if (!require(pkg, character.only = TRUE)) {
+    install.packages(pkg)
+    library(pkg, character.only = TRUE)
+  }
+}
+
+set.seed(1234)  # for reproducibility
+
+
+# ============================================================================
+# PART 1: THEORETICAL BACKGROUND
+# ============================================================================
+
+# CONSUMER TESTING:
+# - Large number of naive consumers (usually 75–300+, depending on design).
+# - Main outputs: overall liking, purchase intent, JAR ratings, CATA responses.
+# - Usually central location test (CLT) or home-use test (HUT).
+#
+# JAR (JUST-ABOUT-RIGHT) SCALES:
+# - Hybrid scale combining intensity & hedonic information.
+# - Examples: "Sweetness" rated on 3-point or 5-point scale:
+#   1 = Too weak, 2 = Just-about-right, 3 = Too strong
+# - Used to diagnose why overall liking is high/low.
+# - Penalty analysis:
+#   * Compare mean liking for "JAR" vs "too low" / "too high".
+#   * "Drop in liking" (mean difference) + % of consumers in that group.
+#   * Helps prioritize reformulation targets.
+#
+# CATA (CHECK-ALL-THAT-APPLY):
+# - Binary responses (0/1) for list of attributes (e.g. 'fruity', 'bitter').
+# - Consumers tick all terms that apply to the product.
+# - Outputs:
+#   * Term frequencies by product.
+#   * Association between products and terms (maps).
+#   * Links to liking (e.g., mean liking when term is checked vs not checked).
+#
+# PREFERENCE MAPPING:
+# - Goal: Relate consumer liking patterns to product sensory space.
+# - Internal Preference Mapping (IPM):
+#   * PCA on consumer liking matrix (Products × Consumers).
+#   * Consumers are variables; products are observations.
+#   * Explore segments and directions of liking.
+# - External Preference Mapping (EPM):
+#   * Sensory descriptors (e.g. from trained panel or CATA frequencies)
+#     create product space.
+#   * Regress consumer liking onto sensory dimensions (e.g. PCA axes).
+#   * Visualize drivers of liking.
+
+
+# ============================================================================
+# PART 2: JAR (JUST-ABOUT-RIGHT) – EXAMPLE & PENALTY ANALYSIS
+# ============================================================================
+
+cat("\n")
+cat("========================================\n")
+cat("PART 2: JAR (JUST-ABOUT-RIGHT)\n")
+cat("========================================\n")
+
+# Example:
+# 3 yoghurt samples (A, B, C)
+# 200 consumers, each evaluates 1 sample (between-subject design)
+# Measures:
+# - Overall liking (9-point hedonic scale)
+# - JAR for Sweetness (1=Too low, 2=JAR, 3=Too high)
+# - JAR for Thickness (1=Too thin, 2=JAR, 3=Too thick)
+
+# --- Simulate data ----------------------------------------------------------
+
+n_cons <- 200
+products <- c("A", "B", "C")
+jar_levels <- c("Too low", "Just right", "Too high")
+
+# assign each consumer a product
+product_assign <- sample(products, n_cons, replace = TRUE,
+                         prob = c(0.33, 0.34, 0.33))
+
+# base liking by product
+base_liking <- c(A = 6.8, B = 7.5, C = 6.2)
+
+# JAR distributions by product (probabilities)
+jar_sweet_probs <- list(
+  A = c(0.20, 0.60, 0.20),
+  B = c(0.10, 0.70, 0.20),
+  C = c(0.40, 0.40, 0.20)
+)
+
+jar_thick_probs <- list(
+  A = c(0.15, 0.65, 0.20),
+  B = c(0.05, 0.75, 0.20),
+  C = c(0.25, 0.55, 0.20)
+)
+
+# simulate JAR and liking
+jar_data <- data.frame(
+  Consumer = 1:n_cons,
+  Product = factor(product_assign, levels = products)
+)
+
+jar_data$JAR_Sweet <- NA
+jar_data$JAR_Thick <- NA
+jar_data$Liking <- NA
+
+for (p in products) {
+  idx <- which(jar_data$Product == p)
+  
+  jar_data$JAR_Sweet[idx] <- sample(jar_levels, length(idx), replace = TRUE,
+                                    prob = jar_sweet_probs[[p]])
+  jar_data$JAR_Thick[idx] <- sample(jar_levels, length(idx), replace = TRUE,
+                                    prob = jar_thick_probs[[p]])
+  
+  # liking influenced by product + penalties for JAR deviations
+  liking_base <- rnorm(length(idx), mean = base_liking[p], sd = 0.8)
+  # small penalties
+  penalty_sweet <- ifelse(jar_data$JAR_Sweet[idx] == "Just right", 0,
+                          ifelse(jar_data$JAR_Sweet[idx] == "Too low", -0.8, -0.7))
+  penalty_thick <- ifelse(jar_data$JAR_Thick[idx] == "Just right", 0,
+                          ifelse(jar_data$JAR_Thick[idx] == "Too thin", -0.6, -0.5))
+  
+  jar_data$Liking[idx] <- liking_base + penalty_sweet + penalty_thick
+}
+
+# truncate liking to 1–9
+jar_data$Liking <- pmin(pmax(round(jar_data$Liking, 1), 1), 9)
+
+head(jar_data)
+
+
+# --- Descriptive statistics -------------------------------------------------
+
+cat("\n=== JAR Example: Descriptive statistics ===\n")
+jar_desc <- jar_data %>%
+  group_by(Product) %>%
+  summarise(
+    Mean_Liking = round(mean(Liking), 2),
+    SD_Liking = round(sd(Liking), 2),
+    N = n()
+  )
+print(jar_desc)
+
+cat("\nJAR distributions by product (Sweetness):\n")
+jar_sweet_tab <- table(jar_data$Product, jar_data$JAR_Sweet)
+print(jar_sweet_tab)
+
+cat("\nJAR distributions by product (Thickness):\n")
+jar_thick_tab <- table(jar_data$Product, jar_data$JAR_Thick)
+print(jar_thick_tab)
+
+
+# --- JAR Penalty Analysis Function -----------------------------------------
+
+jar_penalty <- function(data, jar_var, liking_var = "Liking",
+                        jar_levels = c("Too low", "Just right", "Too high"),
+                        min_n = 10) {
+  # data: dataframe with columns jar_var and liking_var
+  # returns: penalty table
+  
+  data[[jar_var]] <- factor(data[[jar_var]], levels = jar_levels)
+  
+  mean_jar <- data %>%
+    group_by(.data[[jar_var]]) %>%
+    summarise(
+      N = n(),
+      MeanLiking = mean(.data[[liking_var]]),
+      .groups = "drop"
+    )
+  
+  mean_JR <- mean_jar$MeanLiking[mean_jar[[jar_var]] == "Just right"]
+  
+  mean_jar %>%
+    mutate(
+      Drop = MeanLiking - mean_JR,
+      Drop = round(Drop, 2),
+      MeanLiking = round(MeanLiking, 2),
+      Percent = round(100 * N / sum(N), 1)
+    ) %>%
+    filter(N >= min_n)
+}
+
+cat("\n=== JAR Penalty Analysis: Sweetness (all products pooled) ===\n")
+penalty_sweet_all <- jar_penalty(jar_data, "JAR_Sweet")
+print(penalty_sweet_all)
+
+cat("\n=== JAR Penalty Analysis: Thickness (all products pooled) ===\n")
+penalty_thick_all <- jar_penalty(jar_data, "JAR_Thick")
+print(penalty_thick_all)
+
+
+# --- Visualization: JAR Penalty Barplot ------------------------------------
+
+plot_jar_penalty <- function(penalty_table, attribute_name) {
+  ggplot(penalty_table, aes(x = !!sym(names(penalty_table)[1]),
+                            y = -Drop, fill = !!sym(names(penalty_table)[1]))) +
+    geom_col() +
+    geom_text(aes(label = paste0("Drop=", Drop, "\n", Percent, "%")),
+              vjust = -0.2) +
+    labs(title = paste("JAR Penalty –", attribute_name),
+         x = attribute_name,
+         y = "Liking Drop vs 'Just right'") +
+    theme_minimal()
+}
+
+print(plot_jar_penalty(penalty_sweet_all, "Sweetness"))
+print(plot_jar_penalty(penalty_thick_all, "Thickness"))
+
+
+# ============================================================================
+# PART 3: CATA (CHECK-ALL-THAT-APPLY) – EXAMPLE & BASIC ANALYSIS
+# ============================================================================
+
+cat("\n")
+cat("========================================\n")
+cat("PART 3: CATA (CHECK-ALL-THAT-APPLY)\n")
+cat("========================================\n")
+
+# Example:
+# 4 flavoured waters (P1–P4)
+# 150 consumers, within-subject design (each evaluates all 4)
+# CATA terms: Fruity, Citrus, Sweet, Bitter, Artificial, Fresh, Watery
+# Overall liking (9-pt) also collected.
+
+n_cons_cata <- 150
+products_cata <- paste0("P", 1:4)
+cata_terms <- c("Fruity", "Citrus", "Sweet", "Bitter",
+                "Artificial", "Fresh", "Watery")
+
+# design: each consumer evaluates all 4 products
+cata_panel <- expand.grid(
+  Consumer = 1:n_cons_cata,
+  Product = products_cata
+)
+
+# base probabilities of CATA terms by product
+# (rows products, cols attributes)
+cata_prob_matrix <- matrix(
+  c(
+    # Fruity Citrus Sweet Bitter Artificial Fresh Watery
+      0.70, 0.50, 0.65, 0.10, 0.20, 0.60, 0.30,  # P1
+      0.50, 0.70, 0.55, 0.15, 0.25, 0.65, 0.40,  # P2
+      0.30, 0.20, 0.40, 0.35, 0.45, 0.30, 0.55,  # P3
+      0.20, 0.15, 0.25, 0.40, 0.50, 0.25, 0.60   # P4
+  ),
+  nrow = length(products_cata), byrow = TRUE,
+  dimnames = list(products_cata, cata_terms)
+)
+
+# base liking by product
+base_liking_cata <- c(P1 = 7.3, P2 = 7.6, P3 = 6.2, P4 = 5.8)
+
+# simulate CATA and liking
+for (term in cata_terms) {
+  cata_panel[[term]] <- 0
+}
+
+cata_panel$Liking <- NA
+
+for (p in products_cata) {
+  idx <- which(cata_panel$Product == p)
+  
+  for (term in cata_terms) {
+    prob <- cata_prob_matrix[p, term]
+    cata_panel[idx, term] <- rbinom(length(idx), 1, prob)
+  }
+  
+  # liking influenced by some attributes (e.g. Fruity+, Fresh+, Artificial-)
+  like_base <- rnorm(length(idx), mean = base_liking_cata[p], sd = 0.6)
+  
+  util <- 0.4 * cata_panel[idx, "Fruity"] +
+          0.3 * cata_panel[idx, "Fresh"] -
+          0.5 * cata_panel[idx, "Artificial"] -
+          0.3 * cata_panel[idx, "Watery"]
+  
+  cata_panel$Liking[idx] <- like_base + util
+}
+
+# truncate liking
+cata_panel$Liking <- pmin(pmax(round(cata_panel$Liking, 1), 1), 9)
+
+head(cata_panel)
+
+
+# --- Term frequencies by product -------------------------------------------
+
+cat("\n=== CATA term frequencies by product ===\n")
+cata_freq <- cata_panel %>%
+  group_by(Product) %>%
+  summarise(across(all_of(cata_terms), sum))
+
+print(cata_freq)
+
+# Convert to % of consumers
+cata_freq_percent <- cata_freq
+cata_freq_percent[,-1] <- round(cata_freq_percent[,-1] / n_cons_cata * 100, 1)
+cat("\nTerm frequencies (% of consumers checking term):\n")
+print(cata_freq_percent)
+
+
+# --- Basic visualization: heatmap of frequencies ---------------------------
+
+cata_long <- cata_freq_percent %>%
+  pivot_longer(cols = all_of(cata_terms),
+               names_to = "Term", values_to = "Percent")
+
+ggplot(cata_long, aes(x = Term, y = Product, fill = Percent)) +
+  geom_tile(color = "white") +
+  scale_fill_gradient(low = "white", high = "steelblue") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(title = "CATA Term Frequencies (%)",
+       x = "Attribute", y = "Product")
+
+
+# --- Link CATA to liking: Mean liking when term is checked vs not ----------
+
+cat("\n=== Mean liking when CATA term is checked vs not checked ===\n")
+
+cata_liking_summary <- cata_panel %>%
+  pivot_longer(cols = all_of(cata_terms), names_to = "Term", values_to = "Checked") %>%
+  group_by(Term, Checked) %>%
+  summarise(
+    MeanLiking = round(mean(Liking), 2),
+    N = n(),
+    .groups = "drop"
+  ) %>%
+  mutate(Checked = ifelse(Checked == 1, "Checked", "Not checked"))
+
+print(cata_liking_summary)
+
+
+# ============================================================================
+# PART 4: PREFERENCE MAPPING – INTERNAL & EXTERNAL
+# ============================================================================
+
+cat("\n")
+cat("========================================\n")
+cat("PART 4: PREFERENCE MAPPING\n")
+cat("========================================\n")
+
+# INTERNAL PREFERENCE MAPPING (IPM):
+# - Matrix: Products × Consumers (liking scores).
+# - PCA on t(liking matrix) or using FactoMineR::PCA.
+# - Visualize products and consumer directions.
+
+# For simplicity: use CATA data (4 products x 150 consumers)
+
+liking_matrix <- cata_panel %>%
+  select(Consumer, Product, Liking) %>%
+  pivot_wider(names_from = Product, values_from = Liking) %>%
+  arrange(Consumer)
+
+head(liking_matrix)
+
+# remove Consumer column for PCA
+liking_only <- liking_matrix[,-1]
+
+# PCA where products are variables (columns)
+pca_ipm <- PCA(liking_only, graph = FALSE)
+
+cat("\n=== PCA summary for Internal Preference Mapping ===\n")
+print(pca_ipm$eig)
+
+# Biplot: products and consumers
+fviz_pca_biplot(pca_ipm,
+                repel = TRUE,
+                title = "Internal Preference Mapping (Products & Consumers)",
+                col.var = "red",
+                col.ind = "grey50")
+
+
+# EXTERNAL PREFERENCE MAPPING (EPM):
+# - Use sensory data (here CATA frequencies) to define product space.
+# - Use product mean liking to project preference onto that space.
+
+# Step 1: Sensory space from CATA (% frequencies)
+sensory_data <- as.data.frame(cata_freq_percent)
+row.names(sensory_data) <- sensory_data$Product
+sensory_data$Product <- NULL
+
+pca_sensory <- PCA(sensory_data, graph = FALSE)
+
+cat("\n=== PCA summary for sensory (CATA) space ===\n")
+print(pca_sensory$eig)
+
+# Step 2: overall mean liking per product
+mean_liking_product <- cata_panel %>%
+  group_by(Product) %>%
+  summarise(MeanLiking = mean(Liking), .groups = "drop")
+
+mean_liking_product
+
+# Step 3: Regress MeanLiking on PCA coordinates (dim1 & dim2)
+coords <- as.data.frame(pca_sensory$ind$coord[, 1:2])
+coords$Product <- rownames(coords)
+
+epm_data <- coords %>%
+  left_join(mean_liking_product, by = "Product")
+
+epm_model <- lm(MeanLiking ~ Dim.1 + Dim.2, data = epm_data)
+cat("\n=== External Preference Mapping: Regression model ===\n")
+summary(epm_model)
+
+# Step 4: Plot sensory map with liking contours (simple: bubble/colour by liking)
+ggplot(epm_data, aes(x = Dim.1, y = Dim.2, label = Product)) +
+  geom_point(aes(size = MeanLiking, color = MeanLiking)) +
+  geom_text_repel() +
+  scale_color_gradient(low = "orange", high = "darkgreen") +
+  theme_minimal() +
+  labs(title = "External Preference Map (CATA space + Mean Liking)",
+       x = "PC1 (Sensory)", y = "PC2 (Sensory)")
+
+
+# ============================================================================
+# ============================================================================
+# EXERCISES
+# ============================================================================
+# ============================================================================
+
+
+# ============================================================================
+# EXERCISE 1: JAR PENALTY ANALYSIS BY PRODUCT
+# ============================================================================
+
+cat("\n\n")
+cat("========================================\n")
+cat("EXERCISE 1: JAR – Penalty analysis by product\n")
+cat("========================================\n")
+
+cat("
+Using the 'jar_data' dataset:
+
+Tasks:
+a) For each product separately, compute JAR penalty tables for Sweetness.
+b) Repeat for Thickness.
+c) Identify which product suffers the largest penalty from 'Too low' or 'Too high'
+   for each attribute.
+d) Visualize penalty bars per product (facet by product).
+")
+
+# Your code here:
+
+
+
+
+# ============================================================================
+# EXERCISE 2: JAR & Liking Segmentation
+# ============================================================================
+
+cat("\n\n")
+cat("========================================\n")
+cat("EXERCISE 2: JAR – Liking segmentation\n")
+cat("========================================\n")
+
+cat("
+Using 'jar_data':
+
+Tasks:
+a) Create 2 liking segments using median split of 'Liking' (Low vs High likers).
+b) For each segment, compute JAR distribution for Sweetness.
+c) Use a chi-square test to check if JAR distribution differs by segment.
+d) Interpret: Do high-liking consumers perceive Sweetness closer to 'Just right'?
+")
+
+# Your code here:
+
+
+
+
+# ============================================================================
+# EXERCISE 3: CATA – Cochran’s Q and Discrimination
+# ============================================================================
+
+cat("\n\n")
+cat("========================================\n")
+cat("EXERCISE 3: CATA – Cochran’s Q\n")
+cat("========================================\n")
+
+cat("
+Using 'cata_panel':
+
+Tasks:
+a) For each CATA term, test whether products differ in frequency of checking
+   using Cochran's Q test (use only consumers who evaluated all 4 products – 
+   which is the case here).
+b) Summarize which attributes significantly discriminate among products.
+c) For one strongly discriminating attribute (e.g. 'Artificial'), show the
+   proportion of consumers checking this term per product.
+")
+
+# (Hint: You may need to reshape the data to consumer x product x term format.)
+
+# Your code here:
+
+
+
+
+# ============================================================================
+# EXERCISE 4: CATA – Drivers of Liking
+# ============================================================================
+
+cat("\n\n")
+cat("========================================\n")
+cat("EXERCISE 4: CATA – Drivers of liking\n")
+cat("========================================\n")
+
+cat("
+Using 'cata_panel':
+
+Tasks:
+a) For each CATA term separately, compute the difference in mean liking between
+   'Checked' vs 'Not checked' groups (pooling all products).
+b) Identify 3 terms that seem positive drivers (Checked => higher liking) and
+   3 terms that seem negative drivers (Checked => lower liking).
+c) Visualize these differences in a bar chart (ordered by effect size).
+")
+
+# Your code here:
+
+
+
+
+# ============================================================================
+# EXERCISE 5: Internal Preference Mapping (IPM)
+# ============================================================================
+
+cat("\n\n")
+cat("========================================\n")
+cat("EXERCISE 5: Internal Preference Mapping\n")
+cat("========================================\n")
+
+cat("
+Using 'liking_only' (4 products × 150 consumers):
+
+Tasks:
+a) Run PCA again but keep only first 2 components.
+b) Create a product map (products as points) with 95% confidence ellipses
+   if possible (hint: you may approximate via bootstrapping or omit ellipses).
+c) Examine loadings (directions of consumers) to identify possible
+   liking segments (e.g. consumers who prefer P1 & P2 vs P3 & P4).
+d) Interpret: Which products are close in the preference space?
+")
+
+# Your code here:
+
+
+
+
+# ============================================================================
+# EXERCISE 6: External Preference Mapping – Extended
+# ============================================================================
+
+cat("\n\n")
+cat("========================================\n")
+cat("EXERCISE 6: External Preference Mapping – Extended\n")
+cat("========================================\n")
+
+cat("
+Using 'sensory_data' (CATA frequencies) and 'mean_liking_product':
+
+Tasks:
+a) Fit a multiple linear regression model predicting MeanLiking from all
+   CATA terms (use the sensory_data table).
+b) Identify which terms have positive and negative regression coefficients
+   (drivers of liking vs drivers of disliking).
+c) Compare these results with Exercise 4 (drivers of liking from checked vs not).
+d) Produce a final table summarizing for each attribute:
+   - Frequency level for best products
+   - Regression coefficient
+   - Sign (positive/negative)
+   - Interpretation note (e.g. 'More is better', 'Less is better').
+")
+
+# Your code here:
+
+
+
+
+# ============================================================================
+# ============================================================================
+# SOLUTIONS
+# ============================================================================
+# ============================================================================
+
+
+# ============================================================================
+# SOLUTION 1: JAR Penalty Analysis by Product
+# ============================================================================
+
+cat("\n\n")
+cat("========================================\n")
+cat("SOLUTION 1: JAR – Penalty analysis by product\n")
+cat("========================================\n")
+
+# a + b) Penalty tables by product
+solution1_penalties_sweet <- jar_data %>%
+  group_by(Product) %>%
+  group_map(~ {
+    tab <- jar_penalty(.x, "JAR_Sweet")
+    tab$Product <- unique(.x$Product)
+    tab
+  }) %>%
+  bind_rows()
+
+solution1_penalties_thick <- jar_data %>%
+  group_by(Product) %>%
+  group_map(~ {
+    tab <- jar_penalty(.x, "JAR_Thick")
+    tab$Product <- unique(.x$Product)
+    tab
+  }) %>%
+  bind_rows()
+
+cat("\nSweetness penalties by product:\n")
+print(solution1_penalties_sweet)
+
+cat("\nThickness penalties by product:\n")
+print(solution1_penalties_thick)
+
+# c) Identify product with largest penalty (absolute drop)
+largest_penalty_sweet <- solution1_penalties_sweet %>%
+  filter(!!sym(names(solution1_penalties_sweet)[1]) != "Just right") %>%
+  arrange(Drop) %>%  # more negative = larger penalty
+  slice(1)
+
+cat("\nLargest penalty for Sweetness:\n")
+print(largest_penalty_sweet)
+
+largest_penalty_thick <- solution1_penalties_thick %>%
+  filter(!!sym(names(solution1_penalties_thick)[1]) != "Just right") %>%
+  arrange(Drop) %>%
+  slice(1)
+
+cat("\nLargest penalty for Thickness:\n")
+print(largest_penalty_thick)
+
+# d) Visualization – facet by product
+
+plot_penalty_by_product <- function(penalty_table, attribute_name) {
+  # penalty_table has columns: JAR-level, N, MeanLiking, Percent, Drop, Product
+  var_name <- names(penalty_table)[1]
+  
+  ggplot(penalty_table,
+         aes_string(x = var_name, y = "-Drop", fill = var_name)) +
+    geom_col() +
+    geom_text(aes(label = paste0("Drop=", Drop, "\n", Percent, "%")),
+              vjust = -0.2, size = 3) +
+    facet_wrap(~ Product) +
+    theme_minimal() +
+    labs(title = paste("JAR Penalty by Product –", attribute_name),
+         x = attribute_name,
+         y = "Liking Drop vs 'Just right'")
+}
+
+print(plot_penalty_by_product(solution1_penalties_sweet, "Sweetness"))
+print(plot_penalty_by_product(solution1_penalties_thick, "Thickness"))
+
+
+# ============================================================================
+# SOLUTION 2: JAR & Liking Segmentation
+# ============================================================================
+
+cat("\n\n")
+cat("========================================\n")
+cat("SOLUTION 2: JAR – Liking segmentation\n")
+cat("========================================\n")
+
+# a) Liking segments
+median_like <- median(jar_data$Liking)
+jar_data$LikingSeg <- ifelse(jar_data$Liking <= median_like, "Low", "High")
+
+table(jar_data$LikingSeg)
+
+# b) JAR distribution for Sweetness by segment
+jar_segment_tab <- table(jar_data$LikingSeg, jar_data$JAR_Sweet)
+cat("\nJAR Sweetness × Liking segment:\n")
+print(jar_segment_tab)
+
+# c) Chi-square test
+chi_result <- chisq.test(jar_segment_tab)
+cat("\nChi-square test for independence:\n")
+print(chi_result)
+
+# d) Interpretation (printed text)
+cat("\nInterpretation:\n")
+cat("- If p-value < 0.05, JAR distribution differs between Low and High likers.\n")
+cat("- Typically, High likers show higher proportion of 'Just right',\n")
+cat("  while Low likers show more 'Too low' or 'Too high'.\n")
+
+
+# ============================================================================
+# SOLUTION 3: CATA – Cochran’s Q
+# ============================================================================
+
+cat("\n\n")
+cat("========================================\n")
+cat("SOLUTION 3: CATA – Cochran’s Q\n")
+cat("========================================\n")
+
+# We'll implement Cochran's Q manually using the DescTools package if available,
+# otherwise we show how to structure the data.
+
+if (!require(DescTools)) {
+  install.packages("DescTools")
+  library(DescTools)
+}
+
+cochran_results <- list()
+
+for (term in cata_terms) {
+  # create matrix: rows=consumers, cols=products (0/1)
+  term_mat <- cata_panel %>%
+    select(Consumer, Product, all_of(term)) %>%
+    pivot_wider(names_from = Product, values_from = all_of(term)) %>%
+    arrange(Consumer)
+  
+  mat <- as.matrix(term_mat[,-1])
+  
+  cochran_results[[term]] <- CochranQTest(mat)
+}
+
+cat("\nCochran's Q test p-values by attribute:\n")
+for (term in cata_terms) {
+  cat(term, ": p-value =",
+      format.pval(cochran_results[[term]]$p.value), "\n")
+}
+
+cat("\nAttributes with significant discrimination (p < 0.05):\n")
+sig_terms <- names(cochran_results)[sapply(cochran_results, function(x) x$p.value < 0.05)]
+print(sig_terms)
+
+# Example: show proportions for 'Artificial'
+artificial_freq <- cata_panel %>%
+  group_by(Product) %>%
+  summarise(
+    PropArtificial = mean(Artificial),
+    .groups = "drop"
+  )
+cat("\nProportion of 'Artificial' checked by product:\n")
+print(artificial_freq)
+
+
+# ============================================================================
+# SOLUTION 4: CATA – Drivers of Liking
+# ============================================================================
+
+cat("\n\n")
+cat("========================================\n")
+cat("SOLUTION 4: CATA – Drivers of liking\n")
+cat("========================================\n")
+
+driver_table <- cata_panel %>%
+  pivot_longer(cols = all_of(cata_terms),
+               names_to = "Term", values_to = "Checked") %>%
+  group_by(Term, Checked) %>%
+  summarise(
+    MeanLiking = mean(Liking),
+    N = n(),
+    .groups = "drop"
+  ) %>%
+  pivot_wider(names_from = Checked, values_from = c(MeanLiking, N),
+              names_prefix = "Checked_") %>%
+  mutate(
+    Diff = MeanLiking_Checked_1 - MeanLiking_Checked_0
+  )
+
+cat("\nMean liking (Checked vs Not checked) and differences:\n")
+print(round(driver_table, 2))
+
+# Positive and negative drivers
+pos_drivers <- driver_table %>%
+  arrange(desc(Diff)) %>%
+  slice(1:3) %>%
+  select(Term, Diff)
+
+neg_drivers <- driver_table %>%
+  arrange(Diff) %>%
+  slice(1:3) %>%
+  select(Term, Diff)
+
+cat("\nTop 3 positive drivers (Checked => higher liking):\n")
+print(pos_drivers)
+
+cat("\nTop 3 negative drivers (Checked => lower liking):\n")
+print(neg_drivers)
+
+# Bar chart of differences
+ggplot(driver_table, aes(x = reorder(Term, Diff), y = Diff)) +
+  geom_col(fill = "steelblue") +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  coord_flip() +
+  theme_minimal() +
+  labs(title = "Effect of CATA Term on Liking (Checked - Not checked)",
+       x = "CATA term", y = "Difference in mean liking")
+
+
+# ============================================================================
+# SOLUTION 5: Internal Preference Mapping
+# ============================================================================
+
+cat("\n\n")
+cat("========================================\n")
+cat("SOLUTION 5: Internal Preference Mapping\n")
+cat("========================================\n")
+
+# PCA already computed as pca_ipm
+cat("\nEigenvalues (IPM):\n")
+print(pca_ipm$eig)
+
+# Products in preference space
+fviz_pca_var(pca_ipm,
+             col.var = "black",
+             title = "IPM – Products as variables")  # products are variables here
+
+# Alternative: treat products as rows by transposing
+liking_t <- t(liking_only)   # now rows: products, cols: consumers
+pca_ipm2 <- PCA(liking_t, graph = FALSE)
+
+fviz_pca_biplot(pca_ipm2,
+                repel = TRUE,
+                title = "IPM – Products & Consumers (products as points)")
+
+cat("\nInterpretation:\n")
+cat("- Products close together on the map are similarly liked across consumers.\n")
+cat("- Directions of consumer points indicate segments (e.g., consumers who\n")
+cat("  prefer P1 & P2 vs those who prefer P3 & P4).\n")
+
+
+# ============================================================================
+# SOLUTION 6: External Preference Mapping – Extended
+# ============================================================================
+
+cat("\n\n")
+cat("========================================\n")
+cat("SOLUTION 6: External Preference Mapping – Extended\n")
+cat("========================================\n")
+
+# a) Regression model using all CATA terms
+sensory_and_liking <- sensory_data %>%
+  mutate(Product = rownames(sensory_data)) %>%
+  left_join(mean_liking_product, by = "Product")
+
+model_epm_full <- lm(MeanLiking ~ ., data = sensory_and_liking[, c(cata_terms, "MeanLiking")])
+summary(model_epm_full)
+
+# b) Coefficients
+coef_table <- summary(model_epm_full)$coefficients
+coef_terms <- coef_table[-1, , drop = FALSE]  # exclude intercept
+
+coef_df <- data.frame(
+  Term = rownames(coef_terms),
+  Estimate = coef_terms[, "Estimate"],
+  p_value = coef_terms[, "Pr(>|t|)"]
+)
+
+coef_df <- coef_df %>%
+  arrange(desc(Estimate))
+
+cat("\nRegression coefficients for CATA terms (drivers of liking):\n")
+print(coef_df)
+
+# c) Compare with Exercise 4 (driver_table$Diff)
+drivers_compare <- driver_table %>%
+  select(Term, Diff) %>%
+  left_join(coef_df, by = "Term")
+
+cat("\nComparison of drivers (Diff vs Regression Estimate):\n")
+print(drivers_compare)
+
+# d) Final summary table
+final_summary <- sensory_data %>%
+  mutate(Product = rownames(sensory_data)) %>%
+  pivot_longer(cols = all_of(cata_terms), names_to = "Term", values_to = "Freq") %>%
+  group_by(Term) %>%
+  summarise(
+    MaxFreq = max(Freq),
+    ProductMax = Product[which.max(Freq)],
+    .groups = "drop"
+  ) %>%
+  left_join(coef_df, by = "Term") %>%
+  left_join(driver_table %>% select(Term, Diff), by = "Term") %>%
+  mutate(
+    Direction = ifelse(Estimate > 0, "Positive", "Negative"),
+    Interpretation = ifelse(Estimate > 0,
+                            "More is better (higher liking)",
+                            "Less is better (lower liking)")
+  )
+
+cat("\nFinal summary of CATA drivers of liking:\n")
+print(final_summary)
+
+
+# ============================================================================
+# SUMMARY & KEY CONCEPTS
+# ============================================================================
+
+cat("\n\n")
+cat("========================================\n")
+cat("SUMMARY: CONSUMER TESTING & PREFERENCE METHODS\n")
+cat("========================================\n")
+
+cat("
+JAR SCALES:
+- Combine intensity and liking information.
+- Penalty analysis shows how much liking is lost when an attribute is 'too low'
+  or 'too high' compared to 'just-right'.
+- Important metrics:
+  * % of consumers in non-JAR categories.
+  * Drop in mean liking for each non-JAR category.
+
+CATA:
+- Binary attributes checked for each product.
+- Term frequencies per product show sensory profile as perceived by consumers.
+- Methods:
+  * Frequency tables, heatmaps.
+  * Cochran’s Q test: discriminating power of each term.
+  * Linking to liking: mean liking when term is checked vs not.
+
+PREFERENCE MAPPING:
+- Internal Preference Mapping (IPM):
+  * PCA on liking matrix (products × consumers).
+  * Visualizes patterns of preference and consumer segments.
+- External Preference Mapping (EPM):
+  * Product coordinates from sensory data (e.g., CATA frequencies, trained panel).
+  * Regress liking onto sensory space to identify drivers of liking.
+
+KEY DECISION STEPS:
+1. What is the goal? Diagnose product issues (JAR), understand sensory space
+   (CATA), or relate liking to sensory drivers (PrefMap)?
+2. Are we working at consumer level (individual) or product level (means)?
+3. For preference mapping:
+   - IPM: explores consumer heterogeneity.
+   - EPM: connects sensory descriptors to liking.
+
+INTERPRETATION TIPS:
+- Large negative JAR penalties with high % of consumers indicate urgent
+  reformulation targets (e.g., 'Sweetness too low' with big penalty).
+- CATA drivers of liking:
+  * Positive drivers: attributes whose presence increases mean liking.
+  * Negative drivers: attributes whose presence decreases mean liking.
+- Use PrefMap plots to tell a coherent story:
+  * Which sensory directions correspond to high liking?
+  * Which products are close to the optimum region?
+")
+
+cat("\n========================================\n")
+cat("END OF CONSUMER TESTING & PREFERENCE METHODS EXERCISE\n")
+cat("========================================\n")
