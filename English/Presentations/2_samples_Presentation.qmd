@@ -1,0 +1,311 @@
+---
+title: "SENSORY ANALYSIS: TWO-SAMPLE TESTS"
+author: "A Sensometrics Tutorial"
+format:
+  revealjs:
+    theme: simple
+    slide-number: true
+    chalkboard: true
+    # Settings for robust scaling and overflow handling
+    auto-scale: true
+    scrollable: true
+---
+
+## Table of Contents
+
+A complete exercise on statistical methods for comparing two samples in sensory evaluation.
+
+-   **Part 1:** Discrimination Tests (Binomial Test)
+-   **Part 2:** Paired Preference Test
+-   **Part 3:** Continuous Data - Dependent Samples
+-   **Part 4:** Continuous Data - Independent Samples
+-   **Part 5:** McNemar Test (Before/After)
+-   **Part 6:** Power Analysis
+-   **Exercises & Solutions**
+
+------------------------------------------------------------------------
+
+## Theoretical Background
+
+#### Types of Two-Sample Discrimination Tests:
+
+1.  **Paired Comparison / Directional Difference Test**
+    -   Panelists compare two samples on a specific attribute.
+    -   Probability of guessing correctly: `p = 0.5` (50%)
+2.  **Duo-Trio Test**
+    -   One reference, two unknowns. Panelist identifies the unknown that matches the reference.
+    -   Probability of guessing correctly: `p = 0.5` (50%)
+
+------------------------------------------------------------------------
+
+## Statistical Methods Overview
+
+A. **For Discrete/Categorical Data:** - Binomial Test - McNemar Test - Chi-square Test
+
+B. **For Continuous Data:** - **Parametric** (assumes normal distribution): - Paired t-test (dependent samples) - Independent t-test (independent samples) - **Non-parametric** (no normality assumption): - Wilcoxon Signed-Rank (dependent samples) - Mann-Whitney U (independent samples)
+
+------------------------------------------------------------------------
+
+## PART 1: Discrimination Tests (Binomial Test)
+
+Used when data is binary (e.g., correct/incorrect, choice A/B).
+
+**Example:** A paired comparison test asks "Which yogurt is creamier?" - 80 panelists participated. - 52 chose sample A. - Is this result significantly different from a 50/50 chance split?
+
+```{r}
+#| echo: true
+#| output-location: fragment
+# Perform the binomial test
+binom.test(52, 80, p=0.5)
+```
+
+**Interpretation:** The p-value is 0.006. Since `p < 0.05`, we conclude that a significant number of panelists found yogurt A to be creamier.
+
+------------------------------------------------------------------------
+
+## PART 2: Paired Preference Test
+
+Similar to discrimination, but focuses on preference.
+
+**Example:** A preference test between an old and a new chocolate formulation. - 100 consumers participated. - 63 preferred the new formulation. - Is the new formulation significantly *preferred*? (one-sided test)
+
+```{r}
+#| echo: true
+#| output-location: fragment
+# Test if the new formulation is significantly better ("greater")
+binom.test(63, 100, p=0.5, alternative="greater")
+```
+
+**Interpretation:** The p-value is 0.006. Since `p < 0.05`, we conclude that consumers have a statistically significant preference for the new chocolate formulation.
+
+------------------------------------------------------------------------
+
+## PART 3: Continuous Data - Dependent Samples
+
+Used when the **same panelists** evaluate two products on a continuous scale.
+
+**Example:** 20 panelists rated two beer samples on a 9-point hedonic scale.
+
+**Steps:** 1. Check for normality (Shapiro-Wilk test, Q-Q plots). 2. Visualize the data (Boxplots). 3. Perform the appropriate statistical test: - If normal: **Paired t-test** - If not normal: **Wilcoxon Signed-Rank Test**
+
+------------------------------------------------------------------------
+
+### Dependent Samples: Data & Normality Check
+
+```{r}
+#| echo: true
+# Data for two beers
+beer_A = c(7.2, 6.5, 7.8, 6.9, 7.1, 6.8, 7.5, 7.0, 6.7, 7.3,
+           6.9, 7.4, 7.1, 6.8, 7.2, 7.6, 6.9, 7.0, 7.3, 6.8)
+
+beer_B = c(6.8, 6.2, 7.0, 6.5, 6.9, 6.4, 7.1, 6.7, 6.3, 6.9,
+           6.5, 7.0, 6.8, 6.4, 6.9, 7.2, 6.5, 6.6, 6.8, 6.4)
+
+# Shapiro-Wilk Normality Test
+shapiro.test(beer_A)
+shapiro.test(beer_B)
+```
+
+**Result:** Both p-values are \> 0.05, so we can assume the data is normally distributed. A Paired t-test is appropriate.
+
+------------------------------------------------------------------------
+
+### Dependent Samples: Visualization & Testing
+
+::: {layout-ncol="2"}
+#### Boxplot Comparison
+
+```{r}
+#| echo: true
+#| fig-align: center
+boxplot(beer_A, beer_B, 
+        names=c("Beer A", "Beer B"),
+        main="Beer Quality Comparison",
+        ylab="Hedonic Score",
+        col=c("lightblue", "lightgreen"))
+points(1:2, c(mean(beer_A), mean(beer_B)), col="red", pch=19)
+```
+
+#### Paired t-test
+
+```{r}
+#| echo: true
+# Perform the paired t-test
+t.test(beer_A, beer_B, paired=TRUE)
+```
+:::
+
+**Conclusion:** The p-value is `3.98e-06` (very small). We conclude that there is a highly significant difference in hedonic scores, with Beer A being rated higher than Beer B.
+
+------------------------------------------------------------------------
+
+## PART 4: Continuous Data - Independent Samples
+
+Used when **two different groups of panelists** evaluate two products.
+
+**Example:** - Group 1 (25 panelists) evaluated Cheese X. - Group 2 (30 panelists) evaluated Cheese Y.
+
+**Steps:** 1. Check for normality (Shapiro-Wilk test for each group). 2. Check for homogeneity of variances (F-test). 3. Perform the appropriate statistical test: - If assumptions met: **Independent t-test** - If not: **Mann-Whitney U Test**
+
+------------------------------------------------------------------------
+
+### Independent Samples: Assumption Checks & Test
+
+```{r}
+#| echo: true
+# Generate sample data
+set.seed(123)
+cheese_X = rnorm(25, mean=6.5, sd=1.2)
+cheese_Y = rnorm(30, mean=7.1, sd=1.1)
+
+# Check homogeneity of variances
+var.test(cheese_X, cheese_Y)
+
+# Perform Independent t-test
+t.test(cheese_X, cheese_Y)
+```
+
+**Interpretation:** 1. **Variances:** The F-test p-value (0.64) is \> 0.05, so we can assume equal variances. 2. **t-test:** The p-value (0.09) is \> 0.05. We conclude there is no statistically significant difference in scores between Cheese X and Cheese Y.
+
+------------------------------------------------------------------------
+
+## PART 5: McNemar Test
+
+Used for **paired categorical data**, often in "before and after" scenarios.
+
+**Example:** 100 consumers stated their purchase intent ("Accept" vs. "Reject") for a product with old vs. new packaging. We want to know if the packaging change caused a significant shift in intent.
+
+**Data:** - 45 accepted both. - 12 accepted the old but rejected the new. - 18 rejected the old but accepted the new. - 25 rejected both.
+
+The test focuses on the "changers" (12 and 18).
+
+------------------------------------------------------------------------
+
+### McNemar Test: Application
+
+```{r}
+#| echo: true
+# Create the contingency table
+acceptance_data = matrix(c(45, 12, 18, 25), 
+                        nrow=2,
+                        dimnames=list(
+                          "Old Formula" = c("Accept", "Reject"),
+                          "New Formula" = c("Accept", "Reject")))
+
+print(acceptance_data)
+
+# Perform the McNemar test
+mcnemar.test(acceptance_data, correct=FALSE)
+```
+
+**Interpretation:** The p-value (0.35) is \> 0.05. Although more people switched from rejecting to accepting (18) than the other way around (12), this difference is not statistically significant. The packaging change did not significantly affect purchase intent.
+
+------------------------------------------------------------------------
+
+## PART 6: Power Analysis
+
+Helps determine the **sample size** needed to detect an effect of a certain size.
+
+**Question:** How many panelists are needed in a paired comparison test to have an 80% chance (`power=0.80`) of detecting a medium effect size (`h=0.5`) at a significance level of 0.05?
+
+```{r}
+#| echo: true
+#| warning: false
+# Install and load the pwr package
+if(!require(pwr)) install.packages("pwr")
+library(pwr)
+
+# Calculate sample size
+pwr.p.test(h=0.5, sig.level=0.05, power=0.80)
+```
+
+**Conclusion:** You would need approximately **32 panelists** to reliably detect a medium-sized effect.
+
+------------------------------------------------------------------------
+
+## EXERCISES
+
+Time to apply what we've learned!
+
+------------------------------------------------------------------------
+
+### EXERCISE 1: Duo-Trio Test
+
+A food company reformulated their orange juice. In a duo-trio test: - 120 panelists participated. - 71 correctly identified which sample matched the reference.
+
+**Tasks:** a) Perform the appropriate statistical test. b) Is there a significant difference between the old and new formulation?
+
+------------------------------------------------------------------------
+
+### SOLUTION 1: Duo-Trio Test
+
+The appropriate test is the **Binomial Test**, with a null probability of 0.5.
+
+```{r}
+#| echo: true
+# a) Statistical test
+result1 = binom.test(71, 120, p=0.5)
+print(result1)
+```
+
+**b) Interpretation:** The p-value is **0.033**. Since `p < 0.05`, we conclude that **yes, there is a significant difference**. Panelists were able to reliably detect a difference between the two formulations.
+
+------------------------------------------------------------------------
+
+### EXERCISE 3: Paired Hedonic Scores
+
+The same 15 panelists evaluated two wine samples (conventional vs. organic) on a 9-point hedonic scale. Is the organic wine significantly preferred?
+
+```{r}
+#| echo: true
+#| eval: false
+wine_conventional = c(7.5, 6.8, 7.2, 6.9, 7.8, 7.1, 6.5, 7.4, 
+                     7.0, 6.9, 7.3, 7.6, 6.8, 7.2, 7.1)
+wine_organic = c(7.8, 7.2, 7.5, 7.3, 8.1, 7.4, 6.9, 7.7, 
+                7.3, 7.2, 7.6, 7.9, 7.1, 7.5, 7.4)
+```
+
+**Tasks:** a) Check normality of the differences. b) Perform the appropriate paired test. c) Interpret the results.
+
+------------------------------------------------------------------------
+
+### SOLUTION 3: Paired Hedonic Scores
+
+Since the same panelists rated both wines, this is a **dependent samples** problem.
+
+```{r}
+#| echo: true
+wine_conventional = c(7.5, 6.8, 7.2, 6.9, 7.8, 7.1, 6.5, 7.4, 7.0, 6.9, 7.3, 7.6, 6.8, 7.2, 7.1)
+wine_organic = c(7.8, 7.2, 7.5, 7.3, 8.1, 7.4, 6.9, 7.7, 7.3, 7.2, 7.6, 7.9, 7.1, 7.5, 7.4)
+
+# a) Check normality of differences
+shapiro.test(wine_organic - wine_conventional)
+
+# b) Perform paired t-test (since data is normal)
+t.test(wine_organic, wine_conventional, paired=TRUE)
+```
+
+**c) Interpretation:** The p-value is **0.00015**. This is highly significant. We conclude that **consumers significantly prefer the organic wine** over the conventional wine.
+
+------------------------------------------------------------------------
+
+## Summary: Choosing the Right Test {.smaller}
+
+| Situation | Data Type | Same Panelists? | Normally Distributed? | Recommended Test |
+|---------------|---------------|---------------|---------------|---------------|
+| Discrimination Task | Binary | N/A | N/A | **Binomial Test** |
+| Before/After Acceptance | Binary | Yes | N/A | **McNemar Test** |
+| Hedonic/Intensity Scores | Continuous | Yes | Yes | **Paired t-test** |
+| Hedonic/Intensity Scores | Continuous | Yes | No | **Wilcoxon Signed-Rank** |
+| Hedonic/Intensity Scores | Continuous | No | Yes | **Independent t-test** |
+| Hedonic/Intensity Scores | Continuous | No | No | **Mann-Whitney U** |
+
+------------------------------------------------------------------------
+
+## Key Concepts to Remember
+
+1.  **Check Your Assumptions:** Always test for normality (and equal variances for independent tests) before choosing a parametric test.
+
+2.  **Paired vs. Independent:** This is the most critical distinction. Is it the *same group* of people or *different groups*?
+
+3.  **p-value \< 0.05 is not everything:** A significant result tells you there is a difference, but not how *large* or *meaningful* it is
