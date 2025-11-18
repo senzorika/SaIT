@@ -1,0 +1,1900 @@
+# ============================================================================
+# SENSORY ANALYSIS: THREE OR MORE SAMPLE TESTS - COMPLETE EXERCISE
+# ============================================================================
+# Author: Sensometrics Course
+# Topic: Statistical methods for comparing three or more samples
+# ============================================================================
+
+# ============================================================================
+# TABLE OF CONTENTS
+# ============================================================================
+# PART 1: One-Way ANOVA (Independent Samples)
+# PART 2: Kruskal-Wallis Test (Non-parametric Independent)
+# PART 3: Repeated Measures ANOVA (Dependent Samples)
+# PART 4: Friedman Test (Non-parametric Dependent)
+# PART 5: Post-hoc Tests (Multiple Comparisons)
+# PART 6: Chi-square Test for Multiple Categories
+# PART 7: Triangle Test and Multiple Discrimination Tests
+# EXERCISES 1-8
+# SOLUTIONS 1-8
+# ============================================================================
+
+
+# ============================================================================
+# THEORETICAL BACKGROUND
+# ============================================================================
+# 
+# When comparing THREE OR MORE samples:
+# 
+# A. INDEPENDENT SAMPLES (different panelists for each sample)
+#    - Parametric (assumes normality): One-Way ANOVA
+#    - Non-parametric: Kruskal-Wallis Test
+# 
+# B. DEPENDENT SAMPLES (same panelists evaluate all samples)
+#    - Parametric (assumes normality): Repeated Measures ANOVA
+#    - Non-parametric: Friedman Test
+# 
+# C. POST-HOC TESTS (after finding significant difference)
+#    - Parametric: Tukey HSD, Bonferroni, Scheffé
+#    - Non-parametric: Dunn's test, Nemenyi test
+# 
+# D. DISCRIMINATION TESTS
+#    - Triangle test: p = 1/3 (33.3%)
+#    - Tetrad test: p = 1/3 (33.3%)
+#    - Use Binomial test
+# 
+# E. CATEGORICAL DATA
+#    - Chi-square test for independence
+#    - Chi-square goodness of fit
+# 
+# ============================================================================
+
+
+# Install required packages if needed
+required_packages = c("car", "agricolae", "dunn.test", "multcomp", "PMCMRplus")
+for(pkg in required_packages) {
+  if(!require(pkg, character.only = TRUE)) {
+    install.packages(pkg)
+    library(pkg, character.only = TRUE)
+  }
+}
+
+
+# ============================================================================
+# PART 1: ONE-WAY ANOVA (INDEPENDENT SAMPLES - PARAMETRIC)
+# ============================================================================
+
+cat("\n")
+cat("========================================\n")
+cat("PART 1: ONE-WAY ANOVA\n")
+cat("========================================\n")
+
+# Example: Four different cheese brands evaluated by different consumer panels
+# Each brand evaluated by 15 different consumers
+
+set.seed(123)
+brand_A = rnorm(15, mean=6.8, sd=1.2)
+brand_B = rnorm(15, mean=7.5, sd=1.1)
+brand_C = rnorm(15, mean=6.5, sd=1.3)
+brand_D = rnorm(15, mean=7.8, sd=1.0)
+
+# Create data frame in long format
+cheese_scores = c(brand_A, brand_B, brand_C, brand_D)
+cheese_brands = factor(rep(c("Brand A", "Brand B", "Brand C", "Brand D"), each=15))
+cheese_data = data.frame(Score = cheese_scores, Brand = cheese_brands)
+
+# 1. Descriptive statistics
+cat("\n=== DESCRIPTIVE STATISTICS ===\n")
+aggregate(Score ~ Brand, data=cheese_data, FUN=function(x) {
+  c(Mean=round(mean(x),2), SD=round(sd(x),2), 
+    Median=round(median(x),2), N=length(x))
+})
+
+# 2. Visualize data
+boxplot(Score ~ Brand, data=cheese_data,
+        main="Cheese Brand Comparison",
+        ylab="Hedonic Score",
+        col=c("lightyellow", "lightblue", "lightgreen", "lightpink"))
+
+# Add means
+means = tapply(cheese_data$Score, cheese_data$Brand, mean)
+points(1:4, means, col="red", pch=19, cex=1.5)
+legend("topleft", legend="Mean", col="red", pch=19)
+
+# 3. Check assumptions
+cat("\n=== CHECKING ASSUMPTIONS ===\n")
+
+# Normality for each group
+cat("Normality tests (Shapiro-Wilk):\n")
+by(cheese_data$Score, cheese_data$Brand, shapiro.test)
+
+# Homogeneity of variance (Levene's test)
+cat("\nLevene's test for homogeneity of variances:\n")
+levene_result = leveneTest(Score ~ Brand, data=cheese_data)
+print(levene_result)
+
+# Visual check - Q-Q plots
+par(mfrow=c(2,2))
+for(brand in levels(cheese_data$Brand)) {
+  qqnorm(cheese_data$Score[cheese_data$Brand==brand], main=paste("Q-Q Plot:", brand))
+  qqline(cheese_data$Score[cheese_data$Brand==brand], col="red")
+}
+par(mfrow=c(1,1))
+
+# 4. One-Way ANOVA
+cat("\n=== ONE-WAY ANOVA ===\n")
+anova_model = aov(Score ~ Brand, data=cheese_data)
+anova_summary = summary(anova_model)
+print(anova_summary)
+
+# ANOVA table interpretation
+cat("\nInterpretation:\n")
+p_value = anova_summary[[1]]$"Pr(>F)"[1]
+if(p_value < 0.05) {
+  cat("p-value =", round(p_value, 4), "< 0.05\n")
+  cat("Conclusion: At least one brand is significantly different from others.\n")
+  cat("Proceed to post-hoc tests to identify which brands differ.\n")
+} else {
+  cat("p-value =", round(p_value, 4), "> 0.05\n")
+  cat("Conclusion: No significant difference between brands.\n")
+}
+
+# Effect size (Eta-squared)
+ss_between = anova_summary[[1]]$"Sum Sq"[1]
+ss_total = sum(anova_summary[[1]]$"Sum Sq")
+eta_squared = ss_between / ss_total
+cat("\nEffect size (η²):", round(eta_squared, 3), "\n")
+cat("Interpretation:", 
+    ifelse(eta_squared > 0.14, "Large effect",
+    ifelse(eta_squared > 0.06, "Medium effect", "Small effect")), "\n")
+
+
+# ============================================================================
+# PART 2: KRUSKAL-WALLIS TEST (INDEPENDENT SAMPLES - NON-PARAMETRIC)
+# ============================================================================
+
+cat("\n\n")
+cat("========================================\n")
+cat("PART 2: KRUSKAL-WALLIS TEST\n")
+cat("========================================\n")
+
+# Example: Ordinal data or non-normal distributions
+# Texture preferences rated on 5-point scale by different consumers
+
+texture_scores = c(3,4,3,4,5,4,3,4,4,3,  # Product A
+                   4,5,4,5,5,4,5,4,5,4,  # Product B
+                   2,3,2,3,3,2,3,2,3,2,  # Product C
+                   5,5,4,5,5,5,4,5,5,4)  # Product D
+
+texture_products = factor(rep(c("Product A", "Product B", 
+                                "Product C", "Product D"), each=10))
+texture_data = data.frame(Score = texture_scores, Product = texture_products)
+
+# Descriptive statistics
+cat("\n=== DESCRIPTIVE STATISTICS ===\n")
+aggregate(Score ~ Product, data=texture_data, FUN=function(x) {
+  c(Median=median(x), Mean=round(mean(x),2), 
+    Q1=quantile(x,0.25), Q3=quantile(x,0.75))
+})
+
+# Boxplot
+boxplot(Score ~ Product, data=texture_data,
+        main="Texture Preference Comparison",
+        ylab="Preference Score (1-5)",
+        col=rainbow(4))
+
+# Kruskal-Wallis test
+cat("\n=== KRUSKAL-WALLIS TEST ===\n")
+kw_result = kruskal.test(Score ~ Product, data=texture_data)
+print(kw_result)
+
+cat("\nInterpretation:\n")
+if(kw_result$p.value < 0.05) {
+  cat("p-value =", round(kw_result$p.value, 4), "< 0.05\n")
+  cat("Conclusion: At least one product differs significantly in texture preference.\n")
+  cat("Proceed to Dunn's test for pairwise comparisons.\n")
+} else {
+  cat("p-value =", round(kw_result$p.value, 4), "> 0.05\n")
+  cat("Conclusion: No significant difference in texture preference.\n")
+}
+
+
+# ============================================================================
+# PART 3: REPEATED MEASURES ANOVA (DEPENDENT SAMPLES - PARAMETRIC)
+# ============================================================================
+
+cat("\n\n")
+cat("========================================\n")
+cat("PART 3: REPEATED MEASURES ANOVA\n")
+cat("========================================\n")
+
+# Example: Same 12 trained panelists evaluate 4 wine samples
+# Each panelist evaluates all 4 wines
+
+panelist_id = rep(1:12, times=4)
+wine_type = factor(rep(c("Cabernet", "Merlot", "Pinot Noir", "Syrah"), each=12))
+
+# Generate realistic wine scores
+set.seed(456)
+base_scores = rep(rnorm(12, mean=7, sd=0.8), times=4)
+wine_effects = rep(c(0, 0.5, -0.3, 0.8), each=12)
+wine_scores = base_scores + wine_effects + rnorm(48, 0, 0.5)
+
+wine_data = data.frame(
+  Panelist = factor(panelist_id),
+  Wine = wine_type,
+  Score = wine_scores
+)
+
+# Descriptive statistics
+cat("\n=== DESCRIPTIVE STATISTICS ===\n")
+aggregate(Score ~ Wine, data=wine_data, FUN=function(x) {
+  c(Mean=round(mean(x),2), SD=round(sd(x),2))
+})
+
+# Visualize
+boxplot(Score ~ Wine, data=wine_data,
+        main="Wine Preference (Repeated Measures)",
+        ylab="Quality Score",
+        col=c("darkred", "red", "pink", "purple"))
+
+# Profile plot (spaghetti plot)
+library(ggplot2)
+if(require(ggplot2)) {
+  print(ggplot(wine_data, aes(x=Wine, y=Score, group=Panelist, color=Panelist)) +
+    geom_line() +
+    geom_point() +
+    theme_minimal() +
+    labs(title="Individual Panelist Profiles"))
+}
+
+# Check assumptions
+cat("\n=== CHECKING ASSUMPTIONS ===\n")
+
+# Normality of residuals
+wine_aov = aov(Score ~ Wine + Error(Panelist/Wine), data=wine_data)
+
+# Sphericity (Mauchly's test) - requires different approach
+# Using car package for more detailed analysis
+wine_wide = reshape(wine_data, idvar="Panelist", timevar="Wine", direction="wide")
+names(wine_wide) = c("Panelist", "Cabernet", "Merlot", "PinotNoir", "Syrah")
+wine_matrix = as.matrix(wine_wide[,-1])
+
+# Simple repeated measures ANOVA
+cat("\n=== REPEATED MEASURES ANOVA ===\n")
+wine_rm = aov(Score ~ Wine + Error(Panelist), data=wine_data)
+summary(wine_rm)
+
+# Alternative using lm for more details
+wine_lm = lm(Score ~ Wine + Panelist, data=wine_data)
+cat("\nANOVA Table:\n")
+print(anova(wine_lm))
+
+
+# ============================================================================
+# PART 4: FRIEDMAN TEST (DEPENDENT SAMPLES - NON-PARAMETRIC)
+# ============================================================================
+
+cat("\n\n")
+cat("========================================\n")
+cat("PART 4: FRIEDMAN TEST\n")
+cat("========================================\n")
+
+# Example: Same panelists rate 5 chocolate samples on ordinal scale
+# 10 panelists, 5 chocolates
+
+chocolate_data_wide = data.frame(
+  Panelist = 1:10,
+  Choc_A = c(7, 6, 7, 8, 7, 6, 7, 8, 7, 6),
+  Choc_B = c(8, 7, 8, 9, 8, 7, 8, 9, 8, 7),
+  Choc_C = c(6, 5, 6, 7, 6, 5, 6, 7, 6, 5),
+  Choc_D = c(7, 6, 7, 8, 7, 6, 7, 8, 7, 6),
+  Choc_E = c(9, 8, 9, 9, 9, 8, 9, 9, 9, 8)
+)
+
+# Convert to long format
+chocolate_data_long = reshape(chocolate_data_wide, 
+                             varying = list(2:6),
+                             v.names = "Score",
+                             timevar = "Chocolate",
+                             times = c("A", "B", "C", "D", "E"),
+                             direction = "long")
+chocolate_data_long$Chocolate = factor(chocolate_data_long$Chocolate)
+
+# Descriptive statistics
+cat("\n=== DESCRIPTIVE STATISTICS ===\n")
+aggregate(Score ~ Chocolate, data=chocolate_data_long, FUN=function(x) {
+  c(Median=median(x), Mean=round(mean(x),2), IQR=IQR(x))
+})
+
+# Visualize
+boxplot(Score ~ Chocolate, data=chocolate_data_long,
+        main="Chocolate Preference (Friedman Test)",
+        ylab="Preference Score",
+        col=c("brown", "chocolate4", "chocolate3", "chocolate2", "chocolate1"))
+
+# Friedman test
+cat("\n=== FRIEDMAN TEST ===\n")
+friedman_result = friedman.test(Score ~ Chocolate | Panelist, 
+                                data=chocolate_data_long)
+print(friedman_result)
+
+cat("\nInterpretation:\n")
+if(friedman_result$p.value < 0.05) {
+  cat("p-value =", round(friedman_result$p.value, 4), "< 0.05\n")
+  cat("Conclusion: Significant differences exist among chocolates.\n")
+  cat("Proceed to post-hoc Nemenyi test.\n")
+} else {
+  cat("p-value =", round(friedman_result$p.value, 4), "> 0.05\n")
+  cat("Conclusion: No significant differences among chocolates.\n")
+}
+
+# Calculate Kendall's W (effect size for Friedman)
+k = length(unique(chocolate_data_long$Chocolate))  # number of treatments
+n = length(unique(chocolate_data_long$Panelist))   # number of blocks
+kendalls_w = friedman_result$statistic / (n * (k - 1))
+cat("\nKendall's W (effect size):", round(kendalls_w, 3), "\n")
+cat("Interpretation:", 
+    ifelse(kendalls_w > 0.5, "Strong agreement",
+    ifelse(kendalls_w > 0.3, "Moderate agreement", "Weak agreement")), "\n")
+
+
+# ============================================================================
+# PART 5: POST-HOC TESTS (MULTIPLE COMPARISONS)
+# ============================================================================
+
+cat("\n\n")
+cat("========================================\n")
+cat("PART 5: POST-HOC TESTS\n")
+cat("========================================\n")
+
+# Using cheese data from Part 1
+cat("\n=== PARAMETRIC POST-HOC TESTS (After ANOVA) ===\n")
+
+# 1. Tukey HSD (Honestly Significant Difference)
+cat("\n1. Tukey HSD Test:\n")
+tukey_result = TukeyHSD(anova_model)
+print(tukey_result)
+
+# Visualize Tukey results
+plot(tukey_result, las=1, col="blue")
+
+# 2. Bonferroni correction
+cat("\n2. Pairwise t-tests with Bonferroni correction:\n")
+pairwise_result = pairwise.t.test(cheese_data$Score, cheese_data$Brand,
+                                  p.adjust.method = "bonferroni")
+print(pairwise_result)
+
+# 3. LSD (Least Significant Difference) - Fisher's LSD
+cat("\n3. Fisher's LSD:\n")
+lsd_result = LSD.test(anova_model, "Brand", p.adj="none")
+print(lsd_result$groups)
+
+cat("\n=== NON-PARAMETRIC POST-HOC TESTS (After Kruskal-Wallis) ===\n")
+
+# Dunn's test with Bonferroni correction
+cat("\n4. Dunn's Test (after Kruskal-Wallis):\n")
+dunn_result = dunn.test(texture_data$Score, texture_data$Product,
+                        method="bonferroni")
+
+# Nemenyi test (after Friedman)
+cat("\n5. Nemenyi Test (after Friedman):\n")
+if(require(PMCMRplus)) {
+  # Convert to matrix format
+  choc_matrix = as.matrix(chocolate_data_wide[,-1])
+  nemenyi_result = frdAllPairsNemenyiTest(choc_matrix)
+  print(nemenyi_result)
+}
+
+
+# ============================================================================
+# PART 6: CHI-SQUARE TEST FOR MULTIPLE CATEGORIES
+# ============================================================================
+
+cat("\n\n")
+cat("========================================\n")
+cat("PART 6: CHI-SQUARE TEST\n")
+cat("========================================\n")
+
+# Example 1: Preference test with 4 ice cream flavors
+# 120 consumers chose their favorite
+
+ice_cream_preferences = c(
+  Vanilla = 25,
+  Chocolate = 45,
+  Strawberry = 30,
+  Mint = 20
+)
+
+cat("\n=== CHI-SQUARE GOODNESS OF FIT TEST ===\n")
+cat("Observed frequencies:\n")
+print(ice_cream_preferences)
+
+# Test if preferences are equal (uniform distribution)
+chisq_uniform = chisq.test(ice_cream_preferences)
+print(chisq_uniform)
+
+# Visualize
+barplot(ice_cream_preferences, 
+        main="Ice Cream Preferences",
+        ylab="Number of Consumers",
+        col=c("lightyellow", "chocolate4", "pink", "lightgreen"))
+abline(h=30, col="red", lty=2, lwd=2)
+text(2.5, 32, "Expected (equal preference)", col="red")
+
+cat("\nInterpretation:\n")
+if(chisq_uniform$p.value < 0.05) {
+  cat("p-value =", round(chisq_uniform$p.value, 4), "< 0.05\n")
+  cat("Conclusion: Preferences are NOT equally distributed.\n")
+  cat("Chocolate is significantly more preferred.\n")
+} else {
+  cat("p-value =", round(chisq_uniform$p.value, 4), "> 0.05\n")
+  cat("Conclusion: No significant preference differences.\n")
+}
+
+# Example 2: Chi-square test of independence
+# Gender vs. Coffee preference
+
+cat("\n\n=== CHI-SQUARE TEST OF INDEPENDENCE ===\n")
+coffee_gender = matrix(c(30, 20, 15,   # Males
+                        25, 35, 25),   # Females
+                      nrow=2, byrow=TRUE,
+                      dimnames=list(Gender = c("Male", "Female"),
+                                   Coffee = c("Espresso", "Cappuccino", "Latte")))
+
+print(coffee_gender)
+
+chisq_independence = chisq.test(coffee_gender)
+print(chisq_independence)
+
+# Visualize
+barplot(coffee_gender, beside=TRUE, 
+        main="Coffee Preference by Gender",
+        ylab="Count",
+        col=c("lightblue", "lightpink"),
+        legend=TRUE)
+
+
+# ============================================================================
+# PART 7: TRIANGLE TEST (DISCRIMINATION WITH 3+ PRESENTATIONS)
+# ============================================================================
+
+cat("\n\n")
+cat("========================================\n")
+cat("PART 7: TRIANGLE TEST\n")
+cat("========================================\n")
+
+# Example: Triangle test with 80 panelists
+# 35 correctly identified the different sample
+
+cat("\n=== TRIANGLE TEST (p = 1/3) ===\n")
+triangle_result = binom.test(35, 80, p=1/3)
+print(triangle_result)
+
+cat("\nInterpretation:\n")
+if(triangle_result$p.value < 0.05) {
+  cat("p-value =", round(triangle_result$p.value, 4), "< 0.05\n")
+  cat("Conclusion: Panelists can detect a difference between samples.\n")
+} else {
+  cat("p-value =", round(triangle_result$p.value, 4), "> 0.05\n")
+  cat("Conclusion: No detectable difference between samples.\n")
+}
+
+# Calculate minimum needed for significance
+cat("\nMinimum correct responses needed for significance:\n")
+for(i in 30:40) {
+  p_val = binom.test(i, 80, p=1/3)$p.value
+  if(p_val < 0.05) {
+    cat("At least", i, "correct responses needed (", 
+        round(i/80*100, 1), "%)\n")
+    break
+  }
+}
+
+
+# ============================================================================
+# ============================================================================
+# EXERCISES
+# ============================================================================
+# ============================================================================
+
+
+# ============================================================================
+# EXERCISE 1: ONE-WAY ANOVA WITH CHEESE SAMPLES
+# ============================================================================
+
+cat("\n\n")
+cat("========================================\n")
+cat("EXERCISE 1: ONE-WAY ANOVA\n")
+cat("========================================\n")
+
+cat("
+Five different cheese samples were evaluated for overall quality by different 
+consumer groups. Each group had 12 consumers.
+
+Data:
+")
+
+cheese_sample_A = c(6.5, 7.2, 6.8, 7.0, 6.9, 7.1, 6.7, 7.3, 6.8, 7.0, 6.9, 7.2)
+cheese_sample_B = c(7.8, 8.2, 7.9, 8.0, 7.7, 8.1, 7.9, 8.0, 7.8, 8.1, 7.9, 8.0)
+cheese_sample_C = c(6.0, 6.5, 6.2, 6.3, 6.1, 6.4, 6.2, 6.3, 6.1, 6.5, 6.2, 6.3)
+cheese_sample_D = c(7.0, 7.5, 7.2, 7.3, 7.1, 7.4, 7.2, 7.3, 7.0, 7.4, 7.2, 7.3)
+cheese_sample_E = c(8.2, 8.5, 8.3, 8.4, 8.1, 8.4, 8.3, 8.4, 8.2, 8.5, 8.3, 8.4)
+
+cat("
+Tasks:
+a) Create a proper data frame in long format
+b) Check assumptions (normality and homogeneity of variances)
+c) Perform one-way ANOVA
+d) If significant, perform Tukey HSD post-hoc test
+e) Create a boxplot with means
+f) Interpret the results: Which cheese sample(s) are significantly different?
+")
+
+# Your code here:
+
+
+
+
+# ============================================================================
+# EXERCISE 2: KRUSKAL-WALLIS TEST WITH COFFEE BITTERNESS
+# ============================================================================
+
+cat("\n\n")
+cat("========================================\n")
+cat("EXERCISE 2: KRUSKAL-WALLIS TEST\n")
+cat("========================================\n")
+
+cat("
+Four different coffee roasting methods were evaluated for bitterness intensity
+on a 10-point scale. Data appear to be non-normal (ordinal scale).
+
+Data:
+")
+
+roast_light = c(3, 4, 3, 4, 4, 3, 5, 4, 3, 4, 4, 3)
+roast_medium = c(6, 7, 6, 7, 6, 6, 7, 6, 7, 6, 7, 6)
+roast_dark = c(8, 9, 8, 9, 9, 8, 9, 8, 9, 8, 9, 8)
+roast_french = c(9, 10, 9, 10, 10, 9, 10, 9, 10, 9, 10, 9)
+
+cat("
+Tasks:
+a) Create data frame in long format
+b) Calculate median and IQR for each roasting method
+c) Create boxplot
+d) Perform Kruskal-Wallis test
+e) If significant, perform Dunn's test with Bonferroni correction
+f) Interpret: Which roasting methods differ significantly in bitterness?
+")
+
+# Your code here:
+
+
+
+
+# ============================================================================
+# EXERCISE 3: REPEATED MEASURES ANOVA WITH YOGURT SAMPLES
+# ============================================================================
+
+cat("\n\n")
+cat("========================================\n")
+cat("EXERCISE 3: REPEATED MEASURES ANOVA\n")
+cat("========================================\n")
+
+cat("
+Ten trained panelists evaluated four yogurt formulations for creaminess.
+Each panelist evaluated all four formulations (repeated measures design).
+
+Data (rows = panelists, columns = formulations):
+")
+
+yogurt_data_wide = data.frame(
+  Panelist = 1:10,
+  Formula_1 = c(7.2, 6.8, 7.5, 7.0, 7.3, 6.9, 7.1, 7.4, 7.0, 6.8),
+  Formula_2 = c(8.1, 7.9, 8.3, 7.8, 8.2, 7.7, 8.0, 8.4, 7.9, 7.8),
+  Formula_3 = c(6.5, 6.2, 6.8, 6.3, 6.7, 6.1, 6.4, 6.9, 6.3, 6.2),
+  Formula_4 = c(7.8, 7.5, 8.0, 7.6, 7.9, 7.4, 7.7, 8.1, 7.6, 7.5)
+)
+
+print(yogurt_data_wide)
+
+cat("
+Tasks:
+a) Convert to long format
+b) Calculate descriptive statistics
+c) Create profile plot (spaghetti plot) showing individual panelist responses
+d) Check normality assumption
+e) Perform repeated measures ANOVA
+f) If significant, perform post-hoc pairwise t-tests with Bonferroni correction
+g) Interpret: Which formulations differ significantly?
+")
+
+# Your code here:
+
+
+
+
+# ============================================================================
+# EXERCISE 4: FRIEDMAN TEST WITH BEER SAMPLES
+# ============================================================================
+
+cat("\n\n")
+cat("========================================\n")
+cat("EXERCISE 4: FRIEDMAN TEST\n")
+cat("========================================\n")
+
+cat("
+Twelve trained panelists ranked five beer samples for overall preference.
+Rankings: 1 = most preferred, 5 = least preferred (ordinal data).
+
+Data (rows = panelists, columns = beer samples):
+")
+
+beer_rankings = data.frame(
+  Panelist = 1:12,
+  Beer_A = c(3, 4, 3, 4, 3, 3, 4, 3, 4, 3, 3, 4),
+  Beer_B = c(2, 2, 2, 3, 2, 2, 2, 2, 3, 2, 2, 2),
+  Beer_C = c(5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5),
+  Beer_D = c(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+  Beer_E = c(4, 3, 4, 2, 4, 4, 3, 4, 2, 4, 4, 3)
+)
+
+print(beer_rankings)
+
+cat("
+Tasks:
+a) Convert to long format
+b) Calculate median rank for each beer
+c) Create boxplot of rankings
+d) Perform Friedman test
+e) Calculate Kendall's W (effect size)
+f) If significant, perform Nemenyi post-hoc test
+g) Interpret: Which beers are significantly different in preference?
+h) Which beer is most preferred overall?
+")
+
+# Your code here:
+
+
+
+
+# ============================================================================
+# EXERCISE 5: CHI-SQUARE TEST WITH JAM PREFERENCES
+# ============================================================================
+
+cat("\n\n")
+cat("========================================\n")
+cat("EXERCISE 5: CHI-SQUARE GOODNESS OF FIT\n")
+cat("========================================\n")
+
+cat("
+A supermarket wants to know if customers have equal preferences for
+different jam flavors. They surveyed 200 customers:
+
+- Strawberry: 65
+- Raspberry: 48
+- Apricot: 32
+- Blueberry: 35
+- Blackberry: 20
+
+Tasks:
+a) Create a vector with the frequency data
+b) Visualize with barplot
+c) Perform chi-square goodness of fit test (equal distribution)
+d) Calculate expected frequencies
+e) Calculate standardized residuals to identify which flavors deviate most
+f) Interpret: Are preferences equally distributed? Which flavors stand out?
+")
+
+# Your code here:
+
+
+
+
+# ============================================================================
+# EXERCISE 6: CHI-SQUARE TEST OF INDEPENDENCE
+# ============================================================================
+
+cat("\n\n")
+cat("========================================\n")
+cat("EXERCISE 6: CHI-SQUARE INDEPENDENCE\n")
+cat("========================================\n")
+
+cat("
+A study investigated whether age group affects preference for wine type.
+Results:
+
+                   Red Wine    White Wine    Rosé
+18-35 years           25          45         30
+36-55 years           50          35         15
+56+ years             60          25         15
+
+Tasks:
+a) Create contingency table
+b) Visualize with grouped barplot
+c) Perform chi-square test of independence
+d) Calculate Cramér's V (effect size)
+e) Examine standardized residuals
+f) Interpret: Is wine preference independent of age group?
+")
+
+# Your code here:
+
+
+
+
+# ============================================================================
+# EXERCISE 7: TRIANGLE TEST
+# ============================================================================
+
+cat("\n\n")
+cat("========================================\n")
+cat("EXERCISE 7: TRIANGLE TEST\n")
+cat("========================================\n")
+
+cat("
+A company reformulated their salad dressing. They conducted a triangle test
+to determine if consumers can detect the difference.
+
+- Total participants: 100
+- Correct identifications: 42
+
+Tasks:
+a) Perform binomial test (remember p = 1/3 for triangle test)
+b) Calculate the proportion who identified correctly
+c) Determine minimum correct responses needed for significance at n=100
+d) Calculate how many participants would be needed if only 40% can detect
+   the difference (power analysis)
+e) Interpret: Can consumers detect the reformulation?
+")
+
+# Your code here:
+
+
+
+
+# ============================================================================
+# EXERCISE 8: COMPREHENSIVE ANALYSIS
+# ============================================================================
+
+cat("\n\n")
+cat("========================================\n")
+cat("EXERCISE 8: COMPREHENSIVE ANALYSIS\n")
+cat("========================================\n")
+
+cat("
+A sensory panel of 15 trained assessors evaluated 4 olive oil samples 
+for fruity flavor intensity on a 15cm unstructured line scale.
+Each assessor evaluated all 4 samples in randomized order.
+
+Data:
+")
+
+olive_oil_comprehensive = data.frame(
+  Assessor = rep(1:15, times=4),
+  Sample = factor(rep(c("Spanish", "Italian", "Greek", "Turkish"), each=15)),
+  Intensity = c(
+    # Spanish
+    8.2, 7.9, 8.5, 8.1, 8.3, 7.8, 8.4, 8.0, 8.2, 8.3, 7.9, 8.1, 8.5, 8.2, 8.0,
+    # Italian
+    9.5, 9.2, 9.8, 9.3, 9.6, 9.1, 9.7, 9.4, 9.5, 9.6, 9.2, 9.4, 9.8, 9.5, 9.3,
+    # Greek
+    7.1, 6.8, 7.4, 7.0, 7.2, 6.7, 7.3, 6.9, 7.1, 7.2, 6.8, 7.0, 7.4, 7.1, 6.9,
+    # Turkish
+    8.8, 8.5, 9.1, 8.7, 8.9, 8.4, 9.0, 8.6, 8.8, 8.9, 8.5, 8.7, 9.1, 8.8, 8.6
+  )
+)
+
+cat("
+Tasks (Comprehensive Analysis):
+a) Calculate descriptive statistics for each sample
+b) Create appropriate visualizations (boxplot, profile plot)
+c) Check all assumptions thoroughly
+d) Choose and perform appropriate statistical test
+e) If significant, perform appropriate post-hoc test
+f) Calculate effect size
+g) Create a final summary table showing:
+   - Means ± SD for each sample
+   - Statistical groupings (e.g., a, b, c notation)
+   - Post-hoc test results
+h) Write a complete interpretation suitable for a research report
+")
+
+# Your code here:
+
+
+
+
+# ============================================================================
+# ============================================================================
+# SOLUTIONS
+# ============================================================================
+# ============================================================================
+
+
+# ============================================================================
+# SOLUTION 1: ONE-WAY ANOVA
+# ============================================================================
+
+cat("\n\n")
+cat("========================================\n")
+cat("SOLUTION 1: ONE-WAY ANOVA\n")
+cat("========================================\n")
+
+# a) Create data frame
+cheese_sample_A = c(6.5, 7.2, 6.8, 7.0, 6.9, 7.1, 6.7, 7.3, 6.8, 7.0, 6.9, 7.2)
+cheese_sample_B = c(7.8, 8.2, 7.9, 8.0, 7.7, 8.1, 7.9, 8.0, 7.8, 8.1, 7.9, 8.0)
+cheese_sample_C = c(6.0, 6.5, 6.2, 6.3, 6.1, 6.4, 6.2, 6.3, 6.1, 6.5, 6.2, 6.3)
+cheese_sample_D = c(7.0, 7.5, 7.2, 7.3, 7.1, 7.4, 7.2, 7.3, 7.0, 7.4, 7.2, 7.3)
+cheese_sample_E = c(8.2, 8.5, 8.3, 8.4, 8.1, 8.4, 8.3, 8.4, 8.2, 8.5, 8.3, 8.4)
+
+ex1_scores = c(cheese_sample_A, cheese_sample_B, cheese_sample_C, 
+               cheese_sample_D, cheese_sample_E)
+ex1_samples = factor(rep(c("Sample A", "Sample B", "Sample C", 
+                           "Sample D", "Sample E"), each=12))
+ex1_data = data.frame(Quality = ex1_scores, Sample = ex1_samples)
+
+cat("\n=== a) DATA STRUCTURE ===\n")
+head(ex1_data)
+str(ex1_data)
+
+# b) Check assumptions
+cat("\n=== b) CHECKING ASSUMPTIONS ===\n")
+
+# Descriptive statistics
+cat("\nDescriptive Statistics:\n")
+ex1_desc = aggregate(Quality ~ Sample, data=ex1_data, FUN=function(x) {
+  c(Mean=round(mean(x),2), SD=round(sd(x),2), Min=min(x), Max=max(x))
+})
+print(ex1_desc)
+
+# Normality tests
+cat("\nShapiro-Wilk Tests for Normality:\n")
+by(ex1_data$Quality, ex1_data$Sample, function(x) {
+  result = shapiro.test(x)
+  cat("p-value:", round(result$p.value, 4), 
+      ifelse(result$p.value > 0.05, " - Normal", " - Not normal"), "\n")
+})
+
+# Levene's test
+cat("\nLevene's Test for Homogeneity of Variances:\n")
+ex1_levene = leveneTest(Quality ~ Sample, data=ex1_data)
+print(ex1_levene)
+cat(ifelse(ex1_levene$`Pr(>F)`[1] > 0.05, 
+           "Variances are homogeneous (p > 0.05)\n",
+           "Variances are NOT homogeneous (p < 0.05)\n"))
+
+# c) One-way ANOVA
+cat("\n=== c) ONE-WAY ANOVA ===\n")
+ex1_aov = aov(Quality ~ Sample, data=ex1_data)
+ex1_summary = summary(ex1_aov)
+print(ex1_summary)
+
+# d) Tukey HSD
+cat("\n=== d) TUKEY HSD POST-HOC TEST ===\n")
+ex1_tukey = TukeyHSD(ex1_aov)
+print(ex1_tukey)
+
+# Compact letter display
+if(require(multcomp)) {
+  ex1_cld = cld(glht(ex1_aov, linfct=mcp(Sample="Tukey")), level=0.05)
+  cat("\nCompact Letter Display:\n")
+  print(ex1_cld)
+}
+
+# e) Boxplot with means
+cat("\n=== e) VISUALIZATION ===\n")
+par(mfrow=c(1,2))
+
+# Boxplot
+boxplot(Quality ~ Sample, data=ex1_data,
+        main="Cheese Quality Comparison",
+        ylab="Quality Score",
+        col=rainbow(5),
+        las=2)
+ex1_means = tapply(ex1_data$Quality, ex1_data$Sample, mean)
+points(1:5, ex1_means, col="red", pch=19, cex=1.5)
+legend("topleft", legend="Mean", col="red", pch=19)
+
+# Tukey plot
+plot(ex1_tukey, las=1, col="blue")
+
+par(mfrow=c(1,1))
+
+# f) Interpretation
+cat("\n=== f) INTERPRETATION ===\n")
+p_value = ex1_summary[[1]]$"Pr(>F)"[1]
+cat("\nStatistical Test Results:\n")
+cat("F-statistic:", round(ex1_summary[[1]]$"F value"[1], 3), "\n")
+cat("p-value:", format.pval(p_value), "\n")
+
+if(p_value < 0.05) {
+  cat("\n*** SIGNIFICANT DIFFERENCE FOUND ***\n")
+  cat("At least one cheese sample differs significantly from others.\n\n")
+  
+  # Identify groups from Tukey
+  cat("Post-hoc Analysis (Tukey HSD):\n")
+  cat("Sample E (Mean:", round(mean(cheese_sample_E), 2), 
+      ") - Highest rated\n")
+  cat("Sample B (Mean:", round(mean(cheese_sample_B), 2), 
+      ") - Second highest\n")
+  cat("Sample D (Mean:", round(mean(cheese_sample_D), 2), 
+      ") - Middle group\n")
+  cat("Sample A (Mean:", round(mean(cheese_sample_A), 2), 
+      ") - Lower middle\n")
+  cat("Sample C (Mean:", round(mean(cheese_sample_C), 2), 
+      ") - Lowest rated\n")
+  
+  cat("\nPractical Conclusion:\n")
+  cat("Sample E is the highest quality cheese and differs significantly\n")
+  cat("from samples A, C, and D. Sample B is also highly rated.\n")
+  cat("Sample C is the lowest quality and differs from all others.\n")
+} else {
+  cat("No significant differences found among cheese samples.\n")
+}
+
+# Effect size
+ss_between = ex1_summary[[1]]$"Sum Sq"[1]
+ss_total = sum(ex1_summary[[1]]$"Sum Sq")
+eta_sq = ss_between / ss_total
+cat("\nEffect Size (η²):", round(eta_sq, 3), "\n")
+cat("This represents a", 
+    ifelse(eta_sq > 0.14, "large",
+    ifelse(eta_sq > 0.06, "medium", "small")), "effect size.\n")
+
+
+# ============================================================================
+# SOLUTION 2: KRUSKAL-WALLIS TEST
+# ============================================================================
+
+cat("\n\n")
+cat("========================================\n")
+cat("SOLUTION 2: KRUSKAL-WALLIS TEST\n")
+cat("========================================\n")
+
+# a) Create data frame
+roast_light = c(3, 4, 3, 4, 4, 3, 5, 4, 3, 4, 4, 3)
+roast_medium = c(6, 7, 6, 7, 6, 6, 7, 6, 7, 6, 7, 6)
+roast_dark = c(8, 9, 8, 9, 9, 8, 9, 8, 9, 8, 9, 8)
+roast_french = c(9, 10, 9, 10, 10, 9, 10, 9, 10, 9, 10, 9)
+
+ex2_scores = c(roast_light, roast_medium, roast_dark, roast_french)
+ex2_roast = factor(rep(c("Light", "Medium", "Dark", "French"), each=12))
+ex2_data = data.frame(Bitterness = ex2_scores, Roast = ex2_roast)
+
+cat("\n=== a) DATA STRUCTURE ===\n")
+head(ex2_data)
+
+# b) Descriptive statistics
+cat("\n=== b) DESCRIPTIVE STATISTICS ===\n")
+ex2_desc = aggregate(Bitterness ~ Roast, data=ex2_data, FUN=function(x) {
+  c(Median=median(x), Mean=round(mean(x),2), 
+    Q1=quantile(x,0.25), Q3=quantile(x,0.75), IQR=IQR(x))
+})
+print(ex2_desc)
+
+# c) Boxplot
+cat("\n=== c) VISUALIZATION ===\n")
+boxplot(Bitterness ~ Roast, data=ex2_data,
+        main="Coffee Bitterness by Roasting Method",
+        ylab="Bitterness Intensity (1-10)",
+        col=c("wheat", "tan", "chocolate4", "black"),
+        las=2)
+
+# d) Kruskal-Wallis test
+cat("\n=== d) KRUSKAL-WALLIS TEST ===\n")
+ex2_kw = kruskal.test(Bitterness ~ Roast, data=ex2_data)
+print(ex2_kw)
+
+# e) Dunn's test
+cat("\n=== e) DUNN'S POST-HOC TEST ===\n")
+ex2_dunn = dunn.test(ex2_data$Bitterness, ex2_data$Roast,
+                     method="bonferroni")
+
+# f) Interpretation
+cat("\n=== f) INTERPRETATION ===\n")
+cat("\nKruskal-Wallis Results:\n")
+cat("Chi-squared statistic:", round(ex2_kw$statistic, 3), "\n")
+cat("p-value:", format.pval(ex2_kw$p.value), "\n")
+
+if(ex2_kw$p.value < 0.05) {
+  cat("\n*** SIGNIFICANT DIFFERENCE FOUND ***\n")
+  cat("Roasting methods produce significantly different bitterness levels.\n\n")
+  
+  cat("Bitterness Rankings (Median values):\n")
+  medians = aggregate(Bitterness ~ Roast, data=ex2_data, median)
+  medians = medians[order(-medians$Bitterness),]
+  for(i in 1:nrow(medians)) {
+    cat(i, ". ", medians$Roast[i], " (Median = ", 
+        medians$Bitterness[i], ")\n", sep="")
+  }
+  
+  cat("\nConclusion:\n")
+  cat("French roast produces the highest bitterness,\n")
+  cat("followed by Dark, Medium, and Light roasts.\n")
+  cat("Each roasting level is significantly different from the others.\n")
+} else {
+  cat("No significant differences in bitterness among roasting methods.\n")
+}
+
+
+# ============================================================================
+# SOLUTION 3: REPEATED MEASURES ANOVA
+# ============================================================================
+
+cat("\n\n")
+cat("========================================\n")
+cat("SOLUTION 3: REPEATED MEASURES ANOVA\n")
+cat("========================================\n")
+
+yogurt_data_wide = data.frame(
+  Panelist = 1:10,
+  Formula_1 = c(7.2, 6.8, 7.5, 7.0, 7.3, 6.9, 7.1, 7.4, 7.0, 6.8),
+  Formula_2 = c(8.1, 7.9, 8.3, 7.8, 8.2, 7.7, 8.0, 8.4, 7.9, 7.8),
+  Formula_3 = c(6.5, 6.2, 6.8, 6.3, 6.7, 6.1, 6.4, 6.9, 6.3, 6.2),
+  Formula_4 = c(7.8, 7.5, 8.0, 7.6, 7.9, 7.4, 7.7, 8.1, 7.6, 7.5)
+)
+
+# a) Convert to long format
+cat("\n=== a) CONVERT TO LONG FORMAT ===\n")
+ex3_data_long = reshape(yogurt_data_wide,
+                        varying = list(2:5),
+                        v.names = "Creaminess",
+                        timevar = "Formula",
+                        times = c("Formula 1", "Formula 2", "Formula 3", "Formula 4"),
+                        direction = "long")
+ex3_data_long$Formula = factor(ex3_data_long$Formula)
+ex3_data_long$Panelist = factor(ex3_data_long$Panelist)
+
+head(ex3_data_long, 12)
+
+# b) Descriptive statistics
+cat("\n=== b) DESCRIPTIVE STATISTICS ===\n")
+ex3_desc = aggregate(Creaminess ~ Formula, data=ex3_data_long, FUN=function(x) {
+  c(Mean=round(mean(x),2), SD=round(sd(x),2), 
+    Min=round(min(x),2), Max=round(max(x),2))
+})
+print(ex3_desc)
+
+# c) Profile plot
+cat("\n=== c) PROFILE PLOT ===\n")
+par(mfrow=c(1,2))
+
+# Spaghetti plot
+plot(1, type="n", xlim=c(1,4), ylim=c(5.5, 9),
+     xlab="Formula", ylab="Creaminess Score",
+     main="Individual Panelist Profiles",
+     xaxt="n")
+axis(1, at=1:4, labels=c("F1", "F2", "F3", "F4"))
+
+colors = rainbow(10)
+for(i in 1:10) {
+  panelist_data = ex3_data_long[ex3_data_long$Panelist==i,]
+  lines(1:4, panelist_data$Creaminess, col=colors[i], lwd=1.5)
+  points(1:4, panelist_data$Creaminess, col=colors[i], pch=19)
+}
+legend("topleft", legend=paste("P", 1:10), col=colors, lty=1, cex=0.6)
+
+# Boxplot
+boxplot(Creaminess ~ Formula, data=ex3_data_long,
+        main="Creaminess by Formula",
+        ylab="Creaminess Score",
+        col=c("lightyellow", "lightblue", "lightgreen", "lightpink"),
+        las=2)
+means = tapply(ex3_data_long$Creaminess, ex3_data_long$Formula, mean)
+points(1:4, means, col="red", pch=19, cex=1.5)
+
+par(mfrow=c(1,1))
+
+# d) Check normality
+cat("\n=== d) NORMALITY CHECKS ===\n")
+cat("\nShapiro-Wilk tests by formula:\n")
+by(ex3_data_long$Creaminess, ex3_data_long$Formula, function(x) {
+  result = shapiro.test(x)
+  cat("p-value:", round(result$p.value, 4),
+      ifelse(result$p.value > 0.05, " - Normal\n", " - Not normal\n"))
+})
+
+# e) Repeated measures ANOVA
+cat("\n=== e) REPEATED MEASURES ANOVA ===\n")
+ex3_aov = aov(Creaminess ~ Formula + Error(Panelist/Formula), 
+              data=ex3_data_long)
+ex3_summary = summary(ex3_aov)
+print(ex3_summary)
+
+# Alternative using lm
+ex3_lm = lm(Creaminess ~ Formula + Panelist, data=ex3_data_long)
+cat("\nAlternative ANOVA table:\n")
+ex3_anova = anova(ex3_lm)
+print(ex3_anova)
+
+# f) Post-hoc tests
+cat("\n=== f) POST-HOC PAIRWISE COMPARISONS ===\n")
+ex3_pairwise = pairwise.t.test(ex3_data_long$Creaminess, 
+                                ex3_data_long$Formula,
+                                p.adjust.method = "bonferroni",
+                                paired = TRUE)
+print(ex3_pairwise)
+
+# g) Interpretation
+cat("\n=== g) INTERPRETATION ===\n")
+p_value = ex3_anova$"Pr(>F)"[1]
+cat("\nRepeated Measures ANOVA Results:\n")
+cat("F-statistic:", round(ex3_anova$"F value"[1], 3), "\n")
+cat("p-value:", format.pval(p_value), "\n")
+
+if(p_value < 0.05) {
+  cat("\n*** SIGNIFICANT DIFFERENCE FOUND ***\n\n")
+  
+  cat("Mean Creaminess Scores (ranked):\n")
+  formula_means = aggregate(Creaminess ~ Formula, data=ex3_data_long, mean)
+  formula_means = formula_means[order(-formula_means$Creaminess),]
+  for(i in 1:nrow(formula_means)) {
+    cat(i, ". ", formula_means$Formula[i], ": ", 
+        round(formula_means$Creaminess[i], 2), "\n", sep="")
+  }
+  
+  cat("\nPost-hoc Analysis:\n")
+  cat("Formula 2 is significantly creamier than Formulas 1 and 3\n")
+  cat("Formula 4 is also significantly creamier than Formula 3\n")
+  cat("Formula 3 has the lowest creaminess perception\n")
+  
+  cat("\nRecommendation:\n")
+  cat("Formula 2 should be selected for maximum creaminess perception,\n")
+  cat("with Formula 4 as a viable alternative.\n")
+} else {
+  cat("No significant differences in creaminess among formulas.\n")
+}
+
+# Partial eta-squared
+ss_formula = ex3_anova$"Sum Sq"[1]
+ss_error = ex3_anova$"Sum Sq"[3]
+partial_eta_sq = ss_formula / (ss_formula + ss_error)
+cat("\nEffect Size (Partial η²):", round(partial_eta_sq, 3), "\n")
+
+
+# ============================================================================
+# SOLUTION 4: FRIEDMAN TEST
+# ============================================================================
+
+cat("\n\n")
+cat("========================================\n")
+cat("SOLUTION 4: FRIEDMAN TEST\n")
+cat("========================================\n")
+
+beer_rankings = data.frame(
+  Panelist = 1:12,
+  Beer_A = c(3, 4, 3, 4, 3, 3, 4, 3, 4, 3, 3, 4),
+  Beer_B = c(2, 2, 2, 3, 2, 2, 2, 2, 3, 2, 2, 2),
+  Beer_C = c(5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5),
+  Beer_D = c(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+  Beer_E = c(4, 3, 4, 2, 4, 4, 3, 4, 2, 4, 4, 3)
+)
+
+# a) Convert to long format
+cat("\n=== a) CONVERT TO LONG FORMAT ===\n")
+ex4_data_long = reshape(beer_rankings,
+                        varying = list(2:6),
+                        v.names = "Rank",
+                        timevar = "Beer",
+                        times = c("Beer A", "Beer B", "Beer C", "Beer D", "Beer E"),
+                        direction = "long")
+ex4_data_long$Beer = factor(ex4_data_long$Beer)
+ex4_data_long$Panelist = factor(ex4_data_long$Panelist)
+
+head(ex4_data_long, 15)
+
+# b) Calculate median ranks
+cat("\n=== b) MEDIAN RANKS ===\n")
+ex4_medians = aggregate(Rank ~ Beer, data=ex4_data_long, FUN=function(x) {
+  c(Median=median(x), Mean=round(mean(x),2), 
+    Q1=quantile(x,0.25), Q3=quantile(x,0.75))
+})
+print(ex4_medians)
+
+cat("\nRanking Summary (lower rank = more preferred):\n")
+medians_sorted = aggregate(Rank ~ Beer, data=ex4_data_long, median)
+medians_sorted = medians_sorted[order(medians_sorted$Rank),]
+for(i in 1:nrow(medians_sorted)) {
+  cat(i, ". ", medians_sorted$Beer[i], " (Median rank = ", 
+      medians_sorted$Rank[i], ")\n", sep="")
+}
+
+# c) Boxplot
+cat("\n=== c) VISUALIZATION ===\n")
+boxplot(Rank ~ Beer, data=ex4_data_long,
+        main="Beer Preference Rankings\n(1=Most Preferred, 5=Least Preferred)",
+        ylab="Rank",
+        col=c("gold", "orange", "brown", "darkgoldenrod", "wheat"),
+        las=2,
+        ylim=c(5,1))  # Inverted y-axis
+
+# d) Friedman test
+cat("\n=== d) FRIEDMAN TEST ===\n")
+ex4_friedman = friedman.test(Rank ~ Beer | Panelist, data=ex4_data_long)
+print(ex4_friedman)
+
+# e) Kendall's W
+cat("\n=== e) EFFECT SIZE (KENDALL'S W) ===\n")
+k = length(unique(ex4_data_long$Beer))
+n = length(unique(ex4_data_long$Panelist))
+kendalls_w = ex4_friedman$statistic / (n * (k - 1))
+cat("Kendall's W:", round(kendalls_w, 3), "\n")
+cat("Interpretation:", 
+    ifelse(kendalls_w > 0.7, "Very strong agreement",
+    ifelse(kendalls_w > 0.5, "Strong agreement",
+    ifelse(kendalls_w > 0.3, "Moderate agreement", "Weak agreement"))), "\n")
+
+# f) Nemenyi post-hoc test
+cat("\n=== f) NEMENYI POST-HOC TEST ===\n")
+if(require(PMCMRplus)) {
+  beer_matrix = as.matrix(beer_rankings[,-1])
+  ex4_nemenyi = frdAllPairsNemenyiTest(beer_matrix)
+  print(ex4_nemenyi)
+}
+
+# g) Interpretation
+cat("\n=== g) INTERPRETATION ===\n")
+if(ex4_friedman$p.value < 0.05) {
+  cat("\n*** SIGNIFICANT DIFFERENCE FOUND ***\n\n")
+  cat("Chi-squared statistic:", round(ex4_friedman$statistic, 3), "\n")
+  cat("p-value:", format.pval(ex4_friedman$p.value), "\n")
+  cat("\nThere are significant differences in beer preferences.\n\n")
+  
+  cat("Preference Order (most to least preferred):\n")
+  for(i in 1:nrow(medians_sorted)) {
+    cat(i, ". ", medians_sorted$Beer[i], 
+        " - Median rank ", medians_sorted$Rank[i], "\n", sep="")
+  }
+}
+
+# h) Most preferred beer
+cat("\n=== h) MOST PREFERRED BEER ===\n")
+most_preferred = medians_sorted$Beer[1]
+cat("\n** WINNER: ", as.character(most_preferred), " **\n\n", sep="")
+cat("This beer consistently received the best rankings (Rank 1)\n")
+cat("across all 12 panelists, making it the clear favorite.\n")
+cat("\nLeast preferred: Beer C (consistently ranked 5th)\n")
+
+
+# ============================================================================
+# SOLUTION 5: CHI-SQUARE GOODNESS OF FIT
+# ============================================================================
+
+cat("\n\n")
+cat("========================================\n")
+cat("SOLUTION 5: CHI-SQUARE GOODNESS OF FIT\n")
+cat("========================================\n")
+
+# a) Create frequency vector
+jam_prefs = c(Strawberry=65, Raspberry=48, Apricot=32, 
+              Blueberry=35, Blackberry=20)
+
+cat("\n=== a) FREQUENCY DATA ===\n")
+print(jam_prefs)
+cat("\nTotal respondents:", sum(jam_prefs), "\n")
+
+# b) Visualize
+cat("\n=== b) VISUALIZATION ===\n")
+par(mfrow=c(1,2))
+
+# Barplot with expected line
+barplot(jam_prefs,
+        main="Jam Flavor Preferences",
+        ylab="Number of Customers",
+        col=c("red", "darkred", "orange", "darkblue", "purple"),
+        las=2)
+expected = sum(jam_prefs) / length(jam_prefs)
+abline(h=expected, col="blue", lwd=2, lty=2)
+text(3, expected+3, paste("Expected =", round(expected,1)), col="blue")
+
+# Pie chart
+pie(jam_prefs, 
+    main="Jam Flavor Distribution",
+    col=c("red", "darkred", "orange", "darkblue", "purple"))
+
+par(mfrow=c(1,1))
+
+# c) Chi-square test
+cat("\n=== c) CHI-SQUARE GOODNESS OF FIT TEST ===\n")
+ex5_chisq = chisq.test(jam_prefs)
+print(ex5_chisq)
+
+# d) Expected frequencies
+cat("\n=== d) EXPECTED FREQUENCIES ===\n")
+cat("Expected frequency (equal distribution):", round(ex5_chisq$expected[1], 2), "\n")
+cat("\nObserved vs Expected:\n")
+comparison = data.frame(
+  Flavor = names(jam_prefs),
+  Observed = as.numeric(jam_prefs),
+  Expected = round(ex5_chisq$expected, 2),
+  Difference = as.numeric(jam_prefs) - round(ex5_chisq$expected, 2)
+)
+print(comparison)
+
+# e) Standardized residuals
+cat("\n=== e) STANDARDIZED RESIDUALS ===\n")
+std_residuals = (jam_prefs - ex5_chisq$expected) / sqrt(ex5_chisq$expected)
+residual_df = data.frame(
+  Flavor = names(jam_prefs),
+  Std_Residual = round(std_residuals, 2)
+)
+print(residual_df)
+
+cat("\nInterpretation of standardized residuals:\n")
+cat("Values > +2 or < -2 indicate significant deviation from expected\n\n")
+for(i in 1:length(std_residuals)) {
+  if(abs(std_residuals[i]) > 2) {
+    cat(names(std_residuals)[i], ": ", round(std_residuals[i], 2),
+        ifelse(std_residuals[i] > 0, " - OVER-represented\n", 
+               " - UNDER-represented\n"))
+  }
+}
+
+# f) Interpretation
+cat("\n=== f) INTERPRETATION ===\n")
+cat("\nChi-square statistic:", round(ex5_chisq$statistic, 3), "\n")
+cat("Degrees of freedom:", ex5_chisq$parameter, "\n")
+cat("p-value:", format.pval(ex5_chisq$p.value), "\n")
+
+if(ex5_chisq$p.value < 0.05) {
+  cat("\n*** SIGNIFICANT RESULT ***\n\n")
+  cat("Preferences are NOT equally distributed across jam flavors.\n\n")
+  
+  cat("Key Findings:\n")
+  sorted_prefs = sort(jam_prefs, decreasing=TRUE)
+  cat("1. MOST POPULAR: Strawberry (", sorted_prefs[1], 
+      " customers, ", round(sorted_prefs[1]/sum(jam_prefs)*100,1), "%)\n", sep="")
+  cat("2. Second: Raspberry (", sorted_prefs[2], 
+      " customers, ", round(sorted_prefs[2]/sum(jam_prefs)*100,1), "%)\n", sep="")
+  cat("3. LEAST POPULAR: Blackberry (", sorted_prefs[5], 
+      " customers, ", round(sorted_prefs[5]/sum(jam_prefs)*100,1), "%)\n", sep="")
+  
+  cat("\nBusiness Recommendation:\n")
+  cat("- Stock more Strawberry and Raspberry jams\n")
+  cat("- Consider reducing Blackberry inventory\n")
+  cat("- Strawberry is preferred 3.25x more than Blackberry\n")
+} else {
+  cat("Preferences are equally distributed - no significant preference.\n")
+}
+
+
+# ============================================================================
+# SOLUTION 6: CHI-SQUARE INDEPENDENCE
+# ============================================================================
+
+cat("\n\n")
+cat("========================================\n")
+cat("SOLUTION 6: CHI-SQUARE INDEPENDENCE\n")
+cat("========================================\n")
+
+# a) Create contingency table
+wine_age = matrix(c(25, 45, 30,    # 18-35 years
+                    50, 35, 15,    # 36-55 years
+                    60, 25, 15),   # 56+ years
+                  nrow=3, byrow=TRUE,
+                  dimnames=list(
+                    Age=c("18-35", "36-55", "56+"),
+                    Wine=c("Red", "White", "Rosé")
+                  ))
+
+cat("\n=== a) CONTINGENCY TABLE ===\n")
+print(wine_age)
+cat("\nWith marginal totals:\n")
+print(addmargins(wine_age))
+
+# b) Visualize
+cat("\n=== b) VISUALIZATION ===\n")
+par(mfrow=c(1,2))
+
+# Grouped barplot
+barplot(wine_age, beside=TRUE,
+        main="Wine Preference by Age Group",
+        ylab="Number of Respondents",
+        col=c("lightblue", "lightgreen", "lightcoral"),
+        legend=rownames(wine_age),
+        args.legend=list(x="topright", cex=0.8))
+
+# Stacked proportions
+wine_props = prop.table(wine_age, 1)
+barplot(t(wine_props),
+        main="Wine Preference Proportions by Age",
+        ylab="Proportion",
+        col=c("darkred", "white", "pink"),
+        legend=colnames(wine_age),
+        args.legend=list(x="topright", cex=0.8))
+
+par(mfrow=c(1,1))
+
+# c) Chi-square test
+cat("\n=== c) CHI-SQUARE TEST OF INDEPENDENCE ===\n")
+ex6_chisq = chisq.test(wine_age)
+print(ex6_chisq)
+
+cat("\nExpected frequencies:\n")
+print(round(ex6_chisq$expected, 2))
+
+# d) Cramér's V
+cat("\n=== d) EFFECT SIZE (CRAMÉR'S V) ===\n")
+n = sum(wine_age)
+min_dim = min(nrow(wine_age)-1, ncol(wine_age)-1)
+cramers_v = sqrt(ex6_chisq$statistic / (n * min_dim))
+cat("Cramér's V:", round(cramers_v, 3), "\n")
+cat("Interpretation:", 
+    ifelse(cramers_v > 0.5, "Large effect (strong association)",
+    ifelse(cramers_v > 0.3, "Medium effect (moderate association)",
+    ifelse(cramers_v > 0.1, "Small effect (weak association)", 
+           "Negligible effect"))), "\n")
+
+# e) Standardized residuals
+cat("\n=== e) STANDARDIZED RESIDUALS ===\n")
+std_res = (wine_age - ex6_chisq$expected) / sqrt(ex6_chisq$expected)
+print(round(std_res, 2))
+
+cat("\nCells with |residual| > 2 (significant deviation):\n")
+significant_cells = which(abs(std_res) > 2, arr.ind=TRUE)
+if(nrow(significant_cells) > 0) {
+  for(i in 1:nrow(significant_cells)) {
+    row = significant_cells[i,1]
+    col = significant_cells[i,2]
+    cat(rownames(wine_age)[row], "-", colnames(wine_age)[col], ": ",
+        round(std_res[row,col], 2),
+        ifelse(std_res[row,col] > 0, " (more than expected)\n", 
+               " (less than expected)\n"))
+  }
+}
+
+# f) Interpretation
+cat("\n=== f) INTERPRETATION ===\n")
+cat("\nChi-square statistic:", round(ex6_chisq$statistic, 3), "\n")
+cat("Degrees of freedom:", ex6_chisq$parameter, "\n")
+cat("p-value:", format.pval(ex6_chisq$p.value), "\n")
+
+if(ex6_chisq$p.value < 0.05) {
+  cat("\n*** SIGNIFICANT ASSOCIATION FOUND ***\n\n")
+  cat("Wine preference is NOT independent of age group.\n")
+  cat("There is a statistically significant association between\n")
+  cat("age and wine type preference.\n\n")
+  
+  cat("Key Patterns:\n")
+  cat("1. Younger adults (18-35): Prefer White wine and Rosé\n")
+  cat("2. Middle-aged (36-55): More balanced preferences\n")
+  cat("3. Older adults (56+): Strong preference for Red wine\n\n")
+  
+  cat("Marketing Implications:\n")
+  cat("- Target White wine and Rosé to younger demographics\n")
+  cat("- Red wine campaigns should focus on older consumers\n")
+  cat("- Red wine preference increases with age\n")
+} else {
+  cat("Wine preference is independent of age group.\n")
+  cat("No significant association found.\n")
+}
+
+
+# ============================================================================
+# SOLUTION 7: TRIANGLE TEST
+# ============================================================================
+
+cat("\n\n")
+cat("========================================\n")
+cat("SOLUTION 7: TRIANGLE TEST\n")
+cat("========================================\n")
+
+# a) Binomial test
+cat("\n=== a) BINOMIAL TEST ===\n")
+ex7_binom = binom.test(42, 100, p=1/3)
+print(ex7_binom)
+
+# b) Proportion
+cat("\n=== b) PROPORTION ANALYSIS ===\n")
+proportion_correct = 42/100
+cat("Proportion correct:", round(proportion_correct, 3), 
+    "(", round(proportion_correct*100, 1), "%)\n", sep="")
+cat("Expected by chance (p=1/3):", round(1/3, 3), 
+    "(", round(100/3, 1), "%)\n", sep="")
+cat("Difference:", round(proportion_correct - 1/3, 3), "\n")
+
+# c) Minimum needed
+cat("\n=== c) MINIMUM CORRECT RESPONSES FOR SIGNIFICANCE ===\n")
+cat("\nTesting different values for n=100:\n")
+for(i in 35:45) {
+  p_val = binom.test(i, 100, p=1/3)$p.value
+  cat("Correct:", i, "out of 100 (", round(i/100*100, 0), "%), p =", 
+      round(p_val, 4), ifelse(p_val < 0.05, " *SIGNIFICANT*", ""), "\n")
+}
+
+min_needed = NA
+for(i in 30:50) {
+  if(binom.test(i, 100, p=1/3)$p.value < 0.05) {
+    min_needed = i
+    break
+  }
+}
+cat("\nMinimum needed for significance at n=100:", min_needed, 
+    "(", round(min_needed/100*100, 1), "%)\n", sep="")
+
+# d) Power analysis
+cat("\n=== d) SAMPLE SIZE CALCULATION ===\n")
+if(require(pwr)) {
+  # If 40% can detect (vs 33.3% by chance)
+  prop_detect = 0.40
+  prop_chance = 1/3
+  effect = ES.h(prop_detect, prop_chance)
+  
+  cat("\nAssumptions:\n")
+  cat("- Detection rate: 40% (vs 33.3% by chance)\n")
+  cat("- Power: 80%\n")
+  cat("- Alpha: 0.05\n")
+  cat("- Effect size (Cohen's h):", round(effect, 3), "\n\n")
+  
+  power_calc = pwr.p.test(h=effect, sig.level=0.05, power=0.80)
+  print(power_calc)
+  cat("\nSample size needed:", ceiling(power_calc$n), "participants\n")
+}
+
+# e) Interpretation
+cat("\n=== e) INTERPRETATION ===\n")
+cat("\np-value:", format.pval(ex7_binom$p.value), "\n")
+
+if(ex7_binom$p.value < 0.05) {
+  cat("\n*** SIGNIFICANT RESULT ***\n\n")
+  cat("Consumers CAN detect the difference between formulations.\n")
+  cat("The proportion of correct responses (42%) is significantly\n")
+  cat("higher than would be expected by chance (33.3%).\n\n")
+  
+  cat("Business Decision:\n")
+  cat("The reformulation is DETECTABLE by consumers.\n")
+  cat("Further sensory testing or consumer acceptance studies\n")
+  cat("are recommended before launching the new formulation.\n")
+} else {
+  cat("\n*** NOT SIGNIFICANT ***\n\n")
+  cat("Consumers CANNOT reliably detect the difference.\n")
+  cat("The proportion of correct responses (", round(proportion_correct*100,1),
+      "%) is not\nsignificantly different from guessing (33.3%).\n\n", sep="")
+  
+  cat("Business Decision:\n")
+  cat("The reformulation is NOT detectable by consumers.\n")
+  cat("It may be safe to proceed with the reformulation,\n")
+  cat("as consumers won't perceive a difference.\n")
+}
+
+# Confidence interval
+cat("\n95% Confidence Interval for true detection proportion:\n")
+cat("[", round(ex7_binom$conf.int[1], 3), ", ", 
+    round(ex7_binom$conf.int[2], 3), "]\n", sep="")
+
+
+# ============================================================================
+# SOLUTION 8: COMPREHENSIVE ANALYSIS
+# ============================================================================
+
+cat("\n\n")
+cat("========================================\n")
+cat("SOLUTION 8: COMPREHENSIVE ANALYSIS\n")
+cat("========================================\n")
+
+olive_oil_comprehensive = data.frame(
+  Assessor = rep(1:15, times=4),
+  Sample = factor(rep(c("Spanish", "Italian", "Greek", "Turkish"), each=15)),
+  Intensity = c(
+    # Spanish
+    8.2, 7.9, 8.5, 8.1, 8.3, 7.8, 8.4, 8.0, 8.2, 8.3, 7.9, 8.1, 8.5, 8.2, 8.0,
+    # Italian
+    9.5, 9.2, 9.8, 9.3, 9.6, 9.1, 9.7, 9.4, 9.5, 9.6, 9.2, 9.4, 9.8, 9.5, 9.3,
+    # Greek
+    7.1, 6.8, 7.4, 7.0, 7.2, 6.7, 7.3, 6.9, 7.1, 7.2, 6.8, 7.0, 7.4, 7.1, 6.9,
+    # Turkish
+    8.8, 8.5, 9.1, 8.7, 8.9, 8.4, 9.0, 8.6, 8.8, 8.9, 8.5, 8.7, 9.1, 8.8, 8.6
+  )
+)
+
+# a) Descriptive statistics
+cat("\n=== a) DESCRIPTIVE STATISTICS ===\n")
+ex8_desc = aggregate(Intensity ~ Sample, data=olive_oil_comprehensive, 
+                     FUN=function(x) {
+  c(Mean=round(mean(x),2), SD=round(sd(x),2), SE=round(sd(x)/sqrt(length(x)),2),
+    Min=round(min(x),2), Max=round(max(x),2), Median=round(median(x),2))
+})
+print(ex8_desc)
+
+# b) Visualizations
+cat("\n=== b) VISUALIZATIONS ===\n")
+par(mfrow=c(2,2))
+
+# Boxplot with means
+boxplot(Intensity ~ Sample, data=olive_oil_comprehensive,
+        main="Fruity Intensity by Olive Oil Origin",
+        ylab="Intensity (15cm scale)",
+        col=c("yellow", "green", "lightblue", "orange"),
+        las=2)
+means = tapply(olive_oil_comprehensive$Intensity, 
+               olive_oil_comprehensive$Sample, mean)
+points(1:4, means, col="red", pch=19, cex=1.5)
+legend("topleft", legend="Mean", col="red", pch=19, cex=0.8)
+
+# Profile plot (spaghetti)
+plot(1, type="n", xlim=c(1,4), ylim=c(6, 10),
+     xlab="Sample", ylab="Intensity",
+     main="Individual Assessor Profiles",
+     xaxt="n")
+axis(1, at=1:4, labels=c("SP", "IT", "GR", "TU"))
+colors_panel = rainbow(15)
+for(i in 1:15) {
+  assessor_data = olive_oil_comprehensive[olive_oil_comprehensive$Assessor==i,]
+  lines(1:4, assessor_data$Intensity, col=colors_panel[i], lwd=1.2)
+  points(1:4, assessor_data$Intensity, col=colors_panel[i], pch=19, cex=0.6)
+}
+
+# Mean plot with error bars
+means = tapply(olive_oil_comprehensive$Intensity, 
+               olive_oil_comprehensive$Sample, mean)
+sds = tapply(olive_oil_comprehensive$Intensity, 
+             olive_oil_comprehensive$Sample, sd)
+ses = sds / sqrt(15)
+barplot(means, ylim=c(0,10),
+        main="Mean Intensity ± SE",
+        ylab="Intensity",
+        col=c("yellow", "green", "lightblue", "orange"),
+        las=2)
+arrows(x0=c(0.7, 1.9, 3.1, 4.3), y0=means-ses,
+       x1=c(0.7, 1.9, 3.1, 4.3), y0=means+ses,
+       angle=90, code=3, length=0.1, lwd=2)
+
+# Histogram of all data
+hist(olive_oil_comprehensive$Intensity,
+     main="Overall Distribution",
+     xlab="Intensity",
+     col="lightgray",
+     breaks=15)
+
+par(mfrow=c(1,1))
+
+# c) Check assumptions
+cat("\n=== c) ASSUMPTION CHECKS ===\n")
+
+# Normality by group
+cat("\nShapiro-Wilk tests (normality by sample):\n")
+by(olive_oil_comprehensive$Intensity, olive_oil_comprehensive$Sample, 
+   function(x) {
+     result = shapiro.test(x)
+     cat("p-value:", round(result$p.value, 4),
+         ifelse(result$p.value > 0.05, " ✓ Normal\n", " ✗ Not normal\n"))
+})
+
+# Homogeneity of variances
+cat("\nLevene's Test (homogeneity of variances):\n")
+ex8_levene = leveneTest(Intensity ~ Sample, data=olive_oil_comprehensive)
+print(ex8_levene)
+cat(ifelse(ex8_levene$`Pr(>F)`[1] > 0.05,
+           "✓ Variances are homogeneous\n",
+           "✗ Variances are NOT homogeneous\n"))
+
+# Visual normality check
+par(mfrow=c(2,2))
+for(sample in levels(olive_oil_comprehensive$Sample)) {
+  sample_data = olive_oil_comprehensive$Intensity[
+    olive_oil_comprehensive$Sample==sample]
+  qqnorm(sample_data, main=paste("Q-Q Plot:", sample))
+  qqline(sample_data, col="red", lwd=2)
+}
+par(mfrow=c(1,1))
+
+# d) Statistical test
+cat("\n=== d) REPEATED MEASURES ANOVA ===\n")
+cat("(Same assessors evaluated all samples - dependent design)\n\n")
+
+ex8_aov = aov(Intensity ~ Sample + Error(Assessor/Sample), 
+              data=olive_oil_comprehensive)
+ex8_summary = summary(ex8_aov)
+print(ex8_summary)
+
+# Alternative using lm for more details
+ex8_lm = lm(Intensity ~ Sample + factor(Assessor), 
+            data=olive_oil_comprehensive)
+ex8_anova = anova(ex8_lm)
+cat("\nDetailed ANOVA Table:\n")
+print(ex8_anova)
+
+# e) Post-hoc test
+cat("\n=== e) POST-HOC TEST (TUKEY HSD) ===\n")
+ex8_aov_simple = aov(Intensity ~ Sample + factor(Assessor), 
+                     data=olive_oil_comprehensive)
+ex8_tukey = TukeyHSD(ex8_aov_simple, "Sample")
+print(ex8_tukey)
+
+# Compact letter display
+if(require(multcomp)) {
+  ex8_cld = cld(glht(ex8_aov_simple, linfct=mcp(Sample="Tukey")), level=0.05)
+  cat("\nCompact Letter Display:\n")
+  print(ex8_cld)
+  grouping_letters = ex8_cld$mcletters$Letters
+}
+
+# Plot Tukey results
+plot(ex8_tukey, las=1, col="blue")
+
+# f) Effect size
+cat("\n=== f) EFFECT SIZE ===\n")
+ss_sample = ex8_anova$"Sum Sq"[1]
+ss_error = ex8_anova$"Sum Sq"[3]
+partial_eta_sq = ss_sample / (ss_sample + ss_error)
+cat("Partial η² (eta-squared):", round(partial_eta_sq, 3), "\n")
+cat("Interpretation:", 
+    ifelse(partial_eta_sq > 0.14, "Large effect (>14%)",
+    ifelse(partial_eta_sq > 0.06, "Medium effect (6-14%)", 
+           "Small effect (<6%)")), "\n")
+cat("This effect size indicates that", round(partial_eta_sq*100, 1),
+    "% of variance in\nfruity intensity is explained by olive oil origin.\n")
+
+# g) Summary table
+cat("\n=== g) SUMMARY TABLE ===\n")
+cat("\n")
+cat("================================================================================\n")
+cat("                   OLIVE OIL FRUITY INTENSITY ANALYSIS                         \n")
+cat("================================================================================\n")
+cat("\n")
+
+summary_table = data.frame(
+  Sample = levels(olive_oil_comprehensive$Sample),
+  N = rep(15, 4),
+  Mean = round(tapply(olive_oil_comprehensive$Intensity, 
+                     olive_oil_comprehensive$Sample, mean), 2),
+  SD = round(tapply(olive_oil_comprehensive$Intensity, 
+                   olive_oil_comprehensive$Sample, sd), 2)
+)
+
+# Add grouping letters if available
+if(exists("grouping_letters")) {
+  summary_table$Group = grouping_letters[summary_table$Sample]
+}
+
+# Sort by mean descending
+summary_table = summary_table[order(-summary_table$Mean),]
+rownames(summary_table) = NULL
+
+print(summary_table)
+
+cat("\nNote: Samples with the same letter are not significantly different (p > 0.05)\n")
+cat("      Based on Tukey HSD post-hoc test with α = 0.05\n")
+
+cat("\n")
+cat("PAIRWISE COMPARISONS (Tukey HSD):\n")
+cat("--------------------------------------------------------------------------------\n")
+print(ex8_tukey$Sample)
+
+# h) Complete interpretation
+cat("\n=== h) RESEARCH REPORT INTERPRETATION ===\n")
+cat("\n")
+cat("================================================================================\n")
+cat("                         STATISTICAL ANALYSIS REPORT                           \n")
+cat("          Fruity Flavor Intensity in Olive Oils from Different Origins         \n")
+cat("================================================================================\n\n")
+
+cat("STUDY DESIGN:\n")
+cat("- Sensory panel: 15 trained assessors\n")
+cat("- Samples evaluated: 4 olive oil origins (Spanish, Italian, Greek, Turkish)\n")
+cat("- Design: Repeated measures (each assessor evaluated all samples)\n")
+cat("- Scale: 15cm unstructured line scale\n")
+cat("- Presentation: Randomized order to control for order effects\n\n")
+
+cat("DESCRIPTIVE STATISTICS:\n")
+summary_desc = aggregate(Intensity ~ Sample, data=olive_oil_comprehensive,
+                        FUN=function(x) {
+                          paste0(round(mean(x),2), " ± ", round(sd(x),2))
+                        })
+for(i in 1:nrow(summary_desc)) {
+  cat("-", summary_desc$Sample[i], ":", summary_desc$Intensity[i], "\n")
+}
+
+cat("\nSTATISTICAL ANALYSIS:\n")
+cat("Method: Repeated Measures Analysis of Variance (RM-ANOVA)\n")
+cat("- F-statistic: F(", ex8_anova$Df[1], ",", ex8_anova$Df[3], ") = ",
+    round(ex8_anova$"F value"[1], 2), "\n", sep="")
+cat("- p-value:", format.pval(ex8_anova$"Pr(>F)"[1]), "\n")
+cat("- Effect size (partial η²):", round(partial_eta_sq, 3), "\n")
+
+p_value_final = ex8_anova$"Pr(>F)"[1]
+if(p_value_final < 0.05) {
+  cat("\nRESULT: Statistically significant differences found (p < 0.05)\n")
+  cat("\nPOST-HOC ANALYSIS (Tukey HSD):\n")
+  cat("Italian olive oil showed significantly higher fruity intensity than\n")
+  cat("all other origins. Turkish olive oil ranked second, significantly\n")
+  cat("higher than Greek but not different from Spanish. Greek olive oil\n")
+  cat("had the lowest fruity intensity, significantly different from Italian\n")
+  cat("and Turkish origins.\n\n")
+  
+  cat("RANKING (highest to lowest fruity intensity):\n")
+  for(i in 1:nrow(summary_table)) {
+    cat(i, ". ", summary_table$Sample[i], " (", 
+        summary_table$Mean[i], " ± ", summary_table$SD[i], ")",
+        sep="")
+    if(exists("grouping_letters")) {
+      cat(" [Group ", summary_table$Group[i], "]", sep="")
+    }
+    cat("\n")
+  }
+  
+  cat("\nCONCLUSIONS:\n")
+  cat("1. Origin significantly affects fruity flavor intensity in olive oil\n")
+  cat("2. Italian olive oils exhibit the highest fruity character\n")
+  cat("3. Greek olive oils show the mildest fruity notes\n")
+  cat("4. The large effect size (η² = ", round(partial_eta_sq, 2), 
+      ") indicates that origin\n   is a major determinant of fruity intensity\n", sep="")
+  
+  cat("\nPRACTICAL IMPLICATIONS:\n")
+  cat("- Producers seeking high fruity intensity should consider Italian cultivars\n")
+  cat("- Consumers preferring mild fruity notes may select Greek varieties\n")
+  cat("- Product labeling should emphasize origin as it significantly\n")
+  cat("  impacts sensory characteristics\n")
+  
+  cat("\nRECOMMENDATIONS:\n")
+  cat("- Follow-up study: investigate chemical composition (polyphenols,\n")
+  cat("  volatile compounds) to explain intensity differences\n")
+  cat("- Consumer acceptance testing to determine market preferences\n")
+  cat("- Extend study to include processing methods and storage conditions\n")
+  
+} else {
+  cat("\nRESULT: No significant differences found (p > 0.05)\n")
+  cat("\nCONCLUSION:\n")
+  cat("Origin does not significantly affect fruity flavor intensity in the\n")
+  cat("olive oils tested. All samples showed similar fruity characteristics.\n")
+}
+
+cat("\n================================================================================\n")
+
+
+# ============================================================================
+# SUMMARY AND KEY CONCEPTS
+# ============================================================================
+
+cat("\n\n")
+cat("========================================\n")
+cat("SUMMARY: TEST SELECTION GUIDE\n")
+cat("========================================\n")
+
+cat("
++---------------------------+----------------+---------------+-----------+---------------------------+
+| Situation                 | Data Type      | Same Panel?   | Normal?   | Test                      |
++---------------------------+----------------+---------------+-----------+---------------------------+
+| 3+ Independent samples    | Continuous     | No            | Yes       | One-Way ANOVA             |
+| 3+ Independent samples    | Continuous     | No            | No        | Kruskal-Wallis            |
+| 3+ Dependent samples      | Continuous     | Yes           | Yes       | Repeated Measures ANOVA   |
+| 3+ Dependent samples      | Continuous     | Yes           | No        | Friedman Test             |
+| Triangle discrimination   | Binary         | -             | -         | Binomial (p=1/3)          |
+| Multiple categories       | Categorical    | -             | -         | Chi-square                |
+| After ANOVA               | -              | -             | -         | Tukey HSD, Bonferroni     |
+| After Kruskal-Wallis      | -              | -             | -         | Dunn's Test               |
+| After Friedman            | -              | -             | -         | Nemenyi Test              |
++---------------------------+----------------+---------------+-----------+---------------------------+
+
+KEY DECISION POINTS:
+
+1. How many samples? → 3 or more
+2. Same or different panelists? → Determines independence
+3. Data type? → Continuous, ordinal, or categorical
+4. Normal distribution? → Determines parametric vs non-parametric
+5. Significant result? → Proceed to post-hoc tests
+
+EFFECT SIZES:
+
+- Eta-squared (η²): Small = 0.01, Medium = 0.06, Large = 0.14
+- Cramér's V: Small = 0.1, Medium = 0.3, Large = 0.5
+- Kendall's W: 0-0.3 Weak, 0.3-0.7 Moderate, 0.7-1.0 Strong
+
+POST-HOC TEST SELECTION:
+
+Parametric (after ANOVA):
+- Tukey HSD: Most common, controls family-wise error
+- Bonferroni: More conservative
+- Scheffé: Most conservative, for complex comparisons
+- LSD (Fisher): Least conservative, use with caution
+
+Non-parametric:
+- Dunn's Test: After Kruskal-Wallis
+- Nemenyi Test: After Friedman
+- Always use with p-value adjustment (Bonferroni, Holm, etc.)
+")
+
+cat("\n========================================\n")
+cat("END OF COMPREHENSIVE EXERCISE\n")
+cat("========================================\n")
