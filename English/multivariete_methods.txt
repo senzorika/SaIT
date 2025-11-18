@@ -1,0 +1,337 @@
+# Multivariate Analysis in R: A Complete Lecture
+
+## Introduction
+
+This lecture covers three essential multivariate statistical methods used in consumer research and sensory analysis:
+- **PCA (Principal Component Analysis)**
+- **Hierarchical Cluster Analysis**
+- **Correspondence Analysis (CA)**
+
+## Part 1: Principal Component Analysis (PCA)
+
+### Context
+16 respondents answered a consumer survey using a 7-point Likert scale about the importance of food attributes when purchasing (sensory quality, price, packaging design, brand). Scale: 1 = strongly disagree, 7 = strongly agree.
+
+### Complete R Code
+
+# =====================================================
+# PCA - Principal Component Analysis
+# Consumer survey data analysis
+# =====================================================
+
+# Define product/respondent names
+product_names = c("A","B","C","D","E","F","G","H",
+                  "A2","B2","C2","D2","E2","F2","G2","H2")
+
+# Define variables (attributes rated on 7-point Likert scale)
+sensory_quality = c(3,7,7,5,5,6,5,6,3,3,2,5,2,7,1,2)
+price = c(5,3,4,7,7,4,7,5,5,3,6,7,4,5,6,3)
+package_design = c(3,2,4,1,5,4,2,4,6,5,6,7,5,5,5,7)
+brand = c(7,3,3,3,5,3,3,4,3,5,3,3,6,5,5,7)
+
+# Create data frame
+data = data.frame(sensory_quality, price, package_design, brand)
+
+# Perform PCA with correlation matrix
+pca = princomp(data, cor=TRUE)
+
+# Display results
+summary(pca, loadings=TRUE)
+
+# View component scores
+pca$scores
+
+# Create biplot
+biplot(pca, 
+       xlabs=product_names, 
+       cex=0.8, 
+       col = c("black", "magenta"), 
+       main = "Principal Component Map", 
+       xlab = "Component 1", 
+       ylab = "Component 2")
+
+
+### Understanding PCA Output
+
+**What PCA does:**
+- Reduces dimensionality of multivariate data
+- Identifies patterns in relationships between variables
+- Creates new uncorrelated variables (principal components)
+
+**Interpreting the biplot:**
+- **Red arrows** = original variables (sensory quality, price, design, brand)
+- **Black points** = respondents positioned in reduced space
+- **Arrow length** = variance explained by that variable
+- **Arrow angle** = correlation between variables (small angle = positive correlation)
+- **Point position** = respondent's profile based on their ratings
+
+## Part 2: Hierarchical Cluster Analysis
+
+### Context
+Grouping products (pizzas) based on sensory characteristics to identify similar product categories.
+
+### Complete R Code
+
+# =====================================================
+# Hierarchical Cluster Analysis
+# Product categorization based on sensory attributes
+# =====================================================
+
+# Load dataset from URL
+sensory_data = read.table("http://senzorika.com/sait/datasety/senzorika.txt", 
+                          sep=",", 
+                          header=FALSE)
+
+# Define product names
+product_labels = c("pizza_1","pizza_2","pizza_3","pizza_4",
+                   "pizza_5","pizza_6","pizza_7","pizza_8",
+                   "pizza_9","pizza_10","pizza_11","pizza_12",
+                   "pizza_13","pizza_14","pizza_15","pizza_16")
+
+# Assign row names
+row.names(sensory_data) = product_labels
+
+# Calculate distance matrix (Euclidean distance)
+distance_matrix = dist(sensory_data, method = "euclidean")
+
+# Perform Ward's hierarchical clustering
+cluster_fit = hclust(distance_matrix, method="ward.D")
+
+# Plot dendrogram
+plot(cluster_fit, 
+     main="Product Dendrogram", 
+     ylab="Distance (attribute weights)", 
+     xlab="Products")
+
+# Cut tree into 3 groups
+groups = cutree(cluster_fit, k=3)
+
+# Add colored rectangles around clusters
+rect.hclust(cluster_fit, k=3, border="red")
+
+# View group assignments
+print(groups)
+
+
+### Alternative: If URL is unavailable
+
+# Create sample sensory data matrix
+sensory_data = matrix(
+  c(rnorm(16*5, mean=5, sd=1.5)), # 16 products, 5 attributes
+  nrow=16, 
+  ncol=5
+)
+
+colnames(sensory_data) = c("Flavor", "Texture", "Appearance", "Aroma", "Overall")
+rownames(sensory_data) = product_labels
+
+# Continue with clustering as above...
+### Understanding Cluster Analysis Output
+
+**What clustering does:**
+- Groups similar objects together
+- Identifies natural product segments
+- Helps in product positioning and portfolio management
+
+**Interpreting the dendrogram:**
+- **Height** = dissimilarity between clusters
+- **Lower fusion** = more similar products
+- **Cutting at different heights** = different number of clusters
+- **Red rectangles** = final cluster assignments
+
+---
+
+## Part 3: Correspondence Analysis (CA)
+
+### Context
+Analyzing relationships between categorical variables (consumer segments and product preferences).
+
+### Complete R Code
+
+# =====================================================
+# Correspondence Analysis (CA)
+# Relationship between consumer segments and products
+# =====================================================
+
+# Load required library
+library(MASS)
+
+# Define contingency table (frequency data)
+# Rows = consumer segments, Columns = products
+preference_data = matrix(
+  c(15, 2, 8,   # Men
+    7, 14, 4,   # Women
+    5, 5, 15,   # Children
+    11, 5, 9),  # Retirees
+  ncol=3, 
+  byrow=TRUE
+)
+
+# Name columns (products)
+colnames(preference_data) = c("Product_A", "Product_B", "Product_C")
+
+# Name rows (consumer segments)
+rownames(preference_data) = c("Men", "Women", "Children", "Retirees")
+
+# View the data
+print(preference_data)
+
+# Perform simple correspondence analysis
+ca_result = corresp(preference_data, nf=2) # nf = number of factors
+
+# Display results
+print(ca_result)
+
+# Create biplot
+biplot(ca_result, 
+       main="Correspondence Analysis Map",
+       xlab="Dimension 1",
+       ylab="Dimension 2")
+
+### Modern Alternative using `ca` package
+# Install and load ca package (more comprehensive)
+# install.packages("ca")
+library(ca)
+
+# Perform CA with ca package
+ca_modern = ca(preference_data)
+
+# Summary
+summary(ca_modern)
+
+# Better visualization
+plot(ca_modern, 
+     main="CA Biplot: Segments vs Products",
+     xlab=paste("Dimension 1 (", round(ca_modern$sv[1]^2/sum(ca_modern$sv^2)*100, 1), "%)"),
+     ylab=paste("Dimension 2 (", round(ca_modern$sv[2]^2/sum(ca_modern$sv^2)*100, 1), "%)"))
+
+### Understanding CA Output
+
+**What CA does:**
+- Visualizes relationships in contingency tables
+- Shows associations between row and column categories
+- Reduces dimensionality while preserving chi-square distances
+
+**Interpreting the biplot:**
+- **Points close together** = similar profiles
+- **Row point near column point** = strong association
+- **Distance from origin** = deviation from average profile
+- **Dimensions** = ordered by explained inertia (variance)
+
+---
+
+## Complete Integrated Example
+
+Here's a comprehensive script combining all three methods:
+
+# =====================================================
+# MULTIVARIATE ANALYSIS LECTURE - COMPLETE EXAMPLE
+# =====================================================
+
+# Set working directory (optional)
+# setwd("your/path/here")
+
+# ----- SECTION 1: PCA -----
+cat("\n=== PRINCIPAL COMPONENT ANALYSIS ===\n")
+
+# Data preparation
+product_names = c("A","B","C","D","E","F","G","H",
+                  "A2","B2","C2","D2","E2","F2","G2","H2")
+sensory_quality = c(3,7,7,5,5,6,5,6,3,3,2,5,2,7,1,2)
+price = c(5,3,4,7,7,4,7,5,5,3,6,7,4,5,6,3)
+package_design = c(3,2,4,1,5,4,2,4,6,5,6,7,5,5,5,7)
+brand = c(7,3,3,3,5,3,3,4,3,5,3,3,6,5,5,7)
+
+data = data.frame(sensory_quality, price, package_design, brand)
+
+# PCA analysis
+pca = princomp(data, cor=TRUE)
+print(summary(pca, loadings=TRUE))
+
+# Visualization
+par(mfrow=c(1,2)) # 2 plots side by side
+biplot(pca, xlabs=product_names, cex=0.8, col=c("black", "magenta"),
+       main="PCA Biplot", xlab="PC1", ylab="PC2")
+plot(pca$scores[,1], pca$scores[,2], type="n",
+     main="PCA Score Plot", xlab="PC1", ylab="PC2")
+text(pca$scores[,1], pca$scores[,2], labels=product_names, cex=0.8)
+
+# ----- SECTION 2: CLUSTER ANALYSIS -----
+cat("\n=== HIERARCHICAL CLUSTER ANALYSIS ===\n")
+
+# Calculate distances and perform clustering
+distance_matrix = dist(data, method="euclidean")
+cluster_fit = hclust(distance_matrix, method="ward.D")
+
+# Visualization
+par(mfrow=c(1,1))
+plot(cluster_fit, labels=product_names,
+     main="Hierarchical Clustering Dendrogram",
+     ylab="Height", xlab="Respondents")
+rect.hclust(cluster_fit, k=3, border="red")
+
+# Extract cluster assignments
+clusters = cutree(cluster_fit, k=3)
+cat("\nCluster assignments:\n")
+print(table(clusters))
+
+# ----- SECTION 3: CORRESPONDENCE ANALYSIS -----
+cat("\n=== CORRESPONDENCE ANALYSIS ===\n")
+
+library(MASS)
+
+# Contingency table
+preference_data = matrix(c(15,2,8, 7,14,4, 5,5,15, 11,5,9), 
+                         ncol=3, byrow=TRUE)
+colnames(preference_data) = c("Product_A", "Product_B", "Product_C")
+rownames(preference_data) = c("Men", "Women", "Children", "Retirees")
+
+# CA analysis
+ca_result = corresp(preference_data, nf=2)
+print(ca_result)
+
+# Visualization
+biplot(ca_result, main="Correspondence Analysis",
+       xlab="Dimension 1", ylab="Dimension 2")
+
+# ----- SECTION 4: COMPARATIVE ANALYSIS -----
+cat("\n=== SUMMARY AND COMPARISON ===\n")
+cat("PCA variance explained by PC1:", 
+    round(pca$sdev[1]^2/sum(pca$sdev^2)*100, 2), "%\n")
+cat("Number of clusters identified:", length(unique(clusters)), "\n")
+cat("CA dimensions:", ca_result$cor, "\n")
+```
+
+---
+
+## Practical Exercise
+
+**Task**: Analyze the following dataset using all three methods:
+
+# Consumer preferences for coffee brands
+# Variables: taste, aroma, price_satisfaction, brand_loyalty
+# 20 respondents, 4 attributes, 7-point scale
+
+coffee_data = data.frame(
+  taste = c(6,5,7,4,3,6,5,7,4,5,6,3,7,5,4,6,7,5,4,6),
+  aroma = c(7,6,6,3,4,7,6,6,3,6,7,4,6,6,3,7,6,6,4,7),
+  price_satisfaction = c(4,5,3,6,7,4,5,3,7,4,3,6,4,5,6,3,4,5,7,4),
+  brand_loyalty = c(5,4,6,3,5,5,4,6,4,5,6,4,5,4,3,6,5,4,5,5)
+)
+
+# Questions to answer:
+# 1. What are the main dimensions of coffee preferences?
+# 2. Can we identify distinct consumer segments?
+# 3. Which attributes are most correlated?
+
+---
+
+## Key Takeaways
+1. **PCA** - Use for continuous data, dimension reduction, identifying underlying patterns
+2. **Cluster Analysis** - Use for grouping similar objects, market segmentation
+3. **Correspondence Analysis** - Use for categorical data, cross-tabulations, association studies
+
+**When to use which method:**
+- Continuous variables + reduce dimensions → **PCA**
+- Group similar observations → **Cluster Analysis**
+- Categorical/frequency data → **Correspondence Analysis**
