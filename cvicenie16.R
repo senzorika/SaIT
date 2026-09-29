@@ -4,7 +4,7 @@
 # ============================================================
 
 # install.packages(c("lme4", "lmerTest", "emmeans", "SensoMineR"))
-library(lmerTest)   # nacita aj lme4 a doplni p-hodnoty
+library(lmerTest) # nacita aj lme4 a doplni p-hodnoty
 library(emmeans)
 library(SensoMineR)
 
@@ -29,10 +29,11 @@ c(F = F_produkt, p = p_produkt)
 # 2. Zmieseny model: Product pevny, Panelist a Panelist:Product nahodne
 #---------------------------------------------------------------------------------------
 zmieseny <- lmer(Bitterness ~ Product + Session + (1 | Panelist) + (1 | Panelist:Product),
-                 data = sensochoc)
+  data = sensochoc
+)
 summary(zmieseny)
-anova(zmieseny)      # F-test pevnych efektov (Satterthwaite)
-ranova(zmieseny)     # test nahodnych efektov (likelihood ratio)
+anova(zmieseny) # F-test pevnych efektov (Satterthwaite)
+ranova(zmieseny) # test nahodnych efektov (likelihood ratio)
 
 # rozklad variability: kolko pripada na hodnotitelov, interakciu a sum
 VarCorr(zmieseny)
@@ -48,8 +49,9 @@ plot(porovnanie$emmeans, xlab = "odhadnuty priemer Bitterness")
 #---------------------------------------------------------------------------------------
 # 4. Kontrola predpokladov
 #---------------------------------------------------------------------------------------
-plot(zmieseny)                       # rezidua vs. predikcie
-qqnorm(resid(zmieseny)); qqline(resid(zmieseny))
+plot(zmieseny) # rezidua vs. predikcie
+qqnorm(resid(zmieseny))
+qqline(resid(zmieseny))
 
 
 # ULOHA1:

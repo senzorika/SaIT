@@ -30,4 +30,4 @@ D2=c(4,2,5,5,2,1,4,3,3,5,3,4,3)
 # 5/ C4,C5
 
 # formular je tu
-https://docs.google.com/forms/d/e/1FAIpQLSe-vpe_FMlJq1J52sTlU8IxcKDqzjI5RB0TR5PJh4OpzY2HJA/viewform?usp=sf_link
+# https://docs.google.com/forms/d/e/1FAIpQLSe-vpe_FMlJq1J52sTlU8IxcKDqzjI5RB0TR5PJh4OpzY2HJA/viewform?usp=sf_link

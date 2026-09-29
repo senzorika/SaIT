@@ -1,0 +1,45 @@
+# ============================================================
+# Cvičenie 2: BCG matica a interval spoľahlivosti
+# Teória: https://senzorika.github.io/SaIT/teoria/cvicenie02.html
+# ============================================================
+
+# Zobrazenie modifikovanej BCG Matice v Senzorickej analyze
+# =============================================================
+# definicia zakladnych premennych pre graf
+
+produkt <- c("A", "B", "C", "D", "E", "F")
+cena <- c(7.40, 8.51, 7.62, 5.54, 7.20, 6.62)
+kvalita <- c(4.5, 7.2, 8.5, 4.8, 7.5, 7.1)
+vysledky <- data.frame(produkt, cena, kvalita)
+
+# vypocet priemeru ceny,kvality
+mean(cena)
+mean(kvalita)
+
+# vykreslenie grafu vratane rozdelenia plochy na kvadranty
+
+plot(cena, kvalita)
+abline(v = mean(cena), col = "red")
+abline(h = mean(kvalita), col = "red")
+text(cena, kvalita, produkt, pos = 4)
+
+# Vypocet Intervalu spolahlivosti v senzorickej analyze
+# =====================================================
+# vysledky za chut od 7 hodnotitelov
+x <- c(10, 9, 11, 10, 10, 9, 10)
+
+# vypocet poctu prvkov vektora (pocet hodnotitelov n)
+length(x)
+
+# vypocet poctu roznych hodnot (kategorii) vektora
+length(unique(x))
+
+# vypocet 95% intervalu spolahlivosti (pri malom n pouzivame t-rozdelenie namiesto 1.96)
+delta <- (sd(x) / sqrt(length(x))) * qt(0.975, df = length(x) - 1)
+is <- c(mean(x) - delta, mean(x) + delta)
+
+# vykreslenie grafu (Intervalu spolahlivosti)
+plot(x, type = "b")
+abline(h = mean(x), col = "green", lty = 3)
+abline(h = mean(x) - delta, col = "red", lty = 3)
+abline(h = mean(x) + delta, col = "red", lty = 3)

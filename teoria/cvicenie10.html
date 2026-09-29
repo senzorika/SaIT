@@ -14,7 +14,7 @@
 <header class="top"><a class="brand" href="index.html">Senzometria v R · teória</a><span class="toplinks"><a href="index.html">Všetky cvičenia</a><a class="lang" href="../theory_EN/exercise10.html">English</a></span></header>
 
 <section class="hero"><span class="num">CVIČENIE 10</span><h1>Analýza prežitia a senzorická trvanlivosť</h1><p class="lead">Kaplan-Meierov odhad pravdepodobnosti akceptácie produktu v čase a určenie cut-off bodu.</p>
-<div class="files"><a href="../cvicenie10.txt">Skript (SK): cvicenie10.txt</a><a href="../exercises_EN/exercise10.txt">Script (EN): exercise10.txt</a></div></section>
+<div class="files"><a href="../cvicenie10.R">Skript (SK): cvicenie10.R</a><a href="../exercises_EN/exercise10.R">Script (EN): exercise10.R</a></div></section>
 <div class="goals"><h2>Čo sa naučíte</h2><ul>
 <li>formulovať senzorickú trvanlivosť ako úlohu analýzy prežitia,</li>
 <li>zostrojiť a čítať Kaplan-Meierovu krivku,</li>
@@ -105,10 +105,45 @@
 <div class="note"><strong>Ktorú hranicu zvoliť?</strong>50 % odmietnutí je bežná voľba (medián), ale výrobca môže požadovať prísnejšiu hranicu, napr. 25 % odmietnutí (Ŝ = 0,75). Stačí zavolať <code>model(0.75)</code>.</div>
 <div class="warn"><strong>Kódovanie udalosti</strong>V <code>Surv(time, event)</code> musí <code>TRUE</code> znamenať <em>odmietnutie</em>. Ak by ste zakódovali akceptáciu, krivka bude mať opačný význam. V dátach skriptu je <code>TRUE</code> aj v čase 0 h – pri reálnom experimente skontrolujte, či čerstvý produkt naozaj niekto odmietol, alebo ide o chybu kódovania.</div>
 
+
 <nav class="pager">
 <a class="prev" href="cvicenie09.html"><span>← Predchádzajúce</span>9. Korešpondenčná analýza</a>
 <a class="next" href="cvicenie11a.html"><span>Nasledujúce →</span>11a. TURF analýza a mapa preferencií</a>
 </nav>
 </div>
+<script>
+(function () {
+  function copy(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    return Promise.resolve();
+  }
+  document.querySelectorAll('pre:not(.out)').forEach(function (pre) {
+    var text = pre.innerText;
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'copy'; btn.textContent = 'Kopírovať';
+    btn.addEventListener('click', function () {
+      copy(text).then(function () {
+        btn.textContent = 'Skopírované ✓';
+        setTimeout(function () { btn.textContent = 'Kopírovať'; }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+  var q = document.getElementById('filter');
+  if (q) q.addEventListener('input', function () {
+    var v = q.value.toLowerCase();
+    document.querySelectorAll('.cards a').forEach(function (c) {
+      c.style.display = c.textContent.toLowerCase().indexOf(v) === -1 ? 'none' : '';
+    });
+    document.querySelectorAll('section.block').forEach(function (s) {
+      var any = Array.prototype.some.call(s.querySelectorAll('.cards a'), function (c) { return c.style.display !== 'none'; });
+      s.style.display = any ? '' : 'none';
+    });
+  });
+})();
+</script>
 </body>
 </html>

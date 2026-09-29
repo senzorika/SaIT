@@ -14,7 +14,7 @@
 <header class="top"><a class="brand" href="index.html">Sensometrics in R · theory</a><span class="toplinks"><a href="index.html">All exercises</a><a class="lang" href="../teoria/cvicenie05d.html">Slovensky</a></span></header>
 
 <section class="hero"><span class="num">EXERCISE 5d</span><h1>Durbin test and incomplete blocks</h1><p class="lead">When an assessor cannot taste every sample: the balanced incomplete block design.</p>
-<div class="files"><a href="../cvicenie5d.txt">Script (SK): cvicenie5d.txt</a><a href="../exercises_EN/exercise5d.txt">Script (EN): exercise5d.txt</a></div></section>
+<div class="files"><a href="../cvicenie5d.R">Script (SK): cvicenie5d.R</a><a href="../exercises_EN/exercise5d.R">Script (EN): exercise5d.R</a></div></section>
 <div class="goals"><h2>What you will learn</h2><ul>
 <li>to tell a complete block design from an incomplete one,</li>
 <li>the conditions of a balanced incomplete block design (BIBD),</li>
@@ -128,10 +128,45 @@ durbinAllPairsTest(y, p.adjust.method = "none") # pairwise comparisons</pre>
 <div class="note"><strong>Data format</strong>A matrix: rows = blocks (assessors), columns = samples, <code>NA</code> where the assessor did not receive the sample. For post-hoc comparisons it is sensible to use a correction (<code>"holm"</code>, <code>"bonferroni"</code>) – <code>"none"</code> in the script is only for demonstration.</div>
 <div class="warn"><strong>The PMCMR package</strong>The original <code>PMCMR</code> package (functions <code>durbin.test</code>, <code>posthoc.durbin.test</code>) is no longer on CRAN. Its successor <code>PMCMRplus</code> uses the names <code>durbinTest</code> and <code>durbinAllPairsTest</code>.</div>
 
+
 <nav class="pager">
 <a class="prev" href="exercise05c.html"><span>← Previous</span>5c. Importing Excel data and the analysis workflow</a>
 <a class="next" href="exercise06.html"><span>Next →</span>6. Correlation and linear regression</a>
 </nav>
 </div>
+<script>
+(function () {
+  function copy(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    return Promise.resolve();
+  }
+  document.querySelectorAll('pre:not(.out)').forEach(function (pre) {
+    var text = pre.innerText;
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'copy'; btn.textContent = 'Copy';
+    btn.addEventListener('click', function () {
+      copy(text).then(function () {
+        btn.textContent = 'Copied ✓';
+        setTimeout(function () { btn.textContent = 'Copy'; }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+  var q = document.getElementById('filter');
+  if (q) q.addEventListener('input', function () {
+    var v = q.value.toLowerCase();
+    document.querySelectorAll('.cards a').forEach(function (c) {
+      c.style.display = c.textContent.toLowerCase().indexOf(v) === -1 ? 'none' : '';
+    });
+    document.querySelectorAll('section.block').forEach(function (s) {
+      var any = Array.prototype.some.call(s.querySelectorAll('.cards a'), function (c) { return c.style.display !== 'none'; });
+      s.style.display = any ? '' : 'none';
+    });
+  });
+})();
+</script>
 </body>
 </html>

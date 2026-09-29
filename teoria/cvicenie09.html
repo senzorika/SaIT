@@ -14,7 +14,7 @@
 <header class="top"><a class="brand" href="index.html">Senzometria v R · teória</a><span class="toplinks"><a href="index.html">Všetky cvičenia</a><a class="lang" href="../theory_EN/exercise09.html">English</a></span></header>
 
 <section class="hero"><span class="num">CVIČENIE 9</span><h1>Korešpondenčná analýza</h1><p class="lead">Mapa vzťahov medzi kategóriami kontingenčnej tabuľky – produkty a cieľové skupiny.</p>
-<div class="files"><a href="../cvicenie9.txt">Skript (SK): cvicenie9.txt</a><a href="../exercises_EN/exercise9.txt">Script (EN): exercise9.txt</a></div></section>
+<div class="files"><a href="../cvicenie9.R">Skript (SK): cvicenie9.R</a><a href="../exercises_EN/exercise9.R">Script (EN): exercise9.R</a></div></section>
 <div class="goals"><h2>Čo sa naučíte</h2><ul>
 <li>zapísať kategoriálne dáta do kontingenčnej tabuľky,</li>
 <li>pochopiť princíp korešpondenčnej analýzy (CA) – χ² vzdialenosti a inercia,</li>
@@ -71,10 +71,54 @@
 <div class="note"><strong>Úloha so šampónmi</strong>Vygenerujte tabuľku 8 šampónov × 5 skupín (napr. <code>matrix(sample(10:90, 40, replace = TRUE), ncol = 5)</code>), pomenujte riadky a stĺpce a pre žihľavový, brezový a tropický šampón nájdite farbu vlasov, ktorá leží v mape v rovnakom smere od stredu.</div>
 <div class="warn"><strong>Predpoklady</strong>CA je opisná metóda bez p-hodnôt. O tom, či je závislosť preukazná, rozhodne <code>chisq.test(data)</code>. Pri veľmi malých početnostiach (&lt; 5) môžu zriedkavé kategórie mapu „ťahať“ k okrajom.</div>
 
+<section class="solutions"><h2>Riešenia úloh</h2><p>Kliknutím rozbalíte riešenie. Skúste úlohu najprv vyriešiť sami – výsledky sú overené v R 4.4. Kód nadväzuje na premenné zo skriptu.</p>
+<details class="sol"><summary>Úloha 1 <span>– obaly šampónov</span></summary>
+<pre>set.seed(9)
+sampony &lt;- matrix(sample(10:90, 40, replace = TRUE), ncol = 5,
+  dimnames = list(c(&quot;Brezovy&quot;,&quot;Zihlavovy&quot;,&quot;Ovocny&quot;,&quot;Vajickovy&quot;,&quot;Orechovy&quot;,&quot;Cokoladovy&quot;,&quot;Mentolovy&quot;,&quot;Tropicky&quot;),
+                  c(&quot;Blond&quot;,&quot;Hnedovlase&quot;,&quot;Ciernovlase&quot;,&quot;Cervenovlase&quot;,&quot;Muzi&quot;)))
+chisq.test(sampony)
+biplot(corresp(sampony, nf = 2))</pre>
+<div class="answer"><p>Dáta sú náhodné, výsledok závisí od <code>set.seed()</code>. Pri seed 9: závislosť je preukazná (χ² test p &lt; 0,001), prvé dve dimenzie vysvetľujú 83 % inercie. Rovnakým smerom od stredu mapy ležia: <strong>žihľavový → muži</strong>, <strong>brezový → blond</strong>, <strong>tropický → čiernovlasé</strong> – také fotografie patria na obaly.</p></div></details>
+</section>
 <nav class="pager">
 <a class="prev" href="cvicenie08.html"><span>← Predchádzajúce</span>8. Zhluková analýza</a>
 <a class="next" href="cvicenie10.html"><span>Nasledujúce →</span>10. Analýza prežitia a senzorická trvanlivosť</a>
 </nav>
 </div>
+<script>
+(function () {
+  function copy(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    return Promise.resolve();
+  }
+  document.querySelectorAll('pre:not(.out)').forEach(function (pre) {
+    var text = pre.innerText;
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'copy'; btn.textContent = 'Kopírovať';
+    btn.addEventListener('click', function () {
+      copy(text).then(function () {
+        btn.textContent = 'Skopírované ✓';
+        setTimeout(function () { btn.textContent = 'Kopírovať'; }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+  var q = document.getElementById('filter');
+  if (q) q.addEventListener('input', function () {
+    var v = q.value.toLowerCase();
+    document.querySelectorAll('.cards a').forEach(function (c) {
+      c.style.display = c.textContent.toLowerCase().indexOf(v) === -1 ? 'none' : '';
+    });
+    document.querySelectorAll('section.block').forEach(function (s) {
+      var any = Array.prototype.some.call(s.querySelectorAll('.cards a'), function (c) { return c.style.display !== 'none'; });
+      s.style.display = any ? '' : 'none';
+    });
+  });
+})();
+</script>
 </body>
 </html>

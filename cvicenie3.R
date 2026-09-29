@@ -9,51 +9,53 @@
 januar <- 31
 februar <- 28
 marec <- 31
-stvrtrok <- (januar+februar+marec)
+stvrtrok <- (januar + februar + marec)
 
 #--------------------------------------------------------------
-#definicia vektora
+# definicia vektora
 #--------------------------------------------------------------
-vektor <- c(10.2,11,10.3,14,10.1,7,8,8,8,8,9,10.2)
+vektor <- c(10.2, 11, 10.3, 14, 10.1, 7, 8, 8, 8, 8, 9, 10.2)
 
 #--------------------------------------------------------------
-#definicia matice
+# definicia matice
 #--------------------------------------------------------------
-matica <- matrix(c(1,2,5,4,5,1,4,5,3), nrow = 3, ncol=3) # matica - 3rady,3stlpce
-t(matica) #transpozicia matice
-solve(matica) #inverzna matica
+matica <- matrix(c(1, 2, 5, 4, 5, 1, 4, 5, 3), nrow = 3, ncol = 3) # matica - 3rady,3stlpce
+t(matica) # transpozicia matice
+solve(matica) # inverzna matica
 
 #--------------------------------------------------------------
-#definicia data.framu
+# definicia data.framu
 #--------------------------------------------------------------
-mesiace <- c("januar","februar","marec","april","maj","jun","jul","august","september","oktober","november","december")
-pocetdni <- c(31,28,31,30,31,30,31,31,30,31,30,31)
-spotrebacokolady <- c(1520,1780,1530,1440,1265,1489,1583,1699,1530,1667,1863,1688)
-naklady <- spotrebacokolady*1.75 # 1.75€ su naklady na liter cokoladovej zmesy
-rok <- data.frame(mesiace,pocetdni,spotrebacokolady,naklady)
+mesiace <- c("januar", "februar", "marec", "april", "maj", "jun", "jul", "august", "september", "oktober", "november", "december")
+pocetdni <- c(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
+spotrebacokolady <- c(1520, 1780, 1530, 1440, 1265, 1489, 1583, 1699, 1530, 1667, 1863, 1688)
+naklady <- spotrebacokolady * 1.75 # 1.75€ su naklady na liter cokoladovej zmesy
+rok <- data.frame(mesiace, pocetdni, spotrebacokolady, naklady)
 
 #--------------------------------------------------------------
 # generovanie nahodnej premennej
 #--------------------------------------------------------------
-set.seed(24) #nastavenie generatora
-pismena <- sample(LETTERS, 5) #z abecedy vygeneruje nahodne 5 pismen
-a <- c(sample(1:9, size=5, replace=TRUE)) # generovanie celeho cisla
-b <- rnorm(200, mean=10, sd=0.2) # generovanie cisla v normalnom rozdeleni podla parametrov
+set.seed(24) # nastavenie generatora
+pismena <- sample(LETTERS, 5) # z abecedy vygeneruje nahodne 5 pismen
+a <- c(sample(1:9, size = 5, replace = TRUE)) # generovanie celeho cisla
+b <- rnorm(200, mean = 10, sd = 0.2) # generovanie cisla v normalnom rozdeleni podla parametrov
 
 # generovanie slovnej premennej SO ZMENAMI PARAMETROV
-hodnotitel <- rep(c("H1","H2","H3","H4"),times=1, each=4) # kazda premenna 4x po sebe v jednom cykle
-produkt <- rep(c("A","B","C","D"),times=4) # kazda premenna 1x po sebe v styroch cykloch 
+hodnotitel <- rep(c("H1", "H2", "H3", "H4"), times = 1, each = 4) # kazda premenna 4x po sebe v jednom cykle
+produkt <- rep(c("A", "B", "C", "D"), times = 4) # kazda premenna 1x po sebe v styroch cykloch
 
 # nacitanie dat zo vzdialenej (internetovej) adresy (MOLOVE HMOTNOSTI)
 source("http://senzorika.com/sait/datasety/mol.txt")
-vysledky <- read.table("http://senzorika.com/sait/datasety/export.txt", sep=",")
+vysledky <- read.table("http://senzorika.com/sait/datasety/export.txt", sep = ",")
 
 #--------------------------------------------------------------
 # odstranenie niektorych elementov z vektora/ datasetu
 #--------------------------------------------------------------
 x <- c("a", "b", "c", "d", "e")
-y <- x[-c(2:4)]; # bez elementov od 2 po 4
-z <- x[-c(2,3,5)]; # bez elementov 2,3,5
+y <- x[-c(2:4)]
+# bez elementov od 2 po 4
+z <- x[-c(2, 3, 5)]
+# bez elementov 2,3,5
 
 
 # ----------------------------------------------------------------------------------------------------
@@ -62,8 +64,8 @@ z <- x[-c(2,3,5)]; # bez elementov 2,3,5
 
 
 # PRAKTICKA CAST:
-#=================================================
-# kazda skupina by mala mat vlastne data zo senzorickych merani :) 
+# =================================================
+# kazda skupina by mala mat vlastne data zo senzorickych merani :)
 
 
 # uloha1:
@@ -84,4 +86,4 @@ z <- x[-c(2,3,5)]; # bez elementov 2,3,5
 # * vytvorte novu premennu vyrobenekusy s vypocitanymi udajmi
 # * zostrojte graf mnozstva vyrobenych vyrobkov :)
 # -------------------------------------------------------------------------
-# bonusova otazka: ktore mesiace su v nadprodukcii k priemeru? 
+# bonusova otazka: ktore mesiace su v nadprodukcii k priemeru?

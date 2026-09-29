@@ -12,8 +12,8 @@ library(pwr)
 #---------------------------------------------------------------------------------------
 # Parovy preferencny test: 34 z 60 (57 %) preferovalo vzorku A - vysledok nebol preukazny.
 # Aka je sila testu, ak skutocna preferencia je 57 %?
-power.prop.test(n = 60, p1 = 34 / 60, p2 = 0.5)          # orientacne (normalna aproximacia)
-discrimPwr(pdA = 2 * 34 / 60 - 1, sample.size = 60, pGuess = 1 / 2)  # presny binomicky vypocet
+power.prop.test(n = 60, p1 = 34 / 60, p2 = 0.5) # orientacne (normalna aproximacia)
+discrimPwr(pdA = 2 * 34 / 60 - 1, sample.size = 60, pGuess = 1 / 2) # presny binomicky vypocet
 
 # Kolko spotrebitelov treba na silu 80 %?
 discrimSS(pdA = 2 * 34 / 60 - 1, target.power = 0.80, pGuess = 1 / 2)
@@ -30,8 +30,10 @@ d.primeSS(1, target.power = 0.80, method = "tetrad")
 # Sila trianglu so 100 hodnotitelmi pre rozne d'
 d_hodnoty <- seq(0, 2, by = 0.1)
 sila <- sapply(d_hodnoty, function(d) d.primePwr(d, sample.size = 100, method = "triangle"))
-plot(d_hodnoty, sila, type = "l", lwd = 2, col = "red", ylim = c(0, 1),
-     xlab = "d'", ylab = "sila testu", main = "Triangel, n = 100")
+plot(d_hodnoty, sila,
+  type = "l", lwd = 2, col = "red", ylim = c(0, 1),
+  xlab = "d'", ylab = "sila testu", main = "Triangel, n = 100"
+)
 abline(h = 0.8, lty = 2)
 
 #---------------------------------------------------------------------------------------

@@ -14,7 +14,7 @@
 <header class="top"><a class="brand" href="index.html">Sensometrics in R · theory</a><span class="toplinks"><a href="index.html">All exercises</a><a class="lang" href="../teoria/cvicenie02.html">Slovensky</a></span></header>
 
 <section class="hero"><span class="num">EXERCISE 2</span><h1>BCG matrix and confidence interval</h1><p class="lead">How to place products on a price × quality map and how to express the uncertainty of a panel mean.</p>
-<div class="files"><a href="../cvicenie2.txt">Script (SK): cvicenie2.txt</a><a href="../exercises_EN/exercise2.txt">Script (EN): exercise2.txt</a></div></section>
+<div class="files"><a href="../cvicenie2.R">Script (SK): cvicenie2.R</a><a href="../exercises_EN/exercise2.R">Script (EN): exercise2.R</a></div></section>
 <div class="goals"><h2>What you will learn</h2><ul>
 <li>to build a modified price × quality BCG matrix and interpret its quadrants,</li>
 <li>to compute and plot the 95% confidence interval of a mean,</li>
@@ -93,10 +93,45 @@
 </table></div>
 <div class="warn"><strong>Common mistake</strong>The denominator uses the number of <em>observations</em> <code>length(x)</code>, not the number of distinct values <code>length(unique(x))</code>. For the data 10, 9, 11, 10, 10, 9, 10, n = 7 but there are only 3 distinct values – the interval would come out far too wide.</div>
 
+
 <nav class="pager">
 <a class="prev" href="exercise01.html"><span>← Previous</span>1. R, RStudio and collaboration</a>
 <a class="next" href="exercise03.html"><span>Next →</span>3. Working with data in R</a>
 </nav>
 </div>
+<script>
+(function () {
+  function copy(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    return Promise.resolve();
+  }
+  document.querySelectorAll('pre:not(.out)').forEach(function (pre) {
+    var text = pre.innerText;
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'copy'; btn.textContent = 'Copy';
+    btn.addEventListener('click', function () {
+      copy(text).then(function () {
+        btn.textContent = 'Copied ✓';
+        setTimeout(function () { btn.textContent = 'Copy'; }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+  var q = document.getElementById('filter');
+  if (q) q.addEventListener('input', function () {
+    var v = q.value.toLowerCase();
+    document.querySelectorAll('.cards a').forEach(function (c) {
+      c.style.display = c.textContent.toLowerCase().indexOf(v) === -1 ? 'none' : '';
+    });
+    document.querySelectorAll('section.block').forEach(function (s) {
+      var any = Array.prototype.some.call(s.querySelectorAll('.cards a'), function (c) { return c.style.display !== 'none'; });
+      s.style.display = any ? '' : 'none';
+    });
+  });
+})();
+</script>
 </body>
 </html>

@@ -1,0 +1,73 @@
+# ============================================================
+# Cvičenie 11a: TURF analýza a mapa preferencií
+# Teória: https://senzorika.github.io/SaIT/teoria/cvicenie11a.html
+# ============================================================
+
+# --------------------------------------------------
+# TURF Analyza, Vietoris 2020
+#---------------------------------------------------
+# balik turfR bol z CRAN odstraneny, instalacia z archivu:
+# install.packages("https://cran.r-project.org/src/contrib/Archive/turfR/turfR_0.8-7.tar.gz", repos=NULL, type="source")
+library(turfR)
+set.seed(123) # reprodukovatelne nahodne data
+vajce <- c(sample(0:1, size = 150, replace = TRUE))
+syr <- c(sample(0:1, size = 150, replace = TRUE))
+sunka <- c(sample(0:1, size = 150, replace = TRUE))
+olivy <- c(sample(0:1, size = 150, replace = TRUE))
+pretlak <- c(sample(0:1, size = 150, replace = TRUE))
+salam <- c(sample(0:1, size = 150, replace = TRUE))
+cibula <- c(sample(0:1, size = 150, replace = TRUE))
+slanina <- c(sample(0:1, size = 150, replace = TRUE))
+cesnak <- c(sample(0:1, size = 150, replace = TRUE))
+rajciny <- c(sample(0:1, size = 150, replace = TRUE))
+kukurica <- c(sample(0:1, size = 150, replace = TRUE))
+wgt <- c(vajce + syr + sunka + olivy + pretlak + salam + cibula + slanina + cesnak + rajciny + kukurica) / 10
+respid <- c(1:150)
+pizza <- data.frame(respid, wgt, vajce, syr, sunka, olivy, pretlak, salam, cibula, slanina, cesnak, rajciny, kukurica)
+View(pizza)
+
+# vypocet REACH: percento ludi, pre ktorych je vybrane mnozstvo ingrediencii pritazlive
+# vypocet FREQUENCY: priemerny pocet pritazlivych ingrediencii na respondenta
+# vyberieme si teda 3 az 4 ingrediencie
+vysledky <- turf(pizza, 11, 3:4)
+
+# tabulka s 3 ingredienciami
+TURFtabulka3 <- vysledky$turf[[1]]
+colnames(TURFtabulka3) <- c(
+  "Kombo", "Reach", "Freq", "vajce", "syr", "sunka", "olivy", "pretlak",
+  "salam", "cibula", "slanina", "cesnak", "rajciny", "kukurica"
+)
+View(TURFtabulka3)
+
+# tabulka so 4 ingredienciami
+TURFtabulka4 <- vysledky$turf[[2]]
+colnames(TURFtabulka4) <- c(
+  "Kombo", "Reach", "Freq", "vajce", "syr", "sunka", "olivy", "pretlak",
+  "salam", "cibula", "slanina", "cesnak", "rajciny", "kukurica"
+)
+View(TURFtabulka4)
+
+
+#------------------------------------------------------------
+# PREFERENCE MAPPING (Externy), Vietoris 2020
+#------------------------------------------------------------
+
+# Potravinarska firma vo svojom senzorickom laboratoriu analyzovala pomocou profilovej metody
+# svoju (1) a konkurencnych 15 vyrobkov na trhu. Senzoricka komisia v pocte 8 clenov analyzovala
+# 13 stanovenych deskriptorov na nestrukturovanej intenzitnej skale. Vysledky za jednotlive deskriptory predstavuju priemer pre panel.
+# Nasledne vybrani anketari poziadali 100 respondentov, aby sa vyjadrili na 5 bodovej (skolskej) skale k celemu sortimentu vyrobkov.
+# Analyzujte pomocou techniky preference mappingu (mapy preferencii) sortiment trhu a okomentujte vyrobok sledovanej potravinarskej firmy.
+
+
+# nacitanie dat z internetovej adresy (profilove + hedonicke data)
+senzorika <- read.table("http://senzorika.com/sait/datasety/senzorika.txt", sep = ",")
+hedonika <- read.table("http://senzorika.com/sait/datasety/hedonika.txt", sep = ",")
+
+# overenie datasetov
+senzorika
+hedonika
+
+# vypocet Preference mappingu
+library(SensoMineR)
+res.pca <- PCA(senzorika)
+carto(res.pca$ind$coord[, 1:2], hedonika) # parametre farby ,col.min = 0,col.max = 1

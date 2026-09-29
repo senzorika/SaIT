@@ -14,7 +14,7 @@
 <header class="top"><a class="brand" href="index.html">Senzometria v R · teória</a><span class="toplinks"><a href="index.html">Všetky cvičenia</a><a class="lang" href="../theory_EN/exercise01.html">English</a></span></header>
 
 <section class="hero"><span class="num">CVIČENIE 1</span><h1>R, RStudio a spolupráca</h1><p class="lead">Pracovné prostredie pre senzometriu: štatistický jazyk R, vývojové prostredie RStudio, balíky a nástroje na tímovú prácu.</p>
-<div class="files"><a href="../cvicenie1.txt">Skript (SK): cvicenie1.txt</a><a href="../exercises_EN/exercise1.txt">Script (EN): exercise1.txt</a></div></section>
+<div class="files"><a href="../cvicenie1.R">Skript (SK): cvicenie1.R</a><a href="../exercises_EN/exercise1.R">Script (EN): exercise1.R</a></div></section>
 <div class="goals"><h2>Čo sa naučíte</h2><ul>
 <li>rozlíšiť R (jazyk a výpočtové jadro) a RStudio (editor okolo neho),</li>
 <li>inštalovať a načítať balíky z CRAN aj z GitHubu,</li>
@@ -29,7 +29,7 @@
   <rect x="10" y="10" width="620" height="310" rx="10" class="box"/>
   <rect x="24" y="24" width="360" height="150" rx="6" class="boxa"/>
   <text x="40" y="50" class="t-strong">1 · Editor skriptov (Source)</text>
-  <text x="40" y="74">sem píšeme kód a ukladáme ho do súboru .R / .txt</text>
+  <text x="40" y="74">sem píšeme kód a ukladáme ho do súboru .R</text>
   <rect x="40" y="90" width="220" height="10" rx="3" class="fs"/>
   <rect x="40" y="108" width="280" height="10" rx="3" class="fs"/>
   <rect x="40" y="126" width="180" height="10" rx="3" class="fs"/>
@@ -119,9 +119,44 @@ library(sensR)              # pri každom spustení R
 
 <div class="note"><strong>Dobrý zvyk</strong>Jeden projekt = jeden priečinok (v RStudiu <em>File → New Project</em>). Dáta, skripty aj výstupy potom ležia spolu a relatívne cesty k súborom fungujú u všetkých členov tímu.</div>
 
+
 <nav class="pager">
 <a class="next" href="cvicenie02.html"><span>Nasledujúce →</span>2. BCG matica a interval spoľahlivosti</a>
 </nav>
 </div>
+<script>
+(function () {
+  function copy(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    return Promise.resolve();
+  }
+  document.querySelectorAll('pre:not(.out)').forEach(function (pre) {
+    var text = pre.innerText;
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'copy'; btn.textContent = 'Kopírovať';
+    btn.addEventListener('click', function () {
+      copy(text).then(function () {
+        btn.textContent = 'Skopírované ✓';
+        setTimeout(function () { btn.textContent = 'Kopírovať'; }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+  var q = document.getElementById('filter');
+  if (q) q.addEventListener('input', function () {
+    var v = q.value.toLowerCase();
+    document.querySelectorAll('.cards a').forEach(function (c) {
+      c.style.display = c.textContent.toLowerCase().indexOf(v) === -1 ? 'none' : '';
+    });
+    document.querySelectorAll('section.block').forEach(function (s) {
+      var any = Array.prototype.some.call(s.querySelectorAll('.cards a'), function (c) { return c.style.display !== 'none'; });
+      s.style.display = any ? '' : 'none';
+    });
+  });
+})();
+</script>
 </body>
 </html>

@@ -3,14 +3,14 @@
 # Teória: https://senzorika.github.io/SaIT/teoria/cvicenie05c.html
 # ============================================================
 
-#komplikovane nacitanie excelu online :)
+# komplikovane nacitanie excelu online :)
 
 # bude treba doinstalovat tento balik
 library(readxl)
 url <- "http://senzorika.com/sait/datasety/potraviny.xlsx"
 destfile <- "potraviny.xlsx"
 curl::curl_download(url, destfile)
-potraviny <- read_excel(destfile,sheet="4vyrobky")
+potraviny <- read_excel(destfile, sheet = "4vyrobky")
 
 # testovanie normality pre vsetky styri produkty
 A <- subset(potraviny, produkt == "A")
@@ -23,5 +23,5 @@ shapiro.test(C$kvalita)
 shapiro.test(D$kvalita)
 
 # Porovnanie vo stvorici
-kruskal.test(kvalita ~ produkt, data=potraviny) 
-pairwise.wilcox.test(potraviny$kvalita,potraviny$produkt, p.adj="bonferroni", exact=FALSE)
+kruskal.test(kvalita ~ produkt, data = potraviny)
+pairwise.wilcox.test(potraviny$kvalita, potraviny$produkt, p.adj = "bonferroni", exact = FALSE)

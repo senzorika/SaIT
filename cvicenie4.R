@@ -7,50 +7,50 @@
 # Dnesne datasety
 #--------------------------------------------------------------
 # dnesne data// 9 hodnotitelov hodnotilo 4 produkty (a,b,c,d), hodnoty predstavuju celkovu kvalitu (priemer vlastnosti)
-hodnotitel <- c("hod1","hod2","hod3","hod4", "hod5", "hod6","hod7", "hod8", "hod9")
-a <- c(7.5, 6.9,7,7,6.9,7.1,7.2,7.5,6.9)
-b <- c(7.5, 8.1,7.5,7.4,7.1,7.5,7.2,7.2,6.9)
-c <- c(7, 6.1,6.7,6.1,6.9,7.1,7.2,7.2,6.9)
-d <- c(7.5, 6.9,7,7,6.9,7.1,7.2,7.2,6.9)
-tabulka <- data.frame(a,b,c,d)
+hodnotitel <- c("hod1", "hod2", "hod3", "hod4", "hod5", "hod6", "hod7", "hod8", "hod9")
+a <- c(7.5, 6.9, 7, 7, 6.9, 7.1, 7.2, 7.5, 6.9)
+b <- c(7.5, 8.1, 7.5, 7.4, 7.1, 7.5, 7.2, 7.2, 6.9)
+c <- c(7, 6.1, 6.7, 6.1, 6.9, 7.1, 7.2, 7.2, 6.9)
+d <- c(7.5, 6.9, 7, 7, 6.9, 7.1, 7.2, 7.2, 6.9)
+tabulka <- data.frame(a, b, c, d)
 
 # pocet potravinarskych ustavov vo vychodnej europe(fiktivne cisla)
-staty <- c("Slovensko","Polsko","Cesko","Madarsko", "Ukrajina", "Bulharsko","Slovinsko", "Srbsko", "Rumunsko")
-pocet <- c(7,21,15,13,19,7,9,6,6)
-ustavy <- data.frame(staty,pocet)
+staty <- c("Slovensko", "Polsko", "Cesko", "Madarsko", "Ukrajina", "Bulharsko", "Slovinsko", "Srbsko", "Rumunsko")
+pocet <- c(7, 21, 15, 13, 19, 7, 9, 6, 6)
+ustavy <- data.frame(staty, pocet)
 
 
 #--------------------------------------------------------------
-#grafy
+# grafy
 #--------------------------------------------------------------
 plot(a)
 dotchart(a)
-barplot(a, names.arg=hodnotitel, horiz=TRUE, col="lavender")
-barplot(c(a,b,c,d),col = c("lightblue", "mistyrose","lightcyan", "lavender"))
+barplot(a, names.arg = hodnotitel, horiz = TRUE, col = "lavender")
+barplot(c(a, b, c, d), col = c("lightblue", "mistyrose", "lightcyan", "lavender"))
 pie(a)
-pie(pocet, labels=staty)
+pie(pocet, labels = staty)
 hist(a)
 plot(density(a))
 
 # trosku zlozitejsi graf
-#================================
+# ================================
 # 2 plniace linky na napoje (udavane v ml, 2 minuty)
 set.seed(123) # reprodukovatelne nahodne data
-lin1 <- rnorm(120, mean=1000, sd=0.6)
-lin2 <- rnorm(120, mean=1000, sd=0.6)
-plot(lin1, type="l",main="testovaci graf", xlab="sekundy (plnenia)", ylab="linky (1-cervena, 2 - modra)")
-lines(lin2,col="lightblue")
-abline (h=mean(lin1),col="red")
-abline (h=mean(lin2),col="blue")
-grid(nx=6, ny=NA,col="gray")
+lin1 <- rnorm(120, mean = 1000, sd = 0.6)
+lin2 <- rnorm(120, mean = 1000, sd = 0.6)
+plot(lin1, type = "l", main = "testovaci graf", xlab = "sekundy (plnenia)", ylab = "linky (1-cervena, 2 - modra)")
+lines(lin2, col = "lightblue")
+abline(h = mean(lin1), col = "red")
+abline(h = mean(lin2), col = "blue")
+grid(nx = 6, ny = NA, col = "gray")
 
 
 # trosku o kusok zlozitejsi graf
-#================================
+# ================================
 library(quantmod)
 # akcie +indikatory
-getSymbols("LHA.DE",src="yahoo" , from ="2018-01-01", to = Sys.Date())
-candleChart(LHA.DE, TA=c(addMACD(),addRSI(),addBBands(),addVo()),subset = '2018::2019',theme="white")
+getSymbols("LHA.DE", src = "yahoo", from = "2018-01-01", to = Sys.Date())
+candleChart(LHA.DE, TA = c(addMACD(), addRSI(), addBBands(), addVo()), subset = "2018::2019", theme = "white")
 
 # PRAKTICKA CAST
 # ==================================
@@ -61,17 +61,17 @@ candleChart(LHA.DE, TA=c(addMACD(),addRSI(),addBBands(),addVo()),subset = '2018:
 # Uloha 2
 # Zistite preferencie jednotlivych kolovych napojov pomocou online formularov
 # nainstalovanie kniznice pre citanie googlesheets
-install.packages('gsheet')
+install.packages("gsheet")
 # pridanie kniznice googlesheets do programu R
 library(gsheet)
 # nacitanie dat z online prieskumu
-preferencie <- gsheet2tbl('https://docs.google.com/spreadsheets/d/1DqIcZD1bDUV8cP_UJvVNeQL8Pq97UgIf-nt_fsWC5gY/edit?usp=sharing')
+preferencie <- gsheet2tbl("https://docs.google.com/spreadsheets/d/1DqIcZD1bDUV8cP_UJvVNeQL8Pq97UgIf-nt_fsWC5gY/edit?usp=sharing")
 
-#definicie vektorov z online databazy
+# definicie vektorov z online databazy
 # obsah dotaznika sa moze menit - pracujeme so vsetkymi ciselnymi stlpcami
 ciselne <- preferencie[sapply(preferencie, is.numeric)]
 vysledky <- colMeans(ciselne, na.rm = TRUE)
 vysledky
 boxplot(ciselne, main = "Vysledky online dotaznika")
 
-#3 ktore akcie kolovych napojov momentalne vedu akciovy trh? :)
+# 3 ktore akcie kolovych napojov momentalne vedu akciovy trh? :)

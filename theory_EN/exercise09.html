@@ -14,7 +14,7 @@
 <header class="top"><a class="brand" href="index.html">Sensometrics in R · theory</a><span class="toplinks"><a href="index.html">All exercises</a><a class="lang" href="../teoria/cvicenie09.html">Slovensky</a></span></header>
 
 <section class="hero"><span class="num">EXERCISE 9</span><h1>Correspondence analysis</h1><p class="lead">A map of associations between the categories of a contingency table – products and target groups.</p>
-<div class="files"><a href="../cvicenie9.txt">Script (SK): cvicenie9.txt</a><a href="../exercises_EN/exercise9.txt">Script (EN): exercise9.txt</a></div></section>
+<div class="files"><a href="../cvicenie9.R">Script (SK): cvicenie9.R</a><a href="../exercises_EN/exercise9.R">Script (EN): exercise9.R</a></div></section>
 <div class="goals"><h2>What you will learn</h2><ul>
 <li>to write categorical data into a contingency table,</li>
 <li>the principle of correspondence analysis (CA) – χ² distances and inertia,</li>
@@ -71,10 +71,54 @@
 <div class="note"><strong>The shampoo task</strong>Generate a table of 8 shampoos × 5 groups (e.g. <code>matrix(sample(10:90, 40, replace = TRUE), ncol = 5)</code>), name the rows and columns, and for the nettle, birch and tropical shampoos find the hair colour lying in the same direction from the centre.</div>
 <div class="warn"><strong>Assumptions</strong>CA is a descriptive method without p-values. Whether the association is significant is decided by <code>chisq.test(data)</code>. With very small counts (&lt; 5), rare categories can “pull” the map to its edges.</div>
 
+<section class="solutions"><h2>Task solutions</h2><p>Click to expand a solution. Try the task on your own first – results were verified in R 4.4. The code continues from the variables in the script.</p>
+<details class="sol"><summary>Task 1 <span>– shampoo packaging</span></summary>
+<pre>set.seed(9)
+shampoos &lt;- matrix(sample(10:90, 40, replace = TRUE), ncol = 5,
+  dimnames = list(c(&quot;Birch&quot;,&quot;Nettle&quot;,&quot;Fruit&quot;,&quot;Egg&quot;,&quot;Nut&quot;,&quot;Chocolate&quot;,&quot;Menthol&quot;,&quot;Tropical&quot;),
+                  c(&quot;Blond&quot;,&quot;Brown&quot;,&quot;Black&quot;,&quot;Red&quot;,&quot;Men&quot;)))
+chisq.test(shampoos)
+biplot(corresp(shampoos, nf = 2))</pre>
+<div class="answer"><p>The data are random; the result depends on <code>set.seed()</code>. With seed 9: the association is significant (χ² test p &lt; 0.001), the first two dimensions explain 83% of the inertia. In the same direction from the map centre lie: <strong>nettle → men</strong>, <strong>birch → blond</strong>, <strong>tropical → black hair</strong> – those photos go on the packaging.</p></div></details>
+</section>
 <nav class="pager">
 <a class="prev" href="exercise08.html"><span>← Previous</span>8. Cluster analysis</a>
 <a class="next" href="exercise10.html"><span>Next →</span>10. Survival analysis and sensory shelf life</a>
 </nav>
 </div>
+<script>
+(function () {
+  function copy(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    return Promise.resolve();
+  }
+  document.querySelectorAll('pre:not(.out)').forEach(function (pre) {
+    var text = pre.innerText;
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'copy'; btn.textContent = 'Copy';
+    btn.addEventListener('click', function () {
+      copy(text).then(function () {
+        btn.textContent = 'Copied ✓';
+        setTimeout(function () { btn.textContent = 'Copy'; }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+  var q = document.getElementById('filter');
+  if (q) q.addEventListener('input', function () {
+    var v = q.value.toLowerCase();
+    document.querySelectorAll('.cards a').forEach(function (c) {
+      c.style.display = c.textContent.toLowerCase().indexOf(v) === -1 ? 'none' : '';
+    });
+    document.querySelectorAll('section.block').forEach(function (s) {
+      var any = Array.prototype.some.call(s.querySelectorAll('.cards a'), function (c) { return c.style.display !== 'none'; });
+      s.style.display = any ? '' : 'none';
+    });
+  });
+})();
+</script>
 </body>
 </html>

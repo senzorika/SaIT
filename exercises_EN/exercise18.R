@@ -1,0 +1,74 @@
+# ============================================================
+# Exercise 18: Temporal methods – TDS and TCATA
+# Theory: https://senzorika.github.io/SaIT/theory_EN/exercise18.html
+# ============================================================
+# Data collection: apps Senzometricke_appky/TDS_app.R and TCATA_app.R
+
+#---------------------------------------------------------------------------------------
+# 1. TDS (Temporal Dominance of Sensations) - simulation of 30 assessors, 60 s, 5 attributes
+#---------------------------------------------------------------------------------------
+set.seed(18)
+attributes <- c("sweet", "sour", "bitter", "fruity", "astringent")
+time <- 0:60
+n <- 30
+# weight of each attribute over time (sweetness at the start, bitterness and astringency at the end)
+weight <- cbind(
+  sweet = dnorm(time, 8, 8), sour = dnorm(time, 18, 8), bitter = dnorm(time, 40, 12),
+  fruity = dnorm(time, 22, 10), astringent = dnorm(time, 52, 10)
+)
+colnames(weight) <- attributes
+tds <- t(sapply(1:n, function(h) apply(weight, 1, function(w) sample(attributes, 1, prob = w + 1e-4))))
+dim(tds) # assessors x time points, each cell holds the dominant attribute
+
+# dominance rate: share of assessors who marked the attribute as dominant
+dominance <- sapply(attributes, function(a) colMeans(tds == a))
+
+# chance level P0 = 1/k and significance limit (Pineau et al., 2009)
+P0 <- 1 / length(attributes)
+limit <- P0 + 1.645 * sqrt(P0 * (1 - P0) / n)
+
+colours <- c("orange", "gold3", "brown", "purple", "darkgreen")
+matplot(time, dominance,
+  type = "l", lty = 1, lwd = 2, col = colours, ylim = c(0, 1),
+  xlab = "time (s)", ylab = "dominance rate", main = "TDS curves"
+)
+abline(h = P0, lty = 3)
+abline(h = limit, lty = 2, col = "red")
+legend("topright", legend = attributes, col = colours, lwd = 2, bty = "n")
+
+#---------------------------------------------------------------------------------------
+# 2. TCATA (Temporal Check-All-That-Apply) - two products
+#---------------------------------------------------------------------------------------
+# every assessor may have several attributes ticked at the same time
+sim_tcata <- function(shift) {
+  sapply(attributes, function(a) {
+    w <- weight[, a] / max(weight[, a])
+    if (a == "bitter") w <- pmin(1, w * shift)
+    colMeans(matrix(rbinom(n * length(time), 1, 0.8 * w), nrow = n))
+  })
+}
+tcata_A <- sim_tcata(1)
+tcata_B <- sim_tcata(0.4) # product B is less bitter
+
+matplot(time, tcata_A,
+  type = "l", lty = 1, lwd = 2, col = colours, ylim = c(0, 1),
+  xlab = "time (s)", ylab = "citation proportion", main = "TCATA - product A (solid) vs. B (dashed)"
+)
+matlines(time, tcata_B, lty = 2, lwd = 2, col = colours)
+legend("topright", legend = attributes, col = colours, lwd = 2, bty = "n")
+
+# when do the products differ significantly in bitterness? (Fisher's test at every time point)
+p_bitter <- sapply(seq_along(time), function(t) {
+  x <- round(c(tcata_A[t, "bitter"], tcata_B[t, "bitter"]) * n)
+  fisher.test(matrix(c(x, n - x), nrow = 2))$p.value
+})
+time[p_bitter < 0.05]
+
+
+# TASK1:
+# =========
+# In which time interval is sweetness significantly dominant? When does bitterness take over?
+
+# TASK2:
+# =========
+# Measure the TDS of your own product in the TDS_app.R app, load the exported data and plot the TDS curves.

@@ -14,7 +14,7 @@
 <header class="top"><a class="brand" href="index.html">Sensometrics in R · theory</a><span class="toplinks"><a href="index.html">All exercises</a><a class="lang" href="../teoria/cvicenie05a.html">Slovensky</a></span></header>
 
 <section class="hero"><span class="num">EXERCISE 5a</span><h1>Normality and two-sample comparison</h1><p class="lead">Normality checks, t-test versus Wilcoxon, the binomial test in discrimination tests, the χ² test and McNemar’s test.</p>
-<div class="files"><a href="../cvicenie5a.txt">Script (SK): cvicenie5a.txt</a><a href="../exercises_EN/exercise5a.txt">Script (EN): exercise5a.txt</a></div></section>
+<div class="files"><a href="../cvicenie5a.R">Script (SK): cvicenie5a.R</a><a href="../exercises_EN/exercise5a.R">Script (EN): exercise5a.R</a></div></section>
 <div class="goals"><h2>What you will learn</h2><ul>
 <li>to check normality graphically (QQ plot) and with a test (Shapiro-Wilk),</li>
 <li>to choose the right two-sample test: dependent/independent, parametric/non-parametric,</li>
@@ -158,10 +158,58 @@
 </figure>
 <div class="warn"><strong>Mind the matrix orientation</strong><code>matrix(c(40, 8, 24, 28), nrow = 2)</code> is filled by columns: the first column is (40, 8). Always print the table before interpreting it.</div>
 
+<section class="solutions"><h2>Task solutions</h2><p>Click to expand a solution. Try the task on your own first – results were verified in R 4.4. The code continues from the variables in the script.</p>
+<details class="sol"><summary>Task 1 <span>– best cheese vs. original (E)</span></summary>
+<pre>sapply(tab, mean)                 # cheese B has the highest mean
+shapiro.test(B - E)               # paired data: normality of the differences
+t.test(B, E, paired = TRUE)</pre>
+<div class="answer"><p>The best is cheese B (mean 7.38 vs. 7.00 for E). The same assessors rated all cheeses, so the data are <em>paired</em>. The differences are normal (Shapiro p = 0.81), paired t-test: <strong>p = 0.032</strong> – cheese B is significantly better than the original (Wilcoxon gives the same conclusion, p = 0.033).</p></div></details>
+<details class="sol"><summary>Task 2 <span>– triangle vs. paired test</span></summary>
+<pre>binom.test(42, 100, p = 1/3, alternative = &quot;greater&quot;)   # triangle
+binom.test(42, 100, p = 1/2, alternative = &quot;greater&quot;)   # as if it were a paired test</pre>
+<div class="answer"><p>Triangle: <strong>p = 0.043</strong> → the adulteration was detected. The same number in a paired test: p = 0.96 – 42% is even below the 50% chance level. The discriminability (d′) is the same; the difference lies in the guessing probability (exercise 13).</p></div></details>
+<details class="sol"><summary>Task 3 <span>– yogurt preference</span></summary>
+<pre>chisq.test(c(strawberry = 25, chocolate = 34, vanilla = 17, blueberry = 7))</pre>
+<div class="answer"><p>χ² = 19.1; df = 3; <strong>p = 0.0003</strong> – preferences are not uniform. Chocolate is chosen more often and blueberry less often than chance would suggest.</p></div></details>
+</section>
 <nav class="pager">
 <a class="prev" href="exercise04.html"><span>← Previous</span>4. Charts and data visualisation</a>
 <a class="next" href="exercise05b.html"><span>Next →</span>5b. Comparing several samples</a>
 </nav>
 </div>
+<script>
+(function () {
+  function copy(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    return Promise.resolve();
+  }
+  document.querySelectorAll('pre:not(.out)').forEach(function (pre) {
+    var text = pre.innerText;
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'copy'; btn.textContent = 'Copy';
+    btn.addEventListener('click', function () {
+      copy(text).then(function () {
+        btn.textContent = 'Copied ✓';
+        setTimeout(function () { btn.textContent = 'Copy'; }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+  var q = document.getElementById('filter');
+  if (q) q.addEventListener('input', function () {
+    var v = q.value.toLowerCase();
+    document.querySelectorAll('.cards a').forEach(function (c) {
+      c.style.display = c.textContent.toLowerCase().indexOf(v) === -1 ? 'none' : '';
+    });
+    document.querySelectorAll('section.block').forEach(function (s) {
+      var any = Array.prototype.some.call(s.querySelectorAll('.cards a'), function (c) { return c.style.display !== 'none'; });
+      s.style.display = any ? '' : 'none';
+    });
+  });
+})();
+</script>
 </body>
 </html>

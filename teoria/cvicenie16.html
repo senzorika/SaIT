@@ -14,7 +14,7 @@
 <header class="top"><a class="brand" href="index.html">Senzometria v R · teória</a><span class="toplinks"><a href="index.html">Všetky cvičenia</a><a class="lang" href="../theory_EN/exercise16.html">English</a></span></header>
 
 <section class="hero"><span class="num">CVIČENIE 16</span><h1>Zmiešané modely</h1><p class="lead">Hodnotiteľ ako náhodný efekt: prečo a ako nahradiť dvojfaktorovú ANOVA modelom lmer.</p>
-<div class="files"><a href="../cvicenie16.txt">Skript (SK): cvicenie16.txt</a><a href="../exercises_EN/exercise16.txt">Script (EN): exercise16.txt</a></div></section>
+<div class="files"><a href="../cvicenie16.R">Skript (SK): cvicenie16.R</a><a href="../exercises_EN/exercise16.R">Script (EN): exercise16.R</a></div></section>
 <div class="goals"><h2>Čo sa naučíte</h2><ul>
 <li>rozlíšiť pevné a náhodné efekty,</li>
 <li>prečo je pri senzorických dátach hodnotiteľ náhodný efekt a čo to mení na teste produktu,</li>
@@ -75,10 +75,57 @@ VarCorr(m)   # rozptyly náhodných efektov</pre>
 <div class="note"><strong>Nevyvážené dáta</strong>Najväčšia výhoda <code>lmer</code> sa ukáže, keď chýbajú hodnotenia (hodnotiteľ vynechal sedenie). Klasická ANOVA s ručne zvoleným chybovým členom vtedy prestane byť presná, zmiešaný model si s tým poradí.</div>
 <div class="warn"><strong>Varovanie „boundary (singular) fit“</strong>Znamená, že niektorý náhodný efekt má odhadnutý rozptyl 0 – dáta ho nepotrebujú. Presne to sa stane pri CocoaA (úloha 1): interakcia má p = 0,99, jej rozptyl je 0 a lmer ju zlúči s reziduom. Model je stále použiteľný, ale zvážte jeho zjednodušenie (<code>ranova()</code> ukáže, ktorý efekt vypustiť).</div>
 
+<section class="solutions"><h2>Riešenia úloh</h2><p>Kliknutím rozbalíte riešenie. Skúste úlohu najprv vyriešiť sami – výsledky sú overené v R 4.4. Kód nadväzuje na premenné zo skriptu.</p>
+<details class="sol"><summary>Úloha 1 <span>– CocoaA a singular fit</span></summary>
+<pre>m1 &lt;- lmer(CocoaA ~ Product + Session + (1 | Panelist) + (1 | Panelist:Product), data = sensochoc)
+VarCorr(m1)
+anova(m1)
+summary(aov(CocoaA ~ Product * Panelist, data = sensochoc))</pre>
+<div class="answer"><p>Interakcia hodnotiteľ × produkt nie je významná (<strong>p = 0,99</strong>): jej stredný štvorec (2,30) je dokonca menší ako reziduálny (3,29). Odhad jej rozptylu je preto 0 → <em>singular fit</em>. Model ju fakticky zlúči s reziduom: F produktu = 14,6 (pevný model 12,6). Záver je rovnaký, produkty sa preukazne líšia.</p></div></details>
+<details class="sol"><summary>Úloha 2 <span>– náhodný efekt Panelist:Session</span></summary>
+<pre>m2 &lt;- lmer(Bitterness ~ Product + Session + (1 | Panelist) + (1 | Panelist:Product), data = sensochoc)
+m3 &lt;- update(m2, . ~ . + (1 | Panelist:Session))
+anova(m2, m3, refit = FALSE)</pre>
+<div class="answer"><p>χ² = 2,18; df = 1; <strong>p = 0,14</strong>, AIC takmer rovnaké (1481,3 vs. 1481,1), BIC horšie. Efekt hodnotiteľ × sedenie model nezlepší – jednoduchší model stačí. (<code>refit = FALSE</code> porovná modely odhadnuté metódou REML, čo je pri rovnakých pevných efektoch správne.)</p></div></details>
+</section>
 <nav class="pager">
 <a class="prev" href="cvicenie15.html"><span>← Predchádzajúce</span>15. Výkonnosť senzorického panelu</a>
 <a class="next" href="cvicenie17.html"><span>Nasledujúce →</span>17. CATA a napping</a>
 </nav>
 </div>
+<script>
+(function () {
+  function copy(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    return Promise.resolve();
+  }
+  document.querySelectorAll('pre:not(.out)').forEach(function (pre) {
+    var text = pre.innerText;
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'copy'; btn.textContent = 'Kopírovať';
+    btn.addEventListener('click', function () {
+      copy(text).then(function () {
+        btn.textContent = 'Skopírované ✓';
+        setTimeout(function () { btn.textContent = 'Kopírovať'; }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+  var q = document.getElementById('filter');
+  if (q) q.addEventListener('input', function () {
+    var v = q.value.toLowerCase();
+    document.querySelectorAll('.cards a').forEach(function (c) {
+      c.style.display = c.textContent.toLowerCase().indexOf(v) === -1 ? 'none' : '';
+    });
+    document.querySelectorAll('section.block').forEach(function (s) {
+      var any = Array.prototype.some.call(s.querySelectorAll('.cards a'), function (c) { return c.style.display !== 'none'; });
+      s.style.display = any ? '' : 'none';
+    });
+  });
+})();
+</script>
 </body>
 </html>

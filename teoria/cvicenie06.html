@@ -14,7 +14,7 @@
 <header class="top"><a class="brand" href="index.html">Senzometria v R · teória</a><span class="toplinks"><a href="index.html">Všetky cvičenia</a><a class="lang" href="../theory_EN/exercise06.html">English</a></span></header>
 
 <section class="hero"><span class="num">CVIČENIE 6</span><h1>Korelácia a lineárna regresia</h1><p class="lead">Sila a smer vzťahu medzi inštrumentálnymi a senzorickými znakmi a jednoduchý predikčný model.</p>
-<div class="files"><a href="../cvicenie6.txt">Skript (SK): cvicenie6.txt</a><a href="../exercises_EN/exercise6.txt">Script (EN): exercise6.txt</a></div></section>
+<div class="files"><a href="../cvicenie6.R">Skript (SK): cvicenie6.R</a><a href="../exercises_EN/exercise6.R">Script (EN): exercise6.R</a></div></section>
 <div class="goals"><h2>Čo sa naučíte</h2><ul>
 <li>vyjadriť silu a smer vzťahu dvoch znakov korelačným koeficientom,</li>
 <li>rozlíšiť Pearsonov, Spearmanov a Kendallov koeficient,</li>
@@ -257,10 +257,58 @@
 </table></div>
 <div class="note"><strong>Poradie vo vzorci</strong><code>lm(y ~ x)</code> – vľavo to, čo predikujeme. <code>lm(sladkost ~ mcukru)</code> predikuje sladkosť z cukru; opačný zápis by dal inú priamku aj iný význam. Predikovať mimo rozsahu nameraných x (extrapolácia) je riskantné.</div>
 
+<section class="solutions"><h2>Riešenia úloh</h2><p>Kliknutím rozbalíte riešenie. Skúste úlohu najprv vyriešiť sami – výsledky sú overené v R 4.4. Kód nadväzuje na premenné zo skriptu.</p>
+<details class="sol"><summary>Úloha 1 <span>– korelácie inštrumentálnych a senzorických znakov</span></summary>
+<pre>textura &lt;- data.frame(tm_tvrdost, tm_pevnost, tm_vodivost, se_lepivost,
+                      se_stavnatost, se_prehltavost, se_zutelnost)
+r &lt;- cor(textura, method = &quot;spearman&quot;)
+round(r, 2)
+sort(round(r[, &quot;se_stavnatost&quot;], 2))</pre>
+<div class="answer"><p>Najvyššia záporná korelácia: <strong>tm_vodivost × se_zutelnost, ρ = −0,72</strong> (a se_prehltavost × se_zutelnost, −0,61). Šťavnatosť najviac koreluje s <strong>tm_pevnost (ρ = 0,75)</strong>, potom s tm_tvrdost (0,53).</p></div></details>
+<details class="sol"><summary>Úloha 2 <span>– predikcia šťavnatosti</span></summary>
+<pre>model &lt;- lm(se_stavnatost ~ tm_pevnost)
+summary(model)
+predict(model, newdata = data.frame(tm_pevnost = 4))</pre>
+<div class="answer"><p>šťavnatosť = 0,90 + 0,77 · pevnosť; smernica p = 0,0003, <strong>R² = 0,60</strong>. Predikcia je možná, ale hrubá – model vysvetľuje 60 % variability, typická chyba je okolo 1 bodu. Pri takej malej škále (1 – 5) slúži skôr na orientačný odhad.</p></div></details>
+</section>
 <nav class="pager">
 <a class="prev" href="cvicenie05d.html"><span>← Predchádzajúce</span>5d. Durbinov test a neúplné bloky</a>
 <a class="next" href="cvicenie07.html"><span>Nasledujúce →</span>7. PCA a faktorová analýza</a>
 </nav>
 </div>
+<script>
+(function () {
+  function copy(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    return Promise.resolve();
+  }
+  document.querySelectorAll('pre:not(.out)').forEach(function (pre) {
+    var text = pre.innerText;
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'copy'; btn.textContent = 'Kopírovať';
+    btn.addEventListener('click', function () {
+      copy(text).then(function () {
+        btn.textContent = 'Skopírované ✓';
+        setTimeout(function () { btn.textContent = 'Kopírovať'; }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+  var q = document.getElementById('filter');
+  if (q) q.addEventListener('input', function () {
+    var v = q.value.toLowerCase();
+    document.querySelectorAll('.cards a').forEach(function (c) {
+      c.style.display = c.textContent.toLowerCase().indexOf(v) === -1 ? 'none' : '';
+    });
+    document.querySelectorAll('section.block').forEach(function (s) {
+      var any = Array.prototype.some.call(s.querySelectorAll('.cards a'), function (c) { return c.style.display !== 'none'; });
+      s.style.display = any ? '' : 'none';
+    });
+  });
+})();
+</script>
 </body>
 </html>

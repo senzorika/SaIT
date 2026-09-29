@@ -14,7 +14,7 @@
 <header class="top"><a class="brand" href="index.html">Senzometria v R · teória</a><span class="toplinks"><a href="index.html">Všetky cvičenia</a><a class="lang" href="../theory_EN/exercise15.html">English</a></span></header>
 
 <section class="hero"><span class="num">CVIČENIE 15</span><h1>Výkonnosť senzorického panelu</h1><p class="lead">Rozlišovanie, zhoda a opakovateľnosť – ako overiť, že panelu a jednotlivým hodnotiteľom možno veriť.</p>
-<div class="files"><a href="../cvicenie15.txt">Skript (SK): cvicenie15.txt</a><a href="../exercises_EN/exercise15.txt">Script (EN): exercise15.txt</a></div></section>
+<div class="files"><a href="../cvicenie15.R">Skript (SK): cvicenie15.R</a><a href="../exercises_EN/exercise15.R">Script (EN): exercise15.R</a></div></section>
 <div class="goals"><h2>Čo sa naučíte</h2><ul>
 <li>tri piliere výkonnosti panelu: rozlišovanie, zhoda a opakovateľnosť,</li>
 <li>čítať tabuľky p-hodnôt z <code>panelperf()</code> a <code>paneliperf()</code>,</li>
@@ -89,10 +89,63 @@
 </figure>
 <div class="warn"><strong>Vyradiť hodnotiteľa až ako poslednú možnosť</strong>Slabý výsledok v jednom deskriptore býva spôsobený nejasnou definíciou atribútu, nie hodnotiteľom. Najprv skontrolujte, či rovnaký problém nemajú aj ďalší, a vyjasnite definíciu a referenčné štandardy.</div>
 
+<section class="solutions"><h2>Riešenia úloh</h2><p>Kliknutím rozbalíte riešenie. Skúste úlohu najprv vyriešiť sami – výsledky sú overené v R 4.4. Kód nadväzuje na premenné zo skriptu.</p>
+<details class="sol"><summary>Úloha 1 <span>– najlepšie rozlišované deskriptory a najhoršia zhoda</span></summary>
+<pre>deskriptory &lt;- names(sensochoc)[5:18]
+vysledok &lt;- t(sapply(deskriptory, function(v) {
+  a &lt;- summary(aov(as.formula(paste(v, &quot;~ Product + Panelist + Session + Product:Panelist&quot;)),
+                   data = sensochoc))[[1]]
+  rownames(a) &lt;- trimws(rownames(a))
+  c(F_produkt = a[&quot;Product&quot;, &quot;F value&quot;], p_interakcia = a[&quot;Product:Panelist&quot;, &quot;Pr(&gt;F)&quot;])
+}))
+vysledok[order(-vysledok[, &quot;F_produkt&quot;]), ]</pre>
+<div class="answer"><p>Všetky p-hodnoty produktu sú prakticky 0, preto porovnávame F. Najlepšie rozlišované: <strong>MilkF (F = 110), CocoaF (68), Bitterness (63)</strong>. Najhoršia zhoda (najmenšie p interakcie): <strong>Melting (0,0002), Acidity (0,005), Vanilla (0,009)</strong>.</p></div></details>
+<details class="sol"><summary>Úloha 2 <span>– vynechanie slabých hodnotiteľov</span></summary>
+<pre>slabi &lt;- names(zhoda)[zhoda &lt; 0.5 &amp; opakovatelnost[names(zhoda)] &lt; 0.5]
+slabi
+bez &lt;- droplevels(sensochoc[!sensochoc$Panelist %in% slabi, ])
+summary(aov(CocoaA ~ Product + Panelist, data = sensochoc))
+summary(aov(CocoaA ~ Product + Panelist, data = bez))</pre>
+<div class="answer"><p>Oboje pod 0,5 má <strong>7 hodnotiteľov</strong> (5, 6, 7, 11, 23, 25, 26). Po ich vynechaní stúpne F produktu z <strong>14,6 na 19,8</strong>, hoci je hodnotiteľov menej – rozlišovanie panelu sa zlepší. Pred vyradením však overte aj ostatné deskriptory.</p></div></details>
+</section>
 <nav class="pager">
 <a class="prev" href="cvicenie14.html"><span>← Predchádzajúce</span>14. Sila testu a veľkosť panelu</a>
 <a class="next" href="cvicenie16.html"><span>Nasledujúce →</span>16. Zmiešané modely</a>
 </nav>
 </div>
+<script>
+(function () {
+  function copy(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    return Promise.resolve();
+  }
+  document.querySelectorAll('pre:not(.out)').forEach(function (pre) {
+    var text = pre.innerText;
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'copy'; btn.textContent = 'Kopírovať';
+    btn.addEventListener('click', function () {
+      copy(text).then(function () {
+        btn.textContent = 'Skopírované ✓';
+        setTimeout(function () { btn.textContent = 'Kopírovať'; }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+  var q = document.getElementById('filter');
+  if (q) q.addEventListener('input', function () {
+    var v = q.value.toLowerCase();
+    document.querySelectorAll('.cards a').forEach(function (c) {
+      c.style.display = c.textContent.toLowerCase().indexOf(v) === -1 ? 'none' : '';
+    });
+    document.querySelectorAll('section.block').forEach(function (s) {
+      var any = Array.prototype.some.call(s.querySelectorAll('.cards a'), function (c) { return c.style.display !== 'none'; });
+      s.style.display = any ? '' : 'none';
+    });
+  });
+})();
+</script>
 </body>
 </html>

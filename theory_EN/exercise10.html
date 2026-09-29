@@ -14,7 +14,7 @@
 <header class="top"><a class="brand" href="index.html">Sensometrics in R · theory</a><span class="toplinks"><a href="index.html">All exercises</a><a class="lang" href="../teoria/cvicenie10.html">Slovensky</a></span></header>
 
 <section class="hero"><span class="num">EXERCISE 10</span><h1>Survival analysis and sensory shelf life</h1><p class="lead">Kaplan-Meier estimate of the probability of product acceptance over time and finding the cut-off point.</p>
-<div class="files"><a href="../cvicenie10.txt">Script (SK): cvicenie10.txt</a><a href="../exercises_EN/exercise10.txt">Script (EN): exercise10.txt</a></div></section>
+<div class="files"><a href="../cvicenie10.R">Script (SK): cvicenie10.R</a><a href="../exercises_EN/exercise10.R">Script (EN): exercise10.R</a></div></section>
 <div class="goals"><h2>What you will learn</h2><ul>
 <li>to frame sensory shelf life as a survival analysis problem,</li>
 <li>to build and read a Kaplan-Meier curve,</li>
@@ -105,10 +105,45 @@
 <div class="note"><strong>Which limit to choose?</strong>50% rejections is a common choice (the median), but a producer may require a stricter limit, e.g. 25% rejections (Ŝ = 0.75). Just call <code>model(0.75)</code>.</div>
 <div class="warn"><strong>Coding the event</strong>In <code>Surv(time, event)</code>, <code>TRUE</code> must mean <em>rejection</em>. If you coded acceptance, the curve would have the opposite meaning. The script data contain <code>TRUE</code> even at 0 h – in a real experiment check whether someone really rejected the fresh product or whether it is a coding error.</div>
 
+
 <nav class="pager">
 <a class="prev" href="exercise09.html"><span>← Previous</span>9. Correspondence analysis</a>
 <a class="next" href="exercise11a.html"><span>Next →</span>11a. TURF analysis and preference mapping</a>
 </nav>
 </div>
+<script>
+(function () {
+  function copy(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    return Promise.resolve();
+  }
+  document.querySelectorAll('pre:not(.out)').forEach(function (pre) {
+    var text = pre.innerText;
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'copy'; btn.textContent = 'Copy';
+    btn.addEventListener('click', function () {
+      copy(text).then(function () {
+        btn.textContent = 'Copied ✓';
+        setTimeout(function () { btn.textContent = 'Copy'; }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+  var q = document.getElementById('filter');
+  if (q) q.addEventListener('input', function () {
+    var v = q.value.toLowerCase();
+    document.querySelectorAll('.cards a').forEach(function (c) {
+      c.style.display = c.textContent.toLowerCase().indexOf(v) === -1 ? 'none' : '';
+    });
+    document.querySelectorAll('section.block').forEach(function (s) {
+      var any = Array.prototype.some.call(s.querySelectorAll('.cards a'), function (c) { return c.style.display !== 'none'; });
+      s.style.display = any ? '' : 'none';
+    });
+  });
+})();
+</script>
 </body>
 </html>

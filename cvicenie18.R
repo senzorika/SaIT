@@ -13,11 +13,13 @@ atributy <- c("sladky", "kysly", "horky", "ovocny", "adstringentny")
 cas <- 0:60
 n <- 30
 # vaha atributu v case (sladkost na zaciatku, horkost a adstringencia na konci)
-vaha <- cbind(sladky = dnorm(cas, 8, 8), kysly = dnorm(cas, 18, 8), horky = dnorm(cas, 40, 12),
-              ovocny = dnorm(cas, 22, 10), adstringentny = dnorm(cas, 52, 10))
+vaha <- cbind(
+  sladky = dnorm(cas, 8, 8), kysly = dnorm(cas, 18, 8), horky = dnorm(cas, 40, 12),
+  ovocny = dnorm(cas, 22, 10), adstringentny = dnorm(cas, 52, 10)
+)
 colnames(vaha) <- atributy
 tds <- t(sapply(1:n, function(h) apply(vaha, 1, function(w) sample(atributy, 1, prob = w + 1e-4))))
-dim(tds)   # hodnotitelia x casove body, v bunke je dominantny atribut
+dim(tds) # hodnotitelia x casove body, v bunke je dominantny atribut
 
 # miera dominancie: podiel hodnotitelov, ktori dany atribut oznacili ako dominantny
 dominancia <- sapply(atributy, function(a) colMeans(tds == a))
@@ -27,8 +29,10 @@ P0 <- 1 / length(atributy)
 hranica <- P0 + 1.645 * sqrt(P0 * (1 - P0) / n)
 
 farby <- c("orange", "gold3", "brown", "purple", "darkgreen")
-matplot(cas, dominancia, type = "l", lty = 1, lwd = 2, col = farby, ylim = c(0, 1),
-        xlab = "cas (s)", ylab = "miera dominancie", main = "TDS krivky")
+matplot(cas, dominancia,
+  type = "l", lty = 1, lwd = 2, col = farby, ylim = c(0, 1),
+  xlab = "cas (s)", ylab = "miera dominancie", main = "TDS krivky"
+)
 abline(h = P0, lty = 3)
 abline(h = hranica, lty = 2, col = "red")
 legend("topright", legend = atributy, col = farby, lwd = 2, bty = "n")
@@ -45,10 +49,12 @@ sim_tcata <- function(posun) {
   })
 }
 tcata_A <- sim_tcata(1)
-tcata_B <- sim_tcata(0.4)   # produkt B je menej horky
+tcata_B <- sim_tcata(0.4) # produkt B je menej horky
 
-matplot(cas, tcata_A, type = "l", lty = 1, lwd = 2, col = farby, ylim = c(0, 1),
-        xlab = "cas (s)", ylab = "podiel citacii", main = "TCATA - produkt A (plne) vs. B (ciarkovane)")
+matplot(cas, tcata_A,
+  type = "l", lty = 1, lwd = 2, col = farby, ylim = c(0, 1),
+  xlab = "cas (s)", ylab = "podiel citacii", main = "TCATA - produkt A (plne) vs. B (ciarkovane)"
+)
 matlines(cas, tcata_B, lty = 2, lwd = 2, col = farby)
 legend("topright", legend = atributy, col = farby, lwd = 2, bty = "n")
 

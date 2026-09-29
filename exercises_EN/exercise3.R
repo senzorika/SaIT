@@ -1,0 +1,90 @@
+# ============================================================
+# Exercise 3: Working with data in R
+# Theory: https://senzorika.github.io/SaIT/theory_EN/exercise03.html
+# ============================================================
+
+#--------------------------------------------------------------
+# defining a variable/object (scalar)
+#--------------------------------------------------------------
+january <- 31
+february <- 28
+march <- 31
+quarter <- (january + february + march)
+
+#--------------------------------------------------------------
+# defining a vector
+#--------------------------------------------------------------
+vector <- c(10.2, 11, 10.3, 14, 10.1, 7, 8, 8, 8, 8, 9, 10.2)
+
+#--------------------------------------------------------------
+# defining a matrix
+#--------------------------------------------------------------
+m <- matrix(c(1, 2, 5, 4, 5, 1, 4, 5, 3), nrow = 3, ncol = 3) # matrix - 3 rows, 3 columns
+t(m) # transposed matrix
+solve(m) # inverse matrix
+
+#--------------------------------------------------------------
+# defining a data.frame
+#--------------------------------------------------------------
+months <- c("january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december")
+days <- c(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
+chocolate_use <- c(1520, 1780, 1530, 1440, 1265, 1489, 1583, 1699, 1530, 1667, 1863, 1688)
+costs <- chocolate_use * 1.75 # 1.75€ is the cost per litre of chocolate coating
+year <- data.frame(months, days, chocolate_use, costs)
+
+#--------------------------------------------------------------
+# generating random variables
+#--------------------------------------------------------------
+set.seed(24) # set the random generator seed
+letters5 <- sample(LETTERS, 5) # 5 random letters from the alphabet
+a <- c(sample(1:9, size = 5, replace = TRUE)) # random integers
+b <- rnorm(200, mean = 10, sd = 0.2) # random numbers from a normal distribution with given parameters
+
+# generating a text variable WITH CHANGED PARAMETERS
+assessor <- rep(c("H1", "H2", "H3", "H4"), times = 1, each = 4) # each value 4x in a row within one cycle
+product <- rep(c("A", "B", "C", "D"), times = 4) # each value 1x in a row, in four cycles
+
+# loading data from a remote (internet) address (MOLAR MASSES)
+source("http://senzorika.com/sait/datasety/mol.txt")
+results <- read.table("http://senzorika.com/sait/datasety/export.txt", sep = ",")
+
+#--------------------------------------------------------------
+# removing some elements from a vector/dataset
+#--------------------------------------------------------------
+x <- c("a", "b", "c", "d", "e")
+y <- x[-c(2:4)]
+# without elements 2 to 4
+z <- x[-c(2, 3, 5)]
+# without elements 2, 3 and 5
+
+
+# ----------------------------------------------------------------------------------------------------
+# NOTE: COLUMNS OF A DATA FRAME ARE ACCESSED BY NESTING (results$variable)
+# ----------------------------------------------------------------------------------------------------
+
+
+# PRACTICAL PART:
+# =================================================
+# every group should have its own data from sensory measurements :)
+
+
+# task1:
+# ----------------
+# * calculate the molar masses of potassium sorbate and citric acid and determine the amounts
+#   in grams needed to prepare the brine (0.25 mol / 0.1 mol) :)
+
+# task2:
+# -------------------
+# * generate results of a 9-point (sensory) test for 4 assessors, 3 products and 3 attributes (odour, taste, texture)
+# * save them as melons.txt :)
+
+# task3:
+# -------------------
+# * load data from: http://senzorika.com/sait/datasety/cokolada.txt
+# * calculate how many fully chocolate-coated wafers were produced each month when:
+#   the diameter of both wafers (top and bottom) is 7 cm, the product height is 1.5 cm
+#   and 100 cm2 of surface needs approx. 0.02 litre of chocolate coating
+# * create a new variable produced_pieces with the calculated values
+# * plot the number of produced pieces :)
+# -------------------------------------------------------------------------
+# bonus question: which months are over-producing compared to the average?

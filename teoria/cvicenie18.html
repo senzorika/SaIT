@@ -14,7 +14,7 @@
 <header class="top"><a class="brand" href="index.html">Senzometria v R · teória</a><span class="toplinks"><a href="index.html">Všetky cvičenia</a><a class="lang" href="../theory_EN/exercise18.html">English</a></span></header>
 
 <section class="hero"><span class="num">CVIČENIE 18</span><h1>Temporálne metódy – TDS a TCATA</h1><p class="lead">Ako sa vnem mení v čase: dominancia vnemov a časové CATA krivky.</p>
-<div class="files"><a href="../cvicenie18.txt">Skript (SK): cvicenie18.txt</a><a href="../exercises_EN/exercise18.txt">Script (EN): exercise18.txt</a></div></section>
+<div class="files"><a href="../cvicenie18.R">Skript (SK): cvicenie18.R</a><a href="../exercises_EN/exercise18.R">Script (EN): exercise18.R</a></div></section>
 <div class="goals"><h2>Čo sa naučíte</h2><ul>
 <li>prečo statický profil nestačí pri produktoch, ktorých chuť sa v ústach vyvíja,</li>
 <li>čítať TDS krivky s hladinou náhody a hranicou významnosti,</li>
@@ -95,9 +95,51 @@
 <div class="warn"><strong>Mnohonásobné testovanie</strong>Test v každej sekunde znamená desiatky testov – niekoľko „významných“ bodov vznikne náhodou. Za preukazný rozdiel považujte súvislý interval niekoľkých sekúnd, nie osamotené body.</div>
 <div class="note"><strong>Dĺžka záznamu</strong>Hodnotitelia prehĺtajú a vnem doznieva rôzne rýchlo. Pri reálnych dátach sa čas často <em>štandardizuje</em> (0 = prvý výber, 1 = koniec záznamu daného hodnotiteľa), aby sa krivky dali priemerovať. Balík <code>tempR</code> ponúka hotové funkcie na štandardizáciu aj vykreslenie.</div>
 
+<section class="solutions"><h2>Riešenia úloh</h2><p>Kliknutím rozbalíte riešenie. Skúste úlohu najprv vyriešiť sami – výsledky sú overené v R 4.4. Kód nadväzuje na premenné zo skriptu.</p>
+<details class="sol"><summary>Úloha 1 <span>– kedy je sladkosť dominantná</span></summary>
+<pre>nad &lt;- dominancia &gt; hranica
+sapply(as.data.frame(nad), function(x) range(cas[x]))</pre>
+<div class="answer"><p>Hranica významnosti je 0,32. Sladkosť je preukazne dominantná v čase <strong>0 – 13 s</strong>, potom nastupuje ovocnosť (16 – 33 s) a kyslosť (8 – 28 s). Horkosť preberá dominanciu okolo <strong>33 s</strong> (33 – 53 s) a na konci prevláda adstringencia (38 – 60 s). Ide o simulované dáta, na reálnych dátach budú intervaly kratšie a menej pravidelné.</p></div></details>
+<details class="sol"><summary>Úloha 2 <span>– vlastné meranie</span></summary>
+<div class="answer"><p>Exportované dáta z <code>TDS_app.R</code> načítajte (<code>readxl::read_excel()</code>), preveďte na maticu hodnotitelia × časové body s dominantným atribútom a použite rovnaký postup ako v časti 1 skriptu (<code>colMeans(tds == a)</code>, hranica významnosti, <code>matplot()</code>).</p></div></details>
+</section>
 <nav class="pager">
 <a class="prev" href="cvicenie17.html"><span>← Predchádzajúce</span>17. CATA a napping</a>
 </nav>
 </div>
+<script>
+(function () {
+  function copy(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    return Promise.resolve();
+  }
+  document.querySelectorAll('pre:not(.out)').forEach(function (pre) {
+    var text = pre.innerText;
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'copy'; btn.textContent = 'Kopírovať';
+    btn.addEventListener('click', function () {
+      copy(text).then(function () {
+        btn.textContent = 'Skopírované ✓';
+        setTimeout(function () { btn.textContent = 'Kopírovať'; }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+  var q = document.getElementById('filter');
+  if (q) q.addEventListener('input', function () {
+    var v = q.value.toLowerCase();
+    document.querySelectorAll('.cards a').forEach(function (c) {
+      c.style.display = c.textContent.toLowerCase().indexOf(v) === -1 ? 'none' : '';
+    });
+    document.querySelectorAll('section.block').forEach(function (s) {
+      var any = Array.prototype.some.call(s.querySelectorAll('.cards a'), function (c) { return c.style.display !== 'none'; });
+      s.style.display = any ? '' : 'none';
+    });
+  });
+})();
+</script>
 </body>
 </html>

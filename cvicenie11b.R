@@ -9,12 +9,12 @@
 # Instalacia potrebnych balikov
 # install.packages("tm")  # balik na text mining
 # install.packages("SnowballC") # parsovanie textov
-# install.packages("wordcloud") # word-cloud generator 
+# install.packages("wordcloud") # word-cloud generator
 # install.packages("RColorBrewer") # farbne palety
 # install.packages("syuzhet") # balik na analyzu sentimentu
 # install.packages("ggplot2") # balik na vykreslovanie grafov
 
- # nacitanie kniznic 
+# nacitanie kniznic
 library("tm")
 library("SnowballC")
 library("wordcloud")
@@ -31,32 +31,32 @@ TextDoc <- Corpus(VectorSource(text))
 # priprava a parsovanie dokumentu
 TextDoc_dtm <- TermDocumentMatrix(TextDoc)
 dtm_m <- as.matrix(TextDoc_dtm)
-dtm_v <- sort(rowSums(dtm_m),decreasing=TRUE)
-dtm_d <- data.frame(word = names(dtm_v),freq=dtm_v)
+dtm_v <- sort(rowSums(dtm_m), decreasing = TRUE)
+dtm_d <- data.frame(word = names(dtm_v), freq = dtm_v)
 
 # zobrazenie najcastejsie sa opakujucich 5 slov
 head(dtm_d, 5)
 
 # Graf najcastejsie sa opakujucich 5 slov
-barplot(dtm_d[1:5,]$freq, las = 2, names.arg = dtm_d[1:5,]$word, col ="lightgreen", main ="Top 5 použitých slov", ylab = "Frekvencie slov")
+barplot(dtm_d[1:5, ]$freq, las = 2, names.arg = dtm_d[1:5, ]$word, col = "lightgreen", main = "Top 5 použitých slov", ylab = "Frekvencie slov")
 
 # Generovanie wordcloudu
 set.seed(1234)
-wordcloud(words = dtm_d$word, freq = dtm_d$freq, min.freq = 5,max.words=100, random.order=FALSE, rot.per=0.40, colors=brewer.pal(8, "Dark2"))
+wordcloud(words = dtm_d$word, freq = dtm_d$freq, min.freq = 5, max.words = 100, random.order = FALSE, rot.per = 0.40, colors = brewer.pal(8, "Dark2"))
 
 # Spustenie analyzy sentimentu
 d <- get_nrc_sentiment(text)
 # head(d,10) - vypisanie ukazky prvych 10 riadkov v binarnom parsovani emocii
-head (d,10)
+head(d, 10)
 
-#transpozicia matice a nejake operacie :)
+# transpozicia matice a nejake operacie :)
 td <- data.frame(t(d))
 td_new <- data.frame(rowSums(td))
 names(td_new)[1] <- "count"
 td_new <- cbind("sentiment" = rownames(td_new), td_new)
 rownames(td_new) <- NULL
-row.names(td_new) <- c("hnev","očakávanie","hnus","strach","radosť","smútok","prekvapenie","dôvera","negatívne","pozitívne")
-td_new2 <- td_new[1:8,] #v premennej je este aj sumarizacia negativne/pozitivne ale to nejde do grafu :)
+row.names(td_new) <- c("hnev", "očakávanie", "hnus", "strach", "radosť", "smútok", "prekvapenie", "dôvera", "negatívne", "pozitívne")
+td_new2 <- td_new[1:8, ] # v premennej je este aj sumarizacia negativne/pozitivne ale to nejde do grafu :)
 
 # Stlpcovy graf pre vsetky emocie
-quickplot(sentiment, data=td_new2, weight=count, geom="bar", fill=sentiment, ylab="count")+ggtitle("Analýza sentimentu (vybraný produkt)")
+quickplot(sentiment, data = td_new2, weight = count, geom = "bar", fill = sentiment, ylab = "count") + ggtitle("Analýza sentimentu (vybraný produkt)")

@@ -1,6 +1,6 @@
 # PCA priklad online
 # vyplnime formular ako vzdy :)
-https://forms.gle/gS1K7AVVUMfj2NbF6
+# https://forms.gle/gS1K7AVVUMfj2NbF6
 
 # nacitame si data a trosku upravime
 library(gsheet)

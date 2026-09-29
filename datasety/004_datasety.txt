@@ -30,9 +30,9 @@ rum
 mcnemar.test((rum),correct=F)
 
 
-----------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------
 #KORELACIE
-----------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------
 # generovanie datasetu
 mcukru=seq(1,13)
 optickaotacavost= seq(1, 45.5, by=3.5)
@@ -54,7 +54,7 @@ cor(mcukru,cirost,method="spearman")
 cor(sladkavoda,method="spearman") #kendall,pearson
 
 # motivacny formular :)
-https://forms.gle/ZguoDArAC545UE4BA
+# https://forms.gle/ZguoDArAC545UE4BA
 
 #nacitanie odpovedi z online prieskumu 
 library(gsheet)

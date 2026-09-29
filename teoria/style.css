@@ -189,3 +189,39 @@ svg .warnl { stroke: var(--warn); stroke-width: 2; fill: none; }
 svg .t-warn { fill: var(--warn); }
 svg .t-acc { fill: var(--accent); font-weight: 600; }
 svg .t-inv { fill: var(--surface); font-weight: 600; }
+
+/* copy button */
+pre { position: relative; }
+pre .copy {
+  position: absolute; top: 8px; right: 8px; font: 600 12px var(--font);
+  color: var(--code-ink); background: rgba(255, 255, 255, .08); border: 1px solid rgba(255, 255, 255, .2);
+  border-radius: 6px; padding: 3px 9px; cursor: pointer; opacity: .75;
+}
+pre .copy:hover, pre .copy:focus-visible { opacity: 1; }
+pre.out { background: var(--surface-2); color: var(--ink); border: 1px dashed var(--line); }
+
+/* index: search + blocks */
+.filter {
+  width: 100%; margin: 24px 0 4px; padding: 11px 14px; font: 16px var(--font); color: var(--ink);
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+}
+.filter:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+section.block h2 { font-size: 21px; margin: 36px 0 0; }
+section.block .cards { margin-top: 14px; }
+
+/* solutions */
+.solutions h2 { margin-bottom: 6px; }
+.solutions > p { color: var(--ink-2); margin-top: 0; }
+details.sol {
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+  margin: 12px 0; padding: 0 16px;
+}
+details.sol[open] { padding-bottom: 12px; border-color: var(--accent); }
+details.sol summary {
+  cursor: pointer; padding: 13px 0; font-weight: 600; list-style: none; display: flex; gap: 10px; align-items: baseline;
+}
+details.sol summary::-webkit-details-marker { display: none; }
+details.sol summary::before { content: "▸"; color: var(--accent); transition: transform .15s; }
+details.sol[open] summary::before { transform: rotate(90deg); }
+details.sol summary span { font-weight: 400; color: var(--ink-2); }
+details.sol .answer { background: var(--accent-soft); border-radius: 8px; padding: 10px 14px; margin-top: 10px; }

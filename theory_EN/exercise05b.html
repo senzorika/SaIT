@@ -14,7 +14,7 @@
 <header class="top"><a class="brand" href="index.html">Sensometrics in R · theory</a><span class="toplinks"><a href="index.html">All exercises</a><a class="lang" href="../teoria/cvicenie05b.html">Slovensky</a></span></header>
 
 <section class="hero"><span class="num">EXERCISE 5b</span><h1>Comparing several samples</h1><p class="lead">Kruskal-Wallis, Friedman, analysis of variance (ANOVA) and multiple comparisons.</p>
-<div class="files"><a href="../cvicenie5b.txt">Script (SK): cvicenie5b.txt</a><a href="../exercises_EN/exercise5b.txt">Script (EN): exercise5b.txt</a></div></section>
+<div class="files"><a href="../cvicenie5b.R">Script (SK): cvicenie5b.R</a><a href="../exercises_EN/exercise5b.R">Script (EN): exercise5b.R</a></div></section>
 <div class="goals"><h2>What you will learn</h2><ul>
 <li>to compare three or more samples at once instead of a series of t-tests,</li>
 <li>to choose between ANOVA, the Kruskal-Wallis and the Friedman test,</li>
@@ -135,10 +135,60 @@ frdAllPairsNemenyiTest(taste, product, assessor)      # PMCMRplus</pre>
 </ul>
 <div class="note"><strong>Two-way ANOVA</strong><code>aov(taste ~ gender * product)</code> tests three things: the effect of product, the effect of gender and their <em>interaction</em> – whether products are liked differently by men and women. A significant interaction means the main effects cannot be interpreted on their own.</div>
 
+<section class="solutions"><h2>Task solutions</h2><p>Click to expand a solution. Try the task on your own first – results were verified in R 4.4. The code continues from the variables in the script.</p>
+<details class="sol"><summary>Task 1 <span>– choosing tests for 001_datasety.txt</span></summary>
+<pre>source(&quot;datasety/001_datasety.txt&quot;)
+long &lt;- function(...) {                       # list of vectors -&gt; long format
+  l &lt;- list(...)
+  data.frame(y = unlist(l), sample = factor(rep(seq_along(l), lengths(l))),
+             assessor = factor(rep(seq_along(l[[1]]), length(l))))
+}
+sapply(list(A1, B1, C1, D1), function(x) shapiro.test(x)$p.value)
+kruskal.test(y ~ sample, data = long(A1, B1, C1, D1))             # 1/ different sessions
+friedman.test(y ~ sample | assessor, data = long(B1, B2, B3, B4))  # 2/
+t.test(D1, D2, paired = TRUE)                                     # 3/
+summary(aov(y ~ sample + assessor, data = long(C1, C2, C3, C4)))   # 4/
+t.test(C4, C5, paired = TRUE)                                     # 5/</pre>
+<div class="answer"><div class="tablewrap"><table><tr><th></th><th>design</th><th>normality</th><th>test</th><th>p</th></tr></div><p><tr><td>1/ A1, B1, C1, D1</td><td>different days → independent</td><td>B1 no (0.019)</td><td>Kruskal-Wallis</td><td>0.57 – no difference</td></tr></p><p><tr><td>2/ B1 – B4</td><td>one session → blocks</td><td>B1, B3, B4 no</td><td>Friedman</td><td><strong>0.00008</strong></td></tr></p><p><tr><td>3/ D1, D2</td><td>paired</td><td>differences yes (0.26)</td><td>paired t-test</td><td><strong>0.0018</strong></td></tr></p><p><tr><td>4/ C1 – C4</td><td>one session → blocks</td><td>all yes</td><td>ANOVA with assessor block</td><td><strong>0.00016</strong></td></tr></p><p><tr><td>5/ C4, C5</td><td>paired</td><td>differences yes (0.56)</td><td>paired t-test</td><td>0.060 – no difference</td></tr></table></p><p>We assume that vectors from one session were rated by the same assessors in the same order. The significant results 2/ and 4/ are followed by a post-hoc test.</p></div></details>
+</section>
 <nav class="pager">
 <a class="prev" href="exercise05a.html"><span>← Previous</span>5a. Normality and two-sample comparison</a>
 <a class="next" href="exercise05c.html"><span>Next →</span>5c. Importing Excel data and the analysis workflow</a>
 </nav>
 </div>
+<script>
+(function () {
+  function copy(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    return Promise.resolve();
+  }
+  document.querySelectorAll('pre:not(.out)').forEach(function (pre) {
+    var text = pre.innerText;
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'copy'; btn.textContent = 'Copy';
+    btn.addEventListener('click', function () {
+      copy(text).then(function () {
+        btn.textContent = 'Copied ✓';
+        setTimeout(function () { btn.textContent = 'Copy'; }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+  var q = document.getElementById('filter');
+  if (q) q.addEventListener('input', function () {
+    var v = q.value.toLowerCase();
+    document.querySelectorAll('.cards a').forEach(function (c) {
+      c.style.display = c.textContent.toLowerCase().indexOf(v) === -1 ? 'none' : '';
+    });
+    document.querySelectorAll('section.block').forEach(function (s) {
+      var any = Array.prototype.some.call(s.querySelectorAll('.cards a'), function (c) { return c.style.display !== 'none'; });
+      s.style.display = any ? '' : 'none';
+    });
+  });
+})();
+</script>
 </body>
 </html>

@@ -14,7 +14,7 @@
 <header class="top"><a class="brand" href="index.html">Senzometria v R · teória</a><span class="toplinks"><a href="index.html">Všetky cvičenia</a><a class="lang" href="../theory_EN/exercise08.html">English</a></span></header>
 
 <section class="hero"><span class="num">CVIČENIE 8</span><h1>Zhluková analýza</h1><p class="lead">Hierarchické zhlukovanie (Ward), dendrogram a metóda k-priemerov pre segmentáciu produktov.</p>
-<div class="files"><a href="../cvicenie8.txt">Skript (SK): cvicenie8.txt</a><a href="../exercises_EN/exercise8.txt">Script (EN): exercise8.txt</a></div></section>
+<div class="files"><a href="../cvicenie8.R">Skript (SK): cvicenie8.R</a><a href="../exercises_EN/exercise8.R">Script (EN): exercise8.R</a></div></section>
 <div class="goals"><h2>Čo sa naučíte</h2><ul>
 <li>merať podobnosť produktov vzdialenosťou v priestore senzorických znakov,</li>
 <li>zostrojiť a čítať dendrogram hierarchického zhlukovania (Wardova metóda),</li>
@@ -98,10 +98,54 @@
 </table></div>
 <div class="note"><strong>Interpretácia</strong><code>k3$centers</code> sú priemerné profily zhlukov – podľa nich zhluky pomenujeme (napr. „pikantné“, „syrové“, „jemné“). <code>k3$size</code> udáva počet produktov v každom zhluku. Pri úlohe s produktom X hľadajte, s ktorými konkurentmi zdieľa zhluk a ktorý je mu v dendrograme najbližšie.</div>
 
+<section class="solutions"><h2>Riešenia úloh</h2><p>Kliknutím rozbalíte riešenie. Skúste úlohu najprv vyriešiť sami – výsledky sú overené v R 4.4. Kód nadväzuje na premenné zo skriptu.</p>
+<details class="sol"><summary>Príklad <span>– ktorý produkt je najpodobnejší nášmu A?</span></summary>
+<pre>senzorika &lt;- read.table(&quot;http://senzorika.com/sait/datasety/senzorika.txt&quot;, sep = &quot;,&quot;)
+row.names(senzorika) &lt;- c(&quot;A&quot;,&quot;B&quot;,&quot;C&quot;,&quot;D&quot;,&quot;E&quot;,&quot;F&quot;,&quot;G&quot;,&quot;H&quot;,&quot;I&quot;,&quot;J&quot;,&quot;K&quot;,&quot;L&quot;,&quot;M&quot;,&quot;N&quot;,&quot;O&quot;,&quot;X&quot;)
+fit &lt;- hclust(dist(senzorika), method = &quot;ward.D&quot;)
+skupiny &lt;- cutree(fit, k = 5)
+skupiny[skupiny == skupiny[&quot;A&quot;]]
+sort(as.matrix(dist(senzorika))[&quot;A&quot;, ])[2:4]</pre>
+<div class="answer"><p>Pri rozdelení do 5 skupín je náš produkt A v skupine s <strong>I a X</strong>. Najbližší je <strong>X</strong> (euklidovská vzdialenosť 2,00), potom G (2,15) a I (2,52). G je teda blízko, no Ward ho zaradil do inej skupiny – vzdialenosť k jednému produktu a príslušnosť k skupine nie sú to isté.</p></div></details>
+</section>
 <nav class="pager">
 <a class="prev" href="cvicenie07.html"><span>← Predchádzajúce</span>7. PCA a faktorová analýza</a>
 <a class="next" href="cvicenie09.html"><span>Nasledujúce →</span>9. Korešpondenčná analýza</a>
 </nav>
 </div>
+<script>
+(function () {
+  function copy(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    return Promise.resolve();
+  }
+  document.querySelectorAll('pre:not(.out)').forEach(function (pre) {
+    var text = pre.innerText;
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'copy'; btn.textContent = 'Kopírovať';
+    btn.addEventListener('click', function () {
+      copy(text).then(function () {
+        btn.textContent = 'Skopírované ✓';
+        setTimeout(function () { btn.textContent = 'Kopírovať'; }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+  var q = document.getElementById('filter');
+  if (q) q.addEventListener('input', function () {
+    var v = q.value.toLowerCase();
+    document.querySelectorAll('.cards a').forEach(function (c) {
+      c.style.display = c.textContent.toLowerCase().indexOf(v) === -1 ? 'none' : '';
+    });
+    document.querySelectorAll('section.block').forEach(function (s) {
+      var any = Array.prototype.some.call(s.querySelectorAll('.cards a'), function (c) { return c.style.display !== 'none'; });
+      s.style.display = any ? '' : 'none';
+    });
+  });
+})();
+</script>
 </body>
 </html>

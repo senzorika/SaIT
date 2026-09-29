@@ -14,7 +14,7 @@
 <header class="top"><a class="brand" href="index.html">Senzometria v R · teória</a><span class="toplinks"><a href="index.html">Všetky cvičenia</a><a class="lang" href="../theory_EN/exercise17.html">English</a></span></header>
 
 <section class="hero"><span class="num">CVIČENIE 17</span><h1>CATA a napping</h1><p class="lead">Rýchle metódy profilovania so spotrebiteľmi: začiarkavacie otázky a projektívne mapovanie.</p>
-<div class="files"><a href="../cvicenie17.txt">Skript (SK): cvicenie17.txt</a><a href="../exercises_EN/exercise17.txt">Script (EN): exercise17.txt</a></div></section>
+<div class="files"><a href="../cvicenie17.R">Skript (SK): cvicenie17.R</a><a href="../exercises_EN/exercise17.R">Script (EN): exercise17.R</a></div></section>
 <div class="goals"><h2>Čo sa naučíte</h2><ul>
 <li>kedy nahradiť klasický deskriptívny profil rýchlou metódou so spotrebiteľmi,</li>
 <li>vyhodnotiť CATA otázky Cochranovým Q testom a korešpondenčnou analýzou,</li>
@@ -138,10 +138,54 @@
 </table></div>
 <div class="note"><strong>Type „c“, nie „s“</strong>Súradnice sa merajú v centimetroch na tom istom hárku, preto ich <em>neškálujeme</em> (<code>type = "c"</code>). Vzdialenosti v smere X a Y sú rovnako dôležité.</div>
 
+<section class="solutions"><h2>Riešenia úloh</h2><p>Kliknutím rozbalíte riešenie. Skúste úlohu najprv vyriešiť sami – výsledky sú overené v R 4.4. Kód nadväzuje na premenné zo skriptu.</p>
+<details class="sol"><summary>Úloha 1 <span>– ktoré atribúty rozlišujú jogurty</span></summary>
+<pre>tabulka      # pocty zaskrtnuti
+round(q_p, 4) # Cochranov Q test</pre>
+<div class="answer"><p>Cochranov Q test je preukazný pre <strong>všetkých 6 atribútov</strong> (najslabšie krémový, p = 0,016). Najviac „ovocný“ je <strong>C</strong> (33 zo 40), najviac „umelý“ tiež <strong>C</strong> (18 zo 40). B je kyslý (26), A a D krémové a husté.</p></div></details>
+<details class="sol"><summary>Úloha 2 <span>– konsenzuálna mapa napping</span></summary>
+<pre>round(napping_mfa$ind$coord[, 1:2], 2)
+sort(round(napping_mfa$group$RV[1:pocet, &quot;MFA&quot;], 2))   # zhoda hodnotitela s konsenzom</pre>
+<div class="answer"><p>Prvé dve dimenzie vysvetľujú 66 % (39 + 27 %). Dimenzia 1 oddeľuje prevažne vína z Touraine (T, vľavo) od Vouvray (V, vpravo), s výnimkou V Font. Domaine a V Font. Brules, ktoré tvoria samostatnú skupinu hore (dimenzia 2). Najmenej sa s konsenzom zhoduje <strong>hodnotiteľ 6</strong> (RV = 0,36), najviac hodnotiteľ 1 (0,77).</p></div></details>
+</section>
 <nav class="pager">
 <a class="prev" href="cvicenie16.html"><span>← Predchádzajúce</span>16. Zmiešané modely</a>
 <a class="next" href="cvicenie18.html"><span>Nasledujúce →</span>18. Temporálne metódy – TDS a TCATA</a>
 </nav>
 </div>
+<script>
+(function () {
+  function copy(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    return Promise.resolve();
+  }
+  document.querySelectorAll('pre:not(.out)').forEach(function (pre) {
+    var text = pre.innerText;
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'copy'; btn.textContent = 'Kopírovať';
+    btn.addEventListener('click', function () {
+      copy(text).then(function () {
+        btn.textContent = 'Skopírované ✓';
+        setTimeout(function () { btn.textContent = 'Kopírovať'; }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+  var q = document.getElementById('filter');
+  if (q) q.addEventListener('input', function () {
+    var v = q.value.toLowerCase();
+    document.querySelectorAll('.cards a').forEach(function (c) {
+      c.style.display = c.textContent.toLowerCase().indexOf(v) === -1 ? 'none' : '';
+    });
+    document.querySelectorAll('section.block').forEach(function (s) {
+      var any = Array.prototype.some.call(s.querySelectorAll('.cards a'), function (c) { return c.style.display !== 'none'; });
+      s.style.display = any ? '' : 'none';
+    });
+  });
+})();
+</script>
 </body>
 </html>

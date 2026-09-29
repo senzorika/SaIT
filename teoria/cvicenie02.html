@@ -14,7 +14,7 @@
 <header class="top"><a class="brand" href="index.html">Senzometria v R · teória</a><span class="toplinks"><a href="index.html">Všetky cvičenia</a><a class="lang" href="../theory_EN/exercise02.html">English</a></span></header>
 
 <section class="hero"><span class="num">CVIČENIE 2</span><h1>BCG matica a interval spoľahlivosti</h1><p class="lead">Ako umiestniť produkty do mapy cena × kvalita a ako vyjadriť neistotu priemerného hodnotenia panelu.</p>
-<div class="files"><a href="../cvicenie2.txt">Skript (SK): cvicenie2.txt</a><a href="../exercises_EN/exercise2.txt">Script (EN): exercise2.txt</a></div></section>
+<div class="files"><a href="../cvicenie2.R">Skript (SK): cvicenie2.R</a><a href="../exercises_EN/exercise2.R">Script (EN): exercise2.R</a></div></section>
 <div class="goals"><h2>Čo sa naučíte</h2><ul>
 <li>zostrojiť modifikovanú BCG maticu cena × kvalita a interpretovať kvadranty,</li>
 <li>vypočítať a nakresliť 95 % interval spoľahlivosti priemeru,</li>
@@ -93,10 +93,45 @@
 </table></div>
 <div class="warn"><strong>Častá chyba</strong>V menovateli je počet <em>pozorovaní</em> <code>length(x)</code>, nie počet rôznych hodnôt <code>length(unique(x))</code>. Pri dátach 10, 9, 11, 10, 10, 9, 10 je n = 7, ale rôzne hodnoty sú len 3 – interval by vyšiel neprimerane široký.</div>
 
+
 <nav class="pager">
 <a class="prev" href="cvicenie01.html"><span>← Predchádzajúce</span>1. R, RStudio a spolupráca</a>
 <a class="next" href="cvicenie03.html"><span>Nasledujúce →</span>3. Práca s dátami v R</a>
 </nav>
 </div>
+<script>
+(function () {
+  function copy(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    return Promise.resolve();
+  }
+  document.querySelectorAll('pre:not(.out)').forEach(function (pre) {
+    var text = pre.innerText;
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'copy'; btn.textContent = 'Kopírovať';
+    btn.addEventListener('click', function () {
+      copy(text).then(function () {
+        btn.textContent = 'Skopírované ✓';
+        setTimeout(function () { btn.textContent = 'Kopírovať'; }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+  var q = document.getElementById('filter');
+  if (q) q.addEventListener('input', function () {
+    var v = q.value.toLowerCase();
+    document.querySelectorAll('.cards a').forEach(function (c) {
+      c.style.display = c.textContent.toLowerCase().indexOf(v) === -1 ? 'none' : '';
+    });
+    document.querySelectorAll('section.block').forEach(function (s) {
+      var any = Array.prototype.some.call(s.querySelectorAll('.cards a'), function (c) { return c.style.display !== 'none'; });
+      s.style.display = any ? '' : 'none';
+    });
+  });
+})();
+</script>
 </body>
 </html>

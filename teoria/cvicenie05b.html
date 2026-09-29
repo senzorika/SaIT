@@ -14,7 +14,7 @@
 <header class="top"><a class="brand" href="index.html">Senzometria v R · teória</a><span class="toplinks"><a href="index.html">Všetky cvičenia</a><a class="lang" href="../theory_EN/exercise05b.html">English</a></span></header>
 
 <section class="hero"><span class="num">CVIČENIE 5b</span><h1>Porovnanie viacerých vzoriek</h1><p class="lead">Kruskal-Wallis, Friedman, analýza rozptylu (ANOVA) a viacnásobné porovnania.</p>
-<div class="files"><a href="../cvicenie5b.txt">Skript (SK): cvicenie5b.txt</a><a href="../exercises_EN/exercise5b.txt">Script (EN): exercise5b.txt</a></div></section>
+<div class="files"><a href="../cvicenie5b.R">Skript (SK): cvicenie5b.R</a><a href="../exercises_EN/exercise5b.R">Script (EN): exercise5b.R</a></div></section>
 <div class="goals"><h2>Čo sa naučíte</h2><ul>
 <li>porovnať tri a viac vzoriek naraz namiesto série t-testov,</li>
 <li>vybrať medzi ANOVA, Kruskal-Wallisovým a Friedmanovým testom,</li>
@@ -135,10 +135,60 @@ frdAllPairsNemenyiTest(chut, produkt, hodnotitel)     # PMCMRplus</pre>
 </ul>
 <div class="note"><strong>Dvojfaktorová ANOVA</strong><code>aov(chut ~ pohlavie * produkt)</code> testuje tri veci: vplyv produktu, vplyv pohlavia a ich <em>interakciu</em> – či sa produkty páčia mužom a ženám rôzne. Preukazná interakcia znamená, že hlavné efekty nemožno interpretovať samostatne.</div>
 
+<section class="solutions"><h2>Riešenia úloh</h2><p>Kliknutím rozbalíte riešenie. Skúste úlohu najprv vyriešiť sami – výsledky sú overené v R 4.4. Kód nadväzuje na premenné zo skriptu.</p>
+<details class="sol"><summary>Úloha 1 <span>– výber testov pre 001_datasety.txt</span></summary>
+<pre>source(&quot;datasety/001_datasety.txt&quot;)
+dlhy &lt;- function(...) {                       # zoznam vektorov -&gt; dlhy format
+  l &lt;- list(...)
+  data.frame(y = unlist(l), vzorka = factor(rep(seq_along(l), lengths(l))),
+             hodnotitel = factor(rep(seq_along(l[[1]]), length(l))))
+}
+sapply(list(A1, B1, C1, D1), function(x) shapiro.test(x)$p.value)
+kruskal.test(y ~ vzorka, data = dlhy(A1, B1, C1, D1))             # 1/ rozne sedenia
+friedman.test(y ~ vzorka | hodnotitel, data = dlhy(B1, B2, B3, B4)) # 2/
+t.test(D1, D2, paired = TRUE)                                     # 3/
+summary(aov(y ~ vzorka + hodnotitel, data = dlhy(C1, C2, C3, C4)))  # 4/
+t.test(C4, C5, paired = TRUE)                                     # 5/</pre>
+<div class="answer"><div class="tablewrap"><table><tr><th></th><th>dizajn</th><th>normalita</th><th>test</th><th>p</th></tr></div><p><tr><td>1/ A1, B1, C1, D1</td><td>rôzne dni → nezávislé</td><td>B1 nie (0,019)</td><td>Kruskal-Wallis</td><td>0,57 – bez rozdielu</td></tr></p><p><tr><td>2/ B1 – B4</td><td>jedno sedenie → bloky</td><td>B1, B3, B4 nie</td><td>Friedman</td><td><strong>0,00008</strong></td></tr></p><p><tr><td>3/ D1, D2</td><td>párové</td><td>rozdiely áno (0,26)</td><td>párový t-test</td><td><strong>0,0018</strong></td></tr></p><p><tr><td>4/ C1 – C4</td><td>jedno sedenie → bloky</td><td>všetky áno</td><td>ANOVA s blokom hodnotiteľ</td><td><strong>0,00016</strong></td></tr></p><p><tr><td>5/ C4, C5</td><td>párové</td><td>rozdiely áno (0,56)</td><td>párový t-test</td><td>0,060 – bez rozdielu</td></tr></table></p><p>Predpokladáme, že vektory z jedného sedenia hodnotili tí istí hodnotitelia v rovnakom poradí. Pri preukazných výsledkoch 2/ a 4/ nasleduje post-hoc test.</p></div></details>
+</section>
 <nav class="pager">
 <a class="prev" href="cvicenie05a.html"><span>← Predchádzajúce</span>5a. Normalita a porovnanie dvoch vzoriek</a>
 <a class="next" href="cvicenie05c.html"><span>Nasledujúce →</span>5c. Import dát z Excelu a postup analýzy</a>
 </nav>
 </div>
+<script>
+(function () {
+  function copy(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    return Promise.resolve();
+  }
+  document.querySelectorAll('pre:not(.out)').forEach(function (pre) {
+    var text = pre.innerText;
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'copy'; btn.textContent = 'Kopírovať';
+    btn.addEventListener('click', function () {
+      copy(text).then(function () {
+        btn.textContent = 'Skopírované ✓';
+        setTimeout(function () { btn.textContent = 'Kopírovať'; }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+  var q = document.getElementById('filter');
+  if (q) q.addEventListener('input', function () {
+    var v = q.value.toLowerCase();
+    document.querySelectorAll('.cards a').forEach(function (c) {
+      c.style.display = c.textContent.toLowerCase().indexOf(v) === -1 ? 'none' : '';
+    });
+    document.querySelectorAll('section.block').forEach(function (s) {
+      var any = Array.prototype.some.call(s.querySelectorAll('.cards a'), function (c) { return c.style.display !== 'none'; });
+      s.style.display = any ? '' : 'none';
+    });
+  });
+})();
+</script>
 </body>
 </html>

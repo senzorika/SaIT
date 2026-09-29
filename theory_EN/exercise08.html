@@ -14,7 +14,7 @@
 <header class="top"><a class="brand" href="index.html">Sensometrics in R · theory</a><span class="toplinks"><a href="index.html">All exercises</a><a class="lang" href="../teoria/cvicenie08.html">Slovensky</a></span></header>
 
 <section class="hero"><span class="num">EXERCISE 8</span><h1>Cluster analysis</h1><p class="lead">Hierarchical clustering (Ward), the dendrogram and k-means for product segmentation.</p>
-<div class="files"><a href="../cvicenie8.txt">Script (SK): cvicenie8.txt</a><a href="../exercises_EN/exercise8.txt">Script (EN): exercise8.txt</a></div></section>
+<div class="files"><a href="../cvicenie8.R">Script (SK): cvicenie8.R</a><a href="../exercises_EN/exercise8.R">Script (EN): exercise8.R</a></div></section>
 <div class="goals"><h2>What you will learn</h2><ul>
 <li>to measure product similarity as a distance in the space of sensory attributes,</li>
 <li>to build and read the dendrogram of hierarchical clustering (Ward’s method),</li>
@@ -98,10 +98,54 @@
 </table></div>
 <div class="note"><strong>Interpretation</strong><code>k3$centers</code> are the mean profiles of the clusters – we name the clusters after them (e.g. “spicy”, “cheesy”, “mild”). <code>k3$size</code> gives the number of products in each cluster. In the task with product X, look for the competitors it shares a cluster with and which one is closest to it in the dendrogram.</div>
 
+<section class="solutions"><h2>Task solutions</h2><p>Click to expand a solution. Try the task on your own first – results were verified in R 4.4. The code continues from the variables in the script.</p>
+<details class="sol"><summary>Example <span>– which product is most similar to our A?</span></summary>
+<pre>sensory &lt;- read.table(&quot;http://senzorika.com/sait/datasety/senzorika.txt&quot;, sep = &quot;,&quot;)
+row.names(sensory) &lt;- c(&quot;A&quot;,&quot;B&quot;,&quot;C&quot;,&quot;D&quot;,&quot;E&quot;,&quot;F&quot;,&quot;G&quot;,&quot;H&quot;,&quot;I&quot;,&quot;J&quot;,&quot;K&quot;,&quot;L&quot;,&quot;M&quot;,&quot;N&quot;,&quot;O&quot;,&quot;X&quot;)
+fit &lt;- hclust(dist(sensory), method = &quot;ward.D&quot;)
+groups &lt;- cutree(fit, k = 5)
+groups[groups == groups[&quot;A&quot;]]
+sort(as.matrix(dist(sensory))[&quot;A&quot;, ])[2:4]</pre>
+<div class="answer"><p>With 5 groups our product A is in a group with <strong>I and X</strong>. The closest one is <strong>X</strong> (Euclidean distance 2.00), then G (2.15) and I (2.52). G is close, yet Ward placed it in another group – distance to one product and group membership are not the same thing.</p></div></details>
+</section>
 <nav class="pager">
 <a class="prev" href="exercise07.html"><span>← Previous</span>7. PCA and factor analysis</a>
 <a class="next" href="exercise09.html"><span>Next →</span>9. Correspondence analysis</a>
 </nav>
 </div>
+<script>
+(function () {
+  function copy(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    return Promise.resolve();
+  }
+  document.querySelectorAll('pre:not(.out)').forEach(function (pre) {
+    var text = pre.innerText;
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'copy'; btn.textContent = 'Copy';
+    btn.addEventListener('click', function () {
+      copy(text).then(function () {
+        btn.textContent = 'Copied ✓';
+        setTimeout(function () { btn.textContent = 'Copy'; }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+  var q = document.getElementById('filter');
+  if (q) q.addEventListener('input', function () {
+    var v = q.value.toLowerCase();
+    document.querySelectorAll('.cards a').forEach(function (c) {
+      c.style.display = c.textContent.toLowerCase().indexOf(v) === -1 ? 'none' : '';
+    });
+    document.querySelectorAll('section.block').forEach(function (s) {
+      var any = Array.prototype.some.call(s.querySelectorAll('.cards a'), function (c) { return c.style.display !== 'none'; });
+      s.style.display = any ? '' : 'none';
+    });
+  });
+})();
+</script>
 </body>
 </html>

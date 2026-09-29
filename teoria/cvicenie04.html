@@ -14,7 +14,7 @@
 <header class="top"><a class="brand" href="index.html">Senzometria v R · teória</a><span class="toplinks"><a href="index.html">Všetky cvičenia</a><a class="lang" href="../theory_EN/exercise04.html">English</a></span></header>
 
 <section class="hero"><span class="num">CVIČENIE 4</span><h1>Grafy a vizualizácia dát</h1><p class="lead">Ktorý graf zvoliť, ako ho čítať a čo z neho vyčítať skôr, než siahneme po štatistickom teste.</p>
-<div class="files"><a href="../cvicenie4.txt">Skript (SK): cvicenie4.txt</a><a href="../exercises_EN/exercise4.txt">Script (EN): exercise4.txt</a></div></section>
+<div class="files"><a href="../cvicenie4.R">Skript (SK): cvicenie4.R</a><a href="../exercises_EN/exercise4.R">Script (EN): exercise4.R</a></div></section>
 <div class="goals"><h2>Čo sa naučíte</h2><ul>
 <li>vybrať vhodný typ grafu podľa typu dát a otázky,</li>
 <li>čítať krabicový graf (boxplot), histogram a hustotu,</li>
@@ -102,10 +102,48 @@ grid(nx = 6, ny = NA, col = "gray")   # zvislá mriežka</pre>
 <div class="note"><strong>Finančné grafy</strong>Sviečkový graf (<code>candleChart</code> z balíka quantmod) zobrazuje pre každý deň otváraciu, zatváraciu, najvyššiu a najnižšiu cenu. Indikátory ako MACD, RSI či Bollingerove pásma sú kĺzavé štatistiky nad týmito dátami – rovnaký princíp, aký používa aj regulačný diagram pri kontrole kvality výroby.</div>
 <div class="warn"><strong>Častá chyba</strong><code>barplot(a, b)</code> nenakreslí dve série – druhý argument je šírka stĺpcov. Dve série kreslíme ako maticu: <code>barplot(rbind(a, b), beside = TRUE)</code>.</div>
 
+<section class="solutions"><h2>Riešenia úloh</h2><p>Kliknutím rozbalíte riešenie. Skúste úlohu najprv vyriešiť sami – výsledky sú overené v R 4.4. Kód nadväzuje na premenné zo skriptu.</p>
+<details class="sol"><summary>Úlohy 1 <span>– 3 – postup</span></summary>
+<div class="answer"><p>Úlohy sú otvorené, výsledok závisí od zvolených dát. Pre úlohu 1 vyberte 3 a viac výrobkov na <a href="https://world.openfoodfacts.org/">Open Food Facts</a>, prepíšte napr. obsah cukru, tuku a soli do data.frame a použite <code>barplot(as.matrix(t(tabulka)), beside = TRUE, legend.text = TRUE)</code>. V úlohe 2 skript spracuje ľubovoľné číselné stĺpce dotazníka. V úlohe 3 načítajte akcie cez <code>getSymbols()</code> (napr. KO, PEP) a porovnajte ich <code>chartSeries()</code>.</p></div></details>
+</section>
 <nav class="pager">
 <a class="prev" href="cvicenie03.html"><span>← Predchádzajúce</span>3. Práca s dátami v R</a>
 <a class="next" href="cvicenie05a.html"><span>Nasledujúce →</span>5a. Normalita a porovnanie dvoch vzoriek</a>
 </nav>
 </div>
+<script>
+(function () {
+  function copy(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    return Promise.resolve();
+  }
+  document.querySelectorAll('pre:not(.out)').forEach(function (pre) {
+    var text = pre.innerText;
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'copy'; btn.textContent = 'Kopírovať';
+    btn.addEventListener('click', function () {
+      copy(text).then(function () {
+        btn.textContent = 'Skopírované ✓';
+        setTimeout(function () { btn.textContent = 'Kopírovať'; }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+  var q = document.getElementById('filter');
+  if (q) q.addEventListener('input', function () {
+    var v = q.value.toLowerCase();
+    document.querySelectorAll('.cards a').forEach(function (c) {
+      c.style.display = c.textContent.toLowerCase().indexOf(v) === -1 ? 'none' : '';
+    });
+    document.querySelectorAll('section.block').forEach(function (s) {
+      var any = Array.prototype.some.call(s.querySelectorAll('.cards a'), function (c) { return c.style.display !== 'none'; });
+      s.style.display = any ? '' : 'none';
+    });
+  });
+})();
+</script>
 </body>
 </html>

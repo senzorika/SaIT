@@ -14,7 +14,7 @@
 <header class="top"><a class="brand" href="index.html">Sensometrics in R · theory</a><span class="toplinks"><a href="index.html">All exercises</a><a class="lang" href="../teoria/cvicenie04.html">Slovensky</a></span></header>
 
 <section class="hero"><span class="num">EXERCISE 4</span><h1>Charts and data visualisation</h1><p class="lead">Which chart to choose, how to read it and what it tells us before we reach for a statistical test.</p>
-<div class="files"><a href="../cvicenie4.txt">Script (SK): cvicenie4.txt</a><a href="../exercises_EN/exercise4.txt">Script (EN): exercise4.txt</a></div></section>
+<div class="files"><a href="../cvicenie4.R">Script (SK): cvicenie4.R</a><a href="../exercises_EN/exercise4.R">Script (EN): exercise4.R</a></div></section>
 <div class="goals"><h2>What you will learn</h2><ul>
 <li>to choose the right chart for the data type and the question,</li>
 <li>to read a box plot, a histogram and a density curve,</li>
@@ -102,10 +102,48 @@ grid(nx = 6, ny = NA, col = "gray")    # vertical grid</pre>
 <div class="note"><strong>Financial charts</strong>A candlestick chart (<code>candleChart</code> from quantmod) shows the opening, closing, highest and lowest price for each day. Indicators such as MACD, RSI or Bollinger bands are moving statistics over these data – the same principle as a control chart in production quality control.</div>
 <div class="warn"><strong>Common mistake</strong><code>barplot(a, b)</code> does not draw two series – the second argument is the bar width. Two series are drawn as a matrix: <code>barplot(rbind(a, b), beside = TRUE)</code>.</div>
 
+<section class="solutions"><h2>Task solutions</h2><p>Click to expand a solution. Try the task on your own first – results were verified in R 4.4. The code continues from the variables in the script.</p>
+<details class="sol"><summary>Tasks 1 <span>– 3 – approach</span></summary>
+<div class="answer"><p>The tasks are open, the result depends on the chosen data. For task 1 pick 3 or more products on <a href="https://world.openfoodfacts.org/">Open Food Facts</a>, type e.g. sugar, fat and salt content into a data.frame and use <code>barplot(as.matrix(t(tab)), beside = TRUE, legend.text = TRUE)</code>. In task 2 the script handles any numeric columns of the survey. In task 3 load stocks with <code>getSymbols()</code> (e.g. KO, PEP) and compare them with <code>chartSeries()</code>.</p></div></details>
+</section>
 <nav class="pager">
 <a class="prev" href="exercise03.html"><span>← Previous</span>3. Working with data in R</a>
 <a class="next" href="exercise05a.html"><span>Next →</span>5a. Normality and two-sample comparison</a>
 </nav>
 </div>
+<script>
+(function () {
+  function copy(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    return Promise.resolve();
+  }
+  document.querySelectorAll('pre:not(.out)').forEach(function (pre) {
+    var text = pre.innerText;
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'copy'; btn.textContent = 'Copy';
+    btn.addEventListener('click', function () {
+      copy(text).then(function () {
+        btn.textContent = 'Copied ✓';
+        setTimeout(function () { btn.textContent = 'Copy'; }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+  var q = document.getElementById('filter');
+  if (q) q.addEventListener('input', function () {
+    var v = q.value.toLowerCase();
+    document.querySelectorAll('.cards a').forEach(function (c) {
+      c.style.display = c.textContent.toLowerCase().indexOf(v) === -1 ? 'none' : '';
+    });
+    document.querySelectorAll('section.block').forEach(function (s) {
+      var any = Array.prototype.some.call(s.querySelectorAll('.cards a'), function (c) { return c.style.display !== 'none'; });
+      s.style.display = any ? '' : 'none';
+    });
+  });
+})();
+</script>
 </body>
 </html>

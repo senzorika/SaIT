@@ -1,5 +1,5 @@
 # na uvod je potrebne vyplnit formular
-https://docs.google.com/forms/d/e/1FAIpQLSfeyIq-PkRxDa9w_1YuouG45A-0RTBelR8iqBtt_NDwxe_lmw/viewform
+# https://docs.google.com/forms/d/e/1FAIpQLSfeyIq-PkRxDa9w_1YuouG45A-0RTBelR8iqBtt_NDwxe_lmw/viewform
 
 # nainštalovanie knižnice pre čítanie googlesheets a psych
 install.packages('gsheet')

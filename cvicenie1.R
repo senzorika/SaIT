@@ -21,7 +21,7 @@
 # Slack - vo svete popularny... skola skor vyuziva Teams
 # https://join.slack.com/
 
-#Trello (vhodna pre individualne/skupinove projekty)
+# Trello (vhodna pre individualne/skupinove projekty)
 # https://trello.com/
 
 # Notion (sprava projektov)
@@ -30,15 +30,17 @@
 # github (repozitar, na riadenu dokumentaciu/ verziovanie dokumentov)
 # https://github.com/
 
-#webkonferencie a online chat
+# webkonferencie a online chat
 # https://meet.jit.si/sait2024
 
 # instalacia balikov pre cvicenia 1-18 (staci raz)
-install.packages(c("sensR", "pwr", "SensoMineR", "FactoMineR", "lmerTest", "emmeans", "DescTools",
-                   "PMCMRplus", "readxl", "curl", "cluster", "factoextra", "tidyverse", "quantmod",
-                   "gsheet", "tm", "SnowballC", "wordcloud", "RColorBrewer", "syuzhet", "ggplot2",
-                   "HH", "latticeExtra", "fmsb"))
-# turfR (cvicenie 11a) je len v archive CRAN - postup instalacie je v cvicenie11a.txt
+install.packages(c(
+  "sensR", "pwr", "SensoMineR", "FactoMineR", "lmerTest", "emmeans", "DescTools",
+  "PMCMRplus", "readxl", "curl", "cluster", "factoextra", "tidyverse", "quantmod",
+  "gsheet", "tm", "SnowballC", "wordcloud", "RColorBrewer", "syuzhet", "ggplot2",
+  "HH", "latticeExtra", "fmsb"
+))
+# turfR (cvicenie 11a) je len v archive CRAN - postup instalacie je v cvicenie11a.R
 
 # volitelne baliky (v cviceniach sa nepouzivaju)
 # install.packages(c("devtools", "rmarkdown", "telegram", "telegram.bot"))

@@ -14,7 +14,7 @@
 <header class="top"><a class="brand" href="index.html">Sensometrics in R · theory</a><span class="toplinks"><a href="index.html">All exercises</a><a class="lang" href="../teoria/cvicenie01.html">Slovensky</a></span></header>
 
 <section class="hero"><span class="num">EXERCISE 1</span><h1>R, RStudio and collaboration</h1><p class="lead">The working environment for sensometrics: the R language, the RStudio IDE, packages and tools for teamwork.</p>
-<div class="files"><a href="../cvicenie1.txt">Script (SK): cvicenie1.txt</a><a href="../exercises_EN/exercise1.txt">Script (EN): exercise1.txt</a></div></section>
+<div class="files"><a href="../cvicenie1.R">Script (SK): cvicenie1.R</a><a href="../exercises_EN/exercise1.R">Script (EN): exercise1.R</a></div></section>
 <div class="goals"><h2>What you will learn</h2><ul>
 <li>to tell R (the language and computing engine) from RStudio (the editor around it),</li>
 <li>to install and load packages from CRAN and GitHub,</li>
@@ -29,7 +29,7 @@
   <rect x="10" y="10" width="620" height="310" rx="10" class="box"/>
   <rect x="24" y="24" width="360" height="150" rx="6" class="boxa"/>
   <text x="40" y="50" class="t-strong">1 · Script editor (Source)</text>
-  <text x="40" y="74">write code here and save it as an .R / .txt file</text>
+  <text x="40" y="74">write code here and save it as an .R file</text>
   <rect x="40" y="90" width="220" height="10" rx="3" class="fs"/>
   <rect x="40" y="108" width="280" height="10" rx="3" class="fs"/>
   <rect x="40" y="126" width="180" height="10" rx="3" class="fs"/>
@@ -119,9 +119,44 @@ library(sensR)              # every time R starts
 
 <div class="note"><strong>Good habit</strong>One project = one folder (in RStudio <em>File → New Project</em>). Data, scripts and outputs then live together and relative file paths work for every team member.</div>
 
+
 <nav class="pager">
 <a class="next" href="exercise02.html"><span>Next →</span>2. BCG matrix and confidence interval</a>
 </nav>
 </div>
+<script>
+(function () {
+  function copy(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    return Promise.resolve();
+  }
+  document.querySelectorAll('pre:not(.out)').forEach(function (pre) {
+    var text = pre.innerText;
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'copy'; btn.textContent = 'Copy';
+    btn.addEventListener('click', function () {
+      copy(text).then(function () {
+        btn.textContent = 'Copied ✓';
+        setTimeout(function () { btn.textContent = 'Copy'; }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+  var q = document.getElementById('filter');
+  if (q) q.addEventListener('input', function () {
+    var v = q.value.toLowerCase();
+    document.querySelectorAll('.cards a').forEach(function (c) {
+      c.style.display = c.textContent.toLowerCase().indexOf(v) === -1 ? 'none' : '';
+    });
+    document.querySelectorAll('section.block').forEach(function (s) {
+      var any = Array.prototype.some.call(s.querySelectorAll('.cards a'), function (c) { return c.style.display !== 'none'; });
+      s.style.display = any ? '' : 'none';
+    });
+  });
+})();
+</script>
 </body>
 </html>

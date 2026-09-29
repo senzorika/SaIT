@@ -14,7 +14,7 @@
 <header class="top"><a class="brand" href="index.html">Sensometrics in R · theory</a><span class="toplinks"><a href="index.html">All exercises</a><a class="lang" href="../teoria/cvicenie11b.html">Slovensky</a></span></header>
 
 <section class="hero"><span class="num">EXERCISE 11b</span><h1>Text mining and sentiment analysis</h1><p class="lead">From free-text reviews to word frequencies, a word cloud and emotions from the NRC lexicon.</p>
-<div class="files"><a href="../cvicenie11b.txt">Script (SK): cvicenie11b.txt</a><a href="../exercises_EN/exercise11b.txt">Script (EN): exercise11b.txt</a></div></section>
+<div class="files"><a href="../cvicenie11b.R">Script (SK): cvicenie11b.R</a><a href="../exercises_EN/exercise11b.R">Script (EN): exercise11b.R</a></div></section>
 <div class="goals"><h2>What you will learn</h2><ul>
 <li>to prepare free text (reviews, comments) for quantitative analysis,</li>
 <li>to build a term-document matrix, a frequency chart and a word cloud,</li>
@@ -97,10 +97,45 @@ TextDoc &lt;- tm_map(TextDoc, removeWords, stopwords("english"))</pre></div>
 <div class="note"><strong>Language of the text</strong>NRC is an English lexicon by default. For texts in other languages try e.g. <code>get_nrc_sentiment(text, language = "slovak")</code> (if your syuzhet version supports it) – it is a machine translation of the dictionary without inflection, so it only catches the base forms of words. It is more reliable to analyse English reviews or translate the text.</div>
 <div class="warn"><strong>Limitations</strong>The lexicon method does not see context: “not sweet at all” is counted as sweet, and irony is not recognised. Treat the results as indicative and verify them by reading a sample of the texts.</div>
 
+
 <nav class="pager">
 <a class="prev" href="exercise11a.html"><span>← Previous</span>11a. TURF analysis and preference mapping</a>
 <a class="next" href="exercise12.html"><span>Next →</span>12. JAR scale and radar chart</a>
 </nav>
 </div>
+<script>
+(function () {
+  function copy(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    return Promise.resolve();
+  }
+  document.querySelectorAll('pre:not(.out)').forEach(function (pre) {
+    var text = pre.innerText;
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'copy'; btn.textContent = 'Copy';
+    btn.addEventListener('click', function () {
+      copy(text).then(function () {
+        btn.textContent = 'Copied ✓';
+        setTimeout(function () { btn.textContent = 'Copy'; }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+  var q = document.getElementById('filter');
+  if (q) q.addEventListener('input', function () {
+    var v = q.value.toLowerCase();
+    document.querySelectorAll('.cards a').forEach(function (c) {
+      c.style.display = c.textContent.toLowerCase().indexOf(v) === -1 ? 'none' : '';
+    });
+    document.querySelectorAll('section.block').forEach(function (s) {
+      var any = Array.prototype.some.call(s.querySelectorAll('.cards a'), function (c) { return c.style.display !== 'none'; });
+      s.style.display = any ? '' : 'none';
+    });
+  });
+})();
+</script>
 </body>
 </html>

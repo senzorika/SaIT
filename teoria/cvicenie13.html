@@ -14,7 +14,7 @@
 <header class="top"><a class="brand" href="index.html">Senzometria v R · teória</a><span class="toplinks"><a href="index.html">Všetky cvičenia</a><a class="lang" href="../theory_EN/exercise13.html">English</a></span></header>
 
 <section class="hero"><span class="num">CVIČENIE 13</span><h1>Thurstonov model a d′</h1><p class="lead">Rozlišovacie testy inak: d′ ako miera rozdielu nezávislá od metódy, psychometrické funkcie a test podobnosti.</p>
-<div class="files"><a href="../cvicenie13.txt">Skript (SK): cvicenie13.txt</a><a href="../exercises_EN/exercise13.txt">Script (EN): exercise13.txt</a></div></section>
+<div class="files"><a href="../cvicenie13.R">Skript (SK): cvicenie13.R</a><a href="../exercises_EN/exercise13.R">Script (EN): exercise13.R</a></div></section>
 <div class="goals"><h2>Čo sa naučíte</h2><ul>
 <li>prečo podiel správnych odpovedí nestačí na porovnanie rôznych rozlišovacích testov,</li>
 <li>čo vyjadruje Thurstonovo d′ a ako ho vypočítať balíkom <code>sensR</code>,</li>
@@ -109,10 +109,52 @@ Result of difference test:
 <pre>discrim(38, 100, method = "triangle", test = "similarity", pd0 = 0.2)</pre>
 <div class="warn"><strong>Nepreukázaný rozdiel ≠ podobnosť</strong>Ak test rozdielu vyjde nevýznamne (p ≥ 0,05), neznamená to, že vzorky sú rovnaké – možno bol panel malý. Podobnosť treba preukázať testom podobnosti s vopred zvolenou hranicou pd<sub>0</sub> (napr. 0,2 – najviac 20 % rozlišovateľov).</div>
 
+<section class="solutions"><h2>Riešenia úloh</h2><p>Kliknutím rozbalíte riešenie. Skúste úlohu najprv vyriešiť sami – výsledky sú overené v R 4.4. Kód nadväzuje na premenné zo skriptu.</p>
+<details class="sol"><summary>Úloha 1 <span>– d′ pre duo-trio 36/50</span></summary>
+<pre>discrim(36, 50, method = &quot;duotrio&quot;)</pre>
+<div class="answer"><p>pc = 0,72; <strong>d′ = 1,83</strong> (95 % IS 0,95 – 2,64). Triangel 42/100 dal d′ = 1,01. Druhý produkt sa od kontroly líši <strong>viac</strong>, hoci na prvý pohľad vyzerajú výsledky podobne.</p></div></details>
+<details class="sol"><summary>Úloha 2 <span>– počet správnych odpovedí pre d′ = 1,5</span></summary>
+<pre>sapply(c(&quot;twoAFC&quot;, &quot;threeAFC&quot;, &quot;triangle&quot;), function(m) round(60 * psyfun(1.5, method = m)))</pre>
+<div class="answer"><p>Zo 60 hodnotiteľov: <strong>2-AFC 51</strong>, <strong>3-AFC 46</strong>, <strong>triangel 30</strong> správnych odpovedí. Ten istý rozdiel medzi vzorkami sa v triangli prejaví výrazne menším podielom správnych.</p></div></details>
+</section>
 <nav class="pager">
 <a class="prev" href="cvicenie12.html"><span>← Predchádzajúce</span>12. JAR škála a radarový graf</a>
 <a class="next" href="cvicenie14.html"><span>Nasledujúce →</span>14. Sila testu a veľkosť panelu</a>
 </nav>
 </div>
+<script>
+(function () {
+  function copy(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    return Promise.resolve();
+  }
+  document.querySelectorAll('pre:not(.out)').forEach(function (pre) {
+    var text = pre.innerText;
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'copy'; btn.textContent = 'Kopírovať';
+    btn.addEventListener('click', function () {
+      copy(text).then(function () {
+        btn.textContent = 'Skopírované ✓';
+        setTimeout(function () { btn.textContent = 'Kopírovať'; }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+  var q = document.getElementById('filter');
+  if (q) q.addEventListener('input', function () {
+    var v = q.value.toLowerCase();
+    document.querySelectorAll('.cards a').forEach(function (c) {
+      c.style.display = c.textContent.toLowerCase().indexOf(v) === -1 ? 'none' : '';
+    });
+    document.querySelectorAll('section.block').forEach(function (s) {
+      var any = Array.prototype.some.call(s.querySelectorAll('.cards a'), function (c) { return c.style.display !== 'none'; });
+      s.style.display = any ? '' : 'none';
+    });
+  });
+})();
+</script>
 </body>
 </html>

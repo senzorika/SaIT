@@ -14,7 +14,7 @@
 <header class="top"><a class="brand" href="index.html">Sensometrics in R · theory</a><span class="toplinks"><a href="index.html">All exercises</a><a class="lang" href="../teoria/cvicenie16.html">Slovensky</a></span></header>
 
 <section class="hero"><span class="num">EXERCISE 16</span><h1>Mixed models</h1><p class="lead">The assessor as a random effect: why and how to replace two-way ANOVA with an lmer model.</p>
-<div class="files"><a href="../cvicenie16.txt">Script (SK): cvicenie16.txt</a><a href="../exercises_EN/exercise16.txt">Script (EN): exercise16.txt</a></div></section>
+<div class="files"><a href="../cvicenie16.R">Script (SK): cvicenie16.R</a><a href="../exercises_EN/exercise16.R">Script (EN): exercise16.R</a></div></section>
 <div class="goals"><h2>What you will learn</h2><ul>
 <li>to tell fixed and random effects apart,</li>
 <li>why the assessor is a random effect in sensory data and what that changes in the product test,</li>
@@ -75,10 +75,57 @@ VarCorr(m)   # variances of the random effects</pre>
 <div class="note"><strong>Unbalanced data</strong>The biggest advantage of <code>lmer</code> shows when ratings are missing (an assessor skipped a session). Classical ANOVA with a hand-chosen error term is then no longer exact; the mixed model copes with it.</div>
 <div class="warn"><strong>The “boundary (singular) fit” warning</strong>It means that some random effect has an estimated variance of 0 – the data do not need it. Exactly this happens for CocoaA (task 1): the interaction has p = 0.99, its variance is 0 and lmer merges it with the residual. The model is still usable, but consider simplifying it (<code>ranova()</code> shows which effect to drop).</div>
 
+<section class="solutions"><h2>Task solutions</h2><p>Click to expand a solution. Try the task on your own first – results were verified in R 4.4. The code continues from the variables in the script.</p>
+<details class="sol"><summary>Task 1 <span>– CocoaA and the singular fit</span></summary>
+<pre>m1 &lt;- lmer(CocoaA ~ Product + Session + (1 | Panelist) + (1 | Panelist:Product), data = sensochoc)
+VarCorr(m1)
+anova(m1)
+summary(aov(CocoaA ~ Product * Panelist, data = sensochoc))</pre>
+<div class="answer"><p>The assessor × product interaction is not significant (<strong>p = 0.99</strong>): its mean square (2.30) is even smaller than the residual one (3.29). Its variance estimate is therefore 0 → <em>singular fit</em>. The model effectively merges it with the residual: product F = 14.6 (fixed model 12.6). The conclusion is the same, products differ significantly.</p></div></details>
+<details class="sol"><summary>Task 2 <span>– the random effect Panelist:Session</span></summary>
+<pre>m2 &lt;- lmer(Bitterness ~ Product + Session + (1 | Panelist) + (1 | Panelist:Product), data = sensochoc)
+m3 &lt;- update(m2, . ~ . + (1 | Panelist:Session))
+anova(m2, m3, refit = FALSE)</pre>
+<div class="answer"><p>χ² = 2.18; df = 1; <strong>p = 0.14</strong>, AIC almost equal (1481.3 vs. 1481.1), BIC worse. The assessor × session effect does not improve the model – the simpler model is enough. (<code>refit = FALSE</code> compares the REML fits, which is correct when the fixed effects are the same.)</p></div></details>
+</section>
 <nav class="pager">
 <a class="prev" href="exercise15.html"><span>← Previous</span>15. Sensory panel performance</a>
 <a class="next" href="exercise17.html"><span>Next →</span>17. CATA and napping</a>
 </nav>
 </div>
+<script>
+(function () {
+  function copy(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    return Promise.resolve();
+  }
+  document.querySelectorAll('pre:not(.out)').forEach(function (pre) {
+    var text = pre.innerText;
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'copy'; btn.textContent = 'Copy';
+    btn.addEventListener('click', function () {
+      copy(text).then(function () {
+        btn.textContent = 'Copied ✓';
+        setTimeout(function () { btn.textContent = 'Copy'; }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+  var q = document.getElementById('filter');
+  if (q) q.addEventListener('input', function () {
+    var v = q.value.toLowerCase();
+    document.querySelectorAll('.cards a').forEach(function (c) {
+      c.style.display = c.textContent.toLowerCase().indexOf(v) === -1 ? 'none' : '';
+    });
+    document.querySelectorAll('section.block').forEach(function (s) {
+      var any = Array.prototype.some.call(s.querySelectorAll('.cards a'), function (c) { return c.style.display !== 'none'; });
+      s.style.display = any ? '' : 'none';
+    });
+  });
+})();
+</script>
 </body>
 </html>

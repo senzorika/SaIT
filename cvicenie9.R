@@ -4,18 +4,18 @@
 # ============================================================
 
 #------------------------------------------------------------
-#CA korespondencna analyza (kniznica MASS)
+# CA korespondencna analyza (kniznica MASS)
 # -----------------------------------------------------------
 # definicia kategorialnych dat v matici
-data <- matrix(c(15,2,8,7,14,4,5,5,15,11,5,9), ncol=3, byrow=TRUE) # ncol=pocet cisiel v riadku, byrow=TRUE 
-colnames(data) <- c("A", "B", "C") #pomenovanie stlpcov (produktov)
-rownames(data) <- c("Muzi", "Zeny", "Deti", "Dochodcovia") #pomenovanie riadkov (cielova skupina vyrobku)
+data <- matrix(c(15, 2, 8, 7, 14, 4, 5, 5, 15, 11, 5, 9), ncol = 3, byrow = TRUE) # ncol=pocet cisiel v riadku, byrow=TRUE
+colnames(data) <- c("A", "B", "C") # pomenovanie stlpcov (produktov)
+rownames(data) <- c("Muzi", "Zeny", "Deti", "Dochodcovia") # pomenovanie riadkov (cielova skupina vyrobku)
 
 # samotny program R nedokaze pocitat korespondencnu analyzu, preto je nutne vyuzit kniznicu MASS
 library(MASS)
 
 # vypocet korespondencnej analyzy (jednoduchej)
-vek <- corresp(data, nf=2) #nf= pocet faktorov
+vek <- corresp(data, nf = 2) # nf= pocet faktorov
 
 # vykreslenie grafu
 biplot(vek)

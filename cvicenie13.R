@@ -21,13 +21,17 @@ rescale(d.prime = coef(triangel)["d-prime", "Estimate"], method = "twoAFC")
 #---------------------------------------------------------------------------------------
 # 2. Psychometricke funkcie - ako rychlo rastie pc s d' v jednotlivych testoch
 #---------------------------------------------------------------------------------------
-curve(psyfun(x, method = "twoAFC"), from = 0, to = 4, lwd = 2, col = "darkgreen",
-      xlab = "d'", ylab = "pc (podiel spravnych odpovedi)", ylim = c(0, 1))
+curve(psyfun(x, method = "twoAFC"),
+  from = 0, to = 4, lwd = 2, col = "darkgreen",
+  xlab = "d'", ylab = "pc (podiel spravnych odpovedi)", ylim = c(0, 1)
+)
 curve(psyfun(x, method = "threeAFC"), add = TRUE, lwd = 2, col = "blue")
 curve(psyfun(x, method = "duotrio"), add = TRUE, lwd = 2, col = "orange")
 curve(psyfun(x, method = "triangle"), add = TRUE, lwd = 2, col = "red")
-legend("bottomright", legend = c("2-AFC", "3-AFC", "duo-trio", "triangel"),
-       col = c("darkgreen", "blue", "orange", "red"), lwd = 2, bty = "n")
+legend("bottomright",
+  legend = c("2-AFC", "3-AFC", "duo-trio", "triangel"),
+  col = c("darkgreen", "blue", "orange", "red"), lwd = 2, bty = "n"
+)
 
 #---------------------------------------------------------------------------------------
 # 3. Porovnanie metod pri rovnakom rozdiele medzi vzorkami (d' = 1)

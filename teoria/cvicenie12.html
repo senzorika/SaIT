@@ -14,7 +14,7 @@
 <header class="top"><a class="brand" href="index.html">Senzometria v R · teória</a><span class="toplinks"><a href="index.html">Všetky cvičenia</a><a class="lang" href="../theory_EN/exercise12.html">English</a></span></header>
 
 <section class="hero"><span class="num">CVIČENIE 12</span><h1>JAR škála a radarový graf</h1><p class="lead">Just-About-Right hodnotenie pre optimalizáciu receptúry a profilogram senzorických vlastností.</p>
-<div class="files"><a href="../cvicenie12.txt">Skript (SK): cvicenie12.txt</a><a href="../exercises_EN/exercise12.txt">Script (EN): exercise12.txt</a></div></section>
+<div class="files"><a href="../cvicenie12.R">Skript (SK): cvicenie12.R</a><a href="../exercises_EN/exercise12.R">Script (EN): exercise12.R</a></div></section>
 <div class="goals"><h2>Čo sa naučíte</h2><ul>
 <li>navrhnúť a vyhodnotiť JAR (Just-About-Right) škálu,</li>
 <li>čítať divergentný stĺpcový (Likertov) graf a určiť, ktorý znak treba upraviť,</li>
@@ -144,10 +144,45 @@
 </figure>
 <div class="warn"><strong>Na čo si dať pozor</strong>Plocha polygónu závisí od poradia osí – rovnaké dáta s iným poradím deskriptorov vyzerajú inak. Graf je vhodný pre 3 – 5 produktov a 5 – 12 deskriptorov; pri viacerých sa stáva neprehľadným. <code>radarchart()</code> vyžaduje v prvých dvoch riadkoch dát maximum a minimum osí – preto <code>rbind(rep(9, 5), rep(0, 5), data)</code>.</div>
 
+
 <nav class="pager">
 <a class="prev" href="cvicenie11b.html"><span>← Predchádzajúce</span>11b. Text mining a analýza sentimentu</a>
 <a class="next" href="cvicenie13.html"><span>Nasledujúce →</span>13. Thurstonov model a d′</a>
 </nav>
 </div>
+<script>
+(function () {
+  function copy(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    return Promise.resolve();
+  }
+  document.querySelectorAll('pre:not(.out)').forEach(function (pre) {
+    var text = pre.innerText;
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'copy'; btn.textContent = 'Kopírovať';
+    btn.addEventListener('click', function () {
+      copy(text).then(function () {
+        btn.textContent = 'Skopírované ✓';
+        setTimeout(function () { btn.textContent = 'Kopírovať'; }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+  var q = document.getElementById('filter');
+  if (q) q.addEventListener('input', function () {
+    var v = q.value.toLowerCase();
+    document.querySelectorAll('.cards a').forEach(function (c) {
+      c.style.display = c.textContent.toLowerCase().indexOf(v) === -1 ? 'none' : '';
+    });
+    document.querySelectorAll('section.block').forEach(function (s) {
+      var any = Array.prototype.some.call(s.querySelectorAll('.cards a'), function (c) { return c.style.display !== 'none'; });
+      s.style.display = any ? '' : 'none';
+    });
+  });
+})();
+</script>
 </body>
 </html>

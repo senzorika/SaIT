@@ -1,0 +1,67 @@
+# ============================================================
+# Exercise 17: CATA and napping – rapid profiling methods
+# Theory: https://senzorika.github.io/SaIT/theory_EN/exercise17.html
+# ============================================================
+
+# install.packages(c("FactoMineR", "SensoMineR", "DescTools"))
+library(FactoMineR)
+library(SensoMineR)
+library(DescTools)
+
+#---------------------------------------------------------------------------------------
+# 1. CATA (Check-All-That-Apply) - simulated answers of 40 consumers for 4 yogurts
+#---------------------------------------------------------------------------------------
+set.seed(2024)
+attributes <- c("sweet", "sour", "creamy", "fruity", "thick", "artificial")
+# probability of ticking each attribute for each product
+p <- rbind(
+  A = c(0.7, 0.2, 0.8, 0.3, 0.6, 0.1),
+  B = c(0.3, 0.7, 0.3, 0.2, 0.2, 0.2),
+  C = c(0.6, 0.3, 0.4, 0.8, 0.3, 0.5),
+  D = c(0.5, 0.4, 0.6, 0.5, 0.7, 0.1)
+)
+colnames(p) <- attributes
+cata <- expand.grid(consumer = factor(1:40), product = factor(rownames(p)))
+for (a in attributes) cata[[a]] <- rbinom(nrow(cata), 1, p[as.character(cata$product), a])
+head(cata)
+
+# citation counts: products x attributes
+counts <- sapply(attributes, function(a) tapply(cata[[a]], cata$product, sum))
+counts
+
+# Cochran's Q test for each attribute: do products differ in the share of citations?
+q_p <- sapply(attributes, function(a) {
+  d <- data.frame(y = cata[[a]], product = cata$product, consumer = cata$consumer)
+  CochranQTest(y ~ product | consumer, data = d)$p.value
+})
+round(q_p, 4)
+
+# correspondence analysis of the table -> map of products and attributes
+ca_cata <- CA(counts, graph = FALSE)
+plot(ca_cata, title = "CATA - correspondence analysis")
+
+#---------------------------------------------------------------------------------------
+# 2. Napping (projective mapping) - example data from SensoMineR
+#---------------------------------------------------------------------------------------
+# 10 wines, every assessor placed them on a 60 x 40 cm sheet of paper (coordinates X, Y)
+data(napping)
+head(napping.don[, 1:4])
+nappeplot(napping.don) # placement of wines by each assessor
+
+# multiple factor analysis (MFA): every assessor = group of 2 variables (X, Y), not scaled
+n_assessors <- ncol(napping.don) / 2
+napping_mfa <- MFA(napping.don,
+  group = rep(2, n_assessors), type = rep("c", n_assessors),
+  name.group = paste0("A", 1:n_assessors), graph = FALSE
+)
+plot(napping_mfa, choix = "ind", title = "Napping - consensus map of wines")
+plot(napping_mfa, choix = "group") # which assessors agree with the consensus
+
+
+# TASK1:
+# =========
+# Which CATA attributes discriminate the products significantly? Which yogurt is the most "fruity" and which "artificial"?
+
+# TASK2:
+# =========
+# Describe the napping consensus map: which wines are similar? Which assessor agrees least with the panel?

@@ -14,7 +14,7 @@
 <header class="top"><a class="brand" href="index.html">Senzometria v R · teória</a><span class="toplinks"><a href="index.html">Všetky cvičenia</a><a class="lang" href="../theory_EN/exercise11a.html">English</a></span></header>
 
 <section class="hero"><span class="num">CVIČENIE 11a</span><h1>TURF analýza a mapa preferencií</h1><p class="lead">Optimálna kombinácia ingrediencií (reach &amp; frequency) a prepojenie senzorického profilu s hedonikou.</p>
-<div class="files"><a href="../cvicenie11a.txt">Skript (SK): cvicenie11a.txt</a><a href="../exercises_EN/exercise11a.txt">Script (EN): exercise11a.txt</a></div></section>
+<div class="files"><a href="../cvicenie11a.R">Skript (SK): cvicenie11a.R</a><a href="../exercises_EN/exercise11a.R">Script (EN): exercise11a.R</a></div></section>
 <div class="goals"><h2>Čo sa naučíte</h2><ul>
 <li>nájsť kombináciu ingrediencií, ktorá osloví najviac zákazníkov (TURF),</li>
 <li>rozlíšiť ukazovatele <em>reach</em> a <em>frequency</em>,</li>
@@ -77,10 +77,51 @@
 <tr><td>R</td><td><code>PCA()</code> na hedonike</td><td><code>carto()</code> (SensoMineR)</td></tr>
 </table></div>
 
+<section class="solutions"><h2>Riešenia úloh</h2><p>Kliknutím rozbalíte riešenie. Skúste úlohu najprv vyriešiť sami – výsledky sú overené v R 4.4. Kód nadväzuje na premenné zo skriptu.</p>
+<details class="sol"><summary>Mapa preferencií <span>– komentár k produktu 1</span></summary>
+<pre>sort(rowMeans(hedonika), decreasing = TRUE)   # priemerne hodnotenie produktov
+res.pca &lt;- PCA(senzorika)
+carto(res.pca$ind$coord[, 1:2], hedonika)</pre>
+<div class="answer"><p>Náš produkt 1 je s priemerom 2,99 až na <strong>8. mieste zo 16</strong>; najlepšie hodnotené sú 16 (3,44), 3 (3,36) a 13 (3,16). Na mape <code>carto()</code> hľadajte, v ktorej zóne leží produkt 1 a ktoré deskriptory (šípky PCA) smerujú k zóne s najvyšším percentom spokojných – tie treba posilniť. Pozor: PCA mapa vysvetľuje len 39 % variability profilu (22 + 17 %), preto mapu interpretujte opatrne.</p></div></details>
+</section>
 <nav class="pager">
 <a class="prev" href="cvicenie10.html"><span>← Predchádzajúce</span>10. Analýza prežitia a senzorická trvanlivosť</a>
 <a class="next" href="cvicenie11b.html"><span>Nasledujúce →</span>11b. Text mining a analýza sentimentu</a>
 </nav>
 </div>
+<script>
+(function () {
+  function copy(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    return Promise.resolve();
+  }
+  document.querySelectorAll('pre:not(.out)').forEach(function (pre) {
+    var text = pre.innerText;
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'copy'; btn.textContent = 'Kopírovať';
+    btn.addEventListener('click', function () {
+      copy(text).then(function () {
+        btn.textContent = 'Skopírované ✓';
+        setTimeout(function () { btn.textContent = 'Kopírovať'; }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+  var q = document.getElementById('filter');
+  if (q) q.addEventListener('input', function () {
+    var v = q.value.toLowerCase();
+    document.querySelectorAll('.cards a').forEach(function (c) {
+      c.style.display = c.textContent.toLowerCase().indexOf(v) === -1 ? 'none' : '';
+    });
+    document.querySelectorAll('section.block').forEach(function (s) {
+      var any = Array.prototype.some.call(s.querySelectorAll('.cards a'), function (c) { return c.style.display !== 'none'; });
+      s.style.display = any ? '' : 'none';
+    });
+  });
+})();
+</script>
 </body>
 </html>

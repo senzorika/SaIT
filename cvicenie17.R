@@ -14,10 +14,12 @@ library(DescTools)
 set.seed(2024)
 atributy <- c("sladky", "kysly", "kremovy", "ovocny", "husty", "umely")
 # pravdepodobnost zaskrtnutia atributu pre kazdy produkt
-p <- rbind(A = c(0.7, 0.2, 0.8, 0.3, 0.6, 0.1),
-           B = c(0.3, 0.7, 0.3, 0.2, 0.2, 0.2),
-           C = c(0.6, 0.3, 0.4, 0.8, 0.3, 0.5),
-           D = c(0.5, 0.4, 0.6, 0.5, 0.7, 0.1))
+p <- rbind(
+  A = c(0.7, 0.2, 0.8, 0.3, 0.6, 0.1),
+  B = c(0.3, 0.7, 0.3, 0.2, 0.2, 0.2),
+  C = c(0.6, 0.3, 0.4, 0.8, 0.3, 0.5),
+  D = c(0.5, 0.4, 0.6, 0.5, 0.7, 0.1)
+)
 colnames(p) <- atributy
 cata <- expand.grid(spotrebitel = factor(1:40), produkt = factor(rownames(p)))
 for (a in atributy) cata[[a]] <- rbinom(nrow(cata), 1, p[as.character(cata$produkt), a])
@@ -44,14 +46,16 @@ plot(ca_cata, title = "CATA - korespondencna analyza")
 # 10 vin, kazdy hodnotitel ich rozlozil na hárok papiera 60 x 40 cm (suradnice X, Y)
 data(napping)
 head(napping.don[, 1:4])
-nappeplot(napping.don)              # rozlozenie vin u jednotlivych hodnotitelov
+nappeplot(napping.don) # rozlozenie vin u jednotlivych hodnotitelov
 
 # viacnasobna faktorova analyza (MFA): kazdy hodnotitel = skupina 2 premennych (X, Y), neskalovane
 pocet <- ncol(napping.don) / 2
-napping_mfa <- MFA(napping.don, group = rep(2, pocet), type = rep("c", pocet),
-                   name.group = paste0("H", 1:pocet), graph = FALSE)
+napping_mfa <- MFA(napping.don,
+  group = rep(2, pocet), type = rep("c", pocet),
+  name.group = paste0("H", 1:pocet), graph = FALSE
+)
 plot(napping_mfa, choix = "ind", title = "Napping - konsenzualna mapa vin")
-plot(napping_mfa, choix = "group")  # ktori hodnotitelia sa zhoduju s konsenzom
+plot(napping_mfa, choix = "group") # ktori hodnotitelia sa zhoduju s konsenzom
 
 
 # ULOHA1:

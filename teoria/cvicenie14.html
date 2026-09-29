@@ -14,7 +14,7 @@
 <header class="top"><a class="brand" href="index.html">Senzometria v R · teória</a><span class="toplinks"><a href="index.html">Všetky cvičenia</a><a class="lang" href="../theory_EN/exercise14.html">English</a></span></header>
 
 <section class="hero"><span class="num">CVIČENIE 14</span><h1>Sila testu a veľkosť panelu</h1><p class="lead">Koľko hodnotiteľov treba? Sila testu, veľkosť vzorky pre rozlišovacie testy, t-test a ANOVA.</p>
-<div class="files"><a href="../cvicenie14.txt">Skript (SK): cvicenie14.txt</a><a href="../exercises_EN/exercise14.txt">Script (EN): exercise14.txt</a></div></section>
+<div class="files"><a href="../cvicenie14.R">Skript (SK): cvicenie14.R</a><a href="../exercises_EN/exercise14.R">Script (EN): exercise14.R</a></div></section>
 <div class="goals"><h2>Čo sa naučíte</h2><ul>
 <li>čo je sila testu a prečo „nepreukázaný rozdiel“ často znamená len malý panel,</li>
 <li>vypočítať potrebný počet hodnotiteľov pre rozlišovacie testy (<code>sensR</code>),</li>
@@ -101,10 +101,54 @@ discrimSS(pdA = 0.2, target.power = 0.80, pGuess = 1/3) # zadanie cez pd namiest
 </table></div>
 <div class="warn"><strong>Silu plánujte pred experimentom</strong>Výpočet „sily po teste“ z pozorovaného rozdielu (post-hoc power) nič nové nepovie – je len prepočtom p-hodnoty. Zmysel má otázka: aký najmenší rozdiel je pre nás prakticky dôležitý, a koľko hodnotiteľov treba na jeho spoľahlivé zachytenie?</div>
 
+<section class="solutions"><h2>Riešenia úloh</h2><p>Kliknutím rozbalíte riešenie. Skúste úlohu najprv vyriešiť sami – výsledky sú overené v R 4.4. Kód nadväzuje na premenné zo skriptu.</p>
+<details class="sol"><summary>Úloha 1 <span>– triangel vs. tetráda pre d′ = 0,8</span></summary>
+<pre>sapply(c(0.8, 0.9), function(sila) c(
+  triangel = d.primeSS(0.8, target.power = sila, method = &quot;triangle&quot;),
+  tetrada  = d.primeSS(0.8, target.power = sila, method = &quot;tetrad&quot;)))</pre>
+<div class="answer"><div class="tablewrap"><table><tr><th></th><th>sila 80 %</th><th>sila 90 %</th></tr><tr><td>triangel</td><td>461</td><td>638</td></tr><tr><td>tetráda</td><td><strong>130</strong></td><td><strong>177</strong></td></tr></table>Tetráda potrebuje asi 3,5-krát menej hodnotiteľov. Pri d′ = 0,8 je triangel s bežným panelom prakticky nepoužiteľný.</div></div></details>
+<details class="sol"><summary>Úloha 2 <span>– najmenší zistiteľný rozdiel s 24 hodnotiteľmi</span></summary>
+<pre>power.t.test(n = 24, sd = 1.2, power = 0.80, type = &quot;paired&quot;)</pre>
+<div class="answer"><p>Keď vynecháme <code>delta</code>, R ju dopočíta: <strong>δ = 0,72 bodu</strong>. Menšie rozdiely panel s 24 hodnotiteľmi spoľahlivo nezachytí.</p></div></details>
+</section>
 <nav class="pager">
 <a class="prev" href="cvicenie13.html"><span>← Predchádzajúce</span>13. Thurstonov model a d′</a>
 <a class="next" href="cvicenie15.html"><span>Nasledujúce →</span>15. Výkonnosť senzorického panelu</a>
 </nav>
 </div>
+<script>
+(function () {
+  function copy(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    return Promise.resolve();
+  }
+  document.querySelectorAll('pre:not(.out)').forEach(function (pre) {
+    var text = pre.innerText;
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'copy'; btn.textContent = 'Kopírovať';
+    btn.addEventListener('click', function () {
+      copy(text).then(function () {
+        btn.textContent = 'Skopírované ✓';
+        setTimeout(function () { btn.textContent = 'Kopírovať'; }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+  var q = document.getElementById('filter');
+  if (q) q.addEventListener('input', function () {
+    var v = q.value.toLowerCase();
+    document.querySelectorAll('.cards a').forEach(function (c) {
+      c.style.display = c.textContent.toLowerCase().indexOf(v) === -1 ? 'none' : '';
+    });
+    document.querySelectorAll('section.block').forEach(function (s) {
+      var any = Array.prototype.some.call(s.querySelectorAll('.cards a'), function (c) { return c.style.display !== 'none'; });
+      s.style.display = any ? '' : 'none';
+    });
+  });
+})();
+</script>
 </body>
 </html>

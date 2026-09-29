@@ -14,7 +14,7 @@
 <header class="top"><a class="brand" href="index.html">Senzometria v R · teória</a><span class="toplinks"><a href="index.html">Všetky cvičenia</a><a class="lang" href="../theory_EN/exercise03.html">English</a></span></header>
 
 <section class="hero"><span class="num">CVIČENIE 3</span><h1>Práca s dátami v R</h1><p class="lead">Skaláry, vektory, matice a dátové rámce – stavebné kamene každej senzorickej analýzy.</p>
-<div class="files"><a href="../cvicenie3.txt">Skript (SK): cvicenie3.txt</a><a href="../exercises_EN/exercise3.txt">Script (EN): exercise3.txt</a></div></section>
+<div class="files"><a href="../cvicenie3.R">Skript (SK): cvicenie3.R</a><a href="../exercises_EN/exercise3.R">Script (EN): exercise3.R</a></div></section>
 <div class="goals"><h2>Čo sa naučíte</h2><ul>
 <li>rozlíšiť skalár, vektor, maticu a dátový rámec (data.frame),</li>
 <li>generovať náhodné a opakujúce sa dáta (návrh senzorického experimentu),</li>
@@ -151,10 +151,70 @@ str(vysledky)    # typy stĺpcov – vždy skontrolujte po načítaní
 head(vysledky)   # prvých 6 riadkov</pre>
 <p><code>source()</code> vykoná kód (definuje premenné, funkcie), <code>read.table()</code> iba načíta dáta. Súbory zo siete otvárajte len z dôveryhodných zdrojov – <code>source()</code> spustí čokoľvek, čo v súbore je.</p>
 
+<section class="solutions"><h2>Riešenia úloh</h2><p>Kliknutím rozbalíte riešenie. Skúste úlohu najprv vyriešiť sami – výsledky sú overené v R 4.4. Kód nadväzuje na premenné zo skriptu.</p>
+<details class="sol"><summary>Úloha 1 <span>– molové hmotnosti</span></summary>
+<pre>source(&quot;http://senzorika.com/sait/datasety/mol.txt&quot;)   # definuje C, H, K, O ...
+sorban &lt;- 6 * C + 7 * H + K + 2 * O    # sorban draselny C6H7KO2
+citronova &lt;- 6 * C + 8 * H + 7 * O     # kyselina citronova C6H8O7
+c(sorban, citronova)
+c(0.25 * sorban, 0.1 * citronova)      # gramy na 1 liter nalevu</pre>
+<div class="answer"><p>Sorban draselný 150,22 g/mol, kyselina citrónová 192,12 g/mol. Na 1 liter nálevu: 0,25 mol sorbanu = <strong>37,6 g</strong> a 0,1 mol kyseliny citrónovej = <strong>19,2 g</strong>.</p></div></details>
+<details class="sol"><summary>Úloha 2 <span>– vygenerovanie 9-bodového testu</span></summary>
+<pre>set.seed(1)
+melony &lt;- expand.grid(hodnotitel = paste0(&quot;H&quot;, 1:4), vyrobok = c(&quot;A&quot;, &quot;B&quot;, &quot;C&quot;))
+melony$vona &lt;- sample(1:9, nrow(melony), replace = TRUE)
+melony$chut &lt;- sample(1:9, nrow(melony), replace = TRUE)
+melony$textura &lt;- sample(1:9, nrow(melony), replace = TRUE)
+write.table(melony, &quot;melony.txt&quot;, sep = &quot;,&quot;, row.names = FALSE)</pre>
+<div class="answer"><p><code>expand.grid()</code> vytvorí všetky kombinácie hodnotiteľ × výrobok (12 riadkov), každý znak je náhodné celé číslo 1 – 9. Súbor sa uloží do pracovného priečinka (<code>getwd()</code>).</p></div></details>
+<details class="sol"><summary>Úloha 3 <span>– počet oplátok a nadprodukcia</span></summary>
+<pre>cokolada &lt;- read.table(&quot;http://senzorika.com/sait/datasety/cokolada.txt&quot;, sep = &quot;,&quot;, header = TRUE)
+plocha &lt;- 2 * pi * 3.5^2 + pi * 7 * 1.5        # dve podstavy + plast valca (cm2)
+na_kus &lt;- plocha / 100 * 0.02                   # litre cokolady na 1 kus
+cokolada$vyrobenekusy &lt;- round(cokolada$spotrebacokolady / na_kus)
+barplot(cokolada$vyrobenekusy, names.arg = cokolada$mesiace, las = 2)
+abline(h = mean(cokolada$vyrobenekusy), col = &quot;red&quot;)
+cokolada$mesiace[cokolada$vyrobenekusy &gt; mean(cokolada$vyrobenekusy)]</pre>
+<div class="answer"><p>Povrch oplátky je 110 cm², na kus teda treba 0,022 l čokolády. Mesačne sa vyrobí 57 523 (máj) až 84 716 (november) kusov. <strong>Bonus:</strong> nad priemerom sú február, august, október, november a december.</p></div></details>
+</section>
 <nav class="pager">
 <a class="prev" href="cvicenie02.html"><span>← Predchádzajúce</span>2. BCG matica a interval spoľahlivosti</a>
 <a class="next" href="cvicenie04.html"><span>Nasledujúce →</span>4. Grafy a vizualizácia dát</a>
 </nav>
 </div>
+<script>
+(function () {
+  function copy(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    return Promise.resolve();
+  }
+  document.querySelectorAll('pre:not(.out)').forEach(function (pre) {
+    var text = pre.innerText;
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'copy'; btn.textContent = 'Kopírovať';
+    btn.addEventListener('click', function () {
+      copy(text).then(function () {
+        btn.textContent = 'Skopírované ✓';
+        setTimeout(function () { btn.textContent = 'Kopírovať'; }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+  var q = document.getElementById('filter');
+  if (q) q.addEventListener('input', function () {
+    var v = q.value.toLowerCase();
+    document.querySelectorAll('.cards a').forEach(function (c) {
+      c.style.display = c.textContent.toLowerCase().indexOf(v) === -1 ? 'none' : '';
+    });
+    document.querySelectorAll('section.block').forEach(function (s) {
+      var any = Array.prototype.some.call(s.querySelectorAll('.cards a'), function (c) { return c.style.display !== 'none'; });
+      s.style.display = any ? '' : 'none';
+    });
+  });
+})();
+</script>
 </body>
 </html>

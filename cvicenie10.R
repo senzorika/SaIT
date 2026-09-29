@@ -15,23 +15,25 @@
 # ----------------------------------------------------------------------------------------
 # Nacitanie kniznice pre analyzu prezitia
 library(survival)
-time <- c(0,4,8,12,24,36,48,0,4,8,12,24,36,48,0,4,8,12,24,36,48,0,4,8,12,24,36,48,0,4,8,12,24,36,48)
-event <- c(TRUE,TRUE,TRUE,TRUE,FALSE,FALSE,FALSE,
-        TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
-        TRUE,TRUE,FALSE,TRUE,FALSE,FALSE,FALSE,
-        TRUE,FALSE,TRUE,FALSE,FALSE,FALSE,FALSE,
-        FALSE,FALSE,TRUE,TRUE,TRUE,TRUE,FALSE)
+time <- c(0, 4, 8, 12, 24, 36, 48, 0, 4, 8, 12, 24, 36, 48, 0, 4, 8, 12, 24, 36, 48, 0, 4, 8, 12, 24, 36, 48, 0, 4, 8, 12, 24, 36, 48)
+event <- c(
+  TRUE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE,
+  TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE,
+  TRUE, TRUE, FALSE, TRUE, FALSE, FALSE, FALSE,
+  TRUE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE,
+  FALSE, FALSE, TRUE, TRUE, TRUE, TRUE, FALSE
+)
 
 # vytvorenie datasetu a nastavenie zakladnych parametrov
-foodshelflife <- Surv(time,event)
+foodshelflife <- Surv(time, event)
 foodshelflife
 
-fit <- survfit(foodshelflife~1,conf.int=FALSE)
+fit <- survfit(foodshelflife ~ 1, conf.int = FALSE)
 # vysledky a vizualizacia grafu
 fit
 summary(fit)
-plot(fit, main="Senzorická stabilita produktu (A)",xlab=" čas(h)",col="blue")
-abline(h=0.5, col="red")
+plot(fit, main = "Senzorická stabilita produktu (A)", xlab = " čas(h)", col = "blue")
+abline(h = 0.5, col = "red")
 
 
 # -----------------------------------------------------
@@ -41,25 +43,27 @@ abline(h=0.5, col="red")
 # kde x su casove data (hodiny) a y (je survival hodnota)
 y <- fit$surv
 x <- fit$time
-linear <- data.frame(x,y)
+linear <- data.frame(x, y)
 linear
 
 # linearny model: cas ako funkcia prezivania, x = a*y + b
-regresia <- lm(x~y)
+regresia <- lm(x ~ y)
 regresia
 
 # a ideme programovat nasu prvu funkciu v zivote :)
-model <- function(odhad){regresia$coefficients[2]*odhad +regresia$coefficients[1]}
+model <- function(odhad) {
+  regresia$coefficients[2] * odhad + regresia$coefficients[1]
+}
 
 # a je este potrebne zistit koeficient determinacie (r2) celeho modelu a sme za vodou :)
-reg <- lm(x~y)
+reg <- lm(x ~ y)
 summary(reg)
 
-#overenie linearneho modelu, ideme zistit kolko hodin je cut-off point (hodnota=0.5)
+# overenie linearneho modelu, ideme zistit kolko hodin je cut-off point (hodnota=0.5)
 model(0.5)
-abline(v=model(0.5), col="red")
+abline(v = model(0.5), col = "red")
 
 # dokreslime si nejaky vizual :)
-abline(v=0, col="green")
-rect(0, 1, model(0.5), 0, density = 5, col="green", border = "transparent")
-text(model(0.5),0.52,round(model(0.5),digit=2),pos=4)
+abline(v = 0, col = "green")
+rect(0, 1, model(0.5), 0, density = 5, col = "green", border = "transparent")
+text(model(0.5), 0.52, round(model(0.5), digit = 2), pos = 4)

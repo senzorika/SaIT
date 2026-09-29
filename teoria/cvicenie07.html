@@ -14,7 +14,7 @@
 <header class="top"><a class="brand" href="index.html">Senzometria v R · teória</a><span class="toplinks"><a href="index.html">Všetky cvičenia</a><a class="lang" href="../theory_EN/exercise07.html">English</a></span></header>
 
 <section class="hero"><span class="num">CVIČENIE 7</span><h1>PCA a faktorová analýza</h1><p class="lead">Zníženie rozmernosti dát: hlavné komponenty, Kaiserovo kritérium a skryté faktory v spotrebiteľských odpovediach.</p>
-<div class="files"><a href="../cvicenie7.txt">Skript (SK): cvicenie7.txt</a><a href="../exercises_EN/exercise7.txt">Script (EN): exercise7.txt</a></div></section>
+<div class="files"><a href="../cvicenie7.R">Skript (SK): cvicenie7.R</a><a href="../exercises_EN/exercise7.R">Script (EN): exercise7.R</a></div></section>
 <div class="goals"><h2>Čo sa naučíte</h2><ul>
 <li>pochopiť, ako PCA nahradí veľa korelovaných znakov niekoľkými komponentmi,</li>
 <li>určiť počet komponentov/faktorov (Kaiserovo kritérium, scree graf),</li>
@@ -105,10 +105,55 @@
 </table></div>
 <div class="note"><strong>Rotácia varimax</strong><code>factanal</code> štandardne otáča faktory metódou varimax tak, aby každý znak mal vysokú záťaž len na jednom faktore – faktory sa tak ľahšie pomenujú. Pri úlohe s parfumami pomenujte faktory podľa vôní, ktoré ich tvoria (napr. „kvetinové“ vs. „drevité“).</div>
 
+<section class="solutions"><h2>Riešenia úloh</h2><p>Kliknutím rozbalíte riešenie. Skúste úlohu najprv vyriešiť sami – výsledky sú overené v R 4.4. Kód nadväzuje na premenné zo skriptu.</p>
+<details class="sol"><summary>Úloha 1 <span>– faktory pri hodnotení parfumov</span></summary>
+<pre>parfumy &lt;- data.frame(kosatec, levandula, bergamot, jazmin, ceder, vetiver, vanilka, santal)
+eigen(cor(parfumy))$values                # Kaiser: pocet hodnot &gt; 1
+fa &lt;- factanal(parfumy, factors = 3, scores = &quot;regression&quot;)
+print(fa$loadings, cutoff = 0.4)
+sort(colMeans(parfumy), decreasing = TRUE)
+teen &lt;- c(7, 16, 17, 19, 46)
+rbind(teen = colMeans(parfumy[teen, ]), ostatne = colMeans(parfumy[-teen, ]))</pre>
+<div class="answer"><p>Vlastné čísla 2,22; 1,19; 1,03; 0,95 … → podľa Kaisera <strong>3 faktory</strong>. Záťaže &gt; 0,4: faktor 1 = <strong>ceder + santal</strong> („drevité“), faktor 2 = <strong>levanduľa</strong> („bylinné“), faktor 3 = <strong>bergamot</strong> („citrusové“). Faktory spolu vysvetľujú len 36 % variability – štruktúra je slabá.</p><p>Najobľúbenejšie vône: levanduľa (4,10), kosatec (4,03), ceder a vanilka (3,92). Tínedžerky (7, 16, 17, 19, 46) majú výrazne vyššie hodnotenie levandule a vanilky (6,0), cédra a santalu (5,8) a nízke kosatca a vetiveru – majú vlastný profil (skóre faktora 1: 1,15 vs. −0,10), ale s 5 respondentkami ide len o orientačné zistenie.</p></div></details>
+</section>
 <nav class="pager">
 <a class="prev" href="cvicenie06.html"><span>← Predchádzajúce</span>6. Korelácia a lineárna regresia</a>
 <a class="next" href="cvicenie08.html"><span>Nasledujúce →</span>8. Zhluková analýza</a>
 </nav>
 </div>
+<script>
+(function () {
+  function copy(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    return Promise.resolve();
+  }
+  document.querySelectorAll('pre:not(.out)').forEach(function (pre) {
+    var text = pre.innerText;
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'copy'; btn.textContent = 'Kopírovať';
+    btn.addEventListener('click', function () {
+      copy(text).then(function () {
+        btn.textContent = 'Skopírované ✓';
+        setTimeout(function () { btn.textContent = 'Kopírovať'; }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+  var q = document.getElementById('filter');
+  if (q) q.addEventListener('input', function () {
+    var v = q.value.toLowerCase();
+    document.querySelectorAll('.cards a').forEach(function (c) {
+      c.style.display = c.textContent.toLowerCase().indexOf(v) === -1 ? 'none' : '';
+    });
+    document.querySelectorAll('section.block').forEach(function (s) {
+      var any = Array.prototype.some.call(s.querySelectorAll('.cards a'), function (c) { return c.style.display !== 'none'; });
+      s.style.display = any ? '' : 'none';
+    });
+  });
+})();
+</script>
 </body>
 </html>
