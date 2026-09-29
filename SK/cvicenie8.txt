@@ -2,16 +2,16 @@
 # Zhlukova analyza (hierarchicka) a kategorizacia produktov 
 # -----------------------------------------------------------
 
-# nacitame si dataset z interbetovej adresy
+# nacitame si dataset z internetovej adresy
 senzorika = read.table("http://senzorika.com/sait/datasety/senzorika.txt", sep=",")
 mena=c("pizza_1","pizza_2","pizza_3","pizza_4","pizza_5","pizza_6","pizza_7","pizza_8","pizza_9","pizza_10","pizza_11","pizza_12","pizza_13","pizza_14","pizza_15","pizza_16")
 row.names(senzorika)=mena
 # Wardovo hierarchicke zhlukovanie
 d = dist(senzorika, method = "euclidean") # prepocet matice vzdialenosti
 fit = hclust(d, method="ward.D") 
-plot(fit,main="Dendrogram produktov", yla="v�hy znakov", xlab="Produkty") # display dendogram
+plot(fit,main="Dendrogram produktov", ylab="vzdialenosť (výška spojenia)", xlab="Produkty") # zobrazenie dendrogramu
 groups = cutree(fit, k=3) # rozdelenie skupiny na tri skupiny
-rect.hclust(fit, k=3, border="red", )
+rect.hclust(fit, k=3, border="red")
 
 
 
@@ -25,7 +25,7 @@ library(factoextra) # clustering
 
 #nacitanie dat
 senzorika = read.table("http://senzorika.com/sait/datasety/senzorika.txt", sep=",")
-test=distance <- get_dist(senzorika)
+distance <- get_dist(senzorika)
 fviz_dist(distance, gradient = list(low = "#00AFBB", mid = "white", high = "#FC4E07"))
 k2 <- kmeans(senzorika, centers = 2, nstart = 25)
 k3 <- kmeans(senzorika, centers = 3, nstart = 25)
@@ -36,14 +36,14 @@ fviz_cluster(k5, geom = "point",  data = senzorika) + ggtitle("k = 5")
 #vypocet optimalneho mnozstva zhlukov (klastrov)
 fviz_nbclust(senzorika, kmeans, method = "silhouette")
 # vizualizacia s tromi klastrami
-fviz_cluster(k3,data = senzorika) + ggtitle("Optim�lna segment�cia produktov do skup�n")
+fviz_cluster(k3,data = senzorika) + ggtitle("Optimálna segmentácia produktov do skupín")
 cor(k3$centers)
 k3$centers
 k3$size
 
 # Priklad :
-# Senzoricka Komisia hodnotila nas produkt A, oproti konkurecnym 15 produktom na trhu. Cielom analyzy bolo zistit, ktory je nasmu produktu 
-najviac podobny, ked skupina hodnotitelov zaradila cely sortiment do 5 skupin. Okomentujete vysledky.
+# Senzoricka Komisia hodnotila nas produkt A, oproti konkurencnym 15 produktom na trhu. Cielom analyzy bolo zistit, ktory je nasmu produktu 
+# najviac podobny, ked skupina hodnotitelov zaradila cely sortiment do 5 skupin. Okomentujete vysledky.
 
 senzorika = read.table("http://senzorika.com/sait/datasety/senzorika.txt", sep=",")
 mena=c("A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","X")

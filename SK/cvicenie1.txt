@@ -1,32 +1,32 @@
-﻿#--------------------------------------------------------------------------
- Instalacia potrebneho softwaru
+#--------------------------------------------------------------------------
+# Instalacia potrebneho softwaru
 #--------------------------------------------------------------------------
 
 # download a instalacia statistickeho balika R
-http://cran.at.r-project.org/bin/windows/base/
+# https://cran.r-project.org/bin/windows/base/
 
 # download a instalacia grafickeho IDE Rstudio
-http://rstudio.org/download/desktop
+# https://posit.co/download/rstudio-desktop/
 
 
 #--------------------------------------------------------------------------
- Groupware nastroje a kooperativna praca (na projekte resp. predmete)
+# Groupware nastroje a kooperativna praca (na projekte resp. predmete)
 #--------------------------------------------------------------------------
 
 # Slack - vo svete popularny... skola skor vyuziva Teams
 # https://join.slack.com/
 
 #Trello (vhodna pre individualne/skupinove projekty)
-https://trello.com/
+# https://trello.com/
 
 # Notion (sprava projektov)
-https://notion.so/
+# https://notion.so/
 
 # github (repozitar, na riadenu dokumentaciu/ verziovanie dokumentov)
-https://github.com/
+# https://github.com/
 
 #webkonferencie a online chat
-https://meet.jit.si/sait2024
+# https://meet.jit.si/sait2024
 
 # instalacia balikov (nie vsetky su potrebne k cviceniam)
 install.packages('devtools')

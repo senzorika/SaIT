@@ -23,7 +23,7 @@ ustavy=data.frame(staty,pocet)
 #--------------------------------------------------------------
 plot(a)
 dotchart(a)
-barplot(a,b,horiz=T, col="lavender") #1:2 atd atd
+barplot(a, names.arg=hodnotitel, horiz=T, col="lavender")
 barplot(c(a,b,c,d),col = c("lightblue", "mistyrose","lightcyan", "lavender"))
 pie(a)
 pie(pocet, labels=staty)
@@ -49,14 +49,14 @@ library(quantmod)
 getSymbols("LHA.DE",src="yahoo" , from ="2018-01-01", to = Sys.Date())
 candleChart(LHA.DE, TA=c(addMACD(),addRSI(),addBBands(),addVo()),subset = '2018::2019',theme="white")
 
-PRAKTICKA CAST
-==================================
+# PRAKTICKA CAST
+# ==================================
 # Uloha 1
 # z databazy OpenFactsData si vyberte lubovolnu skupinu potravin (3+)
-a vytvorte graf podla Vase preferencie a výsledok poslite na mail: senzorickelaboratoriumfbp@gmail.com
+# a vytvorte graf podla Vasej preferencie a výsledok poslite na mail: senzorickelaboratoriumfbp@gmail.com
 
 # Uloha 2
-# Zistite preferencie jednotliv ch kolov ch n pojov pomocou online formul rov
+# Zistite preferencie jednotlivych kolovych napojov pomocou online formularov
 # nainstalovanie kniznice pre citanie googlesheets
 install.packages('gsheet')
 # pridanie kniznice googlesheets do programu R
@@ -66,7 +66,7 @@ preferencie=gsheet2tbl('https://docs.google.com/spreadsheets/d/1DqIcZD1bDUV8cP_U
 
 #definicie vektorov z online databazy
 vysledky=list(mean(preferencie$CocaCola),mean(preferencie$Kofola),mean(preferencie$RCCola),mean(preferencie$Pepsi),mean(preferencie$Freeway))
-boxplot(preferencie$CocaCola,preferencie$Kofola,preferencie$RCCola,preferencie$Pepsi,preferencie$Freeway, main="Preferencia kolov ch n pojov")
+boxplot(preferencie$CocaCola,preferencie$Kofola,preferencie$RCCola,preferencie$Pepsi,preferencie$Freeway, names=c("CocaCola","Kofola","RCCola","Pepsi","Freeway"), main="Preferencia kolovych napojov")
 
 #3 ktore akcie kolovych napojov momentalne vedu akciovy trh? :)
 

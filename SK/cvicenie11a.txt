@@ -1,6 +1,8 @@
 # --------------------------------------------------
 # TURF Analyza, Vietoris 2020
 #---------------------------------------------------
+# balik turfR bol z CRAN odstraneny, instalacia z archivu:
+# install.packages("https://cran.r-project.org/src/contrib/Archive/turfR/turfR_0.8-7.tar.gz", repos=NULL, type="source")
 library(turfR)
 vajce = c(sample(0:1, size=150, replace=TRUE))
 syr = c(sample(0:1, size=150, replace=TRUE))
@@ -40,15 +42,14 @@ View(TURFtabulka4)
 # PREFERENCE MAPPING (Externy), Vietoris 2020
 #------------------------------------------------------------
 
-Potravinarska firma vo svojom senzorickom laboratoriu analyzovala pomocou profilovej metody
-svoju (1) a konkurencnych 15 vyrobkov na trhu. Senzoricka komisia v pocte 8 clenov analyzovala
-13 stanovenych deskriptorov na nestrukturovanej intenzitnej skale. Vysledky za jednotlive deskriptory predstavuju priemer pre panel. 
-Nasledne vybrani anketari poziadali 100 respondentov, aby sa vyjadrili na 5 bodovej (skolskej) skale v celemu sortimentu vyrobkov. 
-Analyzujte pomocou techniky preference mappingu (mapy preferencii) sortiment trhu a okomentujte vyrobok sledovanej potravinarskej firmy.
+# Potravinarska firma vo svojom senzorickom laboratoriu analyzovala pomocou profilovej metody
+# svoju (1) a konkurencnych 15 vyrobkov na trhu. Senzoricka komisia v pocte 8 clenov analyzovala
+# 13 stanovenych deskriptorov na nestrukturovanej intenzitnej skale. Vysledky za jednotlive deskriptory predstavuju priemer pre panel. 
+# Nasledne vybrani anketari poziadali 100 respondentov, aby sa vyjadrili na 5 bodovej (skolskej) skale k celemu sortimentu vyrobkov. 
+# Analyzujte pomocou techniky preference mappingu (mapy preferencii) sortiment trhu a okomentujte vyrobok sledovanej potravinarskej firmy.
 
 
 # nacitanie dat z internetovej adresy (profilove + hedonicke data)
-# zdrojovy kod si mozete pozriet tu:
 senzorika<-read.table("http://senzorika.com/sait/datasety/senzorika.txt", sep=",")
 hedonika<-read.table("http://senzorika.com/sait/datasety/hedonika.txt", sep=",")
 

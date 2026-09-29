@@ -7,7 +7,7 @@ destfile = "potraviny.xlsx"
 curl::curl_download(url, destfile)
 potraviny = read_excel(destfile,sheet="4vyrobky")
 
-# testovanie normality pre vsetky tri produkty
+# testovanie normality pre vsetky styri produkty
 A=subset(potraviny, produkt == "A")
 B=subset(potraviny, produkt == "B")
 C=subset(potraviny, produkt == "C")
@@ -18,5 +18,5 @@ shapiro.test(C$kvalita)
 shapiro.test(D$kvalita)
 
 # Porovnanie vo stvorici
-kruskal.test(produkt ~ kvalita, data=potraviny) 
+kruskal.test(kvalita ~ produkt, data=potraviny) 
 pairwise.wilcox.test(potraviny$kvalita,potraviny$produkt, p.adj="bonferroni", exact=F)

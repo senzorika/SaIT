@@ -14,8 +14,8 @@ mean(kvalita)
 #vykreslenie grafu vratane rozdelenia plochy na kvadranty
 
 plot(cena,kvalita)
-abline(v=7.14, col="red")
-abline(h=6.6, col="red")
+abline(v=mean(cena), col="red")
+abline(h=mean(kvalita), col="red")
 text(cena,kvalita,produkt,pos=4)
 
 #Vypocet Intervalu spolahlivosti v senzorickej analyze
@@ -23,14 +23,14 @@ text(cena,kvalita,produkt,pos=4)
 # vysledky za chut od 7 hodnotitelov
 x=c(10,9,11,10,10,9,10)
 
-# vypocet poctu kategorii vektora
+# vypocet poctu prvkov vektora (pocet hodnotitelov n)
 length(x)
 
-# vypocet mnozstva prvkov vektora
+# vypocet poctu roznych hodnot (kategorii) vektora
 length(unique(x))
 
-# vypocet intervalu spolahlivosti
-delta=(sd(x)/sqrt(length(unique(x))))*1.96
+# vypocet 95% intervalu spolahlivosti (pri malom n pouzivame t-rozdelenie namiesto 1.96)
+delta=(sd(x)/sqrt(length(x)))*qt(0.975, df=length(x)-1)
 is=c(mean(x)-delta,mean(x)+delta)
 
 # vykreslenie grafu (Intervalu spolahlivosti)

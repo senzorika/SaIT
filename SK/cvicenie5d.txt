@@ -1,6 +1,6 @@
 # Durbin test priklad, VV 2020
-# nacitanie kniznice
-library(PMCMR)
+# nacitanie kniznice (PMCMR bol z CRAN odstraneny, nahradou je PMCMRplus)
+library(PMCMRplus)
 
 #priklad kompletneho bloku
 y <- matrix(c(
@@ -12,7 +12,7 @@ y <- matrix(c(
   dimnames=list(1:6,LETTERS[1:6]))
 print(y)
 friedman.test(y)
-durbin.test(y)
+durbinTest(y)
 
 
 ## Priklad nekompletneho bloku - Durbin test
@@ -24,5 +24,5 @@ y <- matrix(c(
 ), ncol=7, nrow=7, byrow=FALSE,
 dimnames=list(1:7, LETTERS[1:7]))
 print(y)
-durbin.test(y)
-posthoc.durbin.test(y, p.adj="none")
+durbinTest(y)
+durbinAllPairsTest(y, p.adjust.method="none")
