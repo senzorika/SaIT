@@ -8,7 +8,7 @@
 <p align="center">
   <a href="https://cran.r-project.org/"><img src="https://img.shields.io/badge/R-%E2%89%A5%204.0-276DC3?logo=r&logoColor=white" alt="R"></a>
   <a href="https://posit.co/download/rstudio-desktop/"><img src="https://img.shields.io/badge/RStudio-IDE-75AADB?logo=rstudioide&logoColor=white" alt="RStudio"></a>
-  <img src="https://img.shields.io/badge/cvi%C4%8Denia%20%7C%20exercises-22-0f7b6c" alt="22 exercises">
+  <img src="https://img.shields.io/badge/cvi%C4%8Denia%20%7C%20exercises-24-0f7b6c" alt="24 exercises">
   <img src="https://img.shields.io/badge/jazyk%20%7C%20language-SK%20%C2%B7%20EN-d9622b" alt="SK · EN">
   <a href="https://senzorika.github.io/SaIT/teoria/index.html"><img src="https://img.shields.io/badge/te%C3%B3ria%20%7C%20theory-GitHub%20Pages-3a5fcd?logo=github" alt="Theory"></a>
 </p>
@@ -34,6 +34,7 @@ flowchart LR
     B4["🎯 Rozlišovacie testy a panel<br/>cvičenia 13, 14, 15, 16"]
     B5["🛒 Spotrebiteľský výskum<br/>cvičenia 11a, 11b, 12"]
     B6["⏱️ Rýchle a temporálne metódy<br/>cvičenia 17, 18"]
+    B7["📝 Kontrolné prípadové štúdie<br/>cvičenia 19, 20"]
     B0 --> B1
     B1 --> B2
     B1 --> B3
@@ -42,8 +43,9 @@ flowchart LR
     B3 --> B5
     B4 --> B5
     B5 --> B6
+    B6 --> B7
     classDef blk fill:#d6efe9,stroke:#0f7b6c,color:#1d1f24
-    class B0,B1,B2,B3,B4,B5,B6 blk
+    class B0,B1,B2,B3,B4,B5,B6,B7 blk
 ```
 
 ### 🧪 Cvičenia
@@ -104,6 +106,13 @@ flowchart LR
 |:-:|------|:------:|:---------:|:---------:|
 | **17** | **CATA a napping**<br><sub>Rýchle metódy profilovania so spotrebiteľmi: začiarkavacie otázky a projektívne mapovanie.</sub> | [📖](https://senzorika.github.io/SaIT/teoria/cvicenie17.html) | [`cvicenie17.R`](cvicenie17.R) | [`exercise17.R`](exercises_EN/exercise17.R) |
 | **18** | **Temporálne metódy – TDS a TCATA**<br><sub>Ako sa vnem mení v čase: dominancia vnemov a časové CATA krivky.</sub> | [📖](https://senzorika.github.io/SaIT/teoria/cvicenie18.html) | [`cvicenie18.R`](cvicenie18.R) | [`exercise18.R`](exercises_EN/exercise18.R) |
+
+#### 📝 Kontrolné prípadové štúdie
+
+| # | Téma | Teória | Skript SK | Script EN |
+|:-:|------|:------:|:---------:|:---------:|
+| **19** | **Kontrolné prípadové štúdie I**<br><sub>Dve praktické úlohy zo základov kurzu: rozlišovací test pri zmene dodávateľa a výber najlepšej receptúry.</sub> | [📖](https://senzorika.github.io/SaIT/teoria/cvicenie19.html) | [`cvicenie19.R`](cvicenie19.R) | [`exercise19.R`](exercises_EN/exercise19.R) |
+| **20** | **Kontrolné prípadové štúdie II**<br><sub>Tri úlohy z celého kurzu: preferencie a JAR, senzorická trvanlivosť a audit panelu s návrhom experimentu.</sub> | [📖](https://senzorika.github.io/SaIT/teoria/cvicenie20.html) | [`cvicenie20.R`](cvicenie20.R) | [`exercise20.R`](exercises_EN/exercise20.R) |
 
 ### 🎓 Prezentácie k prednáškam
 
@@ -168,6 +177,7 @@ flowchart LR
     B4["🎯 Discrimination tests and the panel<br/>exercises 13, 14, 15, 16"]
     B5["🛒 Consumer research<br/>exercises 11a, 11b, 12"]
     B6["⏱️ Rapid and temporal methods<br/>exercises 17, 18"]
+    B7["📝 Assessment case studies<br/>exercises 19, 20"]
     B0 --> B1
     B1 --> B2
     B1 --> B3
@@ -176,8 +186,9 @@ flowchart LR
     B3 --> B5
     B4 --> B5
     B5 --> B6
+    B6 --> B7
     classDef blk fill:#d6efe9,stroke:#0f7b6c,color:#1d1f24
-    class B0,B1,B2,B3,B4,B5,B6 blk
+    class B0,B1,B2,B3,B4,B5,B6,B7 blk
 ```
 
 ### 🧪 Exercises
@@ -238,6 +249,13 @@ flowchart LR
 |:-:|------|:------:|:---------:|:---------:|
 | **17** | **CATA and napping**<br><sub>Rapid profiling methods with consumers: check-all-that-apply questions and projective mapping.</sub> | [📖](https://senzorika.github.io/SaIT/theory_EN/exercise17.html) | [`exercise17.R`](exercises_EN/exercise17.R) | [`cvicenie17.R`](cvicenie17.R) |
 | **18** | **Temporal methods – TDS and TCATA**<br><sub>How perception changes over time: dominance of sensations and temporal CATA curves.</sub> | [📖](https://senzorika.github.io/SaIT/theory_EN/exercise18.html) | [`exercise18.R`](exercises_EN/exercise18.R) | [`cvicenie18.R`](cvicenie18.R) |
+
+#### 📝 Assessment case studies
+
+| # | Topic | Theory | Script EN | Skript SK |
+|:-:|------|:------:|:---------:|:---------:|
+| **19** | **Assessment case studies I**<br><sub>Two practical tasks from the basics of the course: a discrimination test after a supplier change and choosing the best recipe.</sub> | [📖](https://senzorika.github.io/SaIT/theory_EN/exercise19.html) | [`exercise19.R`](exercises_EN/exercise19.R) | [`cvicenie19.R`](cvicenie19.R) |
+| **20** | **Assessment case studies II**<br><sub>Three tasks from the whole course: preferences and JAR, sensory shelf life and a panel audit with an experiment design.</sub> | [📖](https://senzorika.github.io/SaIT/theory_EN/exercise20.html) | [`exercise20.R`](exercises_EN/exercise20.R) | [`cvicenie20.R`](cvicenie20.R) |
 
 ### 🎓 Lecture slides
 

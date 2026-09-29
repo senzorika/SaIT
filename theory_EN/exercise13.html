@@ -143,6 +143,20 @@ Result of difference test:
     });
     pre.appendChild(btn);
   });
+  var res = document.getElementById('results');
+  if (res && window.RESULTS_B64) {
+    document.addEventListener('keydown', function (e) {
+      var k = (e.key || '').toLowerCase();
+      if (k !== 'r' || !(e.ctrlKey || e.metaKey || e.altKey)) return;
+      e.preventDefault();
+      if (!res.innerHTML) {
+        var bytes = Uint8Array.from(atob(window.RESULTS_B64), function (c) { return c.charCodeAt(0); });
+        res.innerHTML = new TextDecoder('utf-8').decode(bytes);
+      }
+      res.hidden = !res.hidden;
+      if (!res.hidden) res.scrollIntoView({ behavior: 'smooth' });
+    });
+  }
   var q = document.getElementById('filter');
   if (q) q.addEventListener('input', function () {
     var v = q.value.toLowerCase();

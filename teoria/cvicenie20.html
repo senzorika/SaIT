@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>20. Kontrolné prípadové štúdie II</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ink-3)"/></marker></defs></svg>
+<div class="wrap">
+<header class="top"><a class="brand" href="index.html">Senzometria v R · teória</a><span class="toplinks"><a href="index.html">Všetky cvičenia</a><a class="lang" href="../theory_EN/exercise20.html">English</a></span></header>
+
+<section class="hero"><span class="num">CVIČENIE 20</span><h1>Kontrolné prípadové štúdie II</h1><p class="lead">Tri úlohy z celého kurzu: preferencie a JAR, senzorická trvanlivosť a audit panelu s návrhom experimentu.</p>
+<div class="files"><a href="../cvicenie20.R">Skript (SK): cvicenie20.R</a><a href="../exercises_EN/exercise20.R">Script (EN): exercise20.R</a></div></section>
+<div class="goals"><h2>Ako na to</h2><ul>
+<li>Stiahnite si skript <code>cvicenie20.R</code> – obsahuje dáta a zadania troch štúdií.</li>
+<li>Riešenie odovzdajte ako R skript s komentármi a krátkym slovným záverom ku každej štúdii.</li>
+<li>Celkovo 15 bodov: štúdia A 3 body, B 4 body, C 8 bodov.</li>
+<li>Po odoslaní stlačte <kbd>Ctrl</kbd> + <kbd>R</kbd> (alebo <kbd>Alt</kbd> + <kbd>R</kbd>) – zobrazia sa správne výsledky na samohodnotenie.</li>
+</ul></div>
+
+<section class="case">
+<h2><span class="level l1">ľahká</span> A · Príchute a sladkosť <span class="points">3 body</span></h2>
+<p>Mliekareň plánuje novú radu ochuteného mlieka. <strong>120 spotrebiteľov</strong> vybralo najobľúbenejšiu z troch príchutí (jahoda 58, broskyňa 41, mango 21). Tí, čo vybrali jahodovú, ju potom hodnotili na <strong>JAR škále sladkosti</strong>.</p>
+<ol>
+<li>Je preferencia príchutí rovnomerná? Vyberte a vypočítajte test. <span class="points">(1 b)</span></li>
+<li>Vypočítajte podiely JAR kategórií a nakreslite graf. <span class="points">(1 b)</span></li>
+<li>Odporučte, či a ako upraviť sladkosť jahodového mlieka. <span class="points">(1 b)</span></li>
+</ol>
+<p class="note"><strong>Pomôcka</strong>Cvičenia 5a (χ² test) a 12 (JAR škála).</p>
+</section>
+
+<section class="case">
+<h2><span class="level l2">stredná</span> B · Senzorická trvanlivosť šalátu <span class="points">4 body</span></h2>
+<p>20 spotrebiteľov hodnotilo čerstvý zeleninový šalát skladovaný pri 8 °C každých 12 hodín a zaznamenal sa čas, kedy ho <strong>prvý raz odmietli</strong>. Kto šalát neodmietol do konca testu (72 h), má odmietnutie = 0.</p>
+<ol>
+<li>Zostrojte Kaplan-Meierovu krivku akceptácie. <span class="points">(1 b)</span></li>
+<li>Určte medián senzorickej trvanlivosti. <span class="points">(1 b)</span></li>
+<li>Výrobca chce, aby produkt v čase spotreby odmietlo najviac 25 % spotrebiteľov. Akú dobu spotreby odporučíte? <span class="points">(2 b)</span></li>
+</ol>
+<p class="note"><strong>Pomôcka</strong>Cvičenie 10.</p>
+</section>
+
+<section class="case">
+<h2><span class="level l3">ťažká</span> C · Audit panelu a nová receptúra <span class="points">8 bodov</span></h2>
+<p>Deskriptívny panel (10 hodnotiteľov) hodnotil <strong>horkosť 5 tmavých čokolád</strong> (P1 – P5) v dvoch opakovaniach na 10-bodovej škále. Pred rozhodnutím o novej receptúre chce vedenie vedieť, či sa na panel dá spoľahnúť.</p>
+<ol>
+<li>Vyhodnoťte výkonnosť panelu (rozlišovanie produktov, zhoda, opakovateľnosť). <span class="points">(2 b)</span></li>
+<li>Nájdite hodnotiteľa, ktorý panel najviac zhoršuje, a zdôvodnite to. <span class="points">(1 b)</span></li>
+<li>Vyhodnoťte rozdiely medzi produktmi zmiešaným modelom (hodnotiteľ = náhodný efekt) s týmto hodnotiteľom aj bez neho. Ktoré produkty sa líšia? <span class="points">(3 b)</span></li>
+<li>Nová receptúra P6 má byť o niečo menej horká ako P3; očakávaný rozdiel je d′ = 0,9. Koľko hodnotiteľov treba na trojuholníkový test so silou 80 %? Je lepšia tetráda? <span class="points">(2 b)</span></li>
+</ol>
+<p class="note"><strong>Pomôcka</strong>Cvičenia 14, 15 a 16.</p>
+</section>
+
+<div class="submit">
+<div><strong>Odovzdanie</strong><br>R skript + slovné závery na <a href="mailto:senzorickelaboratoriumfbp@gmail.com">senzorickelaboratoriumfbp@gmail.com</a>, predmet: <code>SaIT - cvicenie 20 - Meno Priezvisko</code></div>
+<a class="btn" href="mailto:senzorickelaboratoriumfbp@gmail.com?subject=SaIT%20-%20cvicenie%2020%20-%20Meno%20Priezvisko&amp;body=Dobr%C3%BD%20de%C5%88%2C%0A%0Av%20pr%C3%ADlohe%20posielam%20rie%C5%A1enie%20cvi%C4%8Denia%2020.%0A%0A">✉️ Odoslať riešenie</a>
+</div>
+<p style="color:var(--ink-2)">Výsledky na samohodnotenie sú skryté. Zobrazíte ich klávesovou skratkou <kbd>Ctrl</kbd> + <kbd>R</kbd> alebo <kbd>Alt</kbd> + <kbd>R</kbd> (opätovným stlačením ich skryjete).</p>
+
+<section id="results" class="results" hidden></section><script>var RESULTS_B64 = "CjxoMj7wn5SRIFbDvXNsZWRreSBuYSBzYW1vaG9kbm90ZW5pZTwvaDI+CjxoMz5BIMK3IFByw61jaHV0ZSBhIHNsYWRrb3PFpTwvaDM+CjxwcmU+Y2hpc3EudGVzdChwcmljaHV0ZSkgICAgICAgICAgICAgICAgICAgICAgICAgICMgWC1zcXVhcmVkID0gMTcuMTUsIHAgPSAwLjAwMDIKcm91bmQocHJvcC50YWJsZShqYXJfc2xhZGtvc3QpLCAzKQpiYXJwbG90KHByb3AudGFibGUoamFyX3NsYWRrb3N0KSk8L3ByZT4KPHVsIGNsYXNzPSJjaGVja2xpc3QiPgo8bGk+z4fCsiB0ZXN0IGRvYnJlaiB6aG9keTogPHN0cm9uZz7Ph8KyID0gMTcsMjsgZGYgPSAyOyBwID0gMCwwMDAyPC9zdHJvbmc+IOKGkiBwcmVmZXJlbmNpYSBuaWUgamUgcm92bm9tZXJuw6EsIGphaG9kYSB2ZWRpZS4gPHNwYW4gY2xhc3M9InBvaW50cyI+KDEgYik8L3NwYW4+PC9saT4KPGxpPkpBUjogcHLDrWxpxaEgbcOhbG8gc2xhZGvDqSAxMiAlLCA8c3Ryb25nPmFrdXLDoXQgNDMgJTwvc3Ryb25nPiwgcHLDrWxpxaEgc2xhZGvDqSA8c3Ryb25nPjQ1ICU8L3N0cm9uZz4gKCsgMjkgJSwgKysgMTYgJSkuIDxzcGFuIGNsYXNzPSJwb2ludHMiPigxIGIpPC9zcGFuPjwvbGk+CjxsaT5PZHBvcsO6xI1hbmllOiBKQVIgamUgcG9kIDUwICUgYSB2w71yYXpuZSBwcmV2bMOhZGEgc3RyYW5hIOKAnnByw61sacWhIHNsYWRrw6nigJwg4oaSIDxzdHJvbmc+em7DrcW+acWlIHNsYWRrb3PFpTwvc3Ryb25nPiwgaWRlw6FsbmUgb3ZlcmnFpSBwZW5hbHR5IGFuYWzDvXpvdSBhbGVibyDEj2FsxaHDrW0gdGVzdG9tLiA8c3BhbiBjbGFzcz0icG9pbnRzIj4oMSBiKTwvc3Bhbj48L2xpPgo8L3VsPgoKPGgzPkIgwrcgU2Vuem9yaWNrw6EgdHJ2YW5saXZvc8WlIMWhYWzDoXR1PC9oMz4KPHByZT5saWJyYXJ5KHN1cnZpdmFsKQpmaXQgJmx0Oy0gc3VydmZpdChTdXJ2KGNhcywgb2RtaWV0bnV0aWUpIH4gMSwgZGF0YSA9IHNhbGF0KQpwbG90KGZpdCwgY29uZi5pbnQgPSBGQUxTRSk7IGFibGluZShoID0gYygwLjUsIDAuNzUpLCBsdHkgPSAyKQpzdW1tYXJ5KGZpdCk7IGZpdDwvcHJlPgo8ZGl2IGNsYXNzPSJ0YWJsZXdyYXAiPjx0YWJsZT4KPHRyPjx0aD7EjWFzIChoKTwvdGg+PHRoPjI0PC90aD48dGg+MzY8L3RoPjx0aD40ODwvdGg+PHRoPjYwPC90aD48L3RyPgo8dHI+PHRkPsWcKHQpIOKAkyBwb2RpZWwgYWtjZXB0dWrDumNpY2g8L3RkPjx0ZD4wLDkwPC90ZD48dGQ+PHN0cm9uZz4wLDc1PC9zdHJvbmc+PC90ZD48dGQ+PHN0cm9uZz4wLDQwPC9zdHJvbmc+PC90ZD48dGQ+MCwyMDwvdGQ+PC90cj4KPC90YWJsZT48L2Rpdj4KPHVsIGNsYXNzPSJjaGVja2xpc3QiPgo8bGk+S2FwbGFuLU1laWVyb3ZhIGtyaXZrYSAoc2Nob2Rvdml0w6E7IDQgc3BvdHJlYml0ZWxpYSDFoWFsw6F0IGRvIDcyIGggbmVvZG1pZXRsaSDigJMgaWNoIMO6ZGFqZSBzw7ogY2VuesO6cm92YW7DqSkuIDxzcGFuIGNsYXNzPSJwb2ludHMiPigxIGIpPC9zcGFuPjwvbGk+CjxsaT5NZWRpw6FuIHNlbnpvcmlja2VqIHRydmFubGl2b3N0aSA9IDxzdHJvbmc+NDggaDwvc3Ryb25nPiAocHJ2w70gxI1hcywga2XEjyDFnCDiiaQgMCw1KS4gPHNwYW4gY2xhc3M9InBvaW50cyI+KDEgYik8L3NwYW4+PC9saT4KPGxpPkhyYW5pY3UgMjUgJSBvZG1pZXRudXTDrSAoxZwgPSAwLDc1KSBrcml2a2EgZG9zYWh1amUgcHJpIDxzdHJvbmc+MzYgaDwvc3Ryb25nPiDihpIgZG9iYSBzcG90cmVieSBuYWp2aWFjIDM2IGguIEt2w7RsaSBtYWzDqW11IHBvxI10dSBzcG90cmViaXRlxL5vdiAoZG9sbsOhIGhyYW5pY2EgSVMgcHJpIDM2IGggamUgMCw1OCkgamUgcm96dW1uw6EgYmV6cGXEjW5vc3Ruw6EgcmV6ZXJ2YSwgbmFwci4gMjQg4oCTIDMwIGguIDxzcGFuIGNsYXNzPSJwb2ludHMiPigyIGIpPC9zcGFuPjwvbGk+CjwvdWw+Cgo8aDM+QyDCtyBBdWRpdCBwYW5lbHUgYSBub3bDoSByZWNlcHTDunJhPC9oMz4KPHByZT5zdW1tYXJ5KGFvdihob3Jrb3N0IH4gcHJvZHVrdCAqIGhvZG5vdGl0ZWwgKyBvcGFrb3ZhbmllLCBkYXRhID0gcGFuZWwpKQojIHpob2RhIGEgb3Bha292YXRlxL5ub3PFpSBha28gdiBjdmnEjWVuw60gMTUsIHByZSBrYcW+ZMOpaG8gaG9kbm90aXRlxL5hCm0xICZsdDstIGxtZXIoaG9ya29zdCB+IHByb2R1a3QgKyBvcGFrb3ZhbmllICsgKDEgfCBob2Rub3RpdGVsKSArICgxIHwgaG9kbm90aXRlbDpwcm9kdWt0KSwgZGF0YSA9IHBhbmVsKQptMiAmbHQ7LSB1cGRhdGUobTEsIGRhdGEgPSBkcm9wbGV2ZWxzKHN1YnNldChwYW5lbCwgaG9kbm90aXRlbCAhPSAiSDciKSkpCmFub3ZhKG0xKTsgYW5vdmEobTIpOyBlbW1lYW5zKG0yLCBwYWlyd2lzZSB+IHByb2R1a3QpCmQucHJpbWVTUygwLjksIHRhcmdldC5wb3dlciA9IDAuOCwgbWV0aG9kID0gInRyaWFuZ2xlIikgICAjIDI5NwpkLnByaW1lU1MoMC45LCB0YXJnZXQucG93ZXIgPSAwLjgsIG1ldGhvZCA9ICJ0ZXRyYWQiKSAgICAgIyA4NzwvcHJlPgo8dWwgY2xhc3M9ImNoZWNrbGlzdCI+CjxsaT5QYW5lbCBha28gY2Vsb2sgcHJvZHVrdHkgcm96bGnFoXVqZSAoRiA9IDIyLDE7IHAgJmx0OyAwLDAwMSksIGludGVyYWtjaWEgaG9kbm90aXRlxL4gw5cgcHJvZHVrdCBuaWUgamUgdsO9em5hbW7DoSAocCA9IDAsMTgpLCBtZWR6aSBvcGFrb3ZhbmlhbWkgbmllIGplIHBvc3VuIChwID0gMCw4OCkuIDxzcGFuIGNsYXNzPSJwb2ludHMiPigyIGIpPC9zcGFuPjwvbGk+CjxsaT5TbGFiw70gaG9kbm90aXRlxL4gamUgPHN0cm9uZz5INzwvc3Ryb25nPjogemhvZGEgcyBwYW5lbG9tIHIgPSDiiJIwLDI0LCBvcGFrb3ZhdGXEvm5vc8WlIHIgPSDiiJIwLDI1IGEgc8OhbSBwcm9kdWt0eSBuZXJvemxpxaF1amUgKHAgPSAwLDYxKS4gT3N0YXRuw60gbWFqw7ogemhvZHUgMCw4NyDigJMgMSwwMC4gPHNwYW4gY2xhc3M9InBvaW50cyI+KDEgYik8L3NwYW4+PC9saT4KPGxpPlptaWXFoWFuw70gbW9kZWwgcyBINzogRiA9IDE2LDY7IGJleiBINzogPHN0cm9uZz5GID0gNTIsMTwvc3Ryb25nPiwgcmV6aWR1w6Fsbnkgcm96cHR5bCBrbGVzbmUgeiAxLDE4IG5hIDAsNjAuIDxzcGFuIGNsYXNzPSJwb2ludHMiPigxIGIpPC9zcGFuPjwvbGk+CjxsaT5CZXogSDcgKFR1a2V5IGNleiBlbW1lYW5zKSBzYSBsw63FoWlhIHbFoWV0a3kgcMOhcnkgb2tyZW0gPHN0cm9uZz5QMiDigJMgUDQ8L3N0cm9uZz4gKHAgPSAwLDc3KSBhIFAxIOKAkyBQNSAocCA9IDAsMDgwKS4gUG9yYWRpZSBob3Jrb3N0aTogUDMgJmd0OyBQMiDiiYggUDQgJmd0OyBQMSDiiYggUDUuIFMgSDcgYnkgdnnFoWxvIG8gMyBwcmV1a2F6bsOpIHJvemRpZWx5IG1lbmVqLiA8c3BhbiBjbGFzcz0icG9pbnRzIj4oMiBiKTwvc3Bhbj48L2xpPgo8bGk+UHJlIGTigLIgPSAwLDkgYSBzaWx1IDgwICU6IDxzdHJvbmc+dHJpYW5nZWwgMjk3PC9zdHJvbmc+IGhvZG5vdGl0ZcS+b3YsIDxzdHJvbmc+dGV0csOhZGEgODc8L3N0cm9uZz4g4oaSIHRldHLDoWRhIGplIGplZG5vem5hxI1uZSBsZXDFoWlhIChhc2kgMyw0LWtyw6F0IG1lbmVqIGhvZG5vdGl0ZcS+b3YpLiA8c3BhbiBjbGFzcz0icG9pbnRzIj4oMiBiKTwvc3Bhbj48L2xpPgo8L3VsPgo=";</script>
+
+
+<nav class="pager">
+<a class="prev" href="cvicenie19.html"><span>← Predchádzajúce</span>19. Kontrolné prípadové štúdie I</a>
+</nav>
+</div>
+<script>
+(function () {
+  function copy(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    return Promise.resolve();
+  }
+  document.querySelectorAll('pre:not(.out)').forEach(function (pre) {
+    var text = pre.innerText;
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'copy'; btn.textContent = 'Kopírovať';
+    btn.addEventListener('click', function () {
+      copy(text).then(function () {
+        btn.textContent = 'Skopírované ✓';
+        setTimeout(function () { btn.textContent = 'Kopírovať'; }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+  var res = document.getElementById('results');
+  if (res && window.RESULTS_B64) {
+    document.addEventListener('keydown', function (e) {
+      var k = (e.key || '').toLowerCase();
+      if (k !== 'r' || !(e.ctrlKey || e.metaKey || e.altKey)) return;
+      e.preventDefault();
+      if (!res.innerHTML) {
+        var bytes = Uint8Array.from(atob(window.RESULTS_B64), function (c) { return c.charCodeAt(0); });
+        res.innerHTML = new TextDecoder('utf-8').decode(bytes);
+      }
+      res.hidden = !res.hidden;
+      if (!res.hidden) res.scrollIntoView({ behavior: 'smooth' });
+    });
+  }
+  var q = document.getElementById('filter');
+  if (q) q.addEventListener('input', function () {
+    var v = q.value.toLowerCase();
+    document.querySelectorAll('.cards a').forEach(function (c) {
+      c.style.display = c.textContent.toLowerCase().indexOf(v) === -1 ? 'none' : '';
+    });
+    document.querySelectorAll('section.block').forEach(function (s) {
+      var any = Array.prototype.some.call(s.querySelectorAll('.cards a'), function (c) { return c.style.display !== 'none'; });
+      s.style.display = any ? '' : 'none';
+    });
+  });
+})();
+</script>
+</body>
+</html>

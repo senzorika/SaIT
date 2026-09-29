@@ -51,6 +51,10 @@
 <a href="exercise17.html"><span class="n">EXERCISE 17</span><h3>CATA and napping</h3><p>Rapid profiling methods with consumers: check-all-that-apply questions and projective mapping.</p></a>
 <a href="exercise18.html"><span class="n">EXERCISE 18</span><h3>Temporal methods – TDS and TCATA</h3><p>How perception changes over time: dominance of sensations and temporal CATA curves.</p></a>
 </div></section>
+<section class="block"><h2>📝 Assessment case studies</h2><div class="cards">
+<a href="exercise19.html"><span class="n">EXERCISE 19</span><h3>Assessment case studies I</h3><p>Two practical tasks from the basics of the course: a discrimination test after a supplier change and choosing the best recipe.</p></a>
+<a href="exercise20.html"><span class="n">EXERCISE 20</span><h3>Assessment case studies II</h3><p>Three tasks from the whole course: preferences and JAR, sensory shelf life and a panel audit with an experiment design.</p></a>
+</div></section>
 <p style="color:var(--ink-2);font-size:15px">Scripts: Slovak version in the repository root (<code>cvicenieN.R</code>), English version in <code>exercises_EN/</code>.</p>
 </div>
 <script>
@@ -74,6 +78,20 @@
     });
     pre.appendChild(btn);
   });
+  var res = document.getElementById('results');
+  if (res && window.RESULTS_B64) {
+    document.addEventListener('keydown', function (e) {
+      var k = (e.key || '').toLowerCase();
+      if (k !== 'r' || !(e.ctrlKey || e.metaKey || e.altKey)) return;
+      e.preventDefault();
+      if (!res.innerHTML) {
+        var bytes = Uint8Array.from(atob(window.RESULTS_B64), function (c) { return c.charCodeAt(0); });
+        res.innerHTML = new TextDecoder('utf-8').decode(bytes);
+      }
+      res.hidden = !res.hidden;
+      if (!res.hidden) res.scrollIntoView({ behavior: 'smooth' });
+    });
+  }
   var q = document.getElementById('filter');
   if (q) q.addEventListener('input', function () {
     var v = q.value.toLowerCase();

@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>19. Assessment case studies I</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../teoria/style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ink-3)"/></marker></defs></svg>
+<div class="wrap">
+<header class="top"><a class="brand" href="index.html">Sensometrics in R · theory</a><span class="toplinks"><a href="index.html">All exercises</a><a class="lang" href="../teoria/cvicenie19.html">Slovensky</a></span></header>
+
+<section class="hero"><span class="num">EXERCISE 19</span><h1>Assessment case studies I</h1><p class="lead">Two practical tasks from the basics of the course: a discrimination test after a supplier change and choosing the best recipe.</p>
+<div class="files"><a href="../cvicenie19.R">Script (SK): cvicenie19.R</a><a href="../exercises_EN/exercise19.R">Script (EN): exercise19.R</a></div></section>
+<div class="goals"><h2>How it works</h2><ul>
+<li>Download the script <code>exercise19.R</code> – it contains the data and tasks of both studies.</li>
+<li>Submit your solution as a commented R script with a short written conclusion for each study.</li>
+<li>10 points in total: study A 3 points, study B 7 points.</li>
+<li>After submitting, press <kbd>Ctrl</kbd> + <kbd>R</kbd> (or <kbd>Alt</kbd> + <kbd>R</kbd>) – the correct results for self-assessment will appear.</li>
+</ul></div>
+
+<section class="case">
+<h2><span class="level l1">very easy</span> A · A new cocoa supplier <span class="points">3 points</span></h2>
+<p>A chocolate factory is considering a cheaper cocoa supplier. The sensory laboratory ran a <strong>triangle test</strong>: 48 assessors, <strong>21</strong> of them identified the odd sample correctly.</p>
+<ol>
+<li>State the null and the alternative hypothesis.</li>
+<li>Choose and compute an appropriate test (α = 0.05).</li>
+<li>Write one sentence of conclusion for management. Can you claim the chocolates are the same?</li>
+</ol>
+<p class="note"><strong>Hint</strong>Exercise 5a (binomial test) and exercise 13 (similarity test).</p>
+</section>
+
+<section class="case">
+<h2><span class="level l2">medium</span> B · Four yogurt recipes <span class="points">7 points</span></h2>
+<p>The R&amp;D department prepared 4 yogurt recipes (A – D). Each of <strong>12 assessors tasted all 4 samples</strong> in random order and rated overall liking on a 9-point hedonic scale.</p>
+<ol>
+<li>Show the data in a suitable plot and describe what it shows. <span class="points">(1 p)</span></li>
+<li>Determine the experimental design (dependent / independent samples) and check the assumptions. <span class="points">(2 p)</span></li>
+<li>Choose and compute a global test. <span class="points">(1 p)</span></li>
+<li>If the difference is significant, find out with a post-hoc test which recipes differ. <span class="points">(2 p)</span></li>
+<li>Recommend one recipe to management and justify it (2 – 3 sentences). <span class="points">(1 p)</span></li>
+</ol>
+<p class="note"><strong>Hint</strong>Exercises 4, 5a and 5b.</p>
+</section>
+
+<div class="submit">
+<div><strong>Submission</strong><br>R script + written conclusion to <a href="mailto:senzorickelaboratoriumfbp@gmail.com">senzorickelaboratoriumfbp@gmail.com</a>, subject: <code>SaIT - exercise 19 - Name Surname</code></div>
+<a class="btn" href="mailto:senzorickelaboratoriumfbp@gmail.com?subject=SaIT%20-%20exercise%2019%20-%20Name%20Surname&amp;body=Hello%2C%0A%0Aplease%20find%20attached%20my%20solution%20of%20exercise%2019.%0A%0A">✉️ Send solution</a>
+</div>
+<p style="color:var(--ink-2)">The self-assessment results are hidden. Show them with <kbd>Ctrl</kbd> + <kbd>R</kbd> or <kbd>Alt</kbd> + <kbd>R</kbd> (press again to hide them).</p>
+
+<section id="results" class="results" hidden></section><script>var RESULTS_B64 = "CjxoMj7wn5SRIFNlbGYtYXNzZXNzbWVudCByZXN1bHRzPC9oMj4KPGgzPkEgwrcgQSBuZXcgY29jb2Egc3VwcGxpZXI8L2gzPgo8cHJlPmJpbm9tLnRlc3QoMjEsIDQ4LCBwID0gMS8zLCBhbHRlcm5hdGl2ZSA9ICJncmVhdGVyIikgICAjIHAgPSAwLjA4NgpkaXNjcmltKDIxLCA0OCwgbWV0aG9kID0gInRyaWFuZ2xlIikgICAgICAgICAgICAgICAgICAgIyBkJyA9IDEuMTIgKDk1JSBDSSAwIOKAkyAxLjkyKTwvcHJlPgo8dWwgY2xhc3M9ImNoZWNrbGlzdCI+CjxsaT5I4oKAOiBhc3Nlc3NvcnMgZ3Vlc3MgKHAgPSAxLzMpOyBI4oKBOiBwICZndDsgMS8zIOKAkyBhIG9uZS1zaWRlZCB0ZXN0LiA8c3BhbiBjbGFzcz0icG9pbnRzIj4oMSBwKTwvc3Bhbj48L2xpPgo8bGk+Qmlub21pYWwgdGVzdCB3aXRoIHAgPSAxLzM6IDxzdHJvbmc+cCA9IDAuMDg2PC9zdHJvbmc+IOKGkiB0aGUgZGlmZmVyZW5jZSBpcyBub3Qgc2lnbmlmaWNhbnQgKGF0IGxlYXN0IDIyIGNvcnJlY3QgYW5zd2VycyB3b3VsZCBiZSBuZWVkZWQpLiA8c3BhbiBjbGFzcz0icG9pbnRzIj4oMSBwKTwvc3Bhbj48L2xpPgo8bGk+Q29uY2x1c2lvbjogYSBkaWZmZXJlbmNlIDxzdHJvbmc+Y291bGQgbm90IGJlIHNob3duPC9zdHJvbmc+LCBidXQgdGhhdCBkb2VzIDxzdHJvbmc+bm90PC9zdHJvbmc+IG1lYW4gdGhlIGNob2NvbGF0ZXMgYXJlIHRoZSBzYW1lIOKAkyB3aXRoIDQ4IGFzc2Vzc29ycyB0aGUgdHJpYW5nbGUgaGFzIG9ubHkgYWJvdXQgMzQlIHBvd2VyIGZvciBk4oCyID0gMS4gQSDigJxzYW1lIHRhc3Rl4oCdIGNsYWltIHJlcXVpcmVzIGEgc2ltaWxhcml0eSB0ZXN0LiA8c3BhbiBjbGFzcz0icG9pbnRzIj4oMSBwKTwvc3Bhbj48L2xpPgo8L3VsPgoKPGgzPkIgwrcgRm91ciB5b2d1cnQgcmVjaXBlczwvaDM+CjxwcmU+Ym94cGxvdChsaWtpbmcgfiByZWNpcGUsIGRhdGEgPSB5b2d1cnRzKQp0YXBwbHkoeW9ndXJ0cyRsaWtpbmcsIHlvZ3VydHMkcmVjaXBlLCBmdW5jdGlvbih4KSBzaGFwaXJvLnRlc3QoeCkkcC52YWx1ZSkKZnJpZWRtYW4udGVzdChsaWtpbmcgfiByZWNpcGUgfCBhc3Nlc3NvciwgZGF0YSA9IHlvZ3VydHMpClBNQ01ScGx1czo6ZnJkQWxsUGFpcnNOZW1lbnlpVGVzdChsaWtpbmcgfiByZWNpcGUgfCBhc3Nlc3NvciwgZGF0YSA9IHlvZ3VydHMpCiMgYWx0ZXJuYXRpdmU6IG0gJmx0Oy0gYW92KGxpa2luZyB+IHJlY2lwZSArIGFzc2Vzc29yLCBkYXRhID0geW9ndXJ0cyk7IFR1a2V5SFNEKG0sICJyZWNpcGUiKTwvcHJlPgo8ZGl2IGNsYXNzPSJ0YWJsZXdyYXAiPjx0YWJsZT4KPHRyPjx0aD5yZWNpcGU8L3RoPjx0aD5BPC90aD48dGg+QjwvdGg+PHRoPkM8L3RoPjx0aD5EPC90aD48L3RyPgo8dHI+PHRkPm1lYW4gKHNkKTwvdGQ+PHRkPjUuOTIgKDAuNzkpPC90ZD48dGQ+Ni4wOCAoMC42Nyk8L3RkPjx0ZD4zLjgzICgwLjk0KTwvdGQ+PHRkPjxzdHJvbmc+Ny41ODwvc3Ryb25nPiAoMC43OSk8L3RkPjwvdHI+Cjx0cj48dGQ+U2hhcGlyby1XaWxrIHA8L3RkPjx0ZD4wLjAxODwvdGQ+PHRkPjAuMDEyPC90ZD48dGQ+MC4xMjwvdGQ+PHRkPjAuMDg8L3RkPjwvdHI+CjwvdGFibGU+PC9kaXY+Cjx1bCBjbGFzcz0iY2hlY2tsaXN0Ij4KPGxpPlBsb3QgKGJveCBwbG90IC8gcG9pbnRzKTogRCBoaWdoZXN0LCBDIGxvd2VzdCwgQSBhbmQgQiBzaW1pbGFyLiA8c3BhbiBjbGFzcz0icG9pbnRzIj4oMSBwKTwvc3Bhbj48L2xpPgo8bGk+RGVzaWduOiB0aGUgc2FtZSBhc3Nlc3NvcnMgcmF0ZWQgYWxsIHNhbXBsZXMg4oaSIDxzdHJvbmc+YmxvY2tzIChkZXBlbmRlbnQgc2FtcGxlcyk8L3N0cm9uZz4uIE5vcm1hbGl0eSBpcyB2aW9sYXRlZCBmb3IgQSBhbmQgQi4gPHNwYW4gY2xhc3M9InBvaW50cyI+KDIgcCk8L3NwYW4+PC9saT4KPGxpPkdsb2JhbCB0ZXN0OiA8c3Ryb25nPkZyaWVkbWFuIHRlc3Qgz4fCsiA9IDMwLjE7IHAgJmx0OyAwLjAwMTwvc3Ryb25nPi4gQU5PVkEgd2l0aCBhbiBhc3Nlc3NvciBibG9jayAoRiA9IDQ5LjE7IHAgJmx0OyAwLjAwMSkgaXMgYWxzbyBhY2NlcHRlZCBpZiBqdXN0aWZpZWQgYnkgdGhlIG5vcm1hbGl0eSBvZiByZXNpZHVhbHMgKHAgPSAwLjA1NCkuIDxzcGFuIGNsYXNzPSJwb2ludHMiPigxIHApPC9zcGFuPjwvbGk+CjxsaT5Qb3N0LWhvYzogTmVtZW55aSDigJMgQyBkaWZmZXJzIGZyb20gYWxsOyBEIHZzLiBBIChwID0gMC4wNjgpIGFuZCBEIHZzLiBCIChwID0gMC4xMCkgb25seSBib3JkZXJsaW5lLiBUdWtleSBhZnRlciBBTk9WQSDigJMgYWxsIHBhaXJzIGRpZmZlciBleGNlcHQgQeKAk0IuIEVpdGhlciBhcHByb2FjaCBpcyBjb3JyZWN0IGlmIGNvbnNpc3RlbnQgd2l0aCB0aGUgZ2xvYmFsIHRlc3QuIDxzcGFuIGNsYXNzPSJwb2ludHMiPigyIHApPC9zcGFuPjwvbGk+CjxsaT5SZWNvbW1lbmRhdGlvbjogPHN0cm9uZz5yZWNpcGUgRDwvc3Ryb25nPiDigJMgaGlnaGVzdCBtZWFuIGFuZCBtZWRpYW47IGRyb3AgQy4gQW4gaG9uZXN0IGNvbmNsdXNpb24gbWVudGlvbnMgdGhhdCB0aGUgbm9uLXBhcmFtZXRyaWMgcG9zdC1ob2Mgb25seSBzdWdnZXN0cyBE4oCZcyBhZHZhbnRhZ2Ugb3ZlciBBIGFuZCBCIOKAkyB3b3J0aCBjb25maXJtaW5nIHdpdGggYW5vdGhlciB0ZXN0LiA8c3BhbiBjbGFzcz0icG9pbnRzIj4oMSBwKTwvc3Bhbj48L2xpPgo8L3VsPgo=";</script>
+
+
+<nav class="pager">
+<a class="prev" href="exercise18.html"><span>← Previous</span>18. Temporal methods – TDS and TCATA</a>
+<a class="next" href="exercise20.html"><span>Next →</span>20. Assessment case studies II</a>
+</nav>
+</div>
+<script>
+(function () {
+  function copy(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    return Promise.resolve();
+  }
+  document.querySelectorAll('pre:not(.out)').forEach(function (pre) {
+    var text = pre.innerText;
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'copy'; btn.textContent = 'Copy';
+    btn.addEventListener('click', function () {
+      copy(text).then(function () {
+        btn.textContent = 'Copied ✓';
+        setTimeout(function () { btn.textContent = 'Copy'; }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+  var res = document.getElementById('results');
+  if (res && window.RESULTS_B64) {
+    document.addEventListener('keydown', function (e) {
+      var k = (e.key || '').toLowerCase();
+      if (k !== 'r' || !(e.ctrlKey || e.metaKey || e.altKey)) return;
+      e.preventDefault();
+      if (!res.innerHTML) {
+        var bytes = Uint8Array.from(atob(window.RESULTS_B64), function (c) { return c.charCodeAt(0); });
+        res.innerHTML = new TextDecoder('utf-8').decode(bytes);
+      }
+      res.hidden = !res.hidden;
+      if (!res.hidden) res.scrollIntoView({ behavior: 'smooth' });
+    });
+  }
+  var q = document.getElementById('filter');
+  if (q) q.addEventListener('input', function () {
+    var v = q.value.toLowerCase();
+    document.querySelectorAll('.cards a').forEach(function (c) {
+      c.style.display = c.textContent.toLowerCase().indexOf(v) === -1 ? 'none' : '';
+    });
+    document.querySelectorAll('section.block').forEach(function (s) {
+      var any = Array.prototype.some.call(s.querySelectorAll('.cards a'), function (c) { return c.style.display !== 'none'; });
+      s.style.display = any ? '' : 'none';
+    });
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>19. Kontrolné prípadové štúdie I</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ink-3)"/></marker></defs></svg>
+<div class="wrap">
+<header class="top"><a class="brand" href="index.html">Senzometria v R · teória</a><span class="toplinks"><a href="index.html">Všetky cvičenia</a><a class="lang" href="../theory_EN/exercise19.html">English</a></span></header>
+
+<section class="hero"><span class="num">CVIČENIE 19</span><h1>Kontrolné prípadové štúdie I</h1><p class="lead">Dve praktické úlohy zo základov kurzu: rozlišovací test pri zmene dodávateľa a výber najlepšej receptúry.</p>
+<div class="files"><a href="../cvicenie19.R">Skript (SK): cvicenie19.R</a><a href="../exercises_EN/exercise19.R">Script (EN): exercise19.R</a></div></section>
+<div class="goals"><h2>Ako na to</h2><ul>
+<li>Stiahnite si skript <code>cvicenie19.R</code> – obsahuje dáta a zadania oboch štúdií.</li>
+<li>Riešenie odovzdajte ako R skript s komentármi a krátkym slovným záverom ku každej štúdii.</li>
+<li>Celkovo 10 bodov: štúdia A 3 body, štúdia B 7 bodov.</li>
+<li>Po odoslaní stlačte <kbd>Ctrl</kbd> + <kbd>R</kbd> (alebo <kbd>Alt</kbd> + <kbd>R</kbd>) – zobrazia sa správne výsledky na samohodnotenie.</li>
+</ul></div>
+
+<section class="case">
+<h2><span class="level l1">veľmi ľahká</span> A · Nový dodávateľ kakaa <span class="points">3 body</span></h2>
+<p>Čokoládovňa zvažuje prechod na lacnejšieho dodávateľa kakaa. Senzorické laboratórium urobilo <strong>trojuholníkový test</strong>: 48 hodnotiteľov, <strong>21</strong> z nich správne určilo odlišnú vzorku.</p>
+<ol>
+<li>Formulujte nulovú a alternatívnu hypotézu.</li>
+<li>Vyberte a vypočítajte vhodný test (α = 0,05).</li>
+<li>Napíšte jednu vetu záveru pre vedenie. Možno na základe výsledku tvrdiť, že čokolády sú rovnaké?</li>
+</ol>
+<p class="note"><strong>Pomôcka</strong>Cvičenie 5a (binomický test) a cvičenie 13 (test podobnosti).</p>
+</section>
+
+<section class="case">
+<h2><span class="level l2">stredná</span> B · Štyri receptúry jogurtu <span class="points">7 bodov</span></h2>
+<p>Vývojové oddelenie pripravilo 4 receptúry jogurtu (A – D). Každý z <strong>12 hodnotiteľov ochutnal všetky 4 vzorky</strong> v náhodnom poradí a hodnotil celkovú príjemnosť na 9-bodovej hedonickej škále.</p>
+<ol>
+<li>Zobrazte dáta vhodným grafom a popíšte, čo z neho vidno. <span class="points">(1 b)</span></li>
+<li>Určte dizajn experimentu (závislé / nezávislé výbery) a overte predpoklady. <span class="points">(2 b)</span></li>
+<li>Vyberte a vypočítajte globálny test. <span class="points">(1 b)</span></li>
+<li>Ak je rozdiel preukazný, zistite post-hoc testom, ktoré receptúry sa líšia. <span class="points">(2 b)</span></li>
+<li>Odporučte vedeniu jednu receptúru a zdôvodnite to (2 – 3 vety). <span class="points">(1 b)</span></li>
+</ol>
+<p class="note"><strong>Pomôcka</strong>Cvičenia 4, 5a a 5b.</p>
+</section>
+
+<div class="submit">
+<div><strong>Odovzdanie</strong><br>R skript + slovný záver na <a href="mailto:senzorickelaboratoriumfbp@gmail.com">senzorickelaboratoriumfbp@gmail.com</a>, predmet: <code>SaIT - cvicenie 19 - Meno Priezvisko</code></div>
+<a class="btn" href="mailto:senzorickelaboratoriumfbp@gmail.com?subject=SaIT%20-%20cvicenie%2019%20-%20Meno%20Priezvisko&amp;body=Dobr%C3%BD%20de%C5%88%2C%0A%0Av%20pr%C3%ADlohe%20posielam%20rie%C5%A1enie%20cvi%C4%8Denia%2019.%0A%0A">✉️ Odoslať riešenie</a>
+</div>
+<p style="color:var(--ink-2)">Výsledky na samohodnotenie sú skryté. Zobrazíte ich klávesovou skratkou <kbd>Ctrl</kbd> + <kbd>R</kbd> alebo <kbd>Alt</kbd> + <kbd>R</kbd> (opätovným stlačením ich skryjete).</p>
+
+<section id="results" class="results" hidden></section><script>var RESULTS_B64 = "CjxoMj7wn5SRIFbDvXNsZWRreSBuYSBzYW1vaG9kbm90ZW5pZTwvaDI+CjxoMz5BIMK3IE5vdsO9IGRvZMOhdmF0ZcS+IGtha2FhPC9oMz4KPHByZT5iaW5vbS50ZXN0KDIxLCA0OCwgcCA9IDEvMywgYWx0ZXJuYXRpdmUgPSAiZ3JlYXRlciIpICAgIyBwID0gMC4wODYKZGlzY3JpbSgyMSwgNDgsIG1ldGhvZCA9ICJ0cmlhbmdsZSIpICAgICAgICAgICAgICAgICAgICMgZCcgPSAxLjEyICg5NSAlIElTIDAg4oCTIDEuOTIpPC9wcmU+Cjx1bCBjbGFzcz0iY2hlY2tsaXN0Ij4KPGxpPkjigoA6IGhvZG5vdGl0ZWxpYSBow6FkYWrDuiAocCA9IDEvMyk7IEjigoE6IHAgJmd0OyAxLzMg4oCTIGplZG5vc3RyYW5uw70gdGVzdC4gPHNwYW4gY2xhc3M9InBvaW50cyI+KDEgYik8L3NwYW4+PC9saT4KPGxpPkJpbm9taWNrw70gdGVzdCBzIHAgPSAxLzM6IDxzdHJvbmc+cCA9IDAsMDg2PC9zdHJvbmc+IOKGkiByb3pkaWVsIG5pZSBqZSBwcmV1a2F6bsO9IChuYSBwcmV1a8OhemFuaWUgYnkgYm9sbyB0cmViYSBhc3BvxYggMjIgc3Byw6F2bnljaCkuIDxzcGFuIGNsYXNzPSJwb2ludHMiPigxIGIpPC9zcGFuPjwvbGk+CjxsaT5aw6F2ZXI6IHJvemRpZWwgc2EgPHN0cm9uZz5uZXBvZGFyaWxvIHByZXVrw6F6YcWlPC9zdHJvbmc+LCBhbGUgdG8gPHN0cm9uZz5uZXpuYW1lbsOhPC9zdHJvbmc+LCDFvmUgxI1va29sw6FkeSBzw7ogcm92bmFrw6kg4oCTIHNvIDQ4IGhvZG5vdGl0ZcS+bWkgbcOhIHRyaWFuZ2VsIHByZSBk4oCyID0gMSBzaWx1IGxlbiBhc2kgMzQgJS4gTmEgdHZyZGVuaWUg4oCecm92bmFrw6EgY2h1xaXigJwgdHJlYmEgdGVzdCBwb2RvYm5vc3RpLiA8c3BhbiBjbGFzcz0icG9pbnRzIj4oMSBiKTwvc3Bhbj48L2xpPgo8L3VsPgoKPGgzPkIgwrcgxaB0eXJpIHJlY2VwdMO6cnkgam9ndXJ0dTwvaDM+CjxwcmU+Ym94cGxvdChwcmlqZW1ub3N0IH4gcmVjZXB0dXJhLCBkYXRhID0gam9ndXJ0eSkKdGFwcGx5KGpvZ3VydHkkcHJpamVtbm9zdCwgam9ndXJ0eSRyZWNlcHR1cmEsIGZ1bmN0aW9uKHgpIHNoYXBpcm8udGVzdCh4KSRwLnZhbHVlKQpmcmllZG1hbi50ZXN0KHByaWplbW5vc3QgfiByZWNlcHR1cmEgfCBob2Rub3RpdGVsLCBkYXRhID0gam9ndXJ0eSkKUE1DTVJwbHVzOjpmcmRBbGxQYWlyc05lbWVueWlUZXN0KHByaWplbW5vc3QgfiByZWNlcHR1cmEgfCBob2Rub3RpdGVsLCBkYXRhID0gam9ndXJ0eSkKIyBhbHRlcm5hdMOtdmE6IG0gJmx0Oy0gYW92KHByaWplbW5vc3QgfiByZWNlcHR1cmEgKyBob2Rub3RpdGVsLCBkYXRhID0gam9ndXJ0eSk7IFR1a2V5SFNEKG0sICJyZWNlcHR1cmEiKTwvcHJlPgo8ZGl2IGNsYXNzPSJ0YWJsZXdyYXAiPjx0YWJsZT4KPHRyPjx0aD5yZWNlcHTDunJhPC90aD48dGg+QTwvdGg+PHRoPkI8L3RoPjx0aD5DPC90aD48dGg+RDwvdGg+PC90cj4KPHRyPjx0ZD5wcmllbWVyIChzZCk8L3RkPjx0ZD41LDkyICgwLDc5KTwvdGQ+PHRkPjYsMDggKDAsNjcpPC90ZD48dGQ+Myw4MyAoMCw5NCk8L3RkPjx0ZD48c3Ryb25nPjcsNTg8L3N0cm9uZz4gKDAsNzkpPC90ZD48L3RyPgo8dHI+PHRkPlNoYXBpcm8tV2lsayBwPC90ZD48dGQ+MCwwMTg8L3RkPjx0ZD4wLDAxMjwvdGQ+PHRkPjAsMTI8L3RkPjx0ZD4wLDA4PC90ZD48L3RyPgo8L3RhYmxlPjwvZGl2Pgo8dWwgY2xhc3M9ImNoZWNrbGlzdCI+CjxsaT5HcmFmIChib3hwbG90IC8gYm9keSk6IEQgbmFqdnnFocWhaWUsIEMgbmFqbmnFvsWhaWUsIEEgYSBCIHBvZG9ibsOpLiA8c3BhbiBjbGFzcz0icG9pbnRzIj4oMSBiKTwvc3Bhbj48L2xpPgo8bGk+RGl6YWpuOiB0w60gaXN0w60gaG9kbm90aXRlbGlhIGhvZG5vdGlsaSB2xaFldGt5IHZ6b3JreSDihpIgPHN0cm9uZz5ibG9reSAoesOhdmlzbMOpIHbDvWJlcnkpPC9zdHJvbmc+LiBOb3JtYWxpdGEgamUgcHJpIEEgYSBCIG5hcnXFoWVuw6EuIDxzcGFuIGNsYXNzPSJwb2ludHMiPigyIGIpPC9zcGFuPjwvbGk+CjxsaT5HbG9iw6FsbnkgdGVzdDogPHN0cm9uZz5GcmllZG1hbm92IHRlc3Qgz4fCsiA9IDMwLDE7IHAgJmx0OyAwLDAwMTwvc3Ryb25nPi4gQWtjZXB0dWplIHNhIGFqIEFOT1ZBIHMgYmxva29tIGhvZG5vdGl0ZcS+IChGID0gNDksMTsgcCAmbHQ7IDAsMDAxKSwgYWsgamUgemTDtHZvZG5lbsOhIG5vcm1hbGl0b3UgcmV6w61kdcOtIChwID0gMCwwNTQpLiA8c3BhbiBjbGFzcz0icG9pbnRzIj4oMSBiKTwvc3Bhbj48L2xpPgo8bGk+UG9zdC1ob2M6IE5lbWVueWkg4oCTIEMgc2EgbMOtxaFpIG9kIHbFoWV0a8O9Y2g7IEQgdnMuIEEgKHAgPSAwLDA2OCkgYSBEIHZzLiBCIChwID0gMCwxMCkgbGVuIG5hIGhyYW5pY2kuIFR1a2V5IHBvIEFOT1ZBIOKAkyBsw63FoWlhIHNhIHbFoWV0a3kgcMOhcnkgb2tyZW0gQeKAk0IuIFphIHNwcsOhdm5lIHNhIHBvdmHFvnVqZSBrdG9yw71rb8S+dmVrIHBvc3R1cCwgYWsgamUgdiBzw7psYWRlIHMgZ2xvYsOhbG55bSB0ZXN0b20uIDxzcGFuIGNsYXNzPSJwb2ludHMiPigyIGIpPC9zcGFuPjwvbGk+CjxsaT5PZHBvcsO6xI1hbmllOiA8c3Ryb25nPnJlY2VwdMO6cmEgRDwvc3Ryb25nPiDigJMgbmFqdnnFocWhw60gcHJpZW1lciBhIG1lZGnDoW47IEMgdnlyYWRpxaUuIFBvY3RpdsO9IHrDoXZlciBzcG9tZW5pZSwgxb5lIG5lcGFyYW1ldHJpY2vDvSBwb3N0LWhvYyBwcmV2YWh1IEQgbmFkIEEgYSBCIGxlbiBuYXpuYcSNdWplIOKAkyBvcGxhdMOtIHNhIG92ZXJpxaUgxI9hbMWhw61tIHRlc3RvbS4gPHNwYW4gY2xhc3M9InBvaW50cyI+KDEgYik8L3NwYW4+PC9saT4KPC91bD4K";</script>
+
+
+<nav class="pager">
+<a class="prev" href="cvicenie18.html"><span>← Predchádzajúce</span>18. Temporálne metódy – TDS a TCATA</a>
+<a class="next" href="cvicenie20.html"><span>Nasledujúce →</span>20. Kontrolné prípadové štúdie II</a>
+</nav>
+</div>
+<script>
+(function () {
+  function copy(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    return Promise.resolve();
+  }
+  document.querySelectorAll('pre:not(.out)').forEach(function (pre) {
+    var text = pre.innerText;
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'copy'; btn.textContent = 'Kopírovať';
+    btn.addEventListener('click', function () {
+      copy(text).then(function () {
+        btn.textContent = 'Skopírované ✓';
+        setTimeout(function () { btn.textContent = 'Kopírovať'; }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+  var res = document.getElementById('results');
+  if (res && window.RESULTS_B64) {
+    document.addEventListener('keydown', function (e) {
+      var k = (e.key || '').toLowerCase();
+      if (k !== 'r' || !(e.ctrlKey || e.metaKey || e.altKey)) return;
+      e.preventDefault();
+      if (!res.innerHTML) {
+        var bytes = Uint8Array.from(atob(window.RESULTS_B64), function (c) { return c.charCodeAt(0); });
+        res.innerHTML = new TextDecoder('utf-8').decode(bytes);
+      }
+      res.hidden = !res.hidden;
+      if (!res.hidden) res.scrollIntoView({ behavior: 'smooth' });
+    });
+  }
+  var q = document.getElementById('filter');
+  if (q) q.addEventListener('input', function () {
+    var v = q.value.toLowerCase();
+    document.querySelectorAll('.cards a').forEach(function (c) {
+      c.style.display = c.textContent.toLowerCase().indexOf(v) === -1 ? 'none' : '';
+    });
+    document.querySelectorAll('section.block').forEach(function (s) {
+      var any = Array.prototype.some.call(s.querySelectorAll('.cards a'), function (c) { return c.style.display !== 'none'; });
+      s.style.display = any ? '' : 'none';
+    });
+  });
+})();
+</script>
+</body>
+</html>

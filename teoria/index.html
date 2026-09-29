@@ -51,6 +51,10 @@
 <a href="cvicenie17.html"><span class="n">CVIČENIE 17</span><h3>CATA a napping</h3><p>Rýchle metódy profilovania so spotrebiteľmi: začiarkavacie otázky a projektívne mapovanie.</p></a>
 <a href="cvicenie18.html"><span class="n">CVIČENIE 18</span><h3>Temporálne metódy – TDS a TCATA</h3><p>Ako sa vnem mení v čase: dominancia vnemov a časové CATA krivky.</p></a>
 </div></section>
+<section class="block"><h2>📝 Kontrolné prípadové štúdie</h2><div class="cards">
+<a href="cvicenie19.html"><span class="n">CVIČENIE 19</span><h3>Kontrolné prípadové štúdie I</h3><p>Dve praktické úlohy zo základov kurzu: rozlišovací test pri zmene dodávateľa a výber najlepšej receptúry.</p></a>
+<a href="cvicenie20.html"><span class="n">CVIČENIE 20</span><h3>Kontrolné prípadové štúdie II</h3><p>Tri úlohy z celého kurzu: preferencie a JAR, senzorická trvanlivosť a audit panelu s návrhom experimentu.</p></a>
+</div></section>
 <p style="color:var(--ink-2);font-size:15px">Skripty: slovenská verzia v koreňovom adresári (<code>cvicenieN.R</code>), anglická v <code>exercises_EN/</code>.</p>
 </div>
 <script>
@@ -74,6 +78,20 @@
     });
     pre.appendChild(btn);
   });
+  var res = document.getElementById('results');
+  if (res && window.RESULTS_B64) {
+    document.addEventListener('keydown', function (e) {
+      var k = (e.key || '').toLowerCase();
+      if (k !== 'r' || !(e.ctrlKey || e.metaKey || e.altKey)) return;
+      e.preventDefault();
+      if (!res.innerHTML) {
+        var bytes = Uint8Array.from(atob(window.RESULTS_B64), function (c) { return c.charCodeAt(0); });
+        res.innerHTML = new TextDecoder('utf-8').decode(bytes);
+      }
+      res.hidden = !res.hidden;
+      if (!res.hidden) res.scrollIntoView({ behavior: 'smooth' });
+    });
+  }
   var q = document.getElementById('filter');
   if (q) q.addEventListener('input', function () {
     var v = q.value.toLowerCase();

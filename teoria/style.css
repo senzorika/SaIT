@@ -227,3 +227,27 @@ details.sol summary span { font-weight: 400; color: var(--ink-2); }
 details.sol .answer { background: var(--accent-soft); border-radius: 8px; padding: 10px 14px; margin-top: 10px; }
 
 .files a.deck { border-color: var(--accent); color: var(--accent); font-weight: 600; }
+
+/* case studies */
+.case { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 4px 20px 14px; margin: 22px 0; }
+.case h2 { margin-top: 18px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.level { font: 600 12px var(--font); letter-spacing: .06em; text-transform: uppercase; padding: 4px 10px; border-radius: 99px; color: #fff; }
+.level.l1 { background: var(--c1); } .level.l2 { background: var(--c5); } .level.l3 { background: var(--c2); }
+.points { font-size: 14px; color: var(--ink-2); font-weight: 400; }
+.submit {
+  display: flex; flex-wrap: wrap; gap: 14px; align-items: center; justify-content: space-between;
+  background: var(--accent-soft); border-radius: var(--radius); padding: 16px 20px; margin: 28px 0;
+}
+.submit a.btn {
+  background: var(--accent); color: #fff; text-decoration: none; font-weight: 600;
+  padding: 10px 18px; border-radius: 8px; white-space: nowrap;
+}
+kbd {
+  font: 600 13px var(--mono); background: var(--surface); border: 1px solid var(--line);
+  border-bottom-width: 2px; border-radius: 5px; padding: 1px 6px;
+}
+.results { border: 2px dashed var(--accent); border-radius: var(--radius); padding: 6px 20px 16px; margin: 28px 0; background: var(--surface); }
+.results h2 { margin-top: 18px; }
+.checklist { list-style: none; padding-left: 0; }
+.checklist li { padding: 4px 0 4px 28px; position: relative; }
+.checklist li::before { content: "☐"; position: absolute; left: 4px; color: var(--accent); }

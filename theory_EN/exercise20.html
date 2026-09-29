@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>20. Assessment case studies II</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../teoria/style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ink-3)"/></marker></defs></svg>
+<div class="wrap">
+<header class="top"><a class="brand" href="index.html">Sensometrics in R · theory</a><span class="toplinks"><a href="index.html">All exercises</a><a class="lang" href="../teoria/cvicenie20.html">Slovensky</a></span></header>
+
+<section class="hero"><span class="num">EXERCISE 20</span><h1>Assessment case studies II</h1><p class="lead">Three tasks from the whole course: preferences and JAR, sensory shelf life and a panel audit with an experiment design.</p>
+<div class="files"><a href="../cvicenie20.R">Script (SK): cvicenie20.R</a><a href="../exercises_EN/exercise20.R">Script (EN): exercise20.R</a></div></section>
+<div class="goals"><h2>How it works</h2><ul>
+<li>Download the script <code>exercise20.R</code> – it contains the data and tasks of all three studies.</li>
+<li>Submit your solution as a commented R script with a short written conclusion for each study.</li>
+<li>15 points in total: study A 3 points, B 4 points, C 8 points.</li>
+<li>After submitting, press <kbd>Ctrl</kbd> + <kbd>R</kbd> (or <kbd>Alt</kbd> + <kbd>R</kbd>) – the correct results for self-assessment will appear.</li>
+</ul></div>
+
+<section class="case">
+<h2><span class="level l1">easy</span> A · Flavours and sweetness <span class="points">3 points</span></h2>
+<p>A dairy plans a new range of flavoured milk. <strong>120 consumers</strong> chose their favourite of three flavours (strawberry 58, peach 41, mango 21). Those who chose strawberry then rated it on a <strong>JAR sweetness scale</strong>.</p>
+<ol>
+<li>Is the flavour preference uniform? Choose and compute a test. <span class="points">(1 p)</span></li>
+<li>Compute the shares of the JAR categories and draw a chart. <span class="points">(1 p)</span></li>
+<li>Recommend whether and how to adjust the sweetness of the strawberry milk. <span class="points">(1 p)</span></li>
+</ol>
+<p class="note"><strong>Hint</strong>Exercises 5a (χ² test) and 12 (JAR scale).</p>
+</section>
+
+<section class="case">
+<h2><span class="level l2">medium</span> B · Sensory shelf life of a salad <span class="points">4 points</span></h2>
+<p>20 consumers evaluated a fresh vegetable salad stored at 8 °C every 12 hours, and the time of their <strong>first rejection</strong> was recorded. Those who did not reject it by the end of the test (72 h) have rejection = 0.</p>
+<ol>
+<li>Build the Kaplan-Meier acceptance curve. <span class="points">(1 p)</span></li>
+<li>Determine the median sensory shelf life. <span class="points">(1 p)</span></li>
+<li>The producer wants at most 25% of consumers to reject the product at the time of consumption. What use-by time do you recommend? <span class="points">(2 p)</span></li>
+</ol>
+<p class="note"><strong>Hint</strong>Exercise 10.</p>
+</section>
+
+<section class="case">
+<h2><span class="level l3">hard</span> C · Panel audit and a new recipe <span class="points">8 points</span></h2>
+<p>A descriptive panel (10 assessors) rated the <strong>bitterness of 5 dark chocolates</strong> (P1 – P5) in two replicates on a 10-point scale. Before deciding on a new recipe, management wants to know whether the panel can be trusted.</p>
+<ol>
+<li>Evaluate panel performance (product discrimination, agreement, repeatability). <span class="points">(2 p)</span></li>
+<li>Find the assessor who harms the panel the most and justify it. <span class="points">(1 p)</span></li>
+<li>Evaluate the differences between products with a mixed model (assessor = random effect) with and without this assessor. Which products differ? <span class="points">(3 p)</span></li>
+<li>The new recipe P6 should be slightly less bitter than P3; the expected difference is d′ = 0.9. How many assessors are needed for a triangle test with 80% power? Is the tetrad better? <span class="points">(2 p)</span></li>
+</ol>
+<p class="note"><strong>Hint</strong>Exercises 14, 15 and 16.</p>
+</section>
+
+<div class="submit">
+<div><strong>Submission</strong><br>R script + written conclusions to <a href="mailto:senzorickelaboratoriumfbp@gmail.com">senzorickelaboratoriumfbp@gmail.com</a>, subject: <code>SaIT - exercise 20 - Name Surname</code></div>
+<a class="btn" href="mailto:senzorickelaboratoriumfbp@gmail.com?subject=SaIT%20-%20exercise%2020%20-%20Name%20Surname&amp;body=Hello%2C%0A%0Aplease%20find%20attached%20my%20solution%20of%20exercise%2020.%0A%0A">✉️ Send solution</a>
+</div>
+<p style="color:var(--ink-2)">The self-assessment results are hidden. Show them with <kbd>Ctrl</kbd> + <kbd>R</kbd> or <kbd>Alt</kbd> + <kbd>R</kbd> (press again to hide them).</p>
+
+<section id="results" class="results" hidden></section><script>var RESULTS_B64 = "CjxoMj7wn5SRIFNlbGYtYXNzZXNzbWVudCByZXN1bHRzPC9oMj4KPGgzPkEgwrcgRmxhdm91cnMgYW5kIHN3ZWV0bmVzczwvaDM+CjxwcmU+Y2hpc3EudGVzdChmbGF2b3VycykgICAgICAgICAgICAgICAgICAgICAgICAgICMgWC1zcXVhcmVkID0gMTcuMTUsIHAgPSAwLjAwMDIKcm91bmQocHJvcC50YWJsZShqYXJfc3dlZXRuZXNzKSwgMykKYmFycGxvdChwcm9wLnRhYmxlKGphcl9zd2VldG5lc3MpKTwvcHJlPgo8dWwgY2xhc3M9ImNoZWNrbGlzdCI+CjxsaT7Ph8KyIGdvb2RuZXNzLW9mLWZpdCB0ZXN0OiA8c3Ryb25nPs+HwrIgPSAxNy4yOyBkZiA9IDI7IHAgPSAwLjAwMDI8L3N0cm9uZz4g4oaSIHRoZSBwcmVmZXJlbmNlIGlzIG5vdCB1bmlmb3JtLCBzdHJhd2JlcnJ5IGxlYWRzLiA8c3BhbiBjbGFzcz0icG9pbnRzIj4oMSBwKTwvc3Bhbj48L2xpPgo8bGk+SkFSOiBub3Qgc3dlZXQgZW5vdWdoIDEyJSwgPHN0cm9uZz5qdXN0IGFib3V0IHJpZ2h0IDQzJTwvc3Ryb25nPiwgdG9vIHN3ZWV0IDxzdHJvbmc+NDUlPC9zdHJvbmc+ICgrIDI5JSwgKysgMTYlKS4gPHNwYW4gY2xhc3M9InBvaW50cyI+KDEgcCk8L3NwYW4+PC9saT4KPGxpPlJlY29tbWVuZGF0aW9uOiBKQVIgaXMgYmVsb3cgNTAlIGFuZCDigJx0b28gc3dlZXTigJ0gY2xlYXJseSBkb21pbmF0ZXMg4oaSIDxzdHJvbmc+cmVkdWNlIHN3ZWV0bmVzczwvc3Ryb25nPiwgaWRlYWxseSBjb25maXJtZWQgYnkgYSBwZW5hbHR5IGFuYWx5c2lzIG9yIGFub3RoZXIgdGVzdC4gPHNwYW4gY2xhc3M9InBvaW50cyI+KDEgcCk8L3NwYW4+PC9saT4KPC91bD4KCjxoMz5CIMK3IFNlbnNvcnkgc2hlbGYgbGlmZSBvZiBhIHNhbGFkPC9oMz4KPHByZT5saWJyYXJ5KHN1cnZpdmFsKQpmaXQgJmx0Oy0gc3VydmZpdChTdXJ2KHRpbWUsIHJlamVjdGlvbikgfiAxLCBkYXRhID0gc2FsYWQpCnBsb3QoZml0LCBjb25mLmludCA9IEZBTFNFKTsgYWJsaW5lKGggPSBjKDAuNSwgMC43NSksIGx0eSA9IDIpCnN1bW1hcnkoZml0KTsgZml0PC9wcmU+CjxkaXYgY2xhc3M9InRhYmxld3JhcCI+PHRhYmxlPgo8dHI+PHRoPnRpbWUgKGgpPC90aD48dGg+MjQ8L3RoPjx0aD4zNjwvdGg+PHRoPjQ4PC90aD48dGg+NjA8L3RoPjwvdHI+Cjx0cj48dGQ+xZwodCkg4oCTIHNoYXJlIGFjY2VwdGluZzwvdGQ+PHRkPjAuOTA8L3RkPjx0ZD48c3Ryb25nPjAuNzU8L3N0cm9uZz48L3RkPjx0ZD48c3Ryb25nPjAuNDA8L3N0cm9uZz48L3RkPjx0ZD4wLjIwPC90ZD48L3RyPgo8L3RhYmxlPjwvZGl2Pgo8dWwgY2xhc3M9ImNoZWNrbGlzdCI+CjxsaT5LYXBsYW4tTWVpZXIgY3VydmUgKGEgc3RlcCBmdW5jdGlvbjsgNCBjb25zdW1lcnMgZGlkIG5vdCByZWplY3QgdGhlIHNhbGFkIGJ5IDcyIGgg4oCTIHRoZWlyIGRhdGEgYXJlIGNlbnNvcmVkKS4gPHNwYW4gY2xhc3M9InBvaW50cyI+KDEgcCk8L3NwYW4+PC9saT4KPGxpPk1lZGlhbiBzZW5zb3J5IHNoZWxmIGxpZmUgPSA8c3Ryb25nPjQ4IGg8L3N0cm9uZz4gKHRoZSBmaXJzdCB0aW1lIHdpdGggxZwg4omkIDAuNSkuIDxzcGFuIGNsYXNzPSJwb2ludHMiPigxIHApPC9zcGFuPjwvbGk+CjxsaT5UaGUgY3VydmUgcmVhY2hlcyB0aGUgMjUlIHJlamVjdGlvbiBsaW1pdCAoxZwgPSAwLjc1KSBhdCA8c3Ryb25nPjM2IGg8L3N0cm9uZz4g4oaSIHVzZS1ieSB0aW1lIGF0IG1vc3QgMzYgaC4gQmVjYXVzZSBvZiB0aGUgc21hbGwgbnVtYmVyIG9mIGNvbnN1bWVycyAodGhlIGxvd2VyIENJIGJvdW5kIGF0IDM2IGggaXMgMC41OCksIGEgc2FmZXR5IG1hcmdpbiBpcyBzZW5zaWJsZSwgZS5nLiAyNCDigJMgMzAgaC4gPHNwYW4gY2xhc3M9InBvaW50cyI+KDIgcCk8L3NwYW4+PC9saT4KPC91bD4KCjxoMz5DIMK3IFBhbmVsIGF1ZGl0IGFuZCBhIG5ldyByZWNpcGU8L2gzPgo8cHJlPnN1bW1hcnkoYW92KGJpdHRlcm5lc3MgfiBwcm9kdWN0ICogYXNzZXNzb3IgKyByZXBsaWNhdGUsIGRhdGEgPSBwYW5lbCkpCiMgYWdyZWVtZW50IGFuZCByZXBlYXRhYmlsaXR5IGFzIGluIGV4ZXJjaXNlIDE1LCBmb3IgZXZlcnkgYXNzZXNzb3IKbTEgJmx0Oy0gbG1lcihiaXR0ZXJuZXNzIH4gcHJvZHVjdCArIHJlcGxpY2F0ZSArICgxIHwgYXNzZXNzb3IpICsgKDEgfCBhc3Nlc3Nvcjpwcm9kdWN0KSwgZGF0YSA9IHBhbmVsKQptMiAmbHQ7LSB1cGRhdGUobTEsIGRhdGEgPSBkcm9wbGV2ZWxzKHN1YnNldChwYW5lbCwgYXNzZXNzb3IgIT0gIkg3IikpKQphbm92YShtMSk7IGFub3ZhKG0yKTsgZW1tZWFucyhtMiwgcGFpcndpc2UgfiBwcm9kdWN0KQpkLnByaW1lU1MoMC45LCB0YXJnZXQucG93ZXIgPSAwLjgsIG1ldGhvZCA9ICJ0cmlhbmdsZSIpICAgIyAyOTcKZC5wcmltZVNTKDAuOSwgdGFyZ2V0LnBvd2VyID0gMC44LCBtZXRob2QgPSAidGV0cmFkIikgICAgICMgODc8L3ByZT4KPHVsIGNsYXNzPSJjaGVja2xpc3QiPgo8bGk+VGhlIHBhbmVsIGFzIGEgd2hvbGUgZGlzY3JpbWluYXRlcyBwcm9kdWN0cyAoRiA9IDIyLjE7IHAgJmx0OyAwLjAwMSksIHRoZSBhc3Nlc3NvciDDlyBwcm9kdWN0IGludGVyYWN0aW9uIGlzIG5vdCBzaWduaWZpY2FudCAocCA9IDAuMTgpLCB0aGVyZSBpcyBubyBzaGlmdCBiZXR3ZWVuIHJlcGxpY2F0ZXMgKHAgPSAwLjg4KS4gPHNwYW4gY2xhc3M9InBvaW50cyI+KDIgcCk8L3NwYW4+PC9saT4KPGxpPlRoZSB3ZWFrIGFzc2Vzc29yIGlzIDxzdHJvbmc+SDc8L3N0cm9uZz46IGFncmVlbWVudCB3aXRoIHRoZSBwYW5lbCByID0g4oiSMC4yNCwgcmVwZWF0YWJpbGl0eSByID0g4oiSMC4yNSBhbmQgaGUvc2hlIGRvZXMgbm90IGRpc2NyaW1pbmF0ZSBwcm9kdWN0cyBhbG9uZSAocCA9IDAuNjEpLiBUaGUgb3RoZXJzIGhhdmUgYWdyZWVtZW50IDAuODcg4oCTIDEuMDAuIDxzcGFuIGNsYXNzPSJwb2ludHMiPigxIHApPC9zcGFuPjwvbGk+CjxsaT5NaXhlZCBtb2RlbCB3aXRoIEg3OiBGID0gMTYuNjsgd2l0aG91dCBINzogPHN0cm9uZz5GID0gNTIuMTwvc3Ryb25nPiwgdGhlIHJlc2lkdWFsIHZhcmlhbmNlIGRyb3BzIGZyb20gMS4xOCB0byAwLjYwLiA8c3BhbiBjbGFzcz0icG9pbnRzIj4oMSBwKTwvc3Bhbj48L2xpPgo8bGk+V2l0aG91dCBINyAoVHVrZXkgdmlhIGVtbWVhbnMpIGFsbCBwYWlycyBkaWZmZXIgZXhjZXB0IDxzdHJvbmc+UDIg4oCTIFA0PC9zdHJvbmc+IChwID0gMC43NykgYW5kIFAxIOKAkyBQNSAocCA9IDAuMDgwKS4gQml0dGVybmVzcyBvcmRlcjogUDMgJmd0OyBQMiDiiYggUDQgJmd0OyBQMSDiiYggUDUuIFdpdGggSDcgdGhlcmUgd291bGQgYmUgMyBmZXdlciBzaWduaWZpY2FudCBkaWZmZXJlbmNlcy4gPHNwYW4gY2xhc3M9InBvaW50cyI+KDIgcCk8L3NwYW4+PC9saT4KPGxpPkZvciBk4oCyID0gMC45IGFuZCA4MCUgcG93ZXI6IDxzdHJvbmc+dHJpYW5nbGUgMjk3PC9zdHJvbmc+IGFzc2Vzc29ycywgPHN0cm9uZz50ZXRyYWQgODc8L3N0cm9uZz4g4oaSIHRoZSB0ZXRyYWQgaXMgY2xlYXJseSBiZXR0ZXIgKGFib3V0IDMuNCB0aW1lcyBmZXdlciBhc3Nlc3NvcnMpLiA8c3BhbiBjbGFzcz0icG9pbnRzIj4oMiBwKTwvc3Bhbj48L2xpPgo8L3VsPgo=";</script>
+
+
+<nav class="pager">
+<a class="prev" href="exercise19.html"><span>← Previous</span>19. Assessment case studies I</a>
+</nav>
+</div>
+<script>
+(function () {
+  function copy(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    return Promise.resolve();
+  }
+  document.querySelectorAll('pre:not(.out)').forEach(function (pre) {
+    var text = pre.innerText;
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'copy'; btn.textContent = 'Copy';
+    btn.addEventListener('click', function () {
+      copy(text).then(function () {
+        btn.textContent = 'Copied ✓';
+        setTimeout(function () { btn.textContent = 'Copy'; }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+  var res = document.getElementById('results');
+  if (res && window.RESULTS_B64) {
+    document.addEventListener('keydown', function (e) {
+      var k = (e.key || '').toLowerCase();
+      if (k !== 'r' || !(e.ctrlKey || e.metaKey || e.altKey)) return;
+      e.preventDefault();
+      if (!res.innerHTML) {
+        var bytes = Uint8Array.from(atob(window.RESULTS_B64), function (c) { return c.charCodeAt(0); });
+        res.innerHTML = new TextDecoder('utf-8').decode(bytes);
+      }
+      res.hidden = !res.hidden;
+      if (!res.hidden) res.scrollIntoView({ behavior: 'smooth' });
+    });
+  }
+  var q = document.getElementById('filter');
+  if (q) q.addEventListener('input', function () {
+    var v = q.value.toLowerCase();
+    document.querySelectorAll('.cards a').forEach(function (c) {
+      c.style.display = c.textContent.toLowerCase().indexOf(v) === -1 ? 'none' : '';
+    });
+    document.querySelectorAll('section.block').forEach(function (s) {
+      var any = Array.prototype.some.call(s.querySelectorAll('.cards a'), function (c) { return c.style.display !== 'none'; });
+      s.style.display = any ? '' : 'none';
+    });
+  });
+})();
+</script>
+</body>
+</html>
