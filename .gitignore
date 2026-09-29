@@ -1,0 +1,5 @@
+# vystup generatora cviceni (obsahuje kluc s vysledkami studentov)
+generator/vystup/
+
+# sylabus predmetu (len lokalne)
+assets/SaIT.syllabus.pdf

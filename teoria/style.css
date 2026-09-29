@@ -251,3 +251,6 @@ kbd {
 .checklist { list-style: none; padding-left: 0; }
 .checklist li { padding: 4px 0 4px 28px; position: relative; }
 .checklist li::before { content: "☐"; position: absolute; left: 4px; color: var(--accent); }
+
+/* show <- literally, not as an arrow ligature */
+code, pre { font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }

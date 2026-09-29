@@ -147,6 +147,7 @@ Sedem prezentácií (Quarto, reveal.js) – jedna na každý tematický blok. Ob
 | 🇬🇧 [`English/`](English/) | rozšírené anglické materiály a prezentácie |
 | 🌐 [`exercises_EN/`](exercises_EN/) · [`teoria/`](teoria/) · [`theory_EN/`](theory_EN/) | anglické skripty, zdrojové súbory teórie SK / EN |
 | 🎓 [`prezentacie/`](prezentacie/) | Quarto prezentácie (`.qmd`) a vyrenderované HTML |
+| 🎲 [`generator/`](generator/) | generátor samostatného cvičenia pre zvolený týždeň – teória, úlohy a individuálne dáta pre každého študenta |
 
 ### 🔗 Užitočné odkazy
 
@@ -290,6 +291,7 @@ Seven presentations (Quarto, reveal.js) – one for each thematic block, with li
 | 🇬🇧 [`English/`](English/) | extended English materials and presentations |
 | 🌐 [`exercises_EN/`](exercises_EN/) · [`teoria/`](teoria/) · [`theory_EN/`](theory_EN/) | English scripts, theory source files SK / EN |
 | 🎓 [`prezentacie/`](prezentacie/) | Quarto presentations (`.qmd`) and rendered HTML |
+| 🎲 [`generator/`](generator/) | generator of an independent exercise for a chosen week – theory, tasks and individual data for every student |
 
 ### 🔗 Useful links
 
