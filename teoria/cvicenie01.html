@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1. R, RStudio a spolupráca</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ink-3)"/></marker></defs></svg>
+<div class="wrap">
+<header class="top"><a class="brand" href="index.html">Senzometria v R · teória</a><a href="index.html">Všetky cvičenia</a></header>
+
+<section class="hero"><span class="num">CVIČENIE 1</span><h1>R, RStudio a spolupráca</h1><p class="lead">Pracovné prostredie pre senzometriu: štatistický jazyk R, vývojové prostredie RStudio, balíky a nástroje na tímovú prácu.</p>
+<div class="files"><a href="../cvicenie1.txt">Skript (SK): cvicenie1.txt</a><a href="../exercises_EN/exercise1.txt">Script (EN): exercise1.txt</a></div></section>
+<div class="goals"><h2>Čo sa naučíte</h2><ul>
+<li>rozlíšiť R (jazyk a výpočtové jadro) a RStudio (editor okolo neho),</li>
+<li>inštalovať a načítať balíky z CRAN aj z GitHubu,</li>
+<li>zorganizovať skupinovú prácu na projekte pomocou groupware nástrojov.</li>
+</ul></div>
+
+<h2>R a RStudio – motor a palubná doska</h2>
+<p><strong>R</strong> je voľne dostupný jazyk a prostredie pre štatistické výpočty a grafiku. Samotné R má len jednoduchú konzolu. <strong>RStudio</strong> (dnes od firmy Posit) je integrované vývojové prostredie (IDE), ktoré R spúšťa na pozadí a pridáva editor skriptov, prehľad premenných, okno s grafmi a nápovedou. Inštalujeme preto vždy <em>najprv R, potom RStudio</em>.</p>
+
+<figure>
+<svg viewBox="0 0 640 330" role="img" aria-label="Rozloženie okien RStudia">
+  <rect x="10" y="10" width="620" height="310" rx="10" class="box"/>
+  <rect x="24" y="24" width="360" height="150" rx="6" class="boxa"/>
+  <text x="40" y="50" class="t-strong">1 · Editor skriptov (Source)</text>
+  <text x="40" y="74">sem píšeme kód a ukladáme ho do súboru .R / .txt</text>
+  <rect x="40" y="90" width="220" height="10" rx="3" class="fs"/>
+  <rect x="40" y="108" width="280" height="10" rx="3" class="fs"/>
+  <rect x="40" y="126" width="180" height="10" rx="3" class="fs"/>
+  <text x="40" y="160" class="t-acc">Ctrl + Enter → spustí riadok</text>
+  <rect x="24" y="186" width="360" height="120" rx="6" class="box"/>
+  <text x="40" y="212" class="t-strong">2 · Konzola (Console)</text>
+  <text x="40" y="236" style="font-family:var(--mono)">&gt; mean(c(7, 8, 9))</text>
+  <text x="40" y="256" style="font-family:var(--mono)">[1] 8</text>
+  <text x="40" y="288">tu R vykonáva príkazy a vypisuje výsledky</text>
+  <rect x="396" y="24" width="220" height="130" rx="6" class="box"/>
+  <text x="410" y="50" class="t-strong">3 · Environment</text>
+  <text x="410" y="76">premenné v pamäti:</text>
+  <text x="410" y="98" style="font-family:var(--mono)" class="t-small">cena   num [1:6]</text>
+  <text x="410" y="116" style="font-family:var(--mono)" class="t-small">vysledky  6 obs.</text>
+  <rect x="396" y="166" width="220" height="140" rx="6" class="box"/>
+  <text x="410" y="192" class="t-strong">4 · Plots / Help / Files</text>
+  <polyline points="420,290 450,260 480,272 510,230 540,245 570,210 596,220" class="ln1"/>
+  <line x1="416" y1="294" x2="600" y2="294" class="ax"/>
+  <line x1="416" y1="294" x2="416" y2="205" class="ax"/>
+</svg>
+<figcaption>Štyri panely RStudia. Kód píšte vždy do editora (1), nie priamo do konzoly – len tak sa dá analýza zopakovať.</figcaption>
+</figure>
+
+<h2>Balíky – rozšírenia R</h2>
+<p>Základné R obsahuje bežné testy (t-test, χ², ANOVA). Špecializované metódy – napr. senzorické rozlišovacie testy (<code>sensR</code>), mapy preferencií (<code>SensoMineR</code>) či finančné grafy (<code>quantmod</code>) – dodávajú <strong>balíky</strong>. Balík sa <em>inštaluje raz</em> do počítača, ale <em>načítava pri každom spustení</em> R.</p>
+
+<figure>
+<svg viewBox="0 0 640 210" role="img" aria-label="Inštalácia a načítanie balíka">
+  <rect x="10" y="20" width="150" height="60" rx="8" class="box"/>
+  <text x="85" y="46" text-anchor="middle" class="t-strong">CRAN</text>
+  <text x="85" y="66" text-anchor="middle" class="t-small">oficiálny archív, overené</text>
+  <rect x="10" y="120" width="150" height="60" rx="8" class="box"/>
+  <text x="85" y="146" text-anchor="middle" class="t-strong">GitHub</text>
+  <text x="85" y="166" text-anchor="middle" class="t-small">vývojové verzie</text>
+  <rect x="245" y="70" width="160" height="60" rx="8" class="boxa"/>
+  <text x="325" y="96" text-anchor="middle" class="t-strong">knižnica na disku</text>
+  <text x="325" y="116" text-anchor="middle" class="t-small">raz na počítač</text>
+  <rect x="490" y="70" width="140" height="60" rx="8" class="box"/>
+  <text x="560" y="96" text-anchor="middle" class="t-strong">aktuálna relácia</text>
+  <text x="560" y="116" text-anchor="middle" class="t-small">pri každom spustení</text>
+  <path d="M160,50 C200,50 210,90 243,95" class="arrow"/>
+  <path d="M160,150 C200,150 210,110 243,105" class="arrow"/>
+  <line x1="405" y1="100" x2="487" y2="100" class="arrow"/>
+  <text x="200" y="36" text-anchor="middle" style="font-family:var(--mono)" class="t-small">install.packages()</text>
+  <text x="200" y="196" text-anchor="middle" style="font-family:var(--mono)" class="t-small">devtools::install_github()</text>
+  <text x="446" y="90" text-anchor="middle" style="font-family:var(--mono)" class="t-small">library()</text>
+</svg>
+<figcaption>Cesta balíka: stiahnutie (raz) → načítanie do relácie (vždy, keď ho potrebujete).</figcaption>
+</figure>
+
+<pre>install.packages("sensR")   # raz – stiahne a nainštaluje
+library(sensR)              # pri každom spustení R
+?binom.test                 # nápoveda k funkcii</pre>
+
+<div class="warn"><strong>Pozor na archivované balíky</strong>Niektoré balíky (napr. <code>PMCMR</code>, <code>turfR</code>) boli z CRAN odstránené. Skripty v tomto kurze preto používajú náhrady (<code>PMCMRplus</code>) alebo inštaláciu z archívu CRAN. Chyba <code>there is no package called …</code> takmer vždy znamená, že balík nie je nainštalovaný.</div>
+
+<h2>Groupware a kooperatívna práca</h2>
+<p>Senzorický projekt (príprava vzoriek, hodnotenie, analýza, správa) je tímová práca. Nástroje sa líšia podľa toho, <em>čo</em> zdieľame:</p>
+<div class="tablewrap"><table>
+<tr><th>Potreba</th><th>Nástroj</th><th>Na čo v kurze</th></tr>
+<tr><td>komunikácia</td><td>Teams, Slack, Jitsi Meet</td><td>konzultácie, online stretnutia skupiny</td></tr>
+<tr><td>úlohy a termíny</td><td>Trello (kanban), Notion</td><td>rozdelenie práce: príprava vzoriek → hodnotenie → analýza</td></tr>
+<tr><td>verziovanie súborov</td><td>GitHub</td><td>skripty a datasety, história zmien, spoločné úpravy</td></tr>
+</table></div>
+
+<figure>
+<svg viewBox="0 0 640 150" role="img" aria-label="Kanban tabuľa">
+  <g>
+    <rect x="10" y="10" width="200" height="130" rx="8" class="fs"/>
+    <text x="24" y="34" class="t-strong">Treba urobiť</text>
+    <rect x="24" y="46" width="172" height="30" rx="5" class="box"/><text x="34" y="66" class="t-small">Pripraviť 3 vzorky jogurtu</text>
+    <rect x="24" y="84" width="172" height="30" rx="5" class="box"/><text x="34" y="104" class="t-small">Návrh hodnotiaceho hárku</text>
+  </g>
+  <g>
+    <rect x="220" y="10" width="200" height="130" rx="8" class="fs"/>
+    <text x="234" y="34" class="t-strong">Rozpracované</text>
+    <rect x="234" y="46" width="172" height="30" rx="5" class="boxa"/><text x="244" y="66" class="t-small">Hodnotenie panelom (8 ľudí)</text>
+  </g>
+  <g>
+    <rect x="430" y="10" width="200" height="130" rx="8" class="fs"/>
+    <text x="444" y="34" class="t-strong">Hotovo</text>
+    <rect x="444" y="46" width="172" height="30" rx="5" class="box"/><text x="454" y="66" class="t-small">Dataset na GitHube</text>
+  </g>
+</svg>
+<figcaption>Kanban (Trello): každá úloha je karta, ktorá sa posúva zľava doprava. Hneď vidno, kde projekt viazne.</figcaption>
+</figure>
+
+<div class="note"><strong>Dobrý zvyk</strong>Jeden projekt = jeden priečinok (v RStudiu <em>File → New Project</em>). Dáta, skripty aj výstupy potom ležia spolu a relatívne cesty k súborom fungujú u všetkých členov tímu.</div>
+
+<nav class="pager">
+<a class="next" href="cvicenie02.html"><span>Nasledujúce →</span>2. BCG matica a interval spoľahlivosti</a>
+</nav>
+</div>
+</body>
+</html>

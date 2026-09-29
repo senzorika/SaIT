@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2. BCG matica a interval spoľahlivosti</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ink-3)"/></marker></defs></svg>
+<div class="wrap">
+<header class="top"><a class="brand" href="index.html">Senzometria v R · teória</a><a href="index.html">Všetky cvičenia</a></header>
+
+<section class="hero"><span class="num">CVIČENIE 2</span><h1>BCG matica a interval spoľahlivosti</h1><p class="lead">Ako umiestniť produkty do mapy cena × kvalita a ako vyjadriť neistotu priemerného hodnotenia panelu.</p>
+<div class="files"><a href="../cvicenie2.txt">Skript (SK): cvicenie2.txt</a><a href="../exercises_EN/exercise2.txt">Script (EN): exercise2.txt</a></div></section>
+<div class="goals"><h2>Čo sa naučíte</h2><ul>
+<li>zostrojiť modifikovanú BCG maticu cena × kvalita a interpretovať kvadranty,</li>
+<li>vypočítať a nakresliť 95 % interval spoľahlivosti priemeru,</li>
+<li>pochopiť, prečo sa pri malom paneli používa t-rozdelenie namiesto čísla 1,96.</li>
+</ul></div>
+
+<h2>Modifikovaná BCG matica</h2>
+<p>Pôvodná matica Boston Consulting Group triedi produkty podľa rastu trhu a trhového podielu. V senzorike ju upravujeme: na osi x je <strong>cena</strong>, na osi y <strong>senzorická kvalita</strong> (priemer panelu). Priestor rozdelíme priemermi oboch premenných na štyri kvadranty – produkt tak porovnávame s „priemerným produktom“ na trhu.</p>
+
+<figure>
+<svg viewBox="0 0 620 340" role="img" aria-label="BCG matica pre produkty A až F">
+  <rect x="60" y="20" width="268.5" height="130" class="fa op2"/>
+  <rect x="328.5" y="20" width="251.5" height="130" class="fs"/>
+  <rect x="60" y="150" width="268.5" height="130" class="fs"/>
+  <rect x="328.5" y="150" width="251.5" height="130" class="fw"/>
+  <text x="70" y="40" class="t-acc">Výhodná kúpa</text><text x="70" y="56" class="t-small">nízka cena · vysoká kvalita</text>
+  <text x="570" y="40" text-anchor="end" class="t-strong">Prémiové</text><text x="570" y="56" text-anchor="end" class="t-small">vysoká cena · vysoká kvalita</text>
+  <text x="70" y="270" class="t-strong">Ekonomické</text>
+  <text x="570" y="254" text-anchor="end" class="t-warn" style="font-weight:600">Problémové</text><text x="570" y="270" text-anchor="end" class="t-small">vysoká cena · nízka kvalita</text>
+  <line x1="328.5" y1="20" x2="328.5" y2="280" class="warnl dash"/>
+  <line x1="60" y1="150" x2="580" y2="150" class="warnl dash"/>
+  <line x1="60" y1="280" x2="580" y2="280" class="ax"/><line x1="60" y1="20" x2="60" y2="280" class="ax"/>
+  <g class="t-small">
+    <text x="60" y="298" text-anchor="middle">5</text><text x="185" y="298" text-anchor="middle">6</text><text x="310" y="298" text-anchor="middle">7</text><text x="435" y="298" text-anchor="middle">8</text><text x="560" y="298" text-anchor="middle">9</text>
+    <text x="52" y="284" text-anchor="end">4</text><text x="52" y="184" text-anchor="end">6</text><text x="52" y="84" text-anchor="end">8</text>
+  </g>
+  <text x="320" y="324" text-anchor="middle">cena (€)</text>
+  <text x="18" y="150" text-anchor="middle" transform="rotate(-90 18 150)">kvalita (body)</text>
+  <text x="332" y="16" class="t-small t-warn">priemer ceny 7,15</text>
+  <text x="582" y="145" class="t-small t-warn" text-anchor="end">priemer kvality 6,6</text>
+  <g>
+    <circle cx="360" cy="255" r="6" class="f2"/><text x="370" y="259" class="t-strong">A</text>
+    <circle cx="498.75" cy="120" r="6" class="f3"/><text x="509" y="124" class="t-strong">B</text>
+    <circle cx="387.5" cy="55" r="6" class="f3"/><text x="398" y="59" class="t-strong">C</text>
+    <circle cx="127.5" cy="240" r="6" class="f5"/><text x="138" y="244" class="t-strong">D</text>
+    <circle cx="335" cy="105" r="6" class="f3"/><text x="345" y="109" class="t-strong">E</text>
+    <circle cx="262.5" cy="125" r="6" class="f1"/><text x="273" y="129" class="t-strong">F</text>
+  </g>
+</svg>
+<figcaption>Dáta zo skriptu. F je „výhodná kúpa“, A je drahší než priemer a zároveň najhorší – kandidát na zmenu receptúry alebo ceny. E leží takmer na hranici ceny – malá zmena ceny ho presunie do iného kvadrantu.</figcaption>
+</figure>
+
+<div class="note"><strong>Prečo priemer a nie „od oka“?</strong>Deliace čiary by sa mali počítať (<code>abline(v = mean(cena))</code>), nie zadávať ručne. Pri pridaní nového produktu sa priemer zmení a ručne vpísané čísla by viedli k chybnému zaradeniu.</div>
+
+<h2>Interval spoľahlivosti priemeru</h2>
+<p>Priemer panelu je len <em>odhad</em> skutočného hodnotenia produktu. Keby hodnotilo iných 7 ľudí, dostali by sme trochu iné číslo. <strong>Interval spoľahlivosti</strong> (IS) udáva rozsah, v ktorom skutočný priemer leží s danou istotou (zvyčajne 95 %).</p>
+
+<div class="formula">IS<sub>95 %</sub> = x̄ ± t<sub>0,975; n−1</sub> · s / √n
+<small>x̄ – priemer, s – smerodajná odchýlka, n – počet hodnotiteľov, s/√n – stredná chyba priemeru (SE)</small></div>
+
+<figure>
+<svg viewBox="0 0 620 262" role="img" aria-label="Interval spoľahlivosti pre 7 hodnotení">
+  <rect x="60" y="80.5" width="520" height="127.6" class="fa op2"/>
+  <line x1="60" y1="80.5" x2="580" y2="80.5" class="warnl dash"/>
+  <line x1="60" y1="208.1" x2="580" y2="208.1" class="warnl dash"/>
+  <line x1="60" y1="144.3" x2="580" y2="144.3" class="ln1 dash"/>
+  <line x1="60" y1="235" x2="580" y2="235" class="ax"/><line x1="60" y1="20" x2="60" y2="235" class="ax"/>
+  <g class="t-small"><text x="52" y="234" text-anchor="end">9</text><text x="52" y="134" text-anchor="end">10</text><text x="52" y="34" text-anchor="end">11</text></g>
+  <polyline points="100,130 173,230 246,30 319,130 392,130 465,230 538,130" style="stroke:var(--ink-3);stroke-width:1.5;fill:none"/>
+  <g class="f3">
+    <circle cx="100" cy="130" r="5"/><circle cx="173" cy="230" r="5"/><circle cx="246" cy="30" r="5"/><circle cx="319" cy="130" r="5"/><circle cx="392" cy="130" r="5"/><circle cx="465" cy="230" r="5"/><circle cx="538" cy="130" r="5"/>
+  </g>
+  <text x="584" y="84" class="t-small t-warn">10,50</text>
+  <text x="584" y="148" class="t-small t-acc">9,86</text>
+  <text x="584" y="212" class="t-small t-warn">9,22</text>
+  <text x="320" y="254" text-anchor="middle" class="t-small">hodnotiteľ 1 … 7</text>
+</svg>
+<figcaption>Hodnotenie chuti od 7 hodnotiteľov (skript, <code>plot(x, type = "b")</code>). Zelená – priemer 9,86; červené – hranice 95 % IS [9,22; 10,50].</figcaption>
+</figure>
+
+<h3>1,96 alebo t?</h3>
+<p>Číslo 1,96 platí pre normálne rozdelenie, teda pre veľké vzorky. Pri malom paneli nepoznáme skutočný rozptyl, iba jeho odhad <em>s</em>, a preto používame Studentovo t-rozdelenie, ktoré má „ťažšie chvosty“ a dáva širší interval:</p>
+<div class="tablewrap"><table>
+<tr><th>n hodnotiteľov</th><th>5</th><th>7</th><th>10</th><th>20</th><th>30</th><th>∞</th></tr>
+<tr><td>t<sub>0,975; n−1</sub></td><td>2,78</td><td>2,45</td><td>2,26</td><td>2,09</td><td>2,05</td><td>1,96</td></tr>
+</table></div>
+<div class="warn"><strong>Častá chyba</strong>V menovateli je počet <em>pozorovaní</em> <code>length(x)</code>, nie počet rôznych hodnôt <code>length(unique(x))</code>. Pri dátach 10, 9, 11, 10, 10, 9, 10 je n = 7, ale rôzne hodnoty sú len 3 – interval by vyšiel neprimerane široký.</div>
+
+<nav class="pager">
+<a class="prev" href="cvicenie01.html"><span>← Predchádzajúce</span>1. R, RStudio a spolupráca</a>
+<a class="next" href="cvicenie03.html"><span>Nasledujúce →</span>3. Práca s dátami v R</a>
+</nav>
+</div>
+</body>
+</html>

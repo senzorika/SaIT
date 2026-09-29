@@ -1,0 +1,63 @@
+# --------------------------------------------------
+# TURF analysis, Vietoris 2020
+#---------------------------------------------------
+# the turfR package was removed from CRAN, install it from the archive:
+# install.packages("https://cran.r-project.org/src/contrib/Archive/turfR/turfR_0.8-7.tar.gz", repos=NULL, type="source")
+library(turfR)
+egg = c(sample(0:1, size=150, replace=TRUE))
+cheese = c(sample(0:1, size=150, replace=TRUE))
+ham = c(sample(0:1, size=150, replace=TRUE))
+olives = c(sample(0:1, size=150, replace=TRUE))
+tomato_paste = c(sample(0:1, size=150, replace=TRUE))
+salami = c(sample(0:1, size=150, replace=TRUE))
+onion = c(sample(0:1, size=150, replace=TRUE))
+bacon = c(sample(0:1, size=150, replace=TRUE))
+garlic = c(sample(0:1, size=150, replace=TRUE))
+tomatoes = c(sample(0:1, size=150, replace=TRUE))
+corn = c(sample(0:1, size=150, replace=TRUE))
+wgt=c(egg+cheese+ham+olives+tomato_paste+salami+onion+bacon+garlic+tomatoes+corn)/10
+respid= c(1:150)
+pizza=data.frame(respid,wgt,egg,cheese,ham,olives,tomato_paste,salami,onion,bacon,garlic,tomatoes,corn)
+View(pizza)
+
+# REACH: percentage of people for whom the selected set of ingredients is attractive
+# FREQUENCY: average number of attractive ingredients per respondent
+# so we choose 3 to 4 ingredients
+results <- turf(pizza, 11, 3:4)
+
+# table with 3 ingredients
+TURFtable3=results$turf[[1]]
+colnames(TURFtable3)=c("Combo","Reach","Freq","egg","cheese","ham","olives","tomato_paste",
+                       "salami","onion","bacon","garlic","tomatoes","corn")
+View(TURFtable3)
+
+# table with 4 ingredients
+TURFtable4=results$turf[[2]]
+colnames(TURFtable4)=c("Combo","Reach","Freq","egg","cheese","ham","olives","tomato_paste",
+                       "salami","onion","bacon","garlic","tomatoes","corn")
+View(TURFtable4)
+
+
+#------------------------------------------------------------
+# PREFERENCE MAPPING (external), Vietoris 2020
+#------------------------------------------------------------
+
+# In its sensory laboratory, a food company used the profile method to analyse
+# its own product (1) and 15 competing products on the market. A sensory panel of 8 members evaluated
+# 13 defined descriptors on an unstructured intensity scale. The results for each descriptor are panel means.
+# Then selected interviewers asked 100 respondents to rate the whole assortment on a 5-point (school) scale.
+# Analyse the market assortment using preference mapping and comment on the company's product.
+
+
+# load the data from an internet address (profile + hedonic data)
+sensory<-read.table("http://senzorika.com/sait/datasety/senzorika.txt", sep=",")
+hedonic<-read.table("http://senzorika.com/sait/datasety/hedonika.txt", sep=",")
+
+# check the datasets
+sensory
+hedonic
+
+# preference mapping
+library(SensoMineR)
+res.pca <- PCA(sensory)
+carto(res.pca$ind$coord[,1:2],hedonic) # colour parameters: col.min = 0, col.max = 1

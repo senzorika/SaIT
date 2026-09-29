@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>7. PCA a faktorová analýza</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ink-3)"/></marker></defs></svg>
+<div class="wrap">
+<header class="top"><a class="brand" href="index.html">Senzometria v R · teória</a><a href="index.html">Všetky cvičenia</a></header>
+
+<section class="hero"><span class="num">CVIČENIE 7</span><h1>PCA a faktorová analýza</h1><p class="lead">Zníženie rozmernosti dát: hlavné komponenty, Kaiserovo kritérium a skryté faktory v spotrebiteľských odpovediach.</p>
+<div class="files"><a href="../cvicenie7.txt">Skript (SK): cvicenie7.txt</a><a href="../exercises_EN/exercise7.txt">Script (EN): exercise7.txt</a></div></section>
+<div class="goals"><h2>Čo sa naučíte</h2><ul>
+<li>pochopiť, ako PCA nahradí veľa korelovaných znakov niekoľkými komponentmi,</li>
+<li>určiť počet komponentov/faktorov (Kaiserovo kritérium, scree graf),</li>
+<li>čítať biplot a faktorové záťaže a pomenovať faktory.</li>
+</ul></div>
+
+<h2>Analýza hlavných komponentov (PCA)</h2>
+<p>Keď hodnotíme veľa znakov naraz, mnohé spolu súvisia (sladkosť a ovocnosť, cena a značka…). PCA otočí súradnicový systém tak, aby prvá os – <strong>1. hlavný komponent</strong> – vysvetľovala čo najviac variability dát, druhá (kolmá na prvú) čo najviac zo zvyšku atď. Namiesto 4, 10 či 20 znakov potom stačia 2 – 3 komponenty a dáta sa dajú zobraziť v rovine.</p>
+<figure>
+<svg viewBox="0 0 620 300" role="img" aria-label="Princíp PCA">
+  <line x1="40" y1="270" x2="600" y2="270" class="ax"/><line x1="40" y1="20" x2="40" y2="270" class="ax"/>
+  <text x="590" y="290" text-anchor="end" class="t-small">znak 1</text><text x="30" y="30" text-anchor="end" class="t-small">znak 2</text>
+  <ellipse cx="310" cy="150" rx="210" ry="60" transform="rotate(-28 310 150)" class="fa op2"/>
+  <g class="f3" opacity=".8">
+    <circle cx="150" cy="232" r="4"/><circle cx="180" cy="205" r="4"/><circle cx="205" cy="220" r="4"/><circle cx="230" cy="180" r="4"/><circle cx="250" cy="198" r="4"/><circle cx="270" cy="160" r="4"/><circle cx="290" cy="170" r="4"/><circle cx="300" cy="140" r="4"/><circle cx="320" cy="155" r="4"/><circle cx="340" cy="125" r="4"/><circle cx="360" cy="140" r="4"/><circle cx="380" cy="110" r="4"/><circle cx="400" cy="120" r="4"/><circle cx="420" cy="90" r="4"/><circle cx="445" cy="98" r="4"/><circle cx="470" cy="70" r="4"/><circle cx="230" cy="150" r="4"/><circle cx="390" cy="150" r="4"/><circle cx="330" cy="100" r="4"/><circle cx="280" cy="210" r="4"/>
+  </g>
+  <line x1="120" y1="251" x2="510" y2="44" class="ln2" marker-end="url(#arr)"/>
+  <line x1="275" y1="84" x2="345" y2="216" class="ln1" marker-end="url(#arr)"/>
+  <text x="515" y="42" class="t-strong" style="fill:var(--c2)">PC1</text>
+  <text x="350" y="232" class="t-strong" style="fill:var(--c1)">PC2</text>
+  <text x="440" y="200" class="t-small">PC1 – smer najväčšieho rozptylu</text>
+  <text x="440" y="218" class="t-small">PC2 – kolmý, zachytí zvyšok</text>
+</svg>
+</figure>
+<p>Pretože znaky majú rôzne jednotky a rozsahy, PCA počítame z <strong>korelačnej matice</strong> (<code>princomp(data, cor = TRUE)</code>) – každý znak tak má rovnakú váhu.</p>
+
+<h3>Koľko komponentov ponechať?</h3>
+<figure>
+<svg viewBox="0 0 620 250" role="img" aria-label="Scree graf">
+  <line x1="60" y1="210" x2="580" y2="210" class="ax"/><line x1="60" y1="20" x2="60" y2="210" class="ax"/>
+  <line x1="60" y1="120" x2="580" y2="120" class="warnl dash"/><text x="578" y="113" text-anchor="end" class="t-small t-warn">Kaiserovo kritérium: vlastné číslo = 1</text>
+  <g class="t-small"><text x="52" y="214" text-anchor="end">0</text><text x="52" y="124" text-anchor="end">1</text><text x="52" y="34" text-anchor="end">2</text></g>
+  <polyline points="140,41.9 260,115.9 380,146.1 500,176.1" class="ln3"/>
+  <g class="f3"><circle cx="140" cy="41.9" r="6"/><circle cx="260" cy="115.9" r="6"/></g>
+  <g style="fill:var(--ink-3)"><circle cx="380" cy="146.1" r="6"/><circle cx="500" cy="176.1" r="6"/></g>
+  <g class="t-small">
+    <text x="140" y="228" text-anchor="middle">Comp.1</text><text x="260" y="228" text-anchor="middle">Comp.2</text><text x="380" y="228" text-anchor="middle">Comp.3</text><text x="500" y="228" text-anchor="middle">Comp.4</text>
+    <text x="152" y="38" class="t-strong">1,87 (47 %)</text><text x="272" y="110" class="t-strong">1,05 (26 %)</text><text x="392" y="142">0,71 (18 %)</text><text x="512" y="172">0,38 (9 %)</text>
+  </g>
+</svg>
+<figcaption>Vlastné čísla PCA z prvého príkladu skriptu. Ponecháme komponenty s vlastným číslom &gt; 1 (tie vysvetľujú viac než jeden pôvodný znak) – spolu 73 % variability. Alternatívne hľadáme „koleno“ krivky.</figcaption>
+</figure>
+
+<h3>Biplot</h3>
+<p>Biplot kreslí naraz <strong>objekty</strong> (respondentov alebo produkty, body) aj <strong>premenné</strong> (šípky). Šípky blízko seba = pozitívne korelované znaky; opačný smer = negatívna korelácia; kolmé = nesúvisia. Bod ležiaci v smere šípky má v danom znaku vysokú hodnotu.</p>
+<figure>
+<svg viewBox="0 0 620 300" role="img" aria-label="Biplot z príkladu">
+  <line x1="40" y1="150" x2="580" y2="150" class="gridl"/><line x1="310" y1="20" x2="310" y2="280" class="gridl"/>
+  <line x1="310" y1="150" x2="223" y2="207" class="ln2" marker-end="url(#arr)"/><text x="200" y="226" text-anchor="middle" class="t-strong" style="fill:var(--c2)">senzorika</text>
+  <line x1="310" y1="150" x2="270" y2="21" class="ln2" marker-end="url(#arr)"/><text x="262" y="16" text-anchor="middle" class="t-strong" style="fill:var(--c2)">cena</text>
+  <line x1="310" y1="150" x2="385" y2="110" class="ln2" marker-end="url(#arr)"/><text x="392" y="104" class="t-strong" style="fill:var(--c2)">dizajn obalu</text>
+  <line x1="310" y1="150" x2="397" y2="182" class="ln2" marker-end="url(#arr)"/><text x="404" y="194" class="t-strong" style="fill:var(--c2)">značka</text>
+  <text x="575" y="142" text-anchor="end" class="t-small">Comp.1 (47 %)</text><text x="318" y="32" class="t-small">Comp.2 (26 %)</text>
+  <g class="t-small"><text x="90" y="200">„chuťoví“</text><text x="500" y="178">„imidžoví“</text></g>
+</svg>
+<figcaption>Záťaže (loadings) z príkladu: Comp.1 stavia proti sebe <em>senzorickú kvalitu</em> a <em>značku + dizajn obalu</em> – oddeľuje respondentov, ktorí nakupujú podľa chuti, od tých, ktorí nakupujú podľa imidžu. Comp.2 je takmer čisto <em>cena</em>. (Znamienka komponentov sú ľubovoľné – celý graf môže byť zrkadlovo otočený.)</figcaption>
+</figure>
+
+<h2>Faktorová analýza (FA)</h2>
+<p>PCA je <em>opisná</em> – len preusporiada variabilitu. Faktorová analýza predpokladá <strong>model</strong>: pozorované odpovede sú spôsobené niekoľkými nemerateľnými (latentnými) <strong>faktormi</strong> plus individuálnym šumom. Cieľom je tieto faktory odhaliť a pomenovať.</p>
+<figure>
+<svg viewBox="0 0 620 280" role="img" aria-label="Model faktorovej analýzy">
+  <ellipse cx="130" cy="80" rx="95" ry="36" class="boxa"/><text x="130" y="76" text-anchor="middle" class="t-strong">Faktor 1</text><text x="130" y="94" text-anchor="middle" class="t-small">„produkt sám“?</text>
+  <ellipse cx="130" cy="200" rx="95" ry="36" class="boxa"/><text x="130" y="196" text-anchor="middle" class="t-strong">Faktor 2</text><text x="130" y="214" text-anchor="middle" class="t-small">„sociálny vplyv“?</text>
+  <g>
+    <rect x="400" y="14" width="150" height="32" rx="6" class="box"/><text x="475" y="35" text-anchor="middle">senzorická kvalita</text>
+    <rect x="400" y="56" width="150" height="32" rx="6" class="box"/><text x="475" y="77" text-anchor="middle">cena</text>
+    <rect x="400" y="98" width="150" height="32" rx="6" class="box"/><text x="475" y="119" text-anchor="middle">estetika</text>
+    <rect x="400" y="140" width="150" height="32" rx="6" class="box"/><text x="475" y="161" text-anchor="middle">značka</text>
+    <rect x="400" y="182" width="150" height="32" rx="6" class="box"/><text x="475" y="203" text-anchor="middle">priateľ</text>
+    <rect x="400" y="224" width="150" height="32" rx="6" class="box"/><text x="475" y="245" text-anchor="middle">rodina</text>
+  </g>
+  <g>
+    <line x1="225" y1="72" x2="398" y2="30" class="arrow"/><line x1="225" y1="78" x2="398" y2="72" class="arrow"/><line x1="225" y1="86" x2="398" y2="114" class="arrow"/><line x1="222" y1="92" x2="398" y2="156" class="arrow"/>
+    <line x1="225" y1="196" x2="398" y2="198" class="arrow"/><line x1="222" y1="206" x2="398" y2="240" class="arrow"/>
+  </g>
+  <text x="310" y="272" text-anchor="middle" class="t-small">šípka = záťaž (loading), korelácia znaku s faktorom</text>
+</svg>
+<figcaption>Schéma – ktoré znaky patria ku ktorému faktoru, ukáže až výstup <code>factanal()</code>. Znak priraďujeme k faktoru, na ktorom má najvyššiu absolútnu záťaž (orientačne &gt; 0,5).</figcaption>
+</figure>
+<p>Pre dáta druhého príkladu sú vlastné čísla korelačnej matice 2,46; 1,69; 0,89; 0,61; 0,27; 0,08 – dve sú väčšie ako 1, preto <code>factanal(data, factors = 2)</code>.</p>
+<div class="tablewrap"><table>
+<tr><th>Výstup <code>factanal</code></th><th>Význam</th></tr>
+<tr><td><code>Uniquenesses</code></td><td>podiel variability znaku, ktorý faktory <em>nevysvetlia</em> (blízko 1 = znak stojí mimo)</td></tr>
+<tr><td><code>Loadings</code></td><td>záťaže – na ich základe faktory pomenujeme</td></tr>
+<tr><td><code>Cumulative Var</code></td><td>koľko variability vysvetľujú faktory spolu</td></tr>
+<tr><td><code>p-value</code> na konci</td><td>test „stačí k faktorov?“ – p &gt; 0,05 znamená, že áno</td></tr>
+</table></div>
+<div class="note"><strong>Rotácia varimax</strong><code>factanal</code> štandardne otáča faktory metódou varimax tak, aby každý znak mal vysokú záťaž len na jednom faktore – faktory sa tak ľahšie pomenujú. Pri úlohe s parfumami pomenujte faktory podľa vôní, ktoré ich tvoria (napr. „kvetinové“ vs. „drevité“).</div>
+
+<nav class="pager">
+<a class="prev" href="cvicenie06.html"><span>← Predchádzajúce</span>6. Korelácia a lineárna regresia</a>
+<a class="next" href="cvicenie08.html"><span>Nasledujúce →</span>8. Zhluková analýza</a>
+</nav>
+</div>
+</body>
+</html>

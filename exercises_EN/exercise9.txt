@@ -1,0 +1,28 @@
+#------------------------------------------------------------
+# CA - correspondence analysis (MASS package)
+# -----------------------------------------------------------
+# categorical data in a matrix
+data = matrix(c(15,2,8,7,14,4,5,5,15,11,5,9), ncol=3, byrow=T) # ncol = numbers per row, byrow=T
+colnames(data) = c("A", "B", "C") # column names (products)
+rownames(data) = c("Men", "Women", "Children", "Seniors") # row names (target groups of the product)
+
+# base R cannot compute correspondence analysis, so the MASS package is needed
+library(MASS)
+
+# simple correspondence analysis
+age = corresp(data, nf=2) # nf = number of factors
+
+# plot
+biplot(age)
+
+# TASK1:
+# ------------------------------------------------------------------------------
+# A cosmetics company producing shampoos decided to survey several hundred
+# respondents to find out which shampoos are preferred by individual groups
+# of customers. Based on the results it will put a photo of a specific hair
+# colour on the packaging. What will the packages of the nettle, birch and tropical shampoo look like?
+
+# values to use:
+# Generate respondents' answers (10-90 answers)
+# shampoos = Birch, Nettle, Fruit, Egg, Nut, Chocolate, Menthol, Tropical
+# hair.colour = Blond, Brown, Black, Red, Men

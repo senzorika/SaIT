@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>5b. Porovnanie viacerých vzoriek</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ink-3)"/></marker></defs></svg>
+<div class="wrap">
+<header class="top"><a class="brand" href="index.html">Senzometria v R · teória</a><a href="index.html">Všetky cvičenia</a></header>
+
+<section class="hero"><span class="num">CVIČENIE 5b</span><h1>Porovnanie viacerých vzoriek</h1><p class="lead">Kruskal-Wallis, Friedman, analýza rozptylu (ANOVA) a viacnásobné porovnania.</p>
+<div class="files"><a href="../cvicenie5b.txt">Skript (SK): cvicenie5b.txt</a><a href="../exercises_EN/exercise5b.txt">Script (EN): exercise5b.txt</a></div></section>
+<div class="goals"><h2>Čo sa naučíte</h2><ul>
+<li>porovnať tri a viac vzoriek naraz namiesto série t-testov,</li>
+<li>vybrať medzi ANOVA, Kruskal-Wallisovým a Friedmanovým testom,</li>
+<li>zistiť post-hoc testom, <em>ktoré</em> vzorky sa od seba líšia.</li>
+</ul></div>
+
+<h2>Prečo nie viac t-testov?</h2>
+<p>Pri troch vzorkách sú tri páry, pri piatich už desať. Každý test má 5 % riziko falošného poplachu, takže pri 10 testoch je šanca aspoň jedného falošného „rozdielu“ asi 40 %. Preto najprv urobíme <strong>jeden globálny test</strong> (sú medzi vzorkami nejaké rozdiely?) a až keď je preukazný, <strong>post-hoc porovnania</strong> s korekciou.</p>
+<div class="formula">P(aspoň 1 chyba) = 1 − (1 − 0,05)<sup>m</sup> &nbsp; → &nbsp; m = 10: 1 − 0,95<sup>10</sup> ≈ 0,40</div>
+
+<div class="tablewrap"><table>
+<tr><th></th><th>nezávislé skupiny<br><small>(rôzni hodnotitelia)</small></th><th>opakované merania / bloky<br><small>(každý hodnotí všetko)</small></th></tr>
+<tr><th>parametrické (normalita)</th><td><code>aov()</code> – jednofaktorová ANOVA<br>post-hoc: <code>TukeyHSD()</code></td><td>dvojfaktorová ANOVA s faktorom hodnotiteľ</td></tr>
+<tr><th>neparametrické (poradia)</th><td><code>kruskal.test()</code><br>post-hoc: <code>pairwise.wilcox.test()</code></td><td><code>friedman.test()</code><br>post-hoc: <code>frdAllPairsNemenyiTest()</code></td></tr>
+</table></div>
+
+<h2>ANOVA – rozklad variability</h2>
+<p>Analýza rozptylu porovnáva, ako veľmi sa líšia <strong>priemery skupín</strong> medzi sebou (variabilita <em>medzi</em>) v pomere k rozptylu hodnôt <strong>vnútri</strong> skupín. Ak sú skupiny od seba ďaleko a vnútri kompaktné, F je veľké.</p>
+<figure>
+<svg viewBox="0 0 620 262" role="img" aria-label="Variabilita medzi a vnútri skupín">
+<line x1="40" y1="236" x2="600" y2="236" class="ax"/><line x1="40" y1="20" x2="40" y2="236" class="ax"/>
+<text x="32" y="234" text-anchor="end" class="t-small">1</text>
+<text x="32" y="178" text-anchor="end" class="t-small">3</text>
+<text x="32" y="122" text-anchor="end" class="t-small">5</text>
+<text x="32" y="66" text-anchor="end" class="t-small">7</text>
+<line x1="40" y1="136.7" x2="600" y2="136.7" style="stroke:var(--ink-3);stroke-dasharray:6 4;stroke-width:1.5"/>
+<text x="598" y="130.7" text-anchor="end" class="t-small">celkový priemer 4,3</text>
+<circle cx="115" cy="216.0" r="5" class="f1" opacity=".8"/>
+<circle cx="115" cy="202.0" r="5" class="f1" opacity=".8"/>
+<circle cx="115" cy="188.0" r="5" class="f1" opacity=".8"/>
+<circle cx="115" cy="174.0" r="5" class="f1" opacity=".8"/>
+<circle cx="128" cy="188.0" r="5" class="f1" opacity=".8"/>
+<circle cx="141" cy="188.0" r="5" class="f1" opacity=".8"/>
+<circle cx="128" cy="174.0" r="5" class="f1" opacity=".8"/>
+<circle cx="141" cy="174.0" r="5" class="f1" opacity=".8"/>
+<circle cx="128" cy="202.0" r="5" class="f1" opacity=".8"/>
+<circle cx="115" cy="118.0" r="5" class="f1" opacity=".8"/>
+<line x1="95" y1="182.4" x2="195" y2="182.4" class="ln1"/>
+<text x="145" y="254" text-anchor="middle" class="t-strong">A (x̄ 2,70)</text>
+<circle cx="295" cy="146.0" r="5" class="f3" opacity=".8"/>
+<circle cx="295" cy="174.0" r="5" class="f3" opacity=".8"/>
+<circle cx="295" cy="90.0" r="5" class="f3" opacity=".8"/>
+<circle cx="295" cy="118.0" r="5" class="f3" opacity=".8"/>
+<circle cx="295" cy="202.0" r="5" class="f3" opacity=".8"/>
+<circle cx="308" cy="90.0" r="5" class="f3" opacity=".8"/>
+<circle cx="295" cy="230.0" r="5" class="f3" opacity=".8"/>
+<circle cx="321" cy="90.0" r="5" class="f3" opacity=".8"/>
+<circle cx="295" cy="104.0" r="5" class="f3" opacity=".8"/>
+<circle cx="308" cy="146.0" r="5" class="f3" opacity=".8"/>
+<line x1="275" y1="139.0" x2="375" y2="139.0" class="ln3"/>
+<text x="325" y="254" text-anchor="middle" class="t-strong">B (x̄ 4,25)</text>
+<circle cx="475" cy="90.0" r="5" class="f2" opacity=".8"/>
+<circle cx="488" cy="90.0" r="5" class="f2" opacity=".8"/>
+<circle cx="475" cy="48.0" r="5" class="f2" opacity=".8"/>
+<circle cx="475" cy="62.0" r="5" class="f2" opacity=".8"/>
+<circle cx="475" cy="118.0" r="5" class="f2" opacity=".8"/>
+<circle cx="475" cy="230.0" r="5" class="f2" opacity=".8"/>
+<circle cx="475" cy="34.0" r="5" class="f2" opacity=".8"/>
+<circle cx="488" cy="62.0" r="5" class="f2" opacity=".8"/>
+<circle cx="488" cy="48.0" r="5" class="f2" opacity=".8"/>
+<circle cx="475" cy="104.0" r="5" class="f2" opacity=".8"/>
+<line x1="455" y1="88.6" x2="555" y2="88.6" class="ln2"/>
+<text x="505" y="254" text-anchor="middle" class="t-strong">C (x̄ 6,05)</text>
+<line x1="210" y1="136.7" x2="210" y2="182.4" class="arrow" style="stroke:var(--warn)"/>
+<text x="216" y="163.5" class="t-small t-warn">medzi</text>
+<line x1="570" y1="88.6" x2="570" y2="230.0" class="arrow"/>
+<text x="576" y="174.0" class="t-small">vnútri</text>
+</svg>
+<figcaption>Dáta čokolád zo skriptu (Kruskal-Wallisov príklad). ANOVA: F = 10,3; p = 0,0005.</figcaption>
+</figure>
+<div class="formula">F = [SS<sub>medzi</sub> / (k − 1)] / [SS<sub>vnútri</sub> / (N − k)]
+<small>k – počet skupín, N – počet všetkých hodnotení. Veľké F → malé p → aspoň jedna skupina sa líši.</small></div>
+
+<h2>Kruskal-Wallisov test – ANOVA na poradiach</h2>
+<p>Ak dáta nie sú normálne, nahradíme hodnoty ich <strong>poradiami</strong> v spoločnom súbore (najmenšia = 1, najväčšia = N, zhody dostanú priemerné poradie) a porovnávame priemerné poradia skupín. Odľahlé hodnoty (napr. hodnotenie 1 pri produkte C) tak nemajú neprimeraný vplyv.</p>
+<figure>
+<svg viewBox="0 0 620 120" role="img" aria-label="Priemerné poradia">
+  <line x1="40" y1="70" x2="600" y2="70" class="ax"/>
+  <text x="40" y="92" text-anchor="middle" class="t-small">1</text><text x="600" y="92" text-anchor="middle" class="t-small">30</text>
+  <text x="320" y="110" text-anchor="middle" class="t-small">poradie v spojenom súbore 30 hodnotení</text>
+  <circle cx="192" cy="70" r="10" class="f1"/><text x="192" y="46" text-anchor="middle" class="t-strong">A: 8,9</text>
+  <circle cx="315" cy="70" r="10" class="f3"/><text x="315" y="46" text-anchor="middle" class="t-strong">B: 15,3</text>
+  <circle cx="453" cy="70" r="10" class="f2"/><text x="453" y="46" text-anchor="middle" class="t-strong">C: 22,4</text>
+</svg>
+<figcaption>H = 12,0; df = 2; p = 0,0025. Priemerné poradia ukazujú poradie kvality C &gt; B &gt; A.</figcaption>
+</figure>
+<div class="warn"><strong>Pozor na poradie vo vzorci</strong>Správne je <code>kruskal.test(hodnota ~ skupina)</code> – vľavo meraná veličina, vpravo faktor. Opačný zápis <code>kruskal.test(skupina ~ hodnota)</code> testuje niečo úplne iné a dá nezmyselný výsledok.</div>
+
+<h2>Friedmanov test – bloky hodnotiteľov</h2>
+<p>V poradovej skúške každý hodnotiteľ zoradí všetky vzorky (1 = najlepšia). Hodnotiteľ je tu <strong>blok</strong>: každý môže škálu používať inak, preto sa poradia porovnávajú vnútri riadku a až potom sčítajú.</p>
+<figure>
+<svg viewBox="0 0 620 230" role="img" aria-label="Friedmanov test: bloky">
+  <g class="t-strong"><text x="190" y="26" text-anchor="middle">A</text><text x="260" y="26" text-anchor="middle">B</text><text x="330" y="26" text-anchor="middle">C</text><text x="400" y="26" text-anchor="middle">D</text><text x="470" y="26" text-anchor="middle">E</text></g>
+  <g class="t-small"><text x="140" y="58" text-anchor="end">H1</text><text x="140" y="94" text-anchor="end">H2</text><text x="140" y="130" text-anchor="end">H3</text><text x="140" y="166" text-anchor="end">…</text></g>
+  <g>
+    <rect x="160" y="36" width="340" height="34" class="fa op2"/><rect x="160" y="72" width="340" height="34" class="fs"/><rect x="160" y="108" width="340" height="34" class="fa op2"/><rect x="160" y="144" width="340" height="34" class="fs"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="190" y="58">2</text><text x="260" y="58">1</text><text x="330" y="58">4</text><text x="400" y="58">3</text><text x="470" y="58">5</text>
+    <text x="190" y="94">1</text><text x="260" y="94">3</text><text x="330" y="94">2</text><text x="400" y="94">5</text><text x="470" y="94">4</text>
+    <text x="190" y="130">1</text><text x="260" y="130">2</text><text x="330" y="130">3</text><text x="400" y="130">4</text><text x="470" y="130">5</text>
+  </g>
+  <line x1="160" y1="190" x2="500" y2="190" class="ax"/>
+  <text x="140" y="212" text-anchor="end" class="t-strong">Σ poradí</text>
+  <g text-anchor="middle" class="t-acc"><text x="190" y="212">4</text><text x="260" y="212">6</text><text x="330" y="212">9</text><text x="400" y="212">12</text><text x="470" y="212">14</text></g>
+  <text x="520" y="58" class="t-small">← blok</text>
+</svg>
+<figcaption>Každý riadok obsahuje poradia 1 … k. Ak by vzorky boli rovnaké, súčty v stĺpcoch by boli približne rovnaké.</figcaption>
+</figure>
+<pre>friedman.test(chut ~ produkt | hodnotitel)            # hodnota ~ skupina | blok
+frdAllPairsNemenyiTest(chut, produkt, hodnotitel)     # PMCMRplus</pre>
+
+<h2>Post-hoc porovnania</h2>
+<ul>
+<li><strong>Tukey HSD</strong> po ANOVA – porovná všetky páry priemerov a vráti upravené p-hodnoty a intervaly spoľahlivosti rozdielov (<code>diff</code>, <code>lwr</code>, <code>upr</code>). Ak interval neobsahuje 0, rozdiel je preukazný.</li>
+<li><strong>Bonferroniho korekcia</strong> – každú p-hodnotu vynásobí počtom porovnaní (<code>p.adj = "bonferroni"</code>). Jednoduchá, ale konzervatívna.</li>
+<li><strong>Nemenyiho test</strong> po Friedmanovi – porovnáva súčty poradí.</li>
+</ul>
+<div class="note"><strong>Dvojfaktorová ANOVA</strong><code>aov(chut ~ pohlavie * produkt)</code> testuje tri veci: vplyv produktu, vplyv pohlavia a ich <em>interakciu</em> – či sa produkty páčia mužom a ženám rôzne. Preukazná interakcia znamená, že hlavné efekty nemožno interpretovať samostatne.</div>
+
+<nav class="pager">
+<a class="prev" href="cvicenie05a.html"><span>← Predchádzajúce</span>5a. Normalita a porovnanie dvoch vzoriek</a>
+<a class="next" href="cvicenie05c.html"><span>Nasledujúce →</span>5c. Import dát z Excelu a postup analýzy</a>
+</nav>
+</div>
+</body>
+</html>

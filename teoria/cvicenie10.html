@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>10. Analýza prežitia a senzorická trvanlivosť</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ink-3)"/></marker></defs></svg>
+<div class="wrap">
+<header class="top"><a class="brand" href="index.html">Senzometria v R · teória</a><a href="index.html">Všetky cvičenia</a></header>
+
+<section class="hero"><span class="num">CVIČENIE 10</span><h1>Analýza prežitia a senzorická trvanlivosť</h1><p class="lead">Kaplan-Meierov odhad pravdepodobnosti akceptácie produktu v čase a určenie cut-off bodu.</p>
+<div class="files"><a href="../cvicenie10.txt">Skript (SK): cvicenie10.txt</a><a href="../exercises_EN/exercise10.txt">Script (EN): exercise10.txt</a></div></section>
+<div class="goals"><h2>Čo sa naučíte</h2><ul>
+<li>formulovať senzorickú trvanlivosť ako úlohu analýzy prežitia,</li>
+<li>zostrojiť a čítať Kaplan-Meierovu krivku,</li>
+<li>odhadnúť cut-off čas, keď produkt odmietne polovica spotrebiteľov.</li>
+</ul></div>
+
+<h2>Trvanlivosť z pohľadu spotrebiteľa</h2>
+<p>Mikrobiologická trvanlivosť hovorí, kedy je produkt nebezpečný. <strong>Senzorická trvanlivosť</strong> hovorí, kedy ho spotrebiteľ <em>odmietne</em> – zmení sa vôňa, chuť, textúra. Pozorovanou udalosťou (event) je teda <strong>odmietnutie</strong> a otázka znie: aká je pravdepodobnosť, že produkt skladovaný <em>t</em> hodín ešte bude akceptovaný?</p>
+<p>Metóda pochádza z medicíny (prežitie pacientov), odtiaľ názov „analýza prežitia“. Hodí sa sem preto, že pracuje s <strong>cenzúrovanými</strong> dátami – s hodnoteniami, pri ktorých odmietnutie nenastalo a presný čas odmietnutia nepoznáme.</p>
+
+<figure>
+<svg viewBox="0 0 620 200" role="img" aria-label="Udalosti a cenzúrovanie">
+  <line x1="120" y1="170" x2="600" y2="170" class="ax"/>
+  <g class="t-small" text-anchor="middle"><text x="120" y="188">0 h</text><text x="240" y="188">12 h</text><text x="360" y="188">24 h</text><text x="480" y="188">36 h</text><text x="600" y="188">48 h</text></g>
+  <text x="110" y="40" text-anchor="end" class="t-small">hodnotiteľ 1</text>
+  <line x1="120" y1="36" x2="360" y2="36" class="ln3"/><circle cx="360" cy="36" r="6" style="fill:none;stroke:var(--c1);stroke-width:2"/>
+  <text x="372" y="40" class="t-small">akceptuje – cenzúra (+)</text>
+  <text x="110" y="80" text-anchor="end" class="t-small">hodnotiteľ 2</text>
+  <line x1="120" y1="76" x2="200" y2="76" class="ln3"/><path d="M194,70 l12,12 m0,-12 l-12,12" class="warnl"/>
+  <text x="214" y="80" class="t-small t-warn">odmietol ≈ 8 h – udalosť</text>
+  <text x="110" y="120" text-anchor="end" class="t-small">hodnotiteľ 3</text>
+  <line x1="120" y1="116" x2="480" y2="116" class="ln3"/><path d="M474,110 l12,12 m0,-12 l-12,12" class="warnl"/>
+  <text x="494" y="120" class="t-small t-warn">odmietol ≈ 36 h</text>
+  <text x="110" y="156" text-anchor="end" class="t-small">…</text>
+</svg>
+<figcaption>Pri cenzúrovaní vieme len to, že produkt bol akceptovaný <em>aspoň</em> do daného času. Zahodiť tieto hodnotenia by viedlo k podhodnoteniu trvanlivosti.</figcaption>
+</figure>
+
+<h2>Kaplan-Meierov odhad</h2>
+<p>V každom čase, keď nastane aspoň jedno odmietnutie, sa pravdepodobnosť akceptácie vynásobí podielom tých, čo „prežili“:</p>
+<div class="formula">Ŝ(t) = ∏<sub>t<sub>i</sub> ≤ t</sub> (1 − d<sub>i</sub> / n<sub>i</sub>)
+<small>d<sub>i</sub> – počet odmietnutí v čase t<sub>i</sub>, n<sub>i</sub> – počet hodnotení „v riziku“ (ešte neodmietnutých a necenzúrovaných) tesne pred t<sub>i</sub></small></div>
+<figure>
+<svg viewBox="0 0 620 270" role="img" aria-label="Kaplan-Meierova krivka">
+<line x1="60" y1="230" x2="580" y2="230" class="gridl"/>
+<text x="52" y="234" text-anchor="end" class="t-small">0</text>
+<line x1="60" y1="180.0" x2="580" y2="180.0" class="gridl"/>
+<text x="52" y="184.0" text-anchor="end" class="t-small">0,25</text>
+<line x1="60" y1="130.0" x2="580" y2="130.0" class="gridl"/>
+<text x="52" y="134.0" text-anchor="end" class="t-small">0,5</text>
+<line x1="60" y1="80.0" x2="580" y2="80.0" class="gridl"/>
+<text x="52" y="84.0" text-anchor="end" class="t-small">0,75</text>
+<line x1="60" y1="30" x2="580" y2="30" class="gridl"/>
+<text x="52" y="34" text-anchor="end" class="t-small">1</text>
+<text x="60.0" y="248" text-anchor="middle" class="t-small">0</text>
+<text x="102.0" y="248" text-anchor="middle" class="t-small">4</text>
+<text x="144.0" y="248" text-anchor="middle" class="t-small">8</text>
+<text x="186.0" y="248" text-anchor="middle" class="t-small">12</text>
+<text x="312.0" y="248" text-anchor="middle" class="t-small">24</text>
+<text x="438.0" y="248" text-anchor="middle" class="t-small">36</text>
+<text x="564.0" y="248" text-anchor="middle" class="t-small">48</text>
+<line x1="60" y1="130.0" x2="580" y2="130.0" class="warnl dash"/>
+<polyline points="60.0,30 60.0,30 60.0,52.80000000000001 102.0,52.80000000000001 102.0,70.6 144.0,70.6 144.0,96.0 186.0,96.0 186.0,122.8 312.0,122.8 312.0,137.2 438.0,137.2 438.0,155.8 564.0,155.8 564.0,170.6 606.0,170.6" class="ln3"/>
+<circle cx="60.0" cy="52.80000000000001" r="3.5" class="f3"/>
+<text x="66.0" y="46.80000000000001" class="t-small">0,886</text>
+<circle cx="102.0" cy="70.6" r="3.5" class="f3"/>
+<text x="108.0" y="64.6" class="t-small">0,797</text>
+<circle cx="144.0" cy="96.0" r="3.5" class="f3"/>
+<text x="150.0" y="90.0" class="t-small">0,67</text>
+<circle cx="186.0" cy="122.8" r="3.5" class="f3"/>
+<text x="192.0" y="116.8" class="t-small">0,536</text>
+<circle cx="312.0" cy="137.2" r="3.5" class="f3"/>
+<text x="318.0" y="131.2" class="t-small">0,464</text>
+<circle cx="438.0" cy="155.8" r="3.5" class="f3"/>
+<text x="444.0" y="149.8" class="t-small">0,371</text>
+<circle cx="564.0" cy="170.6" r="3.5" class="f3"/>
+<text x="570.0" y="164.6" class="t-small">0,297</text>
+<line x1="312.0" y1="130.0" x2="312.0" y2="230" class="warnl"/>
+<text x="318.0" y="100.0" class="t-warn t-small">medián ≈ 24 h</text>
+<line x1="60" y1="230" x2="580" y2="230" class="ax"/><line x1="60" y1="20" x2="60" y2="230" class="ax"/>
+<text x="320" y="266" text-anchor="middle" class="t-small">čas skladovania (h)</text>
+<text x="16" y="125" text-anchor="middle" transform="rotate(-90 16 125)" class="t-small">P(akceptácia)</text>
+</svg>
+<figcaption>Kaplan-Meierova krivka z dát skriptu (35 hodnotení). Krivka je schodovitá – mení sa len v časoch udalostí. Pod hranicou 0,5 klesne pri 24 h: to je medián senzorickej trvanlivosti, ktorý vypíše <code>fit</code> (stĺpec <code>median</code>).</figcaption>
+</figure>
+
+<div class="tablewrap"><table>
+<tr><th>Výstup <code>summary(fit)</code></th><th>Význam</th></tr>
+<tr><td><code>time</code></td><td>čas, v ktorom nastalo odmietnutie</td></tr>
+<tr><td><code>n.risk</code></td><td>počet hodnotení v riziku</td></tr>
+<tr><td><code>n.event</code></td><td>počet odmietnutí</td></tr>
+<tr><td><code>survival</code></td><td>Ŝ(t) – odhad pravdepodobnosti akceptácie</td></tr>
+</table></div>
+
+<h2>Cut-off bod pomocou regresie</h2>
+<p>Druhá časť skriptu preloží bodmi (čas, Ŝ) priamku a hľadá čas, pri ktorom Ŝ = 0,5. Keďže chceme čas z pravdepodobnosti, model je obrátený: <code>lm(x ~ y)</code>, teda <em>čas = a · Ŝ + b</em>. Funkcia <code>model(0.5)</code> potom vráti odhad cut-off času.</p>
+<div class="formula">t<sub>cut-off</sub> = a · 0,5 + b</div>
+<div class="note"><strong>Ktorú hranicu zvoliť?</strong>50 % odmietnutí je bežná voľba (medián), ale výrobca môže požadovať prísnejšiu hranicu, napr. 25 % odmietnutí (Ŝ = 0,75). Stačí zavolať <code>model(0.75)</code>.</div>
+<div class="warn"><strong>Kódovanie udalosti</strong>V <code>Surv(time, event)</code> musí <code>TRUE</code> znamenať <em>odmietnutie</em>. Ak by ste zakódovali akceptáciu, krivka bude mať opačný význam. V dátach skriptu je <code>TRUE</code> aj v čase 0 h – pri reálnom experimente skontrolujte, či čerstvý produkt naozaj niekto odmietol, alebo ide o chybu kódovania.</div>
+
+<nav class="pager">
+<a class="prev" href="cvicenie09.html"><span>← Predchádzajúce</span>9. Korešpondenčná analýza</a>
+<a class="next" href="cvicenie11a.html"><span>Nasledujúce →</span>11a. TURF analýza a mapa preferencií</a>
+</nav>
+</div>
+</body>
+</html>

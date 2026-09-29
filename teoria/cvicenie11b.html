@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>11b. Text mining a analýza sentimentu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ink-3)"/></marker></defs></svg>
+<div class="wrap">
+<header class="top"><a class="brand" href="index.html">Senzometria v R · teória</a><a href="index.html">Všetky cvičenia</a></header>
+
+<section class="hero"><span class="num">CVIČENIE 11b</span><h1>Text mining a analýza sentimentu</h1><p class="lead">Od voľného textu recenzií k frekvenciám slov, word cloudu a emóciám podľa lexikónu NRC.</p>
+<div class="files"><a href="../cvicenie11b.txt">Skript (SK): cvicenie11b.txt</a><a href="../exercises_EN/exercise11b.txt">Script (EN): exercise11b.txt</a></div></section>
+<div class="goals"><h2>Čo sa naučíte</h2><ul>
+<li>pripraviť voľný text (recenzie, komentáre) na kvantitatívnu analýzu,</li>
+<li>vytvoriť maticu termov a dokumentov, frekvenčný graf a word cloud,</li>
+<li>vyhodnotiť emócie a sentiment pomocou lexikónu NRC.</li>
+</ul></div>
+
+<h2>Od textu k číslam</h2>
+<p>Otvorené otázky („Čo sa vám na produkte páčilo?“) a online recenzie sú bohatým zdrojom informácií, ktoré škála nezachytí. Text mining ich premení na tabuľku, s ktorou už vieme počítať.</p>
+<figure>
+<svg viewBox="0 0 640 150" role="img" aria-label="Postup text miningu">
+  <rect x="5" y="40" width="110" height="64" rx="8" class="box"/><text x="60" y="66" text-anchor="middle" class="t-strong">text</text><text x="60" y="86" text-anchor="middle" class="t-small">readLines()</text>
+  <rect x="135" y="40" width="110" height="64" rx="8" class="box"/><text x="190" y="66" text-anchor="middle" class="t-strong">korpus</text><text x="190" y="86" text-anchor="middle" class="t-small">Corpus()</text>
+  <rect x="265" y="40" width="110" height="64" rx="8" class="box"/><text x="320" y="66" text-anchor="middle" class="t-strong">čistenie</text><text x="320" y="86" text-anchor="middle" class="t-small">tm_map()</text>
+  <rect x="395" y="40" width="110" height="64" rx="8" class="box"/><text x="450" y="66" text-anchor="middle" class="t-strong">matica TDM</text><text x="450" y="86" text-anchor="middle" class="t-small">slová × riadky</text>
+  <rect x="525" y="40" width="110" height="64" rx="8" class="boxa"/><text x="580" y="66" text-anchor="middle" class="t-strong">frekvencie</text><text x="580" y="86" text-anchor="middle" class="t-small">graf, word cloud</text>
+  <line x1="115" y1="72" x2="133" y2="72" class="arrow"/><line x1="245" y1="72" x2="263" y2="72" class="arrow"/><line x1="375" y1="72" x2="393" y2="72" class="arrow"/><line x1="505" y1="72" x2="523" y2="72" class="arrow"/>
+  <text x="320" y="130" text-anchor="middle" class="t-small">malé písmená · bez interpunkcie a čísel · bez stop-slov („a“, „je“, „the“) · stemming (chutný/chutné → chutn)</text>
+</svg>
+</figure>
+<div class="warn"><strong>Čistenie v skripte chýba</strong>Skript vytvorí maticu priamo z korpusu, takže medzi najčastejšími „slovami“ budú spojky a interpunkcia. Pred <code>TermDocumentMatrix</code> doplňte napr.:
+<pre>TextDoc &lt;- tm_map(TextDoc, content_transformer(tolower))
+TextDoc &lt;- tm_map(TextDoc, removePunctuation)
+TextDoc &lt;- tm_map(TextDoc, removeNumbers)
+TextDoc &lt;- tm_map(TextDoc, removeWords, stopwords("english"))</pre></div>
+
+<h3>Matica termov a dokumentov</h3>
+<div class="tablewrap"><table>
+<tr><th>term</th><th>recenzia 1</th><th>recenzia 2</th><th>recenzia 3</th><th>Σ (freq)</th></tr>
+<tr><td>creamy</td><td>1</td><td>2</td><td>0</td><td><strong>3</strong></td></tr>
+<tr><td>sweet</td><td>1</td><td>0</td><td>1</td><td><strong>2</strong></td></tr>
+<tr><td>sour</td><td>0</td><td>0</td><td>1</td><td><strong>1</strong></td></tr>
+</table></div>
+<p>Riadkové súčty (<code>rowSums</code>) dávajú frekvenciu slova v celom texte – z nich vzniká stĺpcový graf top slov aj word cloud, kde veľkosť písma zodpovedá frekvencii.</p>
+<figure>
+<svg viewBox="0 0 620 170" role="img" aria-label="Ukážka word cloudu">
+  <text x="310" y="95" text-anchor="middle" style="font-size:52px;font-weight:700;fill:var(--c1)">creamy</text>
+  <text x="140" y="60" text-anchor="middle" style="font-size:32px;font-weight:700;fill:var(--c2)">sweet</text>
+  <text x="490" y="58" text-anchor="middle" style="font-size:30px;font-weight:700;fill:var(--c3)">fresh</text>
+  <text x="130" y="130" text-anchor="middle" style="font-size:24px;fill:var(--c4)">fruity</text>
+  <text x="480" y="135" text-anchor="middle" style="font-size:22px;fill:var(--c5)">smooth</text>
+  <text x="310" y="145" text-anchor="middle" style="font-size:18px;fill:var(--ink-2)">sour</text>
+  <text x="310" y="35" text-anchor="middle" style="font-size:16px;fill:var(--ink-3)">price</text>
+  <text x="560" y="100" text-anchor="middle" style="font-size:14px;fill:var(--ink-3)">bitter</text>
+  <text x="60" y="100" text-anchor="middle" style="font-size:14px;fill:var(--ink-3)">thick</text>
+</svg>
+<figcaption>Ilustračný word cloud recenzií jogurtu. Rýchly vizuálny prehľad, ale nie presné meranie – na porovnanie produktov používajte frekvenčnú tabuľku.</figcaption>
+</figure>
+
+<h2>Analýza sentimentu – lexikón NRC</h2>
+<p>Funkcia <code>get_nrc_sentiment()</code> (balík syuzhet) porovná každé slovo so slovníkom NRC, kde má každé slovo priradené emócie podľa Plutchikovho modelu, a spočíta ich výskyt v každom riadku textu. Výsledkom je 8 emócií a 2 polarity:</p>
+<figure>
+<svg viewBox="0 0 620 300" role="img" aria-label="Plutchikove emócie">
+  <g transform="translate(160 150)">
+    <path d="M0,0 L0,-120 A120,120 0 0 1 84.9,-84.9 Z" class="f5" opacity=".75"/>
+    <path d="M0,0 L84.9,-84.9 A120,120 0 0 1 120,0 Z" class="f1" opacity=".75"/>
+    <path d="M0,0 L120,0 A120,120 0 0 1 84.9,84.9 Z" class="f1" opacity=".45"/>
+    <path d="M0,0 L84.9,84.9 A120,120 0 0 1 0,120 Z" class="f3" opacity=".6"/>
+    <path d="M0,0 L0,120 A120,120 0 0 1 -84.9,84.9 Z" class="f3" opacity=".9"/>
+    <path d="M0,0 L-84.9,84.9 A120,120 0 0 1 -120,0 Z" class="f4" opacity=".75"/>
+    <path d="M0,0 L-120,0 A120,120 0 0 1 -84.9,-84.9 Z" class="f2" opacity=".85"/>
+    <path d="M0,0 L-84.9,-84.9 A120,120 0 0 1 0,-120 Z" class="f2" opacity=".5"/>
+    <g class="t-small t-strong" text-anchor="middle">
+      <text x="32" y="-88">radosť</text><text x="88" y="-30">dôvera</text><text x="88" y="38">strach</text><text x="34" y="96">prekvapenie</text>
+      <text x="-34" y="96">smútok</text><text x="-88" y="38">znechutenie</text><text x="-88" y="-30">hnev</text><text x="-32" y="-88">očakávanie</text>
+    </g>
+  </g>
+  <g transform="translate(340 60)">
+    <text x="0" y="0" class="t-strong">stĺpce výstupu</text>
+    <g class="t-small" style="font-family:var(--mono)">
+      <text x="0" y="26">anger · anticipation</text><text x="0" y="46">disgust · fear · joy</text><text x="0" y="66">sadness · surprise · trust</text>
+      <text x="0" y="98" class="t-acc">positive · negative</text>
+    </g>
+    <text x="0" y="134" class="t-small">prvých 8 stĺpcov → graf emócií</text>
+    <text x="0" y="154" class="t-small">posledné 2 → celková polarita</text>
+    <text x="0" y="174" class="t-small">(preto <tspan style="font-family:var(--mono)">td_new[1:8, ]</tspan>)</text>
+  </g>
+</svg>
+<figcaption>Osem základných emócií Plutchikovho kolesa, ktoré rozlišuje lexikón NRC.</figcaption>
+</figure>
+<div class="note"><strong>Jazyk textu</strong>NRC je predvolene anglický lexikón. Pre slovenské texty skúste <code>get_nrc_sentiment(text, language = "slovak")</code> (ak to vaša verzia syuzhet podporuje) – ide však o strojový preklad slovníka bez skloňovania, takže zachytí len základné tvary slov. Spoľahlivejšie je analyzovať anglické recenzie alebo text preložiť.</div>
+<div class="warn"><strong>Obmedzenia</strong>Lexikónová metóda nevidí kontext: „nie je vôbec sladký“ započíta ako sladký, iróniu nerozpozná. Výsledky berte ako orientačné a overte ich prečítaním vzorky textov.</div>
+
+<nav class="pager">
+<a class="prev" href="cvicenie11a.html"><span>← Predchádzajúce</span>11a. TURF analýza a mapa preferencií</a>
+<a class="next" href="cvicenie12.html"><span>Nasledujúce →</span>12. JAR škála a radarový graf</a>
+</nav>
+</div>
+</body>
+</html>

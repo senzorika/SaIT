@@ -1,0 +1,187 @@
+:root {
+  --bg: #f7f6f2;
+  --surface: #ffffff;
+  --surface-2: #efede6;
+  --ink: #1d1f24;
+  --ink-2: #4a4f5a;
+  --ink-3: #8a8f99;
+  --line: #d9d6cc;
+  --accent: #0f7b6c;
+  --accent-soft: #d6efe9;
+  --c1: #0f7b6c;
+  --c2: #d9622b;
+  --c3: #3a5fcd;
+  --c4: #b8457e;
+  --c5: #c49a12;
+  --warn: #b3261e;
+  --warn-soft: #fbe3e1;
+  --code-bg: #1f2430;
+  --code-ink: #e6e6e6;
+  --radius: 10px;
+  --font: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #15171c;
+    --surface: #1d2027;
+    --surface-2: #262a33;
+    --ink: #eceae4;
+    --ink-2: #b8bcc6;
+    --ink-3: #7d828d;
+    --line: #353a45;
+    --accent: #4cc3ae;
+    --accent-soft: #1d3a36;
+    --c1: #4cc3ae;
+    --c2: #f08a52;
+    --c3: #7f9cf5;
+    --c4: #e27bb0;
+    --c5: #e7c24a;
+    --warn: #f28b82;
+    --warn-soft: #3b2322;
+    --code-bg: #0f1116;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #15171c;
+  --surface: #1d2027;
+  --surface-2: #262a33;
+  --ink: #eceae4;
+  --ink-2: #b8bcc6;
+  --ink-3: #7d828d;
+  --line: #353a45;
+  --accent: #4cc3ae;
+  --accent-soft: #1d3a36;
+  --c1: #4cc3ae;
+  --c2: #f08a52;
+  --c3: #7f9cf5;
+  --c4: #e27bb0;
+  --c5: #e7c24a;
+  --warn: #f28b82;
+  --warn-soft: #3b2322;
+  --code-bg: #0f1116;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 17px/1.6 var(--font);
+}
+a { color: var(--accent); }
+.wrap { max-width: 880px; margin: 0 auto; padding: 0 16px 64px; }
+
+header.top {
+  display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  padding: 18px 0; border-bottom: 1px solid var(--line); font-size: 15px;
+}
+header.top a { text-decoration: none; color: var(--ink-2); }
+header.top .brand { font-weight: 700; color: var(--ink); }
+
+.hero { padding: 40px 0 8px; }
+.hero .num {
+  display: inline-block; font: 600 13px/1 var(--mono); letter-spacing: .08em;
+  color: var(--accent); background: var(--accent-soft); padding: 6px 10px; border-radius: 99px;
+}
+.hero h1 { font-size: clamp(28px, 5vw, 40px); line-height: 1.15; margin: 14px 0 10px; }
+.hero p.lead { font-size: 19px; color: var(--ink-2); margin: 0; }
+
+.goals {
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 16px 20px; margin: 28px 0;
+}
+.goals h2 { font-size: 15px; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-3); margin: 0 0 6px; }
+.goals ul { margin: 0; padding-left: 20px; }
+
+h2 { font-size: 26px; margin: 48px 0 12px; line-height: 1.25; }
+h3 { font-size: 19px; margin: 28px 0 8px; }
+
+figure {
+  margin: 24px 0; background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--radius); padding: 16px;
+}
+figure svg { display: block; width: 100%; height: auto; max-height: 440px; }
+figcaption { font-size: 14px; color: var(--ink-2); margin-top: 10px; }
+
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+.grid2 figure { margin: 0; }
+
+.formula {
+  font: 18px/1.5 "Cambria Math", "STIX Two Math", Cambria, serif;
+  background: var(--surface-2); border-left: 4px solid var(--accent);
+  padding: 12px 18px; border-radius: 0 var(--radius) var(--radius) 0; margin: 18px 0; overflow-x: auto;
+}
+.formula small { font-family: var(--font); font-size: 14px; color: var(--ink-2); display: block; margin-top: 4px; }
+
+pre {
+  background: var(--code-bg); color: var(--code-ink); padding: 14px 16px; border-radius: var(--radius);
+  overflow-x: auto; font: 14px/1.55 var(--mono);
+}
+code { font-family: var(--mono); font-size: .9em; }
+p code, li code, td code { background: var(--surface-2); padding: 1px 5px; border-radius: 4px; }
+
+.note, .warn {
+  border-radius: var(--radius); padding: 12px 16px; margin: 18px 0; font-size: 16px;
+}
+.note { background: var(--accent-soft); }
+.warn { background: var(--warn-soft); }
+.note strong, .warn strong { display: block; margin-bottom: 2px; }
+
+table { border-collapse: collapse; width: 100%; font-size: 15px; margin: 16px 0; }
+.tablewrap { overflow-x: auto; }
+th, td { border-bottom: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
+th { color: var(--ink-2); font-weight: 600; background: var(--surface-2); }
+
+nav.pager {
+  display: flex; justify-content: space-between; gap: 12px; margin-top: 56px;
+  padding-top: 20px; border-top: 1px solid var(--line);
+}
+nav.pager a {
+  flex: 1; text-decoration: none; background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--radius); padding: 12px 16px; color: var(--ink);
+}
+nav.pager a span { display: block; font-size: 13px; color: var(--ink-3); }
+nav.pager a.next { text-align: right; }
+
+.files { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+.files a {
+  font-size: 14px; text-decoration: none; border: 1px solid var(--line); border-radius: 99px;
+  padding: 4px 12px; color: var(--ink-2); background: var(--surface);
+}
+
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; margin: 24px 0; }
+.cards a {
+  display: block; text-decoration: none; color: var(--ink); background: var(--surface);
+  border: 1px solid var(--line); border-radius: var(--radius); padding: 16px;
+}
+.cards a:hover { border-color: var(--accent); }
+.cards .n { font: 600 12px var(--mono); color: var(--accent); }
+.cards h3 { margin: 6px 0 4px; font-size: 18px; }
+.cards p { margin: 0; font-size: 14px; color: var(--ink-2); }
+
+/* SVG helpers */
+svg text { font-family: var(--font); fill: var(--ink-2); font-size: 13px; }
+svg .t-strong { fill: var(--ink); font-weight: 600; }
+svg .t-small { font-size: 11px; }
+svg .ax { stroke: var(--ink-3); stroke-width: 1.2; fill: none; }
+svg .gridl { stroke: var(--line); stroke-width: 1; fill: none; }
+svg .ln1 { stroke: var(--c1); stroke-width: 2.5; fill: none; }
+svg .ln2 { stroke: var(--c2); stroke-width: 2.5; fill: none; }
+svg .ln3 { stroke: var(--c3); stroke-width: 2.5; fill: none; }
+svg .dash { stroke-dasharray: 5 4; }
+svg .f1 { fill: var(--c1); } svg .f2 { fill: var(--c2); } svg .f3 { fill: var(--c3); }
+svg .f4 { fill: var(--c4); } svg .f5 { fill: var(--c5); }
+svg .fs { fill: var(--surface-2); }
+svg .fsurf { fill: var(--surface); }
+svg .fa { fill: var(--accent-soft); }
+svg .fw { fill: var(--warn-soft); }
+svg .box { fill: var(--surface); stroke: var(--line); stroke-width: 1.2; }
+svg .boxa { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.5; }
+svg .op1 { opacity: .25; } svg .op2 { opacity: .5; }
+svg .arrow { stroke: var(--ink-3); stroke-width: 1.5; fill: none; marker-end: url(#arr); }
+svg .warnl { stroke: var(--warn); stroke-width: 2; fill: none; }
+svg .t-warn { fill: var(--warn); }
+svg .t-acc { fill: var(--accent); font-weight: 600; }
+svg .t-inv { fill: var(--surface); font-weight: 600; }

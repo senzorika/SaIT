@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>5d. Durbinov test a neúplné bloky</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ink-3)"/></marker></defs></svg>
+<div class="wrap">
+<header class="top"><a class="brand" href="index.html">Senzometria v R · teória</a><a href="index.html">Všetky cvičenia</a></header>
+
+<section class="hero"><span class="num">CVIČENIE 5d</span><h1>Durbinov test a neúplné bloky</h1><p class="lead">Keď hodnotiteľ nemôže ochutnať všetky vzorky: vyvážené neúplné blokové usporiadanie.</p>
+<div class="files"><a href="../cvicenie5d.txt">Skript (SK): cvicenie5d.txt</a><a href="../exercises_EN/exercise5d.txt">Script (EN): exercise5d.txt</a></div></section>
+<div class="goals"><h2>Čo sa naučíte</h2><ul>
+<li>rozlíšiť úplné a neúplné blokové usporiadanie senzorickej skúšky,</li>
+<li>pochopiť podmienky vyváženého neúplného bloku (BIBD),</li>
+<li>použiť Durbinov test a jeho post-hoc porovnania.</li>
+</ul></div>
+
+<h2>Prečo neúplné bloky?</h2>
+<p>Friedmanov test predpokladá <strong>úplné bloky</strong>: každý hodnotiteľ ochutná všetky vzorky. Pri 6 – 7 vzorkách silnej chuti (syry, údeniny, alkohol, pálivé omáčky) to však nie je reálne – nastupuje únava a adaptácia receptorov a posledné vzorky sa hodnotia horšie. Riešením je, aby každý hodnotiteľ dostal len <em>časť</em> vzoriek, ale podľa plánu, ktorý zaručí spravodlivé porovnanie.</p>
+
+<div class="grid2">
+<figure>
+<svg viewBox="0 0 260 200" role="img" aria-label="Úplný blok">
+  <g>
+    <rect x="40" y="20" width="200" height="160" class="boxa"/>
+    <g style="stroke:var(--accent);stroke-width:1"><line x1="73" y1="20" x2="73" y2="180"/><line x1="106" y1="20" x2="106" y2="180"/><line x1="140" y1="20" x2="140" y2="180"/><line x1="173" y1="20" x2="173" y2="180"/><line x1="206" y1="20" x2="206" y2="180"/>
+    <line x1="40" y1="47" x2="240" y2="47"/><line x1="40" y1="73" x2="240" y2="73"/><line x1="40" y1="100" x2="240" y2="100"/><line x1="40" y1="127" x2="240" y2="127"/><line x1="40" y1="153" x2="240" y2="153"/></g>
+  </g>
+  <text x="140" y="196" text-anchor="middle" class="t-small">6 hodnotiteľov × 6 vzoriek</text>
+</svg>
+<figcaption><strong>Úplný blok</strong> – 36 hodnotení, každý ochutná všetko. <code>friedman.test()</code></figcaption>
+</figure>
+<figure>
+<svg viewBox="0 0 400 330" role="img" aria-label="Vyvážené neúplné blokové usporiadanie">
+<text x="95" y="28" text-anchor="middle" class="t-strong">A</text>
+<text x="135" y="28" text-anchor="middle" class="t-strong">B</text>
+<text x="175" y="28" text-anchor="middle" class="t-strong">C</text>
+<text x="215" y="28" text-anchor="middle" class="t-strong">D</text>
+<text x="255" y="28" text-anchor="middle" class="t-strong">E</text>
+<text x="295" y="28" text-anchor="middle" class="t-strong">F</text>
+<text x="335" y="28" text-anchor="middle" class="t-strong">G</text>
+<text x="60" y="63" text-anchor="end" class="t-small">hodnotiteľ 1</text>
+<rect x="76" y="40" width="38" height="34" class="boxa"/><text x="95" y="62" text-anchor="middle" class="t-strong">2</text>
+<rect x="116" y="40" width="38" height="34" class="boxa"/><text x="135" y="62" text-anchor="middle" class="t-strong">3</text>
+<rect x="156" y="40" width="38" height="34" class="fs op2"/>
+<rect x="196" y="40" width="38" height="34" class="boxa"/><text x="215" y="62" text-anchor="middle" class="t-strong">1</text>
+<rect x="236" y="40" width="38" height="34" class="fs op2"/>
+<rect x="276" y="40" width="38" height="34" class="fs op2"/>
+<rect x="316" y="40" width="38" height="34" class="fs op2"/>
+<text x="60" y="101" text-anchor="end" class="t-small">hodnotiteľ 2</text>
+<rect x="76" y="78" width="38" height="34" class="fs op2"/>
+<rect x="116" y="78" width="38" height="34" class="boxa"/><text x="135" y="100" text-anchor="middle" class="t-strong">3</text>
+<rect x="156" y="78" width="38" height="34" class="boxa"/><text x="175" y="100" text-anchor="middle" class="t-strong">1</text>
+<rect x="196" y="78" width="38" height="34" class="fs op2"/>
+<rect x="236" y="78" width="38" height="34" class="boxa"/><text x="255" y="100" text-anchor="middle" class="t-strong">2</text>
+<rect x="276" y="78" width="38" height="34" class="fs op2"/>
+<rect x="316" y="78" width="38" height="34" class="fs op2"/>
+<text x="60" y="139" text-anchor="end" class="t-small">hodnotiteľ 3</text>
+<rect x="76" y="116" width="38" height="34" class="fs op2"/>
+<rect x="116" y="116" width="38" height="34" class="fs op2"/>
+<rect x="156" y="116" width="38" height="34" class="boxa"/><text x="175" y="138" text-anchor="middle" class="t-strong">2</text>
+<rect x="196" y="116" width="38" height="34" class="boxa"/><text x="215" y="138" text-anchor="middle" class="t-strong">1</text>
+<rect x="236" y="116" width="38" height="34" class="fs op2"/>
+<rect x="276" y="116" width="38" height="34" class="boxa"/><text x="295" y="138" text-anchor="middle" class="t-strong">3</text>
+<rect x="316" y="116" width="38" height="34" class="fs op2"/>
+<text x="60" y="177" text-anchor="end" class="t-small">hodnotiteľ 4</text>
+<rect x="76" y="154" width="38" height="34" class="fs op2"/>
+<rect x="116" y="154" width="38" height="34" class="fs op2"/>
+<rect x="156" y="154" width="38" height="34" class="fs op2"/>
+<rect x="196" y="154" width="38" height="34" class="boxa"/><text x="215" y="176" text-anchor="middle" class="t-strong">1</text>
+<rect x="236" y="154" width="38" height="34" class="boxa"/><text x="255" y="176" text-anchor="middle" class="t-strong">2</text>
+<rect x="276" y="154" width="38" height="34" class="fs op2"/>
+<rect x="316" y="154" width="38" height="34" class="boxa"/><text x="335" y="176" text-anchor="middle" class="t-strong">3</text>
+<text x="60" y="215" text-anchor="end" class="t-small">hodnotiteľ 5</text>
+<rect x="76" y="192" width="38" height="34" class="boxa"/><text x="95" y="214" text-anchor="middle" class="t-strong">3</text>
+<rect x="116" y="192" width="38" height="34" class="fs op2"/>
+<rect x="156" y="192" width="38" height="34" class="fs op2"/>
+<rect x="196" y="192" width="38" height="34" class="fs op2"/>
+<rect x="236" y="192" width="38" height="34" class="boxa"/><text x="255" y="214" text-anchor="middle" class="t-strong">1</text>
+<rect x="276" y="192" width="38" height="34" class="boxa"/><text x="295" y="214" text-anchor="middle" class="t-strong">2</text>
+<rect x="316" y="192" width="38" height="34" class="fs op2"/>
+<text x="60" y="253" text-anchor="end" class="t-small">hodnotiteľ 6</text>
+<rect x="76" y="230" width="38" height="34" class="fs op2"/>
+<rect x="116" y="230" width="38" height="34" class="boxa"/><text x="135" y="252" text-anchor="middle" class="t-strong">3</text>
+<rect x="156" y="230" width="38" height="34" class="fs op2"/>
+<rect x="196" y="230" width="38" height="34" class="fs op2"/>
+<rect x="236" y="230" width="38" height="34" class="fs op2"/>
+<rect x="276" y="230" width="38" height="34" class="boxa"/><text x="295" y="252" text-anchor="middle" class="t-strong">1</text>
+<rect x="316" y="230" width="38" height="34" class="boxa"/><text x="335" y="252" text-anchor="middle" class="t-strong">2</text>
+<text x="60" y="291" text-anchor="end" class="t-small">hodnotiteľ 7</text>
+<rect x="76" y="268" width="38" height="34" class="boxa"/><text x="95" y="290" text-anchor="middle" class="t-strong">3</text>
+<rect x="116" y="268" width="38" height="34" class="fs op2"/>
+<rect x="156" y="268" width="38" height="34" class="boxa"/><text x="175" y="290" text-anchor="middle" class="t-strong">1</text>
+<rect x="196" y="268" width="38" height="34" class="fs op2"/>
+<rect x="236" y="268" width="38" height="34" class="fs op2"/>
+<rect x="276" y="268" width="38" height="34" class="fs op2"/>
+<rect x="316" y="268" width="38" height="34" class="boxa"/><text x="335" y="290" text-anchor="middle" class="t-strong">2</text>
+</svg>
+<figcaption><strong>Neúplný blok</strong> (dáta zo skriptu) – 7 hodnotiteľov, 7 vzoriek, každý ochutná len 3. Čísla sú poradia v rámci hodnotiteľa. <code>durbinTest()</code></figcaption>
+</figure>
+</div>
+
+<h2>Vyvážený neúplný blok (BIBD)</h2>
+<p>Aby boli všetky vzorky porovnateľné, musí plán spĺňať tri podmienky:</p>
+<div class="tablewrap"><table>
+<tr><th>Parameter</th><th>Význam</th><th>Príklad zo skriptu</th></tr>
+<tr><td><em>t</em></td><td>počet vzoriek</td><td>7 (A – G)</td></tr>
+<tr><td><em>b</em></td><td>počet blokov (hodnotiteľov)</td><td>7</td></tr>
+<tr><td><em>k</em></td><td>vzoriek na blok</td><td>3</td></tr>
+<tr><td><em>r</em></td><td>koľkokrát sa každá vzorka hodnotí</td><td>3</td></tr>
+<tr><td><em>λ</em></td><td>koľkokrát sa každý <em>pár</em> vzoriek stretne u toho istého hodnotiteľa</td><td>1</td></tr>
+</table></div>
+<div class="formula">b · k = t · r &nbsp;&nbsp; a &nbsp;&nbsp; λ = r (k − 1) / (t − 1)
+<small>7 · 3 = 7 · 3 = 21 hodnotení; λ = 3 · 2 / 6 = 1 – každé dve vzorky sa priamo porovnajú presne raz.</small></div>
+<p>Plány BIBD sú tabelované (napr. Cochran &amp; Cox) a dajú sa vygenerovať aj v R (balík <code>crossdes</code>, funkcia <code>find.BIB()</code>). Plán sa potom opakuje s ďalšími skupinami hodnotiteľov, aby sa zvýšil počet hodnotení.</p>
+
+<h2>Durbinov test</h2>
+<p>Durbinov test je zovšeobecnením Friedmanovho testu pre neúplné bloky. Vzorky sa v každom bloku zoradia (1 … k), sčítajú sa poradia každej vzorky a porovnávajú s očakávaným súčtom <em>r(k + 1)/2</em>. Pri úplných blokoch dáva rovnaký výsledok ako Friedmanov test – to demonštruje prvá časť skriptu.</p>
+<pre>library(PMCMRplus)
+durbinTest(y)                                  # globálny test; NA = vzorka nehodnotená
+durbinAllPairsTest(y, p.adjust.method = "none") # párové porovnania</pre>
+<div class="note"><strong>Formát dát</strong>Matica: riadky = bloky (hodnotitelia), stĺpce = vzorky, <code>NA</code> tam, kde hodnotiteľ vzorku nedostal. Pri post-hoc porovnaniach je rozumné použiť korekciu (<code>"holm"</code>, <code>"bonferroni"</code>) – <code>"none"</code> v skripte slúži len na ukážku.</div>
+<div class="warn"><strong>Balík PMCMR</strong>Pôvodný balík <code>PMCMR</code> (funkcie <code>durbin.test</code>, <code>posthoc.durbin.test</code>) už nie je na CRAN. Nástupca <code>PMCMRplus</code> používa názvy <code>durbinTest</code> a <code>durbinAllPairsTest</code>.</div>
+
+<nav class="pager">
+<a class="prev" href="cvicenie05c.html"><span>← Predchádzajúce</span>5c. Import dát z Excelu a postup analýzy</a>
+<a class="next" href="cvicenie06.html"><span>Nasledujúce →</span>6. Korelácia a lineárna regresia</a>
+</nav>
+</div>
+</body>
+</html>

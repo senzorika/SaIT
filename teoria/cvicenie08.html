@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>8. Zhluková analýza</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ink-3)"/></marker></defs></svg>
+<div class="wrap">
+<header class="top"><a class="brand" href="index.html">Senzometria v R · teória</a><a href="index.html">Všetky cvičenia</a></header>
+
+<section class="hero"><span class="num">CVIČENIE 8</span><h1>Zhluková analýza</h1><p class="lead">Hierarchické zhlukovanie (Ward), dendrogram a metóda k-priemerov pre segmentáciu produktov.</p>
+<div class="files"><a href="../cvicenie8.txt">Skript (SK): cvicenie8.txt</a><a href="../exercises_EN/exercise8.txt">Script (EN): exercise8.txt</a></div></section>
+<div class="goals"><h2>Čo sa naučíte</h2><ul>
+<li>merať podobnosť produktov vzdialenosťou v priestore senzorických znakov,</li>
+<li>zostrojiť a čítať dendrogram hierarchického zhlukovania (Wardova metóda),</li>
+<li>rozdeliť produkty metódou k-priemerov a zvoliť optimálny počet zhlukov.</li>
+</ul></div>
+
+<h2>Podobnosť = malá vzdialenosť</h2>
+<p>Každý produkt je bod v priestore, ktorého súradnice sú priemerné intenzity deskriptorov (slanosť, kyslosť, chrumkavosť…). Dva produkty sú si podobné, ak sú ich body blízko. Najčastejšie používame <strong>euklidovskú vzdialenosť</strong>:</p>
+<div class="formula">d(A, B) = √[ Σ<sub>j</sub> (x<sub>Aj</sub> − x<sub>Bj</sub>)² ]
+<small>j – deskriptory. Ak majú znaky rôzne škály, dáta najprv štandardizujte: <code>scale(senzorika)</code>.</small></div>
+
+<h2>Hierarchické zhlukovanie</h2>
+<p>Algoritmus začína s každým produktom ako samostatným zhlukom a v každom kroku <strong>spojí dva najbližšie</strong> zhluky, až kým nevznikne jeden. Priebeh spájania zobrazuje <strong>dendrogram</strong>. <em>Wardova metóda</em> spája tie zhluky, ktorých spojenie najmenej zvýši vnútornú variabilitu – vytvára kompaktné, podobne veľké skupiny.</p>
+<figure>
+<svg viewBox="0 0 620 300" role="img" aria-label="Dendrogram s rezom na tri skupiny">
+  <line x1="40" y1="250" x2="40" y2="20" class="ax"/>
+  <text x="30" y="140" text-anchor="middle" transform="rotate(-90 30 140)" class="t-small">výška spojenia (vzdialenosť)</text>
+  <g style="stroke:var(--c1);stroke-width:2;fill:none">
+    <path d="M70,250 V210 H100 V250"/><path d="M85,210 V180 H130 V250"/><path d="M160,250 V200 H190 V250"/><path d="M107,180 V150 H175 V200"/>
+  </g>
+  <g style="stroke:var(--c3);stroke-width:2;fill:none">
+    <path d="M230,250 V220 H260 V250"/><path d="M290,250 V205 H320 V250"/><path d="M245,220 V170 H305 V205"/><path d="M350,250 V190 H275 V170" />
+  </g>
+  <g style="stroke:var(--c2);stroke-width:2;fill:none">
+    <path d="M400,250 V225 H430 V250"/><path d="M460,250 V215 H490 V250"/><path d="M520,250 V200 H550 V250"/><path d="M415,225 V185 H475 V215"/><path d="M445,185 V160 H535 V200"/>
+  </g>
+  <g style="stroke:var(--ink-3);stroke-width:2;fill:none">
+    <path d="M141,150 V90 H312 V170"/><path d="M226,90 V45 H490 V160"/>
+  </g>
+  <line x1="40" y1="125" x2="600" y2="125" class="warnl dash"/>
+  <text x="598" y="118" text-anchor="end" class="t-small t-warn">rez: cutree(fit, k = 3)</text>
+  <g class="t-small" text-anchor="middle">
+    <text x="70" y="266">1</text><text x="100" y="266">4</text><text x="130" y="266">9</text><text x="160" y="266">2</text><text x="190" y="266">12</text>
+    <text x="230" y="266">3</text><text x="260" y="266">7</text><text x="290" y="266">5</text><text x="320" y="266">14</text><text x="350" y="266">10</text>
+    <text x="400" y="266">6</text><text x="430" y="266">8</text><text x="460" y="266">11</text><text x="490" y="266">13</text><text x="520" y="266">15</text><text x="550" y="266">16</text>
+  </g>
+  <text x="310" y="290" text-anchor="middle" class="t-small">produkty (pizza_1 … pizza_16) – ilustračné usporiadanie</text>
+</svg>
+<figcaption>Čím nižšie sa dve vetvy spájajú, tým sú produkty podobnejšie. Vodorovný rez stromu určí počet skupín; <code>rect.hclust()</code> ich v grafe orámuje.</figcaption>
+</figure>
+<div class="warn"><strong>Čítanie dendrogramu</strong>Podobnosť určuje <em>výška spojenia</em>, nie vzdialenosť popisov na osi x. Produkty 12 a 3 sú vedľa seba, no spájajú sa až na vrchole stromu – sú si veľmi nepodobné.</div>
+
+<h2>Metóda k-priemerov (k-means)</h2>
+<p>Tu počet zhlukov <em>k</em> zadáme vopred. Algoritmus opakuje dva kroky, kým sa priradenie nezmení:</p>
+<figure>
+<svg viewBox="0 0 620 220" role="img" aria-label="Iterácie k-means">
+  <g>
+    <rect x="10" y="10" width="190" height="170" rx="8" class="box"/>
+    <g style="fill:var(--ink-3)"><circle cx="40" cy="50" r="4"/><circle cx="60" cy="70" r="4"/><circle cx="50" cy="90" r="4"/><circle cx="140" cy="50" r="4"/><circle cx="160" cy="60" r="4"/><circle cx="150" cy="80" r="4"/><circle cx="90" cy="140" r="4"/><circle cx="110" cy="150" r="4"/><circle cx="100" cy="125" r="4"/></g>
+    <g><path d="M70,40 l8,8 m0,-8 l-8,8" class="ln1"/><path d="M90,100 l8,8 m0,-8 l-8,8" class="ln3"/><path d="M160,130 l8,8 m0,-8 l-8,8" class="ln2"/></g>
+    <text x="105" y="200" text-anchor="middle" class="t-small">0 · náhodné centrá (×)</text>
+  </g>
+  <g>
+    <rect x="215" y="10" width="190" height="170" rx="8" class="box"/>
+    <g class="f1"><circle cx="245" cy="50" r="4"/><circle cx="265" cy="70" r="4"/><circle cx="345" cy="50" r="4"/><circle cx="365" cy="60" r="4"/></g>
+    <g class="f3"><circle cx="255" cy="90" r="4"/><circle cx="295" cy="140" r="4"/><circle cx="305" cy="125" r="4"/></g>
+    <g class="f2"><circle cx="355" cy="80" r="4"/><circle cx="315" cy="150" r="4"/></g>
+    <g><path d="M275,40 l8,8 m0,-8 l-8,8" class="ln1"/><path d="M295,100 l8,8 m0,-8 l-8,8" class="ln3"/><path d="M365,130 l8,8 m0,-8 l-8,8" class="ln2"/></g>
+    <text x="310" y="200" text-anchor="middle" class="t-small">1 · priraď bod k najbližšiemu centru</text>
+  </g>
+  <g>
+    <rect x="420" y="10" width="190" height="170" rx="8" class="box"/>
+    <g class="f1"><circle cx="450" cy="50" r="4"/><circle cx="470" cy="70" r="4"/><circle cx="460" cy="90" r="4"/></g>
+    <g class="f2"><circle cx="550" cy="50" r="4"/><circle cx="570" cy="60" r="4"/><circle cx="560" cy="80" r="4"/></g>
+    <g class="f3"><circle cx="500" cy="140" r="4"/><circle cx="520" cy="150" r="4"/><circle cx="510" cy="125" r="4"/></g>
+    <g><path d="M456,66 l8,8 m0,-8 l-8,8" class="ln1"/><path d="M556,59 l8,8 m0,-8 l-8,8" class="ln2"/><path d="M506,134 l8,8 m0,-8 l-8,8" class="ln3"/></g>
+    <text x="515" y="200" text-anchor="middle" class="t-small">2 · presuň centrá do priemerov → opakuj</text>
+  </g>
+</svg>
+<figcaption>Výsledok závisí od počiatočných centier, preto <code>nstart = 25</code> spustí algoritmus 25-krát a ponechá najlepšie riešenie.</figcaption>
+</figure>
+
+<h3>Optimálny počet zhlukov – silueta</h3>
+<p><strong>Siluetový koeficient</strong> pre každý produkt porovnáva priemernú vzdialenosť k vlastnému zhluku (a) s vzdialenosťou k najbližšiemu cudziemu zhluku (b): s = (b − a) / max(a, b). Hodnoty blízko 1 = produkt je dobre zaradený, okolo 0 = leží na hranici, záporné = pravdepodobne zle zaradený. <code>fviz_nbclust(…, method = "silhouette")</code> vykreslí priemernú siluetu pre k = 1 … 10; optimum je maximum krivky.</p>
+
+<div class="tablewrap"><table>
+<tr><th></th><th>Hierarchické (hclust)</th><th>k-means</th></tr>
+<tr><td>počet zhlukov</td><td>určí sa až po výpočte (rez stromu)</td><td>treba zadať vopred</td></tr>
+<tr><td>výstup</td><td>dendrogram – celá štruktúra podobností</td><td>priradenie + centrá zhlukov (<code>k3$centers</code>)</td></tr>
+<tr><td>vhodné pre</td><td>desiatky objektov, prieskum štruktúry</td><td>veľké súbory, segmentácia</td></tr>
+</table></div>
+<div class="note"><strong>Interpretácia</strong><code>k3$centers</code> sú priemerné profily zhlukov – podľa nich zhluky pomenujeme (napr. „pikantné“, „syrové“, „jemné“). <code>k3$size</code> udáva počet produktov v každom zhluku. Pri úlohe s produktom X hľadajte, s ktorými konkurentmi zdieľa zhluk a ktorý je mu v dendrograme najbližšie.</div>
+
+<nav class="pager">
+<a class="prev" href="cvicenie07.html"><span>← Predchádzajúce</span>7. PCA a faktorová analýza</a>
+<a class="next" href="cvicenie09.html"><span>Nasledujúce →</span>9. Korešpondenčná analýza</a>
+</nav>
+</div>
+</body>
+</html>

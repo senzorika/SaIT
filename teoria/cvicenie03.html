@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3. Práca s dátami v R</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ink-3)"/></marker></defs></svg>
+<div class="wrap">
+<header class="top"><a class="brand" href="index.html">Senzometria v R · teória</a><a href="index.html">Všetky cvičenia</a></header>
+
+<section class="hero"><span class="num">CVIČENIE 3</span><h1>Práca s dátami v R</h1><p class="lead">Skaláry, vektory, matice a dátové rámce – stavebné kamene každej senzorickej analýzy.</p>
+<div class="files"><a href="../cvicenie3.txt">Skript (SK): cvicenie3.txt</a><a href="../exercises_EN/exercise3.txt">Script (EN): exercise3.txt</a></div></section>
+<div class="goals"><h2>Čo sa naučíte</h2><ul>
+<li>rozlíšiť skalár, vektor, maticu a dátový rámec (data.frame),</li>
+<li>generovať náhodné a opakujúce sa dáta (návrh senzorického experimentu),</li>
+<li>vyberať a odstraňovať prvky pomocou indexov a pristupovať k stĺpcom cez <code>$</code>.</li>
+</ul></div>
+
+<h2>Dátové štruktúry v R</h2>
+<p>Všetko v R je <strong>objekt</strong> s menom. Priradenie robíme operátorom <code>&lt;-</code> alebo <code>=</code>. Podľa tvaru rozlišujeme štyri základné štruktúry:</p>
+
+<figure>
+<svg viewBox="0 0 660 260" role="img" aria-label="Skalár, vektor, matica a data.frame">
+  <text x="40" y="24" text-anchor="middle" class="t-strong">skalár</text>
+  <rect x="20" y="40" width="40" height="30" class="boxa"/><text x="40" y="60" text-anchor="middle">31</text>
+  <text x="40" y="100" text-anchor="middle" class="t-small" style="font-family:var(--mono)">januar</text>
+
+  <text x="150" y="24" text-anchor="middle" class="t-strong">vektor</text>
+  <g>
+    <rect x="95" y="40" width="36" height="30" class="boxa"/><text x="113" y="60" text-anchor="middle" class="t-small">10.2</text>
+    <rect x="131" y="40" width="36" height="30" class="boxa"/><text x="149" y="60" text-anchor="middle" class="t-small">11</text>
+    <rect x="167" y="40" width="36" height="30" class="boxa"/><text x="185" y="60" text-anchor="middle" class="t-small">10.3</text>
+  </g>
+  <text x="150" y="100" text-anchor="middle" class="t-small">1 rozmer, 1 typ</text>
+  <text x="150" y="118" text-anchor="middle" class="t-small" style="font-family:var(--mono)">c(…)</text>
+
+  <text x="300" y="24" text-anchor="middle" class="t-strong">matica</text>
+  <g>
+    <rect x="252" y="40" width="32" height="28" class="boxa"/><text x="268" y="59" text-anchor="middle">1</text>
+    <rect x="284" y="40" width="32" height="28" class="boxa"/><text x="300" y="59" text-anchor="middle">4</text>
+    <rect x="316" y="40" width="32" height="28" class="boxa"/><text x="332" y="59" text-anchor="middle">4</text>
+    <rect x="252" y="68" width="32" height="28" class="boxa"/><text x="268" y="87" text-anchor="middle">2</text>
+    <rect x="284" y="68" width="32" height="28" class="boxa"/><text x="300" y="87" text-anchor="middle">5</text>
+    <rect x="316" y="68" width="32" height="28" class="boxa"/><text x="332" y="87" text-anchor="middle">5</text>
+    <rect x="252" y="96" width="32" height="28" class="boxa"/><text x="268" y="115" text-anchor="middle">5</text>
+    <rect x="284" y="96" width="32" height="28" class="boxa"/><text x="300" y="115" text-anchor="middle">1</text>
+    <rect x="316" y="96" width="32" height="28" class="boxa"/><text x="332" y="115" text-anchor="middle">3</text>
+  </g>
+  <text x="300" y="146" text-anchor="middle" class="t-small">2 rozmery, 1 typ</text>
+  <text x="300" y="164" text-anchor="middle" class="t-small">plní sa po stĺpcoch ↓</text>
+
+  <text x="520" y="24" text-anchor="middle" class="t-strong">data.frame</text>
+  <g>
+    <rect x="400" y="40" width="90" height="26" class="fs"/><text x="445" y="58" text-anchor="middle" class="t-small t-strong">mesiace</text>
+    <rect x="490" y="40" width="70" height="26" class="fs"/><text x="525" y="58" text-anchor="middle" class="t-small t-strong">pocetdni</text>
+    <rect x="560" y="40" width="90" height="26" class="fs"/><text x="605" y="58" text-anchor="middle" class="t-small t-strong">spotreba</text>
+    <rect x="400" y="66" width="90" height="26" class="box"/><text x="445" y="84" text-anchor="middle" class="t-small">"januar"</text>
+    <rect x="490" y="66" width="70" height="26" class="box"/><text x="525" y="84" text-anchor="middle" class="t-small">31</text>
+    <rect x="560" y="66" width="90" height="26" class="box"/><text x="605" y="84" text-anchor="middle" class="t-small">1520</text>
+    <rect x="400" y="92" width="90" height="26" class="box"/><text x="445" y="110" text-anchor="middle" class="t-small">"februar"</text>
+    <rect x="490" y="92" width="70" height="26" class="box"/><text x="525" y="110" text-anchor="middle" class="t-small">28</text>
+    <rect x="560" y="92" width="90" height="26" class="box"/><text x="605" y="110" text-anchor="middle" class="t-small">1780</text>
+    <rect x="400" y="118" width="90" height="26" class="box"/><text x="445" y="136" text-anchor="middle" class="t-small">…</text>
+    <rect x="490" y="118" width="70" height="26" class="box"/><text x="525" y="136" text-anchor="middle" class="t-small">…</text>
+    <rect x="560" y="118" width="90" height="26" class="box"/><text x="605" y="136" text-anchor="middle" class="t-small">…</text>
+  </g>
+  <text x="525" y="164" text-anchor="middle" class="t-small">stĺpce = premenné (rôzne typy)</text>
+  <text x="525" y="182" text-anchor="middle" class="t-small">riadky = pozorovania</text>
+  <text x="525" y="212" text-anchor="middle" class="t-acc" style="font-family:var(--mono)">rok$pocetdni</text>
+  <text x="300" y="212" text-anchor="middle" class="t-small" style="font-family:var(--mono)">t(m), solve(m)</text>
+</svg>
+<figcaption>Od najjednoduchšej po najpoužívanejšiu. Senzorické dáta takmer vždy ukladáme do data.frame: čo riadok, to jedno hodnotenie.</figcaption>
+</figure>
+
+<h3>Matica: transpozícia a inverzia</h3>
+<p><code>t(m)</code> vymení riadky a stĺpce. <code>solve(m)</code> vráti inverznú maticu m<sup>−1</sup>, pre ktorú platí m · m<sup>−1</sup> = I (jednotková matica). Inverzia existuje len pre štvorcovú maticu s nenulovým determinantom – v štatistike sa s ňou stretnete napr. pri regresii a PCA.</p>
+
+<h2>Návrh experimentu: <code>rep()</code> a náhodné čísla</h2>
+<p>Pri príprave hodnotiaceho hárku potrebujeme stĺpce „hodnotiteľ“ a „produkt“ tak, aby každý hodnotiteľ dostal každý produkt. Rozdiel medzi argumentmi <code>each</code> a <code>times</code>:</p>
+
+<figure>
+<svg viewBox="0 0 640 150" role="img" aria-label="Rozdiel medzi each a times">
+  <text x="10" y="30" style="font-family:var(--mono)" class="t-small">rep(c("H1","H2","H3","H4"), each = 4)</text>
+  <g class="t-small">
+    <rect x="10" y="42" width="36" height="26" class="f1 op2"/><text x="28" y="60" text-anchor="middle">H1</text>
+    <rect x="46" y="42" width="36" height="26" class="f1 op2"/><text x="64" y="60" text-anchor="middle">H1</text>
+    <rect x="82" y="42" width="36" height="26" class="f1 op2"/><text x="100" y="60" text-anchor="middle">H1</text>
+    <rect x="118" y="42" width="36" height="26" class="f1 op2"/><text x="136" y="60" text-anchor="middle">H1</text>
+    <rect x="154" y="42" width="36" height="26" class="f2 op2"/><text x="172" y="60" text-anchor="middle">H2</text>
+    <rect x="190" y="42" width="36" height="26" class="f2 op2"/><text x="208" y="60" text-anchor="middle">H2</text>
+    <rect x="226" y="42" width="36" height="26" class="f2 op2"/><text x="244" y="60" text-anchor="middle">H2</text>
+    <rect x="262" y="42" width="36" height="26" class="f2 op2"/><text x="280" y="60" text-anchor="middle">H2</text>
+    <text x="310" y="60">… H3 ×4, H4 ×4</text>
+  </g>
+  <text x="10" y="100" style="font-family:var(--mono)" class="t-small">rep(c("A","B","C","D"), times = 4)</text>
+  <g class="t-small">
+    <rect x="10" y="112" width="36" height="26" class="f3 op2"/><text x="28" y="130" text-anchor="middle">A</text>
+    <rect x="46" y="112" width="36" height="26" class="f4 op2"/><text x="64" y="130" text-anchor="middle">B</text>
+    <rect x="82" y="112" width="36" height="26" class="f5 op2"/><text x="100" y="130" text-anchor="middle">C</text>
+    <rect x="118" y="112" width="36" height="26" class="fs"/><text x="136" y="130" text-anchor="middle">D</text>
+    <rect x="154" y="112" width="36" height="26" class="f3 op2"/><text x="172" y="130" text-anchor="middle">A</text>
+    <rect x="190" y="112" width="36" height="26" class="f4 op2"/><text x="208" y="130" text-anchor="middle">B</text>
+    <rect x="226" y="112" width="36" height="26" class="f5 op2"/><text x="244" y="130" text-anchor="middle">C</text>
+    <rect x="262" y="112" width="36" height="26" class="fs"/><text x="280" y="130" text-anchor="middle">D</text>
+    <text x="310" y="130">… (celý cyklus 4-krát)</text>
+  </g>
+</svg>
+<figcaption>Položené vedľa seba dávajú oba vektory úplný plán: 4 hodnotitelia × 4 produkty = 16 riadkov.</figcaption>
+</figure>
+
+<div class="tablewrap"><table>
+<tr><th>Funkcia</th><th>Čo generuje</th><th>Použitie v senzorike</th></tr>
+<tr><td><code>set.seed(24)</code></td><td>nastaví štartovací bod generátora</td><td>reprodukovateľné „náhodné“ poradie</td></tr>
+<tr><td><code>sample(1:9, 5, replace=TRUE)</code></td><td>celé čísla z množiny</td><td>simulácia 9-bodovej hedonickej škály</td></tr>
+<tr><td><code>sample(LETTERS, 5)</code></td><td>výber bez opakovania</td><td>náhodné poradie podávania vzoriek</td></tr>
+<tr><td><code>rnorm(200, mean=10, sd=0.2)</code></td><td>normálne rozdelenie</td><td>simulácia inštrumentálneho merania</td></tr>
+</table></div>
+
+<h2>Indexovanie – výber a odstránenie prvkov</h2>
+<p>Hranaté zátvorky vyberajú prvky podľa poradia (R čísluje od 1). <strong>Záporný</strong> index prvok vynechá:</p>
+<figure>
+<svg viewBox="0 0 640 110" role="img" aria-label="Záporné indexovanie">
+  <text x="10" y="24" style="font-family:var(--mono)" class="t-small">x[-c(2:4)]</text>
+  <g>
+    <rect x="10" y="36" width="44" height="32" class="boxa"/><text x="32" y="57" text-anchor="middle">a</text>
+    <rect x="54" y="36" width="44" height="32" class="fw"/><text x="76" y="57" text-anchor="middle">b</text>
+    <rect x="98" y="36" width="44" height="32" class="fw"/><text x="120" y="57" text-anchor="middle">c</text>
+    <rect x="142" y="36" width="44" height="32" class="fw"/><text x="164" y="57" text-anchor="middle">d</text>
+    <rect x="186" y="36" width="44" height="32" class="boxa"/><text x="208" y="57" text-anchor="middle">e</text>
+    <line x1="58" y1="64" x2="182" y2="40" class="warnl"/>
+    <text x="32" y="90" text-anchor="middle" class="t-small">1</text><text x="76" y="90" text-anchor="middle" class="t-small">2</text><text x="120" y="90" text-anchor="middle" class="t-small">3</text><text x="164" y="90" text-anchor="middle" class="t-small">4</text><text x="208" y="90" text-anchor="middle" class="t-small">5</text>
+  </g>
+  <line x1="250" y1="52" x2="300" y2="52" class="arrow"/>
+  <rect x="316" y="36" width="44" height="32" class="boxa"/><text x="338" y="57" text-anchor="middle">a</text>
+  <rect x="360" y="36" width="44" height="32" class="boxa"/><text x="382" y="57" text-anchor="middle">e</text>
+  <text x="430" y="57" class="t-small">x[c(1,5)] dá to isté</text>
+</svg>
+</figure>
+
+<div class="note"><strong>Stĺpce data.frame cez <code>$</code></strong>Po vytvorení tabuľky <code>rok</code> pristupujeme k jej stĺpcom zápisom <code>rok$spotrebacokolady</code>. Zápis bez tabuľky funguje len vtedy, ak rovnomenná premenná náhodou existuje aj samostatne – po načítaní dát zo súboru (<code>read.table</code>) už nie.</div>
+
+<h2>Načítanie dát zo siete</h2>
+<pre>source("http://senzorika.com/sait/datasety/mol.txt")        # spustí R kód zo súboru
+vysledky &lt;- read.table("http://…/export.txt", sep = ",")   # načíta tabuľku
+str(vysledky)    # typy stĺpcov – vždy skontrolujte po načítaní
+head(vysledky)   # prvých 6 riadkov</pre>
+<p><code>source()</code> vykoná kód (definuje premenné, funkcie), <code>read.table()</code> iba načíta dáta. Súbory zo siete otvárajte len z dôveryhodných zdrojov – <code>source()</code> spustí čokoľvek, čo v súbore je.</p>
+
+<nav class="pager">
+<a class="prev" href="cvicenie02.html"><span>← Predchádzajúce</span>2. BCG matica a interval spoľahlivosti</a>
+<a class="next" href="cvicenie04.html"><span>Nasledujúce →</span>4. Grafy a vizualizácia dát</a>
+</nav>
+</div>
+</body>
+</html>

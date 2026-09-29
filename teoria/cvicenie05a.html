@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>5a. Normalita a porovnanie dvoch vzoriek</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ink-3)"/></marker></defs></svg>
+<div class="wrap">
+<header class="top"><a class="brand" href="index.html">Senzometria v R · teória</a><a href="index.html">Všetky cvičenia</a></header>
+
+<section class="hero"><span class="num">CVIČENIE 5a</span><h1>Normalita a porovnanie dvoch vzoriek</h1><p class="lead">Overenie normality, t-test verzus Wilcoxon, binomický test v rozlišovacích skúškach, χ² test a McNemarov test.</p>
+<div class="files"><a href="../cvicenie5a.txt">Skript (SK): cvicenie5a.txt</a><a href="../exercises_EN/exercise5a.txt">Script (EN): exercise5a.txt</a></div></section>
+<div class="goals"><h2>Čo sa naučíte</h2><ul>
+<li>overiť normalitu graficky (QQ graf) aj testom (Shapiro-Wilk),</li>
+<li>vybrať správny test pre dve vzorky: závislé/nezávislé, parametrický/neparametrický,</li>
+<li>vyhodnotiť rozlišovacie a preferenčné skúšky binomickým testom, χ² testom a McNemarovým testom.</li>
+</ul></div>
+
+<h2>Logika testovania hypotéz</h2>
+<p>Každý test porovnáva dve tvrdenia. <strong>Nulová hypotéza H<sub>0</sub></strong>: medzi vzorkami nie je rozdiel (hodnotitelia len hádajú). <strong>Alternatívna H<sub>1</sub></strong>: rozdiel existuje. Test vráti <strong>p-hodnotu</strong> – pravdepodobnosť, že by sme pri platnej H<sub>0</sub> dostali výsledok aspoň taký extrémny ako pozorovaný.</p>
+<div class="formula">p &lt; 0,05 → zamietame H<sub>0</sub> (rozdiel je štatisticky preukazný)
+<small>p ≥ 0,05 neznamená „vzorky sú rovnaké“, iba „rozdiel sa nepodarilo preukázať“ – často pre malý počet hodnotiteľov.</small></div>
+
+<h2>Ktorý test pre dve vzorky?</h2>
+<figure>
+<svg viewBox="0 0 640 300" role="img" aria-label="Rozhodovací strom výberu testu">
+  <rect x="220" y="10" width="200" height="44" rx="8" class="boxa"/><text x="320" y="37" text-anchor="middle" class="t-strong">Aký typ dát?</text>
+  <rect x="20" y="90" width="220" height="44" rx="8" class="box"/><text x="130" y="117" text-anchor="middle" class="t-strong">spojité / škálové</text>
+  <rect x="400" y="90" width="220" height="44" rx="8" class="box"/><text x="510" y="117" text-anchor="middle" class="t-strong">početnosti / áno–nie</text>
+  <line x1="280" y1="54" x2="160" y2="88" class="arrow"/><line x1="360" y1="54" x2="480" y2="88" class="arrow"/>
+  <rect x="20" y="160" width="220" height="40" rx="8" class="box"/><text x="130" y="185" text-anchor="middle">normalita? (shapiro.test)</text>
+  <line x1="130" y1="134" x2="130" y2="158" class="arrow"/>
+  <rect x="10" y="230" width="110" height="60" rx="8" class="fa"/><text x="65" y="252" text-anchor="middle" class="t-strong">áno</text><text x="65" y="270" text-anchor="middle" class="t-small">t.test</text><text x="65" y="284" text-anchor="middle" class="t-small">(paired = T/F)</text>
+  <rect x="130" y="230" width="120" height="60" rx="8" class="fw"/><text x="190" y="252" text-anchor="middle" class="t-strong">nie</text><text x="190" y="270" text-anchor="middle" class="t-small">wilcox.test</text><text x="190" y="284" text-anchor="middle" class="t-small">(paired = T/F)</text>
+  <line x1="100" y1="200" x2="70" y2="228" class="arrow"/><line x1="160" y1="200" x2="185" y2="228" class="arrow"/>
+  <rect x="290" y="170" width="105" height="70" rx="8" class="box"/><text x="342" y="194" text-anchor="middle" class="t-strong">1 vzorka vs. šanca</text><text x="342" y="214" text-anchor="middle" class="t-small">binom.test</text><text x="342" y="230" text-anchor="middle" class="t-small">duo, triangel</text>
+  <rect x="405" y="170" width="105" height="70" rx="8" class="box"/><text x="457" y="194" text-anchor="middle" class="t-strong">viac kategórií</text><text x="457" y="214" text-anchor="middle" class="t-small">chisq.test</text><text x="457" y="230" text-anchor="middle" class="t-small">Likert, preferencie</text>
+  <rect x="520" y="170" width="110" height="70" rx="8" class="box"/><text x="575" y="194" text-anchor="middle" class="t-strong">pred / po</text><text x="575" y="214" text-anchor="middle" class="t-small">mcnemar.test</text><text x="575" y="230" text-anchor="middle" class="t-small">tí istí ľudia</text>
+  <line x1="470" y1="134" x2="345" y2="168" class="arrow"/><line x1="510" y1="134" x2="460" y2="168" class="arrow"/><line x1="550" y1="134" x2="575" y2="168" class="arrow"/>
+</svg>
+<figcaption><em>Závislé (párové)</em> výbery = tí istí hodnotitelia hodnotili obe vzorky. <em>Nezávislé</em> = každú vzorku hodnotili iní ľudia.</figcaption>
+</figure>
+
+<h2>Overenie normality</h2>
+<p>Parametrické testy (t-test, ANOVA) predpokladajú, že dáta pochádzajú z normálneho rozdelenia. Overujeme to kombináciou grafu a testu:</p>
+<div class="grid2">
+<figure>
+<svg viewBox="0 0 240 190" role="img" aria-label="QQ graf normálnych dát">
+  <line x1="20" y1="170" x2="230" y2="170" class="ax"/><line x1="20" y1="10" x2="20" y2="170" class="ax"/>
+  <line x1="30" y1="160" x2="220" y2="20" class="ln1"/>
+  <g class="f3"><circle cx="40" cy="150" r="3.5"/><circle cx="58" cy="136" r="3.5"/><circle cx="75" cy="122" r="3.5"/><circle cx="92" cy="114" r="3.5"/><circle cx="108" cy="100" r="3.5"/><circle cx="125" cy="90" r="3.5"/><circle cx="142" cy="78" r="3.5"/><circle cx="160" cy="62" r="3.5"/><circle cx="178" cy="52" r="3.5"/><circle cx="200" cy="34" r="3.5"/></g>
+</svg>
+<figcaption>Body ležia na priamke <code>qqline</code> → rozdelenie je približne normálne.</figcaption>
+</figure>
+<figure>
+<svg viewBox="0 0 240 190" role="img" aria-label="QQ graf zošikmených dát">
+  <line x1="20" y1="170" x2="230" y2="170" class="ax"/><line x1="20" y1="10" x2="20" y2="170" class="ax"/>
+  <line x1="30" y1="160" x2="220" y2="20" class="ln1"/>
+  <g class="f2"><circle cx="40" cy="128" r="3.5"/><circle cx="58" cy="126" r="3.5"/><circle cx="75" cy="122" r="3.5"/><circle cx="92" cy="118" r="3.5"/><circle cx="108" cy="112" r="3.5"/><circle cx="125" cy="104" r="3.5"/><circle cx="142" cy="92" r="3.5"/><circle cx="160" cy="72" r="3.5"/><circle cx="178" cy="44" r="3.5"/><circle cx="200" cy="12" r="3.5"/></g>
+</svg>
+<figcaption>Oblúk mimo priamky → zošikmené dáta, siahneme po neparametrickom teste.</figcaption>
+</figure>
+</div>
+<p><strong>Shapiro-Wilkov test</strong> (<code>shapiro.test</code>) má H<sub>0</sub>: „dáta sú normálne“. Tu je logika opačná, než sme zvyknutí: <em>p ≥ 0,05 je dobrá správa</em> (normalitu nezamietame). Pri senzorických škálach s malým počtom hodnôt (napr. 6,9 – 7,5) býva normalita často narušená – boxplot a QQ graf preto vždy pozrite aj očami.</p>
+
+<h2>Binomický test v rozlišovacích skúškach</h2>
+<p>Pri párovej (duo) alebo trojuholníkovej (triangel) skúške má každý hodnotiteľ dve možnosti: trafí / netrafí. Ak by všetci len hádali, počet „správnych“ odpovedí sa riadi binomickým rozdelením s pravdepodobnosťou uhádnutia <em>p</em>:</p>
+<div class="tablewrap"><table>
+<tr><th>Skúška</th><th>Počet vzoriek</th><th>Pravdepodobnosť uhádnutia</th><th>R</th></tr>
+<tr><td>párová (duo), párová preferencia</td><td>2</td><td>1/2</td><td><code>binom.test(x, n, p = 0.5)</code></td></tr>
+<tr><td>duo-trio</td><td>1 + 2</td><td>1/2</td><td><code>binom.test(x, n, p = 0.5)</code></td></tr>
+<tr><td>trojuholníková (triangel)</td><td>3</td><td>1/3</td><td><code>binom.test(x, n, p = 1/3, alternative = "greater")</code></td></tr>
+</table></div>
+<figure>
+<svg viewBox="0 0 620 250" role="img" aria-label="Binomické rozdelenie n=60, p=0,5">
+<line x1="50" y1="200" x2="585" y2="200" class="ax"/>
+<rect x="55" y="198.7" width="18" height="1.3" class="f2"/>
+<text x="64.0" y="216" text-anchor="middle" class="t-small">18</text>
+<rect x="76" y="197.2" width="18" height="2.8" class="f2"/>
+<rect x="97" y="194.3" width="18" height="5.7" class="f2"/>
+<rect x="118" y="189.2" width="18" height="10.8" class="f2"/>
+<text x="127.0" y="216" text-anchor="middle" class="t-small">21</text>
+<rect x="139" y="180.9" width="18" height="19.1" class="f1 op2"/>
+<rect x="160" y="168.4" width="18" height="31.6" class="f1 op2"/>
+<rect x="181" y="151.2" width="18" height="48.8" class="f1 op2"/>
+<text x="190.0" y="216" text-anchor="middle" class="t-small">24</text>
+<rect x="202" y="129.8" width="18" height="70.2" class="f1 op2"/>
+<rect x="223" y="105.5" width="18" height="94.5" class="f1 op2"/>
+<rect x="244" y="80.9" width="18" height="119.1" class="f1 op2"/>
+<text x="253.0" y="216" text-anchor="middle" class="t-small">27</text>
+<rect x="265" y="59.7" width="18" height="140.3" class="f1 op2"/>
+<rect x="286" y="45.2" width="18" height="154.8" class="f1 op2"/>
+<rect x="307" y="40.0" width="18" height="160.0" class="f1 op2"/>
+<text x="316.0" y="216" text-anchor="middle" class="t-small">30</text>
+<rect x="328" y="45.2" width="18" height="154.8" class="f1 op2"/>
+<rect x="349" y="59.7" width="18" height="140.3" class="f1 op2"/>
+<rect x="370" y="80.9" width="18" height="119.1" class="f1 op2"/>
+<text x="379.0" y="216" text-anchor="middle" class="t-small">33</text>
+<rect x="391" y="105.5" width="18" height="94.5" class="f3"/>
+<rect x="412" y="129.8" width="18" height="70.2" class="f1 op2"/>
+<rect x="433" y="151.2" width="18" height="48.8" class="f1 op2"/>
+<text x="442.0" y="216" text-anchor="middle" class="t-small">36</text>
+<rect x="454" y="168.4" width="18" height="31.6" class="f1 op2"/>
+<rect x="475" y="180.9" width="18" height="19.1" class="f1 op2"/>
+<rect x="496" y="189.2" width="18" height="10.8" class="f2"/>
+<text x="505.0" y="216" text-anchor="middle" class="t-small">39</text>
+<rect x="517" y="194.3" width="18" height="5.7" class="f2"/>
+<rect x="538" y="197.2" width="18" height="2.8" class="f2"/>
+<rect x="559" y="198.7" width="18" height="1.3" class="f2"/>
+<text x="568.0" y="216" text-anchor="middle" class="t-small">42</text>
+<text x="400.0" y="97.5" text-anchor="middle" class="t-strong">34</text>
+<text x="526" y="140" class="t-warn t-small">kritická oblasť</text>
+<text x="526" y="155" class="t-warn t-small">≥ 39 (p &lt; 0,05)</text>
+<text x="310.0" y="240" text-anchor="middle" class="t-small">počet hodnotiteľov, ktorí vybrali vzorku A (z 60)</text>
+</svg>
+<figcaption>Rozdelenie počtu hlasov pre vzorku A, ak by 60 spotrebiteľov len hádalo. Pozorovaných 34 (modrá) leží v bežnej oblasti, p = 0,37. Na preukázanie rozdielu (obojstranne) by bolo treba aspoň 39 hlasov. Pri rovnakom podiele 57 % by bolo potrebných asi 236 spotrebiteľov.</figcaption>
+</figure>
+<div class="note"><strong>Úloha 2 – triangel vs. párový test</strong>42 správnych zo 100 trianglov: p = 0,043 (voči 1/3) → rozdiel preukázaný. Rovnaký počet v párovom teste (voči 1/2) by bol pod úrovňou náhody. Triangel je „prísnejší“ na hádanie, preto stačí menší podiel správnych odpovedí.</div>
+
+<h2>χ² test dobrej zhody</h2>
+<p>Porovnáva pozorované početnosti <em>O</em> v kategóriách s očakávanými <em>E</em> (pri H<sub>0</sub> rovnomerne rozdelenými):</p>
+<div class="formula">χ² = Σ (O − E)² / E, &nbsp; df = k − 1</div>
+<figure>
+<svg viewBox="0 0 620 220" role="img" aria-label="Preferencie jogurtov pozorované a očakávané">
+  <line x1="60" y1="180" x2="600" y2="180" class="ax"/>
+  <line x1="60" y1="117.75" x2="600" y2="117.75" class="warnl dash"/>
+  <text x="598" y="110" text-anchor="end" class="t-small t-warn">očakávané E = 83/4 = 20,75</text>
+  <rect x="90" y="105" width="80" height="75" class="f1"/><text x="130" y="98" text-anchor="middle" class="t-strong">25</text><text x="130" y="198" text-anchor="middle" class="t-small">jahodový</text>
+  <rect x="220" y="78" width="80" height="102" class="f1"/><text x="260" y="71" text-anchor="middle" class="t-strong">34</text><text x="260" y="198" text-anchor="middle" class="t-small">čokoládový</text>
+  <rect x="350" y="129" width="80" height="51" class="f1"/><text x="390" y="148" text-anchor="middle" class="t-inv">17</text><text x="390" y="198" text-anchor="middle" class="t-small">vanilkový</text>
+  <rect x="480" y="159" width="80" height="21" class="f1"/><text x="520" y="152" text-anchor="middle" class="t-strong">7</text><text x="520" y="198" text-anchor="middle" class="t-small">čučoriedkový</text>
+</svg>
+<figcaption>Úloha 3: χ² = 19,1; df = 3; p = 0,0003 → preferencie nie sú rovnomerné (čokoládový vedie, čučoriedkový zaostáva).</figcaption>
+</figure>
+<p>Pri Likertových otázkach o guláši: otázka 1 (p = 0,12) – názory sú rozptýlené náhodne; otázky 2 a 3 (p &lt; 0,001) – respondenti sa jasne zhodujú. Očakávaná početnosť v každej kategórii by mala byť aspoň 5.</p>
+
+<h2>McNemarov test – pred a po</h2>
+<p>Tí istí zákazníci sa rozhodovali o kúpe starej aj novej receptúry. Informáciu o zmene nesú iba <strong>nesúhlasné</strong> páry (b, c) – kto zmenil názor:</p>
+<figure>
+<svg viewBox="0 0 620 200" role="img" aria-label="Tabuľka McNemarovho testu">
+  <text x="330" y="22" text-anchor="middle" class="t-strong">nová receptúra</text>
+  <text x="270" y="46" text-anchor="middle" class="t-small">kúpil(a)</text><text x="390" y="46" text-anchor="middle" class="t-small">nekúpil(a)</text>
+  <text x="90" y="118" text-anchor="middle" class="t-strong">stará</text>
+  <text x="180" y="88" text-anchor="end" class="t-small">kúpil(a)</text><text x="180" y="150" text-anchor="end" class="t-small">nekúpil(a)</text>
+  <rect x="210" y="56" width="120" height="60" class="fs"/><text x="270" y="92" text-anchor="middle">a = 40</text>
+  <rect x="330" y="56" width="120" height="60" class="fw"/><text x="390" y="92" text-anchor="middle" class="t-strong">b = 24</text>
+  <rect x="210" y="116" width="120" height="60" class="fa"/><text x="270" y="152" text-anchor="middle" class="t-strong">c = 8</text>
+  <rect x="330" y="116" width="120" height="60" class="fs"/><text x="390" y="152" text-anchor="middle">d = 28</text>
+  <text x="470" y="92" class="t-small">odišli od produktu</text>
+  <text x="470" y="152" class="t-small">prišli k produktu</text>
+</svg>
+<figcaption>χ² = (b − c)² / (b + c) = (24 − 8)² / 32 = 8,0; p = 0,005. Nová receptúra zákazníkov preukazne <em>odrádza</em>.</figcaption>
+</figure>
+<div class="warn"><strong>Pozor na orientáciu matice</strong><code>matrix(c(40, 8, 24, 28), nrow = 2)</code> sa plní po stĺpcoch: prvý stĺpec je (40, 8). Pred interpretáciou si tabuľku vždy vypíšte.</div>
+
+<nav class="pager">
+<a class="prev" href="cvicenie04.html"><span>← Predchádzajúce</span>4. Grafy a vizualizácia dát</a>
+<a class="next" href="cvicenie05b.html"><span>Nasledujúce →</span>5b. Porovnanie viacerých vzoriek</a>
+</nav>
+</div>
+</body>
+</html>

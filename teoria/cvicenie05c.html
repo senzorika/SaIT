@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>5c. Import dát z Excelu a postup analýzy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ink-3)"/></marker></defs></svg>
+<div class="wrap">
+<header class="top"><a class="brand" href="index.html">Senzometria v R · teória</a><a href="index.html">Všetky cvičenia</a></header>
+
+<section class="hero"><span class="num">CVIČENIE 5c</span><h1>Import dát z Excelu a postup analýzy</h1><p class="lead">Načítanie online súboru, dlhý formát dát a kompletný postup: normalita → test → post-hoc.</p>
+<div class="files"><a href="../cvicenie5c.txt">Skript (SK): cvicenie5c.txt</a><a href="../exercises_EN/exercise5c.txt">Script (EN): exercise5c.txt</a></div></section>
+<div class="goals"><h2>Čo sa naučíte</h2><ul>
+<li>stiahnuť a načítať excelový súbor z internetu (<code>readxl</code>, <code>curl</code>),</li>
+<li>rozlíšiť dlhý a široký formát dát a vyberať podmnožiny funkciou <code>subset()</code>,</li>
+<li>prejsť celý postup analýzy od kontroly normality po post-hoc test.</li>
+</ul></div>
+
+<h2>Z webu do R v troch krokoch</h2>
+<figure>
+<svg viewBox="0 0 640 130" role="img" aria-label="Načítanie Excelu z webu">
+  <rect x="10" y="30" width="170" height="70" rx="8" class="box"/><text x="95" y="60" text-anchor="middle" class="t-strong">server</text><text x="95" y="80" text-anchor="middle" class="t-small">potraviny.xlsx</text>
+  <rect x="235" y="30" width="170" height="70" rx="8" class="box"/><text x="320" y="60" text-anchor="middle" class="t-strong">lokálny disk</text><text x="320" y="80" text-anchor="middle" class="t-small">pracovný priečinok</text>
+  <rect x="460" y="30" width="170" height="70" rx="8" class="boxa"/><text x="545" y="60" text-anchor="middle" class="t-strong">tibble v R</text><text x="545" y="80" text-anchor="middle" class="t-small">hárok „4vyrobky“</text>
+  <line x1="180" y1="65" x2="233" y2="65" class="arrow"/><line x1="405" y1="65" x2="458" y2="65" class="arrow"/>
+  <text x="207" y="20" text-anchor="middle" class="t-small" style="font-family:var(--mono)">curl_download()</text>
+  <text x="432" y="20" text-anchor="middle" class="t-small" style="font-family:var(--mono)">read_excel()</text>
+  <text x="320" y="122" text-anchor="middle" class="t-small">Excel sa nedá čítať priamo z URL – treba ho najprv uložiť ako súbor.</text>
+</svg>
+</figure>
+<p>Zistiť, v ktorom priečinku súbor pristál, môžete príkazom <code>getwd()</code>; názvy hárkov vypíše <code>readxl::excel_sheets("potraviny.xlsx")</code>.</p>
+
+<h2>Dlhý vs. široký formát</h2>
+<p>V cvičení 5a sme mali každý produkt v samostatnom vektore (<em>široký</em> formát). Súbor z Excelu je v <strong>dlhom (tidy) formáte</strong>: jeden riadok = jedno hodnotenie, stĺpec <code>produkt</code> hovorí, ku ktorej vzorke patrí. Tento formát očakávajú vzorce typu <code>kvalita ~ produkt</code>.</p>
+<figure>
+<svg viewBox="0 0 640 220" role="img" aria-label="Široký a dlhý formát">
+  <text x="110" y="20" text-anchor="middle" class="t-strong">široký</text>
+  <g class="t-small">
+    <rect x="30" y="30" width="40" height="26" class="fs"/><text x="50" y="48" text-anchor="middle" class="t-strong">A</text>
+    <rect x="70" y="30" width="40" height="26" class="fs"/><text x="90" y="48" text-anchor="middle" class="t-strong">B</text>
+    <rect x="110" y="30" width="40" height="26" class="fs"/><text x="130" y="48" text-anchor="middle" class="t-strong">C</text>
+    <rect x="150" y="30" width="40" height="26" class="fs"/><text x="170" y="48" text-anchor="middle" class="t-strong">D</text>
+    <rect x="30" y="56" width="40" height="26" class="f1 op1"/><text x="50" y="74" text-anchor="middle">7</text>
+    <rect x="70" y="56" width="40" height="26" class="f3 op1"/><text x="90" y="74" text-anchor="middle">5</text>
+    <rect x="110" y="56" width="40" height="26" class="f2 op1"/><text x="130" y="74" text-anchor="middle">6</text>
+    <rect x="150" y="56" width="40" height="26" class="f4 op1"/><text x="170" y="74" text-anchor="middle">8</text>
+    <rect x="30" y="82" width="40" height="26" class="f1 op1"/><text x="50" y="100" text-anchor="middle">6</text>
+    <rect x="70" y="82" width="40" height="26" class="f3 op1"/><text x="90" y="100" text-anchor="middle">4</text>
+    <rect x="110" y="82" width="40" height="26" class="f2 op1"/><text x="130" y="100" text-anchor="middle">7</text>
+    <rect x="150" y="82" width="40" height="26" class="f4 op1"/><text x="170" y="100" text-anchor="middle">9</text>
+  </g>
+  <line x1="220" y1="80" x2="300" y2="80" class="arrow"/>
+  <text x="260" y="70" text-anchor="middle" class="t-small">pivot_longer()</text>
+  <text x="440" y="20" text-anchor="middle" class="t-strong">dlhý</text>
+  <g class="t-small">
+    <rect x="360" y="30" width="80" height="22" class="fs"/><text x="400" y="46" text-anchor="middle" class="t-strong">produkt</text>
+    <rect x="440" y="30" width="80" height="22" class="fs"/><text x="480" y="46" text-anchor="middle" class="t-strong">kvalita</text>
+    <rect x="360" y="52" width="160" height="22" class="f1 op1"/><text x="400" y="67" text-anchor="middle">A</text><text x="480" y="67" text-anchor="middle">7</text>
+    <rect x="360" y="74" width="160" height="22" class="f1 op1"/><text x="400" y="89" text-anchor="middle">A</text><text x="480" y="89" text-anchor="middle">6</text>
+    <rect x="360" y="96" width="160" height="22" class="f3 op1"/><text x="400" y="111" text-anchor="middle">B</text><text x="480" y="111" text-anchor="middle">5</text>
+    <rect x="360" y="118" width="160" height="22" class="f3 op1"/><text x="400" y="133" text-anchor="middle">B</text><text x="480" y="133" text-anchor="middle">4</text>
+    <rect x="360" y="140" width="160" height="22" class="f2 op1"/><text x="400" y="155" text-anchor="middle">C</text><text x="480" y="155" text-anchor="middle">6</text>
+    <rect x="360" y="162" width="160" height="22" class="fs op2"/><text x="440" y="177" text-anchor="middle">…</text>
+  </g>
+  <text x="540" y="67" class="t-small" style="font-family:var(--mono)">subset(…, produkt == "A")</text>
+  <line x1="536" y1="72" x2="524" y2="80" class="arrow"/>
+</svg>
+<figcaption>Hodnoty sú ilustračné. <code>subset(potraviny, produkt == "A")</code> vyberie riadky vzorky A – potrebujeme ich na test normality jednotlivých skupín.</figcaption>
+</figure>
+
+<h2>Postup analýzy krok za krokom</h2>
+<figure>
+<svg viewBox="0 0 640 240" role="img" aria-label="Postup analýzy">
+  <rect x="10" y="20" width="140" height="56" rx="8" class="box"/><text x="80" y="44" text-anchor="middle" class="t-strong">1 · pozri dáta</text><text x="80" y="62" text-anchor="middle" class="t-small">str(), boxplot()</text>
+  <rect x="170" y="20" width="140" height="56" rx="8" class="box"/><text x="240" y="44" text-anchor="middle" class="t-strong">2 · normalita</text><text x="240" y="62" text-anchor="middle" class="t-small">shapiro.test ×4</text>
+  <rect x="330" y="20" width="140" height="56" rx="8" class="boxa"/><text x="400" y="44" text-anchor="middle" class="t-strong">3 · globálny test</text><text x="400" y="62" text-anchor="middle" class="t-small">KW alebo ANOVA</text>
+  <rect x="490" y="20" width="140" height="56" rx="8" class="box"/><text x="560" y="44" text-anchor="middle" class="t-strong">4 · post-hoc</text><text x="560" y="62" text-anchor="middle" class="t-small">len ak p &lt; 0,05</text>
+  <line x1="150" y1="48" x2="168" y2="48" class="arrow"/><line x1="310" y1="48" x2="328" y2="48" class="arrow"/><line x1="470" y1="48" x2="488" y2="48" class="arrow"/>
+  <rect x="120" y="120" width="190" height="96" rx="8" class="fa"/>
+  <text x="215" y="144" text-anchor="middle" class="t-strong">všetky skupiny normálne</text>
+  <text x="215" y="166" text-anchor="middle" class="t-small" style="font-family:var(--mono)">aov() → TukeyHSD()</text>
+  <text x="215" y="190" text-anchor="middle" class="t-small">+ podobné rozptyly</text>
+  <rect x="330" y="120" width="190" height="96" rx="8" class="fw"/>
+  <text x="425" y="144" text-anchor="middle" class="t-strong">aspoň 1 nenormálna</text>
+  <text x="425" y="166" text-anchor="middle" class="t-small" style="font-family:var(--mono)">kruskal.test() →</text>
+  <text x="425" y="186" text-anchor="middle" class="t-small" style="font-family:var(--mono)">pairwise.wilcox.test()</text>
+  <line x1="220" y1="76" x2="215" y2="118" class="arrow"/><line x1="260" y1="76" x2="420" y2="118" class="arrow"/>
+</svg>
+</figure>
+
+<h3>Ako čítať výstup <code>pairwise.wilcox.test</code></h3>
+<pre>    A      B      C
+B 0.0042 -      -
+C 1.0000 0.0180 -
+D 0.0006 0.6000 0.0090
+
+P value adjustment method: bonferroni</pre>
+<p>Tabuľka (ilustračná) obsahuje upravené p-hodnoty pre každý pár. Tu sa líši A od B a D, C od B a D; páry A–C a B–D sa nelíšia. Výsledok sa zvykne zapisovať písmenami: vzorky s rovnakým písmenom sa preukazne nelíšia (A<sup>a</sup>, C<sup>a</sup>, B<sup>b</sup>, D<sup>b</sup>).</p>
+<div class="note"><strong><code>exact = FALSE</code></strong>Pri zhodných hodnotách (v senzorike takmer vždy – škály majú málo stupňov) nevie R vypočítať presnú p-hodnotu a vypíše varovanie. Parameter <code>exact = FALSE</code> zapne normálnu aproximáciu a varovanie odstráni.</div>
+
+<nav class="pager">
+<a class="prev" href="cvicenie05b.html"><span>← Predchádzajúce</span>5b. Porovnanie viacerých vzoriek</a>
+<a class="next" href="cvicenie05d.html"><span>Nasledujúce →</span>5d. Durbinov test a neúplné bloky</a>
+</nav>
+</div>
+</body>
+</html>

@@ -1,0 +1,68 @@
+# NON-PARAMETRIC TESTS
+
+# 10 assessors (5 in each of two independent laboratories) rated 3 chocolate samples.
+# The results did not meet the normality requirement and must be evaluated with the
+# Kruskal-Wallis test (non-parametric counterpart of one-way analysis of variance)
+#---------------------------------------------------------------------------------------
+# Kruskal-Wallis test (non-parametric analysis of variance)
+#---------------------------------------------------------------------------------------
+# input data
+productA=c(1.5,2,2.5,3,2.5,2.5,3,3,2,5)
+productB=c(4,3,6,5,2,6,1,6,5.5,4)
+productC=c(6,6,7.5,7,5,1,8,7,7.5,5.5)
+boxplot(productA,productB,productC)
+overall_quality = c(productA,productB,productC)
+chocolate = factor(c(rep("A",10),rep("B",10),rep("C",10)))
+tab = data.frame(chocolate, overall_quality)
+
+# Kruskal-Wallis test
+kruskal.test(overall_quality ~ chocolate, data=tab)
+
+# if p<0.05, a multiple comparison of samples with the Wilcoxon test is needed
+pairwise.wilcox.test(overall_quality,chocolate, p.adj="bonferroni", exact=F)
+
+# 5 assessors ranked 5 chocolate samples using the ranking method...
+#---------------------------------------------------------------------------------------
+# Friedman test (non-parametric two-way analysis of variance) Vietoris, 2019
+#---------------------------------------------------------------------------------------
+# the PMCMR package was removed from CRAN, PMCMRplus replaces it
+require(PMCMRplus)
+#taste <- c(1,2,3,4,5,1,2,3,4,5,1,2,3,4,5,1,2,3,4,5,1,2,3,4,5) # symmetric distribution of ranks
+taste <- c(sample(1:5, size=5, replace=F),sample(1:5, size=5, replace=F),sample(1:5, size=5, replace=F),sample(1:5, size=5, replace=F),sample(1:5, size=5, replace=F)) # random
+assessor= factor(rep(c("H1","H2","H3","H4","H5"),times=1, each=5)) # each value 5x in a row within one cycle
+product= factor(rep(c("A","B","C","D","E"),times=5)) # each value 1x in a row, in five cycles
+data <- data.frame(assessor,product,taste)
+friedman.test(taste ~ product | assessor)
+frdAllPairsNemenyiTest(taste, product, assessor)
+
+
+
+# PARAMETRIC TESTS
+
+#---------------------------------------------------------------------------------------
+# One-way ANOVA (parametric analysis of variance)
+#---------------------------------------------------------------------------------------
+# we use the data from the Kruskal-Wallis example
+anova_result = aov(overall_quality ~ chocolate, data = tab)
+summary(anova_result)
+# if p<0.05, a multiple comparison of samples with Tukey's HSD is needed
+TukeyHSD(anova_result)
+
+#---------------------------------------------------------------------------------------
+# Two-way ANOVA (parametric analysis of variance)
+#---------------------------------------------------------------------------------------
+# input data
+#taste = c(4.0,4.5,4.3,5.6,4.9,5.4,3.8,3.7,4.0,5.4,4.9,5.6,5.8,6.1,6.3,5.5,5.0,5.0)
+#product= factor(rep(c("T1","T2","T3"),times=2, each=3))
+#gender = factor(rep(c("M","F"),c(9,9)))
+#bar=data.frame(taste,product,gender)
+# visualisation of results
+#boxplot(taste~product, data=bar)
+# analysis of variance, the rule p<0.05 applies again
+#anova_result2= aov(taste~gender*product, data=bar)
+#summary(anova_result2)
+#TukeyHSD(anova_result2)
+
+# TASK1:
+# Decide which tests must be used for the data in the file 001_datasety.txt (GitHub repository).
+# Calculate the difference between the ketchup samples based on the data you rated.

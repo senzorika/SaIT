@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>9. Korešpondenčná analýza</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ink-3)"/></marker></defs></svg>
+<div class="wrap">
+<header class="top"><a class="brand" href="index.html">Senzometria v R · teória</a><a href="index.html">Všetky cvičenia</a></header>
+
+<section class="hero"><span class="num">CVIČENIE 9</span><h1>Korešpondenčná analýza</h1><p class="lead">Mapa vzťahov medzi kategóriami kontingenčnej tabuľky – produkty a cieľové skupiny.</p>
+<div class="files"><a href="../cvicenie9.txt">Skript (SK): cvicenie9.txt</a><a href="../exercises_EN/exercise9.txt">Script (EN): exercise9.txt</a></div></section>
+<div class="goals"><h2>Čo sa naučíte</h2><ul>
+<li>zapísať kategoriálne dáta do kontingenčnej tabuľky,</li>
+<li>pochopiť princíp korešpondenčnej analýzy (CA) – χ² vzdialenosti a inercia,</li>
+<li>čítať symetrickú mapu riadkových a stĺpcových kategórií.</li>
+</ul></div>
+
+<h2>Kontingenčná tabuľka</h2>
+<p>Korešpondenčná analýza pracuje s <strong>početnosťami</strong>: koľkokrát sa kombinácia dvoch kategórií vyskytla. V príklade – koľko ľudí z každej cieľovej skupiny si vybralo produkt A, B alebo C.</p>
+<div class="tablewrap"><table>
+<tr><th></th><th>A</th><th>B</th><th>C</th><th>spolu</th></tr>
+<tr><th>Muži</th><td><strong>15</strong></td><td>2</td><td>8</td><td>25</td></tr>
+<tr><th>Ženy</th><td>7</td><td><strong>14</strong></td><td>4</td><td>25</td></tr>
+<tr><th>Deti</th><td>5</td><td>5</td><td><strong>15</strong></td><td>25</td></tr>
+<tr><th>Dôchodcovia</th><td>11</td><td>5</td><td>9</td><td>25</td></tr>
+<tr><th>spolu</th><td>38</td><td>26</td><td>36</td><td>100</td></tr>
+</table></div>
+<p>Ak by výber produktu nezávisel od skupiny, každý riadok by mal rovnaké rozdelenie ako súčtový riadok (38 : 26 : 36). CA hľadá a zobrazuje <strong>odchýlky od tejto nezávislosti</strong> – rovnaké, aké meria χ² test.</p>
+
+<h2>Od tabuľky k mape</h2>
+<figure>
+<svg viewBox="0 0 640 120" role="img" aria-label="Postup korešpondenčnej analýzy">
+  <rect x="10" y="30" width="140" height="60" rx="8" class="box"/><text x="80" y="56" text-anchor="middle" class="t-strong">tabuľka</text><text x="80" y="74" text-anchor="middle" class="t-small">početnosti</text>
+  <rect x="170" y="30" width="140" height="60" rx="8" class="box"/><text x="240" y="56" text-anchor="middle" class="t-strong">profily</text><text x="240" y="74" text-anchor="middle" class="t-small">riadkové %, stĺpcové %</text>
+  <rect x="330" y="30" width="140" height="60" rx="8" class="box"/><text x="400" y="56" text-anchor="middle" class="t-strong">χ² vzdialenosti</text><text x="400" y="74" text-anchor="middle" class="t-small">od priemerného profilu</text>
+  <rect x="490" y="30" width="140" height="60" rx="8" class="boxa"/><text x="560" y="56" text-anchor="middle" class="t-strong">mapa 2D</text><text x="560" y="74" text-anchor="middle" class="t-small">rozklad SVD</text>
+  <line x1="150" y1="60" x2="168" y2="60" class="arrow"/><line x1="310" y1="60" x2="328" y2="60" class="arrow"/><line x1="470" y1="60" x2="488" y2="60" class="arrow"/>
+</svg>
+</figure>
+<p>Celková variabilita tabuľky sa nazýva <strong>inercia</strong> (= χ² / n). Rozmery (dimenzie) mapy ju rozkladajú podobne ako komponenty v PCA; pri tabuľke r × c je najviac min(r, c) − 1 dimenzií – tu 2, takže mapa zobrazuje 100 % inercie.</p>
+
+<figure>
+<svg viewBox="0 0 620 330" role="img" aria-label="Mapa korešpondenčnej analýzy">
+<line x1="20" y1="170" x2="600" y2="170" class="gridl"/><line x1="230" y1="20" x2="230" y2="320" class="gridl"/>
+<circle cx="101.6" cy="254.2" r="6" class="f3"/><text x="111.6" y="258.2" class="t-strong">Muži</text>
+<circle cx="458.0" cy="190.5" r="6" class="f3"/><text x="468.0" y="194.5" class="t-strong">Ženy</text>
+<circle cx="174.2" cy="45.2" r="6" class="f3"/><text x="184.2" y="49.2" class="t-strong">Deti</text>
+<circle cx="186.4" cy="190.0" r="6" class="f3"/><text x="196.4" y="194.0" class="t-strong">Dôchodcovia</text>
+<rect x="153.0" y="252.4" width="14" height="14" class="f2"/><text x="148.0" y="264.4" text-anchor="end" class="t-strong" style="fill:var(--c2)">A</text>
+<rect x="451.0" y="154.4" width="14" height="14" class="f2"/><text x="446.0" y="166.4" text-anchor="end" class="t-strong" style="fill:var(--c2)">B</text>
+<rect x="131.9" y="74.9" width="14" height="14" class="f2"/><text x="126.9" y="86.9" text-anchor="end" class="t-strong" style="fill:var(--c2)">C</text>
+<text x="596" y="162" text-anchor="end" class="t-small">Dim 1 (66 % inercie)</text>
+<text x="238" y="32" class="t-small">Dim 2 (34 %)</text>
+</svg>
+<figcaption>Mapa CA vypočítaná z dát skriptu (modré body – cieľové skupiny, oranžové štvorce – produkty). Ženy sú blízko produktu B, deti pri C, muži pri A. Dôchodcovia ležia pri strede – ich výber zodpovedá priemeru a nemajú výrazného „favorita“. Orientácia osí v R (<code>corresp</code>) môže byť zrkadlová.</figcaption>
+</figure>
+
+<h2>Ako mapu čítať</h2>
+<ul>
+<li><strong>Stred mapy</strong> = priemerný profil. Čím ďalej od stredu, tým je kategória výraznejšia (viac sa odlišuje od priemeru).</li>
+<li><strong>Riadok pri stĺpci</strong> (v rovnakom smere od stredu) = skupina si produkt vyberá častejšie, ako by zodpovedalo nezávislosti.</li>
+<li><strong>Dva riadky blízko seba</strong> = skupiny s podobnými preferenciami.</li>
+<li>Presná vzdialenosť bodu skupiny od bodu produktu v symetrickej mape <em>nie je</em> interpretovateľná – sledujte smer od stredu.</li>
+</ul>
+<div class="note"><strong>Úloha so šampónmi</strong>Vygenerujte tabuľku 8 šampónov × 5 skupín (napr. <code>matrix(sample(10:90, 40, replace = TRUE), ncol = 5)</code>), pomenujte riadky a stĺpce a pre žihľavový, brezový a tropický šampón nájdite farbu vlasov, ktorá leží v mape v rovnakom smere od stredu.</div>
+<div class="warn"><strong>Predpoklady</strong>CA je opisná metóda bez p-hodnôt. O tom, či je závislosť preukazná, rozhodne <code>chisq.test(data)</code>. Pri veľmi malých početnostiach (&lt; 5) môžu zriedkavé kategórie mapu „ťahať“ k okrajom.</div>
+
+<nav class="pager">
+<a class="prev" href="cvicenie08.html"><span>← Predchádzajúce</span>8. Zhluková analýza</a>
+<a class="next" href="cvicenie10.html"><span>Nasledujúce →</span>10. Analýza prežitia a senzorická trvanlivosť</a>
+</nav>
+</div>
+</body>
+</html>

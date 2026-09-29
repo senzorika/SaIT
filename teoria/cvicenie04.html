@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>4. Grafy a vizualizácia dát</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ink-3)"/></marker></defs></svg>
+<div class="wrap">
+<header class="top"><a class="brand" href="index.html">Senzometria v R · teória</a><a href="index.html">Všetky cvičenia</a></header>
+
+<section class="hero"><span class="num">CVIČENIE 4</span><h1>Grafy a vizualizácia dát</h1><p class="lead">Ktorý graf zvoliť, ako ho čítať a čo z neho vyčítať skôr, než siahneme po štatistickom teste.</p>
+<div class="files"><a href="../cvicenie4.txt">Skript (SK): cvicenie4.txt</a><a href="../exercises_EN/exercise4.txt">Script (EN): exercise4.txt</a></div></section>
+<div class="goals"><h2>Čo sa naučíte</h2><ul>
+<li>vybrať vhodný typ grafu podľa typu dát a otázky,</li>
+<li>čítať krabicový graf (boxplot), histogram a hustotu,</li>
+<li>kombinovať viac vrstiev v jednom grafe (čiary, priemery, mriežka).</li>
+</ul></div>
+
+<h2>Galéria základných grafov</h2>
+<div class="grid2">
+<figure>
+<svg viewBox="0 0 240 150" role="img" aria-label="Stĺpcový graf">
+  <line x1="20" y1="130" x2="230" y2="130" class="ax"/>
+  <rect x="30" y="60" width="30" height="70" class="f1"/><rect x="75" y="30" width="30" height="100" class="f1"/><rect x="120" y="80" width="30" height="50" class="f1"/><rect x="165" y="50" width="30" height="80" class="f1"/>
+</svg>
+<figcaption><strong>barplot</strong> – porovnanie hodnôt medzi kategóriami (priemer produktov, počty).</figcaption>
+</figure>
+<figure>
+<svg viewBox="0 0 240 150" role="img" aria-label="Koláčový graf">
+  <circle cx="120" cy="75" r="60" class="f3 op2"/>
+  <path d="M120,75 L120,15 A60,60 0 0 1 177,93 Z" class="f1"/>
+  <path d="M120,75 L177,93 A60,60 0 0 1 90,127 Z" class="f2"/>
+</svg>
+<figcaption><strong>pie</strong> – podiely z celku. Len pri pár kategóriách; oko zle porovnáva uhly.</figcaption>
+</figure>
+<figure>
+<svg viewBox="0 0 240 150" role="img" aria-label="Histogram a hustota">
+  <line x1="20" y1="130" x2="230" y2="130" class="ax"/>
+  <g class="f3 op2"><rect x="30" y="115" width="30" height="15"/><rect x="60" y="80" width="30" height="50"/><rect x="90" y="40" width="30" height="90"/><rect x="120" y="30" width="30" height="100"/><rect x="150" y="70" width="30" height="60"/><rect x="180" y="110" width="30" height="20"/></g>
+  <path d="M25,128 C60,120 70,50 110,35 C140,22 160,60 185,105 C200,125 215,128 225,129" class="ln2"/>
+</svg>
+<figcaption><strong>hist</strong> + <strong>density</strong> – tvar rozdelenia; prvý pohľad na normalitu.</figcaption>
+</figure>
+<figure>
+<svg viewBox="0 0 240 150" role="img" aria-label="Čiarový graf">
+  <line x1="20" y1="130" x2="230" y2="130" class="ax"/>
+  <polyline points="20,80 40,70 60,88 80,65 100,78 120,72 140,90 160,68 180,82 200,74 220,79" class="ln1"/>
+  <polyline points="20,75 40,85 60,72 80,80 100,70 120,86 140,74 160,80 180,70 200,84 220,76" class="ln3"/>
+  <line x1="20" y1="77" x2="230" y2="77" class="warnl dash"/>
+</svg>
+<figcaption><strong>plot(type = "l")</strong> – vývoj v čase (plniace linky, skladovanie).</figcaption>
+</figure>
+</div>
+
+<h2>Anatómia krabicového grafu</h2>
+<p>Boxplot zhŕňa rozdelenie do piatich čísel a je ideálny na porovnanie viacerých produktov vedľa seba. Nevyžaduje normalitu.</p>
+<figure>
+<svg viewBox="0 0 620 230" role="img" aria-label="Popis boxplotu">
+  <line x1="60" y1="115" x2="140" y2="115" style="stroke:var(--ink-2);stroke-width:1.5"/>
+  <line x1="60" y1="95" x2="60" y2="135" style="stroke:var(--ink-2);stroke-width:1.5"/>
+  <rect x="140" y="80" width="200" height="70" class="boxa"/>
+  <line x1="230" y1="80" x2="230" y2="150" style="stroke:var(--ink);stroke-width:3"/>
+  <line x1="340" y1="115" x2="440" y2="115" style="stroke:var(--ink-2);stroke-width:1.5"/>
+  <line x1="440" y1="95" x2="440" y2="135" style="stroke:var(--ink-2);stroke-width:1.5"/>
+  <circle cx="540" cy="115" r="6" style="fill:none;stroke:var(--warn);stroke-width:2"/>
+  <g class="t-small">
+    <text x="60" y="176" text-anchor="middle">minimum</text><text x="60" y="190" text-anchor="middle">(bez odľahlých)</text>
+    <text x="140" y="66" text-anchor="middle">Q1 (25 %)</text>
+    <text x="230" y="176" text-anchor="middle" class="t-strong">medián</text>
+    <text x="340" y="66" text-anchor="middle">Q3 (75 %)</text>
+    <text x="440" y="176" text-anchor="middle">maximum</text>
+    <text x="540" y="176" text-anchor="middle" class="t-warn">odľahlá hodnota</text>
+    <text x="540" y="190" text-anchor="middle">&gt; Q3 + 1,5·IQR</text>
+  </g>
+  <line x1="140" y1="30" x2="340" y2="30" class="arrow" style="marker-start:url(#arr)"/>
+  <text x="240" y="22" text-anchor="middle" class="t-small">IQR – medzikvartilové rozpätie (stred 50 % dát)</text>
+</svg>
+</figure>
+
+<h2>Ktorý graf kedy?</h2>
+<div class="tablewrap"><table>
+<tr><th>Otázka</th><th>Dáta</th><th>Graf v R</th></tr>
+<tr><td>Ktorý produkt má najvyššie hodnotenie?</td><td>priemery skupín</td><td><code>barplot()</code>, <code>dotchart()</code></td></tr>
+<tr><td>Líšia sa produkty aj rozptylom?</td><td>všetky hodnotenia</td><td><code>boxplot()</code></td></tr>
+<tr><td>Aké je rozdelenie hodnôt?</td><td>1 spojitá premenná</td><td><code>hist()</code>, <code>plot(density())</code></td></tr>
+<tr><td>Ako sa hodnota mení v čase?</td><td>časový rad</td><td><code>plot(type="l")</code> + <code>lines()</code></td></tr>
+<tr><td>Súvisia dve premenné?</td><td>2 spojité premenné</td><td><code>plot(x, y)</code></td></tr>
+<tr><td>Aký je podiel kategórií?</td><td>počty (≤ 5 kategórií)</td><td><code>pie()</code>, radšej <code>barplot()</code></td></tr>
+</table></div>
+
+<h2>Grafy po vrstvách</h2>
+<p>V základnej grafike R najprv nakreslíme „plátno“ funkciou <code>plot()</code> a potom doň pridávame vrstvy – nič sa neprekresľuje:</p>
+<pre>plot(lin1, type = "l", main = "Plnenie", xlab = "s", ylab = "ml")  # plátno + 1. linka
+lines(lin2, col = "lightblue")        # 2. linka
+abline(h = mean(lin1), col = "red")   # vodorovná čiara priemeru
+grid(nx = 6, ny = NA, col = "gray")   # zvislá mriežka</pre>
+<div class="note"><strong>Finančné grafy</strong>Sviečkový graf (<code>candleChart</code> z balíka quantmod) zobrazuje pre každý deň otváraciu, zatváraciu, najvyššiu a najnižšiu cenu. Indikátory ako MACD, RSI či Bollingerove pásma sú kĺzavé štatistiky nad týmito dátami – rovnaký princíp, aký používa aj regulačný diagram pri kontrole kvality výroby.</div>
+<div class="warn"><strong>Častá chyba</strong><code>barplot(a, b)</code> nenakreslí dve série – druhý argument je šírka stĺpcov. Dve série kreslíme ako maticu: <code>barplot(rbind(a, b), beside = TRUE)</code>.</div>
+
+<nav class="pager">
+<a class="prev" href="cvicenie03.html"><span>← Predchádzajúce</span>3. Práca s dátami v R</a>
+<a class="next" href="cvicenie05a.html"><span>Nasledujúce →</span>5a. Normalita a porovnanie dvoch vzoriek</a>
+</nav>
+</div>
+</body>
+</html>
