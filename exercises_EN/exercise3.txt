@@ -1,17 +1,20 @@
-# Exercise 3. Working with data
+# ============================================================
+# Exercise 3: Working with data in R
+# Theory: https://senzorika.github.io/SaIT/theory_EN/exercise03.html
+# ============================================================
 
 #--------------------------------------------------------------
 # defining a variable/object (scalar)
 #--------------------------------------------------------------
-january = 31
-february = 28
-march = 31
-quarter = (january+february+march)
+january <- 31
+february <- 28
+march <- 31
+quarter <- (january+february+march)
 
 #--------------------------------------------------------------
 # defining a vector
 #--------------------------------------------------------------
-vector =c(10.2,11,10.3,14,10.1,7,8,8,8,8,9,10.2)
+vector <- c(10.2,11,10.3,14,10.1,7,8,8,8,8,9,10.2)
 
 #--------------------------------------------------------------
 # defining a matrix
@@ -23,34 +26,34 @@ solve(m) # inverse matrix
 #--------------------------------------------------------------
 # defining a data.frame
 #--------------------------------------------------------------
-months =c("january","february","march","april","may","june","july","august","september","october","november","december")
-days =c(31,28,31,30,31,30,31,31,30,31,30,31)
-chocolate_use = c(1520,1780,1530,1440,1265,1489,1583,1699,1530,1667,1863,1688)
-costs=chocolate_use*1.75 # 1.75€ is the cost per litre of chocolate coating
-year = data.frame(months,days,chocolate_use,costs)
+months <- c("january","february","march","april","may","june","july","august","september","october","november","december")
+days <- c(31,28,31,30,31,30,31,31,30,31,30,31)
+chocolate_use <- c(1520,1780,1530,1440,1265,1489,1583,1699,1530,1667,1863,1688)
+costs <- chocolate_use*1.75 # 1.75€ is the cost per litre of chocolate coating
+year <- data.frame(months,days,chocolate_use,costs)
 
 #--------------------------------------------------------------
 # generating random variables
 #--------------------------------------------------------------
 set.seed(24) # set the random generator seed
-letters5= sample(LETTERS, 5) # 5 random letters from the alphabet
-a = c(sample(1:9, size=5, replace=TRUE)) # random integers
-b=rnorm(200, mean=10, sd=0.2) # random numbers from a normal distribution with given parameters
+letters5 <- sample(LETTERS, 5) # 5 random letters from the alphabet
+a <- c(sample(1:9, size=5, replace=TRUE)) # random integers
+b <- rnorm(200, mean=10, sd=0.2) # random numbers from a normal distribution with given parameters
 
 # generating a text variable WITH CHANGED PARAMETERS
-assessor= rep(c("H1","H2","H3","H4"),times=1, each=4) # each value 4x in a row within one cycle
-product= rep(c("A","B","C","D"),times=4) # each value 1x in a row, in four cycles
+assessor <- rep(c("H1","H2","H3","H4"),times=1, each=4) # each value 4x in a row within one cycle
+product <- rep(c("A","B","C","D"),times=4) # each value 1x in a row, in four cycles
 
 # loading data from a remote (internet) address (MOLAR MASSES)
 source("http://senzorika.com/sait/datasety/mol.txt")
-results<-read.table("http://senzorika.com/sait/datasety/export.txt", sep=",")
+results <- read.table("http://senzorika.com/sait/datasety/export.txt", sep=",")
 
 #--------------------------------------------------------------
 # removing some elements from a vector/dataset
 #--------------------------------------------------------------
-x = c("a", "b", "c", "d", "e")
-y=x[-c(2:4)]; # without elements 2 to 4
-z=x[-c(2,3,5)]; # without elements 2, 3 and 5
+x <- c("a", "b", "c", "d", "e")
+y <- x[-c(2:4)]; # without elements 2 to 4
+z <- x[-c(2,3,5)]; # without elements 2, 3 and 5
 
 
 # ----------------------------------------------------------------------------------------------------

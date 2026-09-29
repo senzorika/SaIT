@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>14. Statistical power and panel size</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../teoria/style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ink-3)"/></marker></defs></svg>
+<div class="wrap">
+<header class="top"><a class="brand" href="index.html">Sensometrics in R · theory</a><span class="toplinks"><a href="index.html">All exercises</a><a class="lang" href="../teoria/cvicenie14.html">Slovensky</a></span></header>
+
+<section class="hero"><span class="num">EXERCISE 14</span><h1>Statistical power and panel size</h1><p class="lead">How many assessors are needed? Power, sample size for discrimination tests, the t-test and ANOVA.</p>
+<div class="files"><a href="../cvicenie14.txt">Script (SK): cvicenie14.txt</a><a href="../exercises_EN/exercise14.txt">Script (EN): exercise14.txt</a></div></section>
+<div class="goals"><h2>What you will learn</h2><ul>
+<li>what statistical power is and why “no difference shown” often just means a small panel,</li>
+<li>to compute the required number of assessors for discrimination tests (<code>sensR</code>),</li>
+<li>to plan the sample size for a t-test and ANOVA (<code>power.t.test</code>, <code>pwr</code>).</li>
+</ul></div>
+
+<h2>Two kinds of wrong decision</h2>
+<div class="tablewrap"><table>
+<tr><th></th><th>in reality there is no difference</th><th>in reality there is a difference</th></tr>
+<tr><th>test: significant (p &lt; α)</th><td class="t-warn"><strong>type I error α</strong><br>false alarm (usually 5%)</td><td><strong>correct</strong> – probability = <strong>power 1 − β</strong></td></tr>
+<tr><th>test: not significant</th><td><strong>correct</strong></td><td><strong>type II error β</strong><br>missed difference</td></tr>
+</table></div>
+<p><strong>Power</strong> is the probability that a test detects a difference that really exists. We usually plan for 80% power (β = 0.2), for costly decisions 90%. Power grows with the size of the difference, the number of assessors and the sensitivity of the method.</p>
+
+<h2>Power in discrimination tests</h2>
+<figure>
+<svg viewBox="0 0 640 270" role="img" aria-label="Power of the triangle test">
+<line x1="60" y1="230" x2="600" y2="230" class="ax"/><line x1="60" y1="230" x2="60" y2="20" class="ax"/>
+<line x1="60" y1="230" x2="600" y2="230" class="gridl"/><text x="52" y="234" text-anchor="end" class="t-small">0</text>
+<line x1="60" y1="190.0" x2="600" y2="190.0" class="gridl"/><text x="52" y="194.0" text-anchor="end" class="t-small">0.2</text>
+<line x1="60" y1="150.0" x2="600" y2="150.0" class="gridl"/><text x="52" y="154.0" text-anchor="end" class="t-small">0.4</text>
+<line x1="60" y1="110.0" x2="600" y2="110.0" class="gridl"/><text x="52" y="114.0" text-anchor="end" class="t-small">0.6</text>
+<line x1="60" y1="70.0" x2="600" y2="70.0" class="gridl"/><text x="52" y="74.0" text-anchor="end" class="t-small">0.8</text>
+<line x1="60" y1="30" x2="600" y2="30" class="gridl"/><text x="52" y="34" text-anchor="end" class="t-small">1</text>
+<text x="60" y="248" text-anchor="middle" class="t-small">0</text>
+<text x="190.0" y="248" text-anchor="middle" class="t-small">0.5</text>
+<text x="320" y="248" text-anchor="middle" class="t-small">1</text>
+<text x="450.0" y="248" text-anchor="middle" class="t-small">1.5</text>
+<text x="580" y="248" text-anchor="middle" class="t-small">2</text>
+<polyline points="60.0,221.5 73.0,221.5 86.0,221.3 99.0,220.9 112.0,220.5 125.0,219.8 138.0,219.0 151.0,218.0 164.0,216.7 177.0,215.1 190.0,213.3 203.0,211.0 216.0,208.4 229.0,205.2 242.0,201.5 255.0,197.3 268.0,192.4 281.0,186.8 294.0,180.5 307.0,173.5 320.0,165.7 333.0,157.3 346.0,148.3 359.0,138.9 372.0,129.0 385.0,119.0 398.0,109.0 411.0,99.2 424.0,89.7 437.0,80.8 450.0,72.5 463.0,65.0 476.0,58.3 489.0,52.5 502.0,47.6 515.0,43.5 528.0,40.1 541.0,37.5 554.0,35.4 567.0,33.8 580.0,32.7" style="stroke:var(--c3);stroke-width:2.5;fill:none"/>
+<polyline points="60.0,221.3 73.0,221.2 86.0,221.0 99.0,220.5 112.0,219.8 125.0,218.8 138.0,217.5 151.0,215.9 164.0,213.9 177.0,211.3 190.0,208.2 203.0,204.3 216.0,199.6 229.0,194.0 242.0,187.4 255.0,179.7 268.0,170.8 281.0,160.8 294.0,149.8 307.0,138.0 320.0,125.5 333.0,112.8 346.0,100.2 359.0,88.1 372.0,76.8 385.0,66.7 398.0,57.9 411.0,50.6 424.0,44.6 437.0,40.1 450.0,36.7 463.0,34.3 476.0,32.6 489.0,31.6 502.0,30.9 515.0,30.5 528.0,30.3 541.0,30.1 554.0,30.1 567.0,30.0 580.0,30.0" style="stroke:var(--c2);stroke-width:2.5;fill:none"/>
+<polyline points="60.0,222.1 73.0,222.0 86.0,221.7 99.0,221.0 112.0,220.1 125.0,218.7 138.0,216.9 151.0,214.5 164.0,211.3 177.0,207.3 190.0,202.1 203.0,195.5 216.0,187.4 229.0,177.7 242.0,166.1 255.0,152.9 268.0,138.2 281.0,122.5 294.0,106.5 307.0,91.0 320.0,76.5 333.0,63.9 346.0,53.4 359.0,45.3 372.0,39.4 385.0,35.5 398.0,32.9 411.0,31.5 424.0,30.7 437.0,30.3 450.0,30.1 463.0,30.0 476.0,30.0 489.0,30.0 502.0,30.0 515.0,30.0 528.0,30.0 541.0,30.0 554.0,30.0 567.0,30.0 580.0,30.0" style="stroke:var(--c1);stroke-width:2.5;fill:none"/>
+<line x1="500" y1="150" x2="522" y2="150" style="stroke:var(--c3);stroke-width:3"/><text x="528" y="154" class="t-small">n = 50</text>
+<line x1="500" y1="168" x2="522" y2="168" style="stroke:var(--c2);stroke-width:3"/><text x="528" y="172" class="t-small">n = 100</text>
+<line x1="500" y1="186" x2="522" y2="186" style="stroke:var(--c1);stroke-width:3"/><text x="528" y="190" class="t-small">n = 200</text>
+<line x1="60" y1="70.0" x2="600" y2="70.0" class="warnl dash"/><text x="66" y="64.0" class="t-small t-warn">target power 0.8</text>
+<text x="330" y="266" text-anchor="middle" class="t-small">true difference d′</text>
+<text x="16" y="125" text-anchor="middle" transform="rotate(-90 16 125)" class="t-small">power</text>
+</svg>
+<figcaption>Power of the triangle test as a function of the true difference d′. With 100 assessors we detect d′ = 1 only with about 50% probability – a coin toss. About 200 assessors are needed for 80% power at d′ = 1.</figcaption>
+</figure>
+<figure>
+<svg viewBox="0 0 640 220" role="img" aria-label="Required number of assessors for d′ = 1">
+<text x="120" y="39" text-anchor="end" class="t-strong">2-AFC</text>
+<rect x="130" y="20" width="42.4" height="26" rx="4" style="fill:var(--c1)"/>
+<text x="178.4" y="39" class="t-strong">23</text>
+<text x="120" y="77" text-anchor="end" class="t-strong">3-AFC</text>
+<rect x="130" y="58" width="29.5" height="26" rx="4" style="fill:var(--c3)"/>
+<text x="165.5" y="77" class="t-strong">16</text>
+<text x="120" y="115" text-anchor="end" class="t-strong">tetrad</text>
+<rect x="130" y="96" width="112.4" height="26" rx="4" style="fill:var(--c4)"/>
+<text x="248.4" y="115" class="t-strong">61</text>
+<text x="120" y="153" text-anchor="end" class="t-strong">triangle</text>
+<rect x="130" y="134" width="372.1" height="26" rx="4" style="fill:var(--c2)"/>
+<text x="508.1" y="153" class="t-strong">202</text>
+<text x="120" y="191" text-anchor="end" class="t-strong">duo-trio</text>
+<rect x="130" y="172" width="420.0" height="26" rx="4" style="fill:var(--c5)"/>
+<text x="556.0" y="191" class="t-strong">228</text>
+<text x="130" y="214" class="t-small">number of assessors for d′ = 1, α = 0.05, 80% power (exact binomial calculation)</text>
+</svg>
+<figcaption>The choice of method changes the panel size tenfold. If you know which attribute differs, use 2-AFC or 3-AFC; the tetrad is a good replacement for the triangle when the direction of the difference is unknown.</figcaption>
+</figure>
+<pre>d.primeSS(1, target.power = 0.80, method = "triangle")  # required n
+d.primePwr(1, sample.size = 100, method = "triangle")   # power for a given n
+discrimSS(pdA = 0.2, target.power = 0.80, pGuess = 1/3) # specified via pd instead of d′</pre>
+
+<h2>Answer to the question from exercise 5a</h2>
+<p>In the paired preference test, 34 of 60 consumers chose sample A (57%), p = 0.37. If the true preference really is 57%:</p>
+<ul>
+<li>the power of the test with 60 people is only about <strong>26%</strong> – a non-significant result was almost certain,</li>
+<li>about <strong>350 consumers</strong> are needed for 80% power.</li>
+</ul>
+<div class="note"><strong>Why not 236?</strong>Exercise 5a said that at 57% the result would become significant from about 236 respondents. That is the number at which <em>exactly 57%</em> crosses the significance limit – but the real result fluctuates, so such a test would succeed only about half the time. Planning for 80% power gives a larger, safer number.</div>
+
+<h2>Scale data: t-test and ANOVA</h2>
+<p>For continuous ratings we need the <strong>effect size</strong>: the difference we want to detect (δ) and the standard deviation (σ) – from a pilot test or past measurements.</p>
+<div class="formula">n ≈ 2 (z<sub>1−α/2</sub> + z<sub>1−β</sub>)² σ² / δ² &nbsp; (two independent groups)
+<small>With δ = 0.5 and σ = 1: two independent groups need 64 people per group, a paired design only 34 assessors in total.</small></div>
+<div class="tablewrap"><table>
+<tr><th>Situation</th><th>R</th><th>Result (α = 0.05, 80% power)</th></tr>
+<tr><td>paired t-test, δ = 0.5, σ = 1</td><td><code>power.t.test(delta=0.5, sd=1, power=0.8, type="paired")</code></td><td>n = 34</td></tr>
+<tr><td>two independent groups</td><td><code>… type="two.sample"</code></td><td>n = 64 per group</td></tr>
+<tr><td>ANOVA, 4 products, medium effect f = 0.25</td><td><code>pwr.anova.test(k=4, f=0.25, power=0.8)</code></td><td>n = 45 per group</td></tr>
+</table></div>
+<div class="warn"><strong>Plan power before the experiment</strong>Computing “power after the test” from the observed difference (post-hoc power) adds nothing – it is just a transformation of the p-value. The meaningful question is: what is the smallest difference that matters in practice, and how many assessors are needed to detect it reliably?</div>
+
+<nav class="pager">
+<a class="prev" href="exercise13.html"><span>← Previous</span>13. Thurstonian model and d′</a>
+<a class="next" href="exercise15.html"><span>Next →</span>15. Sensory panel performance</a>
+</nav>
+</div>
+</body>
+</html>

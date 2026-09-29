@@ -1,0 +1,63 @@
+# ============================================================
+# Cvičenie 17: CATA a napping – rýchle metódy profilovania
+# Teória: https://senzorika.github.io/SaIT/teoria/cvicenie17.html
+# ============================================================
+
+# install.packages(c("FactoMineR", "SensoMineR", "DescTools"))
+library(FactoMineR)
+library(SensoMineR)
+library(DescTools)
+
+#---------------------------------------------------------------------------------------
+# 1. CATA (Check-All-That-Apply) - simulacia odpovedi 40 spotrebitelov na 4 jogurty
+#---------------------------------------------------------------------------------------
+set.seed(2024)
+atributy <- c("sladky", "kysly", "kremovy", "ovocny", "husty", "umely")
+# pravdepodobnost zaskrtnutia atributu pre kazdy produkt
+p <- rbind(A = c(0.7, 0.2, 0.8, 0.3, 0.6, 0.1),
+           B = c(0.3, 0.7, 0.3, 0.2, 0.2, 0.2),
+           C = c(0.6, 0.3, 0.4, 0.8, 0.3, 0.5),
+           D = c(0.5, 0.4, 0.6, 0.5, 0.7, 0.1))
+colnames(p) <- atributy
+cata <- expand.grid(spotrebitel = factor(1:40), produkt = factor(rownames(p)))
+for (a in atributy) cata[[a]] <- rbinom(nrow(cata), 1, p[as.character(cata$produkt), a])
+head(cata)
+
+# pocetnosti zaskrtnuti: produkty x atributy
+tabulka <- sapply(atributy, function(a) tapply(cata[[a]], cata$produkt, sum))
+tabulka
+
+# Cochranov Q test pre kazdy atribut: lisia sa produkty v podiele zaskrtnuti?
+q_p <- sapply(atributy, function(a) {
+  d <- data.frame(y = cata[[a]], produkt = cata$produkt, spotrebitel = cata$spotrebitel)
+  CochranQTest(y ~ produkt | spotrebitel, data = d)$p.value
+})
+round(q_p, 4)
+
+# korespondencna analyza tabulky -> mapa produktov a atributov
+ca_cata <- CA(tabulka, graph = FALSE)
+plot(ca_cata, title = "CATA - korespondencna analyza")
+
+#---------------------------------------------------------------------------------------
+# 2. Napping (projective mapping) - vzorove data zo SensoMineR
+#---------------------------------------------------------------------------------------
+# 10 vin, kazdy hodnotitel ich rozlozil na hárok papiera 60 x 40 cm (suradnice X, Y)
+data(napping)
+head(napping.don[, 1:4])
+nappeplot(napping.don)              # rozlozenie vin u jednotlivych hodnotitelov
+
+# viacnasobna faktorova analyza (MFA): kazdy hodnotitel = skupina 2 premennych (X, Y), neskalovane
+pocet <- ncol(napping.don) / 2
+napping_mfa <- MFA(napping.don, group = rep(2, pocet), type = rep("c", pocet),
+                   name.group = paste0("H", 1:pocet), graph = FALSE)
+plot(napping_mfa, choix = "ind", title = "Napping - konsenzualna mapa vin")
+plot(napping_mfa, choix = "group")  # ktori hodnotitelia sa zhoduju s konsenzom
+
+
+# ULOHA1:
+# =========
+# Ktore atributy CATA produkty preukazne rozlisuju? Ktory jogurt je najviac "ovocny" a ktory "umely"?
+
+# ULOHA2:
+# =========
+# Popiste konsenzualnu mapu napping: ktore vina su si podobne? Ktory hodnotitel sa s panelom zhoduje najmenej?

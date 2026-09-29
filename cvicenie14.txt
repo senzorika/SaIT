@@ -1,0 +1,58 @@
+# ============================================================
+# Cvičenie 14: Sila testu a veľkosť panelu
+# Teória: https://senzorika.github.io/SaIT/teoria/cvicenie14.html
+# ============================================================
+
+# install.packages(c("sensR", "pwr"))
+library(sensR)
+library(pwr)
+
+#---------------------------------------------------------------------------------------
+# 1. Kolko laikov treba? (otvorena otazka z cvicenia 5a)
+#---------------------------------------------------------------------------------------
+# Parovy preferencny test: 34 z 60 (57 %) preferovalo vzorku A - vysledok nebol preukazny.
+# Aka je sila testu, ak skutocna preferencia je 57 %?
+power.prop.test(n = 60, p1 = 34 / 60, p2 = 0.5)          # orientacne (normalna aproximacia)
+discrimPwr(pdA = 2 * 34 / 60 - 1, sample.size = 60, pGuess = 1 / 2)  # presny binomicky vypocet
+
+# Kolko spotrebitelov treba na silu 80 %?
+discrimSS(pdA = 2 * 34 / 60 - 1, target.power = 0.80, pGuess = 1 / 2)
+
+#---------------------------------------------------------------------------------------
+# 2. Rozlisovacie testy: velkost panelu podla d'
+#---------------------------------------------------------------------------------------
+# Chceme odhalit rozdiel d' = 1 s alfa = 0.05 a silou 80 %
+d.primeSS(1, target.power = 0.80, method = "triangle")
+d.primeSS(1, target.power = 0.80, method = "duotrio")
+d.primeSS(1, target.power = 0.80, method = "threeAFC")
+d.primeSS(1, target.power = 0.80, method = "tetrad")
+
+# Sila trianglu so 100 hodnotitelmi pre rozne d'
+d_hodnoty <- seq(0, 2, by = 0.1)
+sila <- sapply(d_hodnoty, function(d) d.primePwr(d, sample.size = 100, method = "triangle"))
+plot(d_hodnoty, sila, type = "l", lwd = 2, col = "red", ylim = c(0, 1),
+     xlab = "d'", ylab = "sila testu", main = "Triangel, n = 100")
+abline(h = 0.8, lty = 2)
+
+#---------------------------------------------------------------------------------------
+# 3. Skalove data: t-test a ANOVA
+#---------------------------------------------------------------------------------------
+# Parovy t-test: chceme odhalit rozdiel 0.5 bodu, smerodajna odchylka rozdielov je 1 bod
+power.t.test(delta = 0.5, sd = 1, sig.level = 0.05, power = 0.80, type = "paired")
+
+# Nezavisle vybery (dve skupiny spotrebitelov)
+power.t.test(delta = 0.5, sd = 1, sig.level = 0.05, power = 0.80, type = "two.sample")
+
+# Jednofaktorova ANOVA pre 4 produkty, stredny efekt (Cohenovo f = 0.25)
+pwr.anova.test(k = 4, f = 0.25, sig.level = 0.05, power = 0.80)
+
+
+# ULOHA1:
+# =========
+# Planujete trojuholnikovy test na odhalenie zmeny receptury s d' = 0.8.
+# Kolko hodnotitelov potrebujete pri sile 80 % a 90 %? Porovnajte s tetradovym testom.
+
+# ULOHA2:
+# =========
+# Mate k dispozicii len 24 hodnotitelov. Aky najmensi rozdiel (v bodoch) odhali parovy t-test
+# so silou 80 %, ak smerodajna odchylka rozdielov je 1.2 bodu? (pomocka: power.t.test bez delta)

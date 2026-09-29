@@ -1,18 +1,23 @@
+# ============================================================
+# Exercise 5c: Importing Excel data and the analysis workflow
+# Theory: https://senzorika.github.io/SaIT/theory_EN/exercise05c.html
+# ============================================================
+
 # loading an online Excel file (a bit complicated) :)
 
 # this package needs to be installed
 library(readxl)
-url = "http://senzorika.com/sait/datasety/potraviny.xlsx"
-destfile = "potraviny.xlsx"
+url <- "http://senzorika.com/sait/datasety/potraviny.xlsx"
+destfile <- "potraviny.xlsx"
 curl::curl_download(url, destfile)
-foods = read_excel(destfile,sheet="4vyrobky")
+foods <- read_excel(destfile,sheet="4vyrobky")
 
 # normality test for all four products
 # (column names in the file are in Slovak: produkt = product, kvalita = quality)
-A=subset(foods, produkt == "A")
-B=subset(foods, produkt == "B")
-C=subset(foods, produkt == "C")
-D=subset(foods, produkt == "D")
+A <- subset(foods, produkt == "A")
+B <- subset(foods, produkt == "B")
+C <- subset(foods, produkt == "C")
+D <- subset(foods, produkt == "D")
 shapiro.test(A$kvalita)
 shapiro.test(B$kvalita)
 shapiro.test(C$kvalita)
@@ -20,4 +25,4 @@ shapiro.test(D$kvalita)
 
 # comparison of the four products
 kruskal.test(kvalita ~ produkt, data=foods)
-pairwise.wilcox.test(foods$kvalita,foods$produkt, p.adj="bonferroni", exact=F)
+pairwise.wilcox.test(foods$kvalita,foods$produkt, p.adj="bonferroni", exact=FALSE)

@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>13. Thurstonian model and d′</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../teoria/style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ink-3)"/></marker></defs></svg>
+<div class="wrap">
+<header class="top"><a class="brand" href="index.html">Sensometrics in R · theory</a><span class="toplinks"><a href="index.html">All exercises</a><a class="lang" href="../teoria/cvicenie13.html">Slovensky</a></span></header>
+
+<section class="hero"><span class="num">EXERCISE 13</span><h1>Thurstonian model and d′</h1><p class="lead">Discrimination tests revisited: d′ as a method-independent measure of difference, psychometric functions and the similarity test.</p>
+<div class="files"><a href="../cvicenie13.txt">Script (SK): cvicenie13.txt</a><a href="../exercises_EN/exercise13.txt">Script (EN): exercise13.txt</a></div></section>
+<div class="goals"><h2>What you will learn</h2><ul>
+<li>why the proportion of correct answers cannot be compared across discrimination tests,</li>
+<li>what Thurstonian d′ expresses and how to compute it with <code>sensR</code>,</li>
+<li>when to use a difference test and when a similarity test.</li>
+</ul></div>
+
+<h2>The problem: 42% is not always 42%</h2>
+<p>In exercise 5a the binomial test told us <em>whether</em> samples differ. It did not tell us <em>how much</em>. The proportion correct <em>pc</em> cannot answer that, because it depends on the method: the same difference between samples gives 76% correct answers in a 2-AFC test but only 42% in a triangle test. We need a measure that describes the samples, not the test.</p>
+
+<h2>The Thurstonian model</h2>
+<p>Thurstone (1927) assumed that the perceived intensity varies from tasting to tasting around a mean value according to a normal distribution. Two samples are two distributions; their distance measured in standard deviations is <strong>d′ (d-prime)</strong>.</p>
+<figure>
+<svg viewBox="0 0 640 230" role="img" aria-label="Thurstonian model – two normal distributions">
+<line x1="40" y1="190" x2="620" y2="190" class="ax"/>
+<polygon points="80.0,190 80.0,189.7 84.0,189.6 88.0,189.5 92.0,189.4 96.0,189.3 100.0,189.2 104.0,189.1 108.0,188.9 112.0,188.8 116.0,188.6 120.0,188.3 124.0,188.0 128.0,187.7 132.0,187.4 136.0,187.0 140.0,186.5 144.0,186.0 148.0,185.5 152.0,184.8 156.0,184.1 160.0,183.3 164.0,182.5 168.0,181.5 172.0,180.4 176.0,179.2 180.0,177.9 184.0,176.5 188.0,175.0 192.0,173.3 196.0,171.5 200.0,169.5 204.0,167.4 208.0,165.1 212.0,162.6 216.0,160.0 220.0,157.2 224.0,154.3 228.0,151.1 232.0,147.9 236.0,144.4 240.0,140.8 244.0,137.0 248.0,133.1 252.0,129.1 256.0,124.9 260.0,120.6 264.0,116.2 268.0,111.7 272.0,107.2 276.0,102.6 280.0,98.1 284.0,93.5 288.0,88.9 292.0,84.4 296.0,79.9 300.0,75.6 304.0,71.3 308.0,67.3 312.0,63.4 316.0,59.7 320.0,56.2 324.0,53.0 328.0,50.1 332.0,47.4 336.0,45.1 340.0,43.1 344.0,41.4 348.0,40.1 352.0,39.2 356.0,38.6 360.0,38.4 364.0,38.6 368.0,39.2 372.0,40.1 376.0,41.4 380.0,43.1 384.0,45.1 388.0,47.4 392.0,50.1 396.0,53.0 400.0,56.2 404.0,59.7 408.0,63.4 412.0,67.3 416.0,71.3 420.0,75.6 424.0,79.9 428.0,84.4 432.0,88.9 436.0,93.5 440.0,98.1 444.0,102.6 448.0,107.2 452.0,111.7 456.0,116.2 460.0,120.6 464.0,124.9 468.0,129.1 472.0,133.1 476.0,137.0 480.0,140.8 484.0,144.4 488.0,147.9 492.0,151.1 496.0,154.3 500.0,157.2 504.0,160.0 508.0,162.6 512.0,165.1 516.0,167.4 520.0,169.5 524.0,171.5 528.0,173.3 532.0,175.0 536.0,176.5 540.0,177.9 544.0,179.2 548.0,180.4 552.0,181.5 556.0,182.5 560.0,183.3 564.0,184.1 568.0,184.8 572.0,185.5 576.0,186.0 580.0,186.5 584.0,187.0 588.0,187.4 592.0,187.7 596.0,188.0 600.0,188.3 604.0,188.6 608.0,188.8 612.0,188.9 616.0,189.1 620.0,189.2 624.0,189.3 628.0,189.4 632.0,189.5 636.0,189.6 640.0,189.7 644.0,189.7 648.0,189.8 652.0,189.8 656.0,189.8 660.0,189.9 664.0,189.9 668.0,189.9 672.0,189.9 676.0,189.9 680.0,189.9 684.0,190.0 688.0,190.0 692.0,190.0 696.0,190.0 700.0,190.0 704.0,190.0 708.0,190.0 712.0,190.0 716.0,190.0 720.0,190.0 720.0,190" style="fill:var(--c3);fill-opacity:.15;stroke:var(--c3);stroke-width:2.5"/>
+<line x1="360.0" y1="190" x2="360.0" y2="38.4" style="stroke:var(--c3);stroke-dasharray:4 3"/>
+<text x="360.0" y="208" text-anchor="middle" class="t-small t-strong" style="fill:var(--c3)">control A</text>
+<polygon points="80.0,190 80.0,190.0 84.0,190.0 88.0,190.0 92.0,190.0 96.0,190.0 100.0,190.0 104.0,190.0 108.0,190.0 112.0,190.0 116.0,190.0 120.0,189.9 124.0,189.9 128.0,189.9 132.0,189.9 136.0,189.9 140.0,189.9 144.0,189.8 148.0,189.8 152.0,189.8 156.0,189.7 160.0,189.7 164.0,189.6 168.0,189.5 172.0,189.4 176.0,189.3 180.0,189.2 184.0,189.1 188.0,188.9 192.0,188.8 196.0,188.6 200.0,188.3 204.0,188.0 208.0,187.7 212.0,187.4 216.0,187.0 220.0,186.5 224.0,186.0 228.0,185.5 232.0,184.8 236.0,184.1 240.0,183.3 244.0,182.5 248.0,181.5 252.0,180.4 256.0,179.2 260.0,177.9 264.0,176.5 268.0,175.0 272.0,173.3 276.0,171.5 280.0,169.5 284.0,167.4 288.0,165.1 292.0,162.6 296.0,160.0 300.0,157.2 304.0,154.3 308.0,151.1 312.0,147.9 316.0,144.4 320.0,140.8 324.0,137.0 328.0,133.1 332.0,129.1 336.0,124.9 340.0,120.6 344.0,116.2 348.0,111.7 352.0,107.2 356.0,102.6 360.0,98.1 364.0,93.5 368.0,88.9 372.0,84.4 376.0,79.9 380.0,75.6 384.0,71.3 388.0,67.3 392.0,63.4 396.0,59.7 400.0,56.2 404.0,53.0 408.0,50.1 412.0,47.4 416.0,45.1 420.0,43.1 424.0,41.4 428.0,40.1 432.0,39.2 436.0,38.6 440.0,38.4 444.0,38.6 448.0,39.2 452.0,40.1 456.0,41.4 460.0,43.1 464.0,45.1 468.0,47.4 472.0,50.1 476.0,53.0 480.0,56.2 484.0,59.7 488.0,63.4 492.0,67.3 496.0,71.3 500.0,75.6 504.0,79.9 508.0,84.4 512.0,88.9 516.0,93.5 520.0,98.1 524.0,102.6 528.0,107.2 532.0,111.7 536.0,116.2 540.0,120.6 544.0,124.9 548.0,129.1 552.0,133.1 556.0,137.0 560.0,140.8 564.0,144.4 568.0,147.9 572.0,151.1 576.0,154.3 580.0,157.2 584.0,160.0 588.0,162.6 592.0,165.1 596.0,167.4 600.0,169.5 604.0,171.5 608.0,173.3 612.0,175.0 616.0,176.5 620.0,177.9 624.0,179.2 628.0,180.4 632.0,181.5 636.0,182.5 640.0,183.3 644.0,184.1 648.0,184.8 652.0,185.5 656.0,186.0 660.0,186.5 664.0,187.0 668.0,187.4 672.0,187.7 676.0,188.0 680.0,188.3 684.0,188.6 688.0,188.8 692.0,188.9 696.0,189.1 700.0,189.2 704.0,189.3 708.0,189.4 712.0,189.5 716.0,189.6 720.0,189.7 720.0,190" style="fill:var(--c2);fill-opacity:.15;stroke:var(--c2);stroke-width:2.5"/>
+<line x1="440.0" y1="190" x2="440.0" y2="38.4" style="stroke:var(--c2);stroke-dasharray:4 3"/>
+<text x="440.0" y="208" text-anchor="middle" class="t-small t-strong" style="fill:var(--c2)">sample B</text>
+<line x1="360.0" y1="24.401933447455576" x2="440.0" y2="24.401933447455576" class="arrow" style="marker-start:url(#arr)"/>
+<text x="400.0" y="16.401933447455576" text-anchor="middle" class="t-strong">d′ = 1</text>
+<text x="600" y="224" text-anchor="end" class="t-small">perceived intensity (in standard deviation units)</text>
+</svg>
+<figcaption>At d′ = 1 the distributions overlap a lot – in a single tasting sample B often seems weaker than A. That is why nobody discriminates “100%”.</figcaption>
+</figure>
+<div class="tablewrap"><table>
+<tr><th>d′</th><th>interpretation (rule of thumb)</th></tr>
+<tr><td>&lt; 0.5</td><td>difference practically imperceptible</td></tr>
+<tr><td>≈ 1</td><td>small, but a trained panel detects it</td></tr>
+<tr><td>≥ 2</td><td>clear difference, noticed even by ordinary consumers</td></tr>
+</table></div>
+
+<h2>Psychometric functions – the bridge between d′ and pc</h2>
+<p>Every method uses a different decision strategy and therefore has a different function pc = f(d′). <code>psyfun()</code> computes it, <code>psyinv()</code> goes the other way.</p>
+<figure>
+<svg viewBox="0 0 640 290" role="img" aria-label="Psychometric functions of discrimination tests">
+<line x1="60" y1="250" x2="600" y2="250" class="ax"/><line x1="60" y1="250" x2="60" y2="20" class="ax"/>
+<line x1="60" y1="250" x2="600" y2="250" class="gridl"/><text x="52" y="254" text-anchor="end" class="t-small">0</text>
+<line x1="60" y1="195.0" x2="600" y2="195.0" class="gridl"/><text x="52" y="199.0" text-anchor="end" class="t-small">0.25</text>
+<line x1="60" y1="140.0" x2="600" y2="140.0" class="gridl"/><text x="52" y="144.0" text-anchor="end" class="t-small">0.5</text>
+<line x1="60" y1="85.0" x2="600" y2="85.0" class="gridl"/><text x="52" y="89.0" text-anchor="end" class="t-small">0.75</text>
+<line x1="60" y1="30" x2="600" y2="30" class="gridl"/><text x="52" y="34" text-anchor="end" class="t-small">1</text>
+<text x="60" y="268" text-anchor="middle" class="t-small">0</text>
+<text x="190" y="268" text-anchor="middle" class="t-small">1</text>
+<text x="320" y="268" text-anchor="middle" class="t-small">2</text>
+<text x="450" y="268" text-anchor="middle" class="t-small">3</text>
+<text x="580" y="268" text-anchor="middle" class="t-small">4</text>
+<line x1="190" y1="20" x2="190" y2="250" class="warnl dash"/>
+<polyline points="60.0,140.0 73.0,133.8 86.0,127.6 99.0,121.5 112.0,115.5 125.0,109.6 138.0,103.9 151.0,98.3 164.0,92.9 177.0,87.7 190.0,82.7 203.0,78.0 216.0,73.6 229.0,69.4 242.0,65.4 255.0,61.8 268.0,58.4 281.0,55.2 294.0,52.3 307.0,49.7 320.0,47.3 333.0,45.1 346.0,43.2 359.0,41.4 372.0,39.9 385.0,38.5 398.0,37.3 411.0,36.2 424.0,35.2 437.0,34.4 450.0,33.7 463.0,33.1 476.0,32.6 489.0,32.2 502.0,31.8 515.0,31.5 528.0,31.2 541.0,31.0 554.0,30.8 567.0,30.6 580.0,30.5" style="stroke:var(--c1);stroke-width:2.5;fill:none"/>
+<circle cx="190" cy="82.7" r="4" style="fill:var(--c1)"/>
+<line x1="470" y1="190" x2="492" y2="190" style="stroke:var(--c1);stroke-width:3"/><text x="498" y="194" class="t-small">2-AFC (0.76)</text>
+<polyline points="60.0,176.7 73.0,170.4 86.0,163.9 99.0,157.3 112.0,150.6 125.0,143.8 138.0,137.1 151.0,130.3 164.0,123.6 177.0,117.0 190.0,110.6 203.0,104.3 216.0,98.2 229.0,92.4 242.0,86.8 255.0,81.5 268.0,76.5 281.0,71.8 294.0,67.4 307.0,63.3 320.0,59.5 333.0,56.1 346.0,52.9 359.0,50.0 372.0,47.4 385.0,45.1 398.0,43.0 411.0,41.2 424.0,39.5 437.0,38.1 450.0,36.9 463.0,35.8 476.0,34.8 489.0,34.0 502.0,33.4 515.0,32.8 528.0,32.3 541.0,31.9 554.0,31.5 567.0,31.2 580.0,31.0" style="stroke:var(--c3);stroke-width:2.5;fill:none"/>
+<circle cx="190" cy="110.6" r="4" style="fill:var(--c3)"/>
+<line x1="470" y1="208" x2="492" y2="208" style="stroke:var(--c3);stroke-width:3"/><text x="498" y="212" class="t-small">3-AFC (0.63)</text>
+<polyline points="60.0,176.7 73.0,176.3 86.0,175.1 99.0,173.1 112.0,170.3 125.0,166.9 138.0,162.8 151.0,158.1 164.0,153.0 177.0,147.3 190.0,141.4 203.0,135.1 216.0,128.7 229.0,122.1 242.0,115.5 255.0,109.0 268.0,102.6 281.0,96.3 294.0,90.2 307.0,84.4 320.0,78.9 333.0,73.7 346.0,68.9 359.0,64.4 372.0,60.3 385.0,56.5 398.0,53.0 411.0,50.0 424.0,47.2 437.0,44.7 450.0,42.5 463.0,40.6 476.0,39.0 489.0,37.5 502.0,36.3 515.0,35.2 528.0,34.3 541.0,33.5 554.0,32.9 567.0,32.4 580.0,31.9" style="stroke:var(--c4);stroke-width:2.5;fill:none"/>
+<circle cx="190" cy="141.4" r="4" style="fill:var(--c4)"/>
+<line x1="470" y1="226" x2="492" y2="226" style="stroke:var(--c4);stroke-width:3"/><text x="498" y="230" class="t-small">tetrad (0.49)</text>
+<polyline points="60.0,140.0 73.0,139.8 86.0,139.2 99.0,138.2 112.0,136.8 125.0,135.1 138.0,133.0 151.0,130.6 164.0,127.9 177.0,125.0 190.0,121.9 203.0,118.5 216.0,115.0 229.0,111.4 242.0,107.8 255.0,104.0 268.0,100.3 281.0,96.6 294.0,92.9 307.0,89.2 320.0,85.7 333.0,82.3 346.0,78.9 359.0,75.7 372.0,72.6 385.0,69.7 398.0,66.9 411.0,64.3 424.0,61.8 437.0,59.4 450.0,57.2 463.0,55.1 476.0,53.2 489.0,51.3 502.0,49.7 515.0,48.1 528.0,46.6 541.0,45.3 554.0,44.0 567.0,42.8 580.0,41.7" style="stroke:var(--c5);stroke-width:2.5;fill:none"/>
+<circle cx="190" cy="121.9" r="4" style="fill:var(--c5)"/>
+<line x1="470" y1="244" x2="492" y2="244" style="stroke:var(--c5);stroke-width:3"/><text x="498" y="248" class="t-small">duo-trio (0.58)</text>
+<polyline points="60.0,176.7 73.0,176.5 86.0,175.9 99.0,174.9 112.0,173.5 125.0,171.7 138.0,169.6 151.0,167.2 164.0,164.4 177.0,161.3 190.0,158.0 203.0,154.5 216.0,150.7 229.0,146.8 242.0,142.8 255.0,138.6 268.0,134.3 281.0,130.0 294.0,125.6 307.0,121.3 320.0,116.9 333.0,112.6 346.0,108.4 359.0,104.2 372.0,100.1 385.0,96.1 398.0,92.3 411.0,88.5 424.0,84.9 437.0,81.4 450.0,78.1 463.0,74.9 476.0,71.8 489.0,68.9 502.0,66.2 515.0,63.5 528.0,61.1 541.0,58.7 554.0,56.5 567.0,54.5 580.0,52.5" style="stroke:var(--c2);stroke-width:2.5;fill:none"/>
+<circle cx="190" cy="158.0" r="4" style="fill:var(--c2)"/>
+<line x1="470" y1="262" x2="492" y2="262" style="stroke:var(--c2);stroke-width:3"/><text x="498" y="266" class="t-small">triangle (0.42)</text>
+<text x="196" y="34" class="t-small t-warn">d′ = 1</text>
+<text x="330" y="286" text-anchor="middle" class="t-small">d′ (Thurstonian distance)</text>
+<text x="16" y="135" text-anchor="middle" transform="rotate(-90 16 135)" class="t-small">pc – proportion correct</text>
+</svg>
+<figcaption>At the same d′ = 1 (red line) the methods give very different proportions of correct answers. Tests with a specified attribute (2-AFC, 3-AFC – “which is sweeter?”) are more sensitive than unspecified ones (triangle, duo-trio – “which is different?”). The tetrad is a compromise.</figcaption>
+</figure>
+
+<h2>The output of <code>discrim()</code></h2>
+<pre>discrim(42, 100, method = "triangle")
+
+        Estimate Std. Error  Lower  Upper
+pc         0.420    0.04936 0.3333 0.5229
+pd         0.130    0.07403 0.0000 0.2843
+d-prime    1.012    0.31377 0.0000 1.5849
+
+Result of difference test:
+'exact' binomial test:  p-value = 0.04337</pre>
+<div class="tablewrap"><table>
+<tr><th>Row</th><th>Meaning</th></tr>
+<tr><td><code>pc</code></td><td>proportion of correct answers (42/100)</td></tr>
+<tr><td><code>pd</code></td><td>proportion of “true discriminators” after removing guessing: pd = (pc − p<sub>g</sub>) / (1 − p<sub>g</sub>)</td></tr>
+<tr><td><code>d-prime</code></td><td>Thurstonian d′ with a confidence interval – comparable across methods</td></tr>
+</table></div>
+<div class="note"><strong>Task 1 – comparing two tests</strong>Triangle 42/100 gives d′ ≈ 1.0. Duo-trio 36/50 (72%) looks similarly “successful”, but corresponds to d′ ≈ 1.8 – the second product differs from the control almost twice as much. Without d′ we would not see this from pc.</div>
+
+<h2>Difference test vs. similarity test</h2>
+<p>When changing a supplier or reducing sugar we want to show the opposite: that the samples are <em>similar enough</em>. Then we swap the hypotheses – H<sub>0</sub>: the difference is at least pd<sub>0</sub>; H<sub>1</sub>: it is smaller.</p>
+<pre>discrim(38, 100, method = "triangle", test = "similarity", pd0 = 0.2)</pre>
+<div class="warn"><strong>No difference shown ≠ similarity</strong>A non-significant difference test (p ≥ 0.05) does not mean the samples are the same – the panel may simply have been small. Similarity must be shown with a similarity test and a limit pd<sub>0</sub> chosen in advance (e.g. 0.2 – at most 20% discriminators).</div>
+
+<nav class="pager">
+<a class="prev" href="exercise12.html"><span>← Previous</span>12. JAR scale and radar chart</a>
+<a class="next" href="exercise14.html"><span>Next →</span>14. Statistical power and panel size</a>
+</nav>
+</div>
+</body>
+</html>

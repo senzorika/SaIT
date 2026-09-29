@@ -1,3 +1,8 @@
+# ============================================================
+# Cvičenie 5b: Porovnanie viacerých vzoriek
+# Teória: https://senzorika.github.io/SaIT/teoria/cvicenie05b.html
+# ============================================================
+
 # NEPARAMETRICKE TESTY
 
 # 10 hodnotitelov (po 5 v dvoch nezavislych laboratoriach) hodnotilo 3 vzorky cokolady. 
@@ -7,19 +12,19 @@
 #Kruskal-wallisov test (neparametricka analyza rozptylu)
 #---------------------------------------------------------------------------------------
 #zadanie vstupnych udajov
-produktA=c(1.5,2,2.5,3,2.5,2.5,3,3,2,5)
-produktB=c(4,3,6,5,2,6,1,6,5.5,4)
-produktC=c(6,6,7.5,7,5,1,8,7,7.5,5.5)
+produktA <- c(1.5,2,2.5,3,2.5,2.5,3,3,2,5)
+produktB <- c(4,3,6,5,2,6,1,6,5.5,4)
+produktC <- c(6,6,7.5,7,5,1,8,7,7.5,5.5)
 boxplot(produktA,produktB,produktC)
-celkovakvalita = c(produktA,produktB,produktC)
-cokolada = factor(c(rep("A",10),rep("B",10),rep("C",10)))
-tabulka = data.frame(cokolada, celkovakvalita)
+celkovakvalita <- c(produktA,produktB,produktC)
+cokolada <- factor(c(rep("A",10),rep("B",10),rep("C",10)))
+tabulka <- data.frame(cokolada, celkovakvalita)
 
 #vypocet kruskal-wallisovho testu
 kruskal.test(celkovakvalita ~ cokolada, data=tabulka) 
 
 # ak vypocitane p<0.05 (treba vykonat viacnasobne porovnanie vzoriek pomocou Wilcoxonovho testu)
-pairwise.wilcox.test(celkovakvalita,cokolada, p.adj="bonferroni", exact=F)
+pairwise.wilcox.test(celkovakvalita,cokolada, p.adj="bonferroni", exact=FALSE)
 
 # 5 hodnotitelov zoradilo 5 vzoriek cokolady pomocou poradovej metody... 
 #---------------------------------------------------------------------------------------
@@ -28,9 +33,10 @@ pairwise.wilcox.test(celkovakvalita,cokolada, p.adj="bonferroni", exact=F)
 # balik PMCMR bol z CRAN odstraneny, nahradou je PMCMRplus
 require(PMCMRplus)
 #chut <- c(1,2,3,4,5,1,2,3,4,5,1,2,3,4,5,1,2,3,4,5,1,2,3,4,5) #symetricke rozdelenie poradi
-chut <- c(sample(1:5, size=5, replace=F),sample(1:5, size=5, replace=F),sample(1:5, size=5, replace=F),sample(1:5, size=5, replace=F),sample(1:5, size=5, replace=F)) #nahodne
-hodnotitel= factor(rep(c("H1","H2","H3","H4","H5"),times=1, each=5)) # kazda premenna 5x po sebe v jednom cykle
-produkt= factor(rep(c("A","B","C","D","E"),times=5)) # kazda premenna 1x po sebe v piatich cykloch
+set.seed(123) # reprodukovatelne nahodne data
+chut <- c(sample(1:5, size=5, replace=FALSE),sample(1:5, size=5, replace=FALSE),sample(1:5, size=5, replace=FALSE),sample(1:5, size=5, replace=FALSE),sample(1:5, size=5, replace=FALSE)) #nahodne
+hodnotitel <- factor(rep(c("H1","H2","H3","H4","H5"),times=1, each=5)) # kazda premenna 5x po sebe v jednom cykle
+produkt <- factor(rep(c("A","B","C","D","E"),times=5)) # kazda premenna 1x po sebe v piatich cykloch
 data <- data.frame(hodnotitel,produkt,chut)
 friedman.test(chut ~ produkt | hodnotitel)
 frdAllPairsNemenyiTest(chut, produkt, hodnotitel)
@@ -43,7 +49,7 @@ frdAllPairsNemenyiTest(chut, produkt, hodnotitel)
 # Jednofaktorova ANOVA (parametricka analyza rozptylu)
 #---------------------------------------------------------------------------------------
 #pracujeme s datami z KW prikladu
-anovavysledok = aov(celkovakvalita ~ cokolada, data = tabulka)
+anovavysledok <- aov(celkovakvalita ~ cokolada, data = tabulka)
 summary(anovavysledok)
 # ak vypocitane p<0.05 (treba vykonat viacnasobne porovnanie vzoriek pomocou Tukeyovho HSD)
 TukeyHSD(anovavysledok)
@@ -66,10 +72,3 @@ TukeyHSD(anovavysledok)
 # ULOHA1:
 # Vyhodnotte ktore testy je potrebne vyuzit z dat v subore 001_datasety.txt (github.repozitar)
 # Vypocitajte rozdiel medzi vzorkami kecupu podla Vami hodnotenych udajov.
-
-
-
-
-
-
-

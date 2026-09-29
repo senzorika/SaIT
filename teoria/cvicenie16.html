@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>16. Zmiešané modely</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ink-3)"/></marker></defs></svg>
+<div class="wrap">
+<header class="top"><a class="brand" href="index.html">Senzometria v R · teória</a><span class="toplinks"><a href="index.html">Všetky cvičenia</a><a class="lang" href="../theory_EN/exercise16.html">English</a></span></header>
+
+<section class="hero"><span class="num">CVIČENIE 16</span><h1>Zmiešané modely</h1><p class="lead">Hodnotiteľ ako náhodný efekt: prečo a ako nahradiť dvojfaktorovú ANOVA modelom lmer.</p>
+<div class="files"><a href="../cvicenie16.txt">Skript (SK): cvicenie16.txt</a><a href="../exercises_EN/exercise16.txt">Script (EN): exercise16.txt</a></div></section>
+<div class="goals"><h2>Čo sa naučíte</h2><ul>
+<li>rozlíšiť pevné a náhodné efekty,</li>
+<li>prečo je pri senzorických dátach hodnotiteľ náhodný efekt a čo to mení na teste produktu,</li>
+<li>zostaviť a čítať zmiešaný model <code>lmer()</code> a porovnať produkty cez <code>emmeans</code>.</li>
+</ul></div>
+
+<h2>Pevný alebo náhodný efekt?</h2>
+<div class="tablewrap"><table>
+<tr><th></th><th>Pevný efekt</th><th>Náhodný efekt</th></tr>
+<tr><td>úrovne</td><td>vybrané zámerne, zaujímajú nás práve tieto</td><td>náhodný výber z väčšej populácie</td></tr>
+<tr><td>príklad</td><td><strong>produkt</strong> (naše 4 receptúry), pohlavie</td><td><strong>hodnotiteľ</strong>, spotrebiteľ, šarža, deň</td></tr>
+<tr><td>otázka</td><td>líšia sa priemery týchto úrovní?</td><td>aký veľký rozptyl spôsobuje tento zdroj?</td></tr>
+<tr><td>zápis v <code>lmer</code></td><td><code>Product</code></td><td><code>(1 | Panelist)</code></td></tr>
+</table></div>
+<p>Záver „produkt A je lepší ako B“ nechceme vysloviť len pre našich 29 hodnotiteľov, ale pre <em>ľubovoľný</em> podobne vyškolený panel. Preto musí test produktu zohľadniť aj to, ako veľmi sa hodnotitelia medzi sebou líšia v hodnotení produktov.</p>
+
+<h2>Čo sa zmení na teste produktu</h2>
+<figure>
+<svg viewBox="0 0 640 250" role="img" aria-label="Chybový člen pri pevnom a zmiešanom modeli">
+  <rect x="20" y="20" width="290" height="200" rx="10" class="box"/>
+  <text x="165" y="48" text-anchor="middle" class="t-strong">Pevný model (aov)</text>
+  <text x="165" y="92" text-anchor="middle" style="font-size:20px">F = MS<tspan class="t-small" dy="4">Product</tspan><tspan dy="-4"> / MS</tspan><tspan class="t-small" dy="4">rezíduum</tspan></text>
+  <text x="165" y="140" text-anchor="middle" class="t-small">porovnáva s opakovaniami</text><text x="165" y="158" text-anchor="middle" class="t-small">toho istého hodnotiteľa</text>
+  <text x="165" y="196" text-anchor="middle" class="t-warn" style="font-weight:600">príliš optimistické p</text>
+  <rect x="330" y="20" width="290" height="200" rx="10" class="boxa"/>
+  <text x="475" y="48" text-anchor="middle" class="t-strong">Zmiešaný model (lmer)</text>
+  <text x="475" y="92" text-anchor="middle" style="font-size:20px">F = MS<tspan class="t-small" dy="4">Product</tspan><tspan dy="-4"> / MS</tspan><tspan class="t-small" dy="4">Product:Panelist</tspan></text>
+  <text x="475" y="140" text-anchor="middle" class="t-small">porovnáva s nezhodou</text><text x="475" y="158" text-anchor="middle" class="t-small">medzi hodnotiteľmi</text>
+  <text x="475" y="196" text-anchor="middle" class="t-acc">platí pre populáciu hodnotiteľov</text>
+</svg>
+<figcaption>Horkosť (Bitterness) v dátach sensochoc: pevný model F = 59,9; ručne vydelené interakciou F = 49,9 – a <code>lmer</code> dá presne 49,9 so 140 stupňami voľnosti. Pri vyváženom dizajne je zmiešaný model totožný s „ANOVA s interakciou ako chybou“ z 1. časti skriptu.</figcaption>
+</figure>
+
+<h2>Model v R</h2>
+<pre>library(lmerTest)
+m &lt;- lmer(Bitterness ~ Product + Session + (1 | Panelist) + (1 | Panelist:Product),
+          data = sensochoc)
+anova(m)     # F-test pevných efektov, stupne voľnosti podľa Satterthwaita
+ranova(m)    # sú náhodné efekty potrebné? (test pomerom vierohodností)
+VarCorr(m)   # rozptyly náhodných efektov</pre>
+<div class="tablewrap"><table>
+<tr><th>Časť modelu</th><th>Senzorický význam</th></tr>
+<tr><td><code>Product</code></td><td>skutočné rozdiely medzi vzorkami – to, čo chceme zistiť</td></tr>
+<tr><td><code>(1 | Panelist)</code></td><td>každý hodnotiteľ používa inú časť škály (posun hore/dole)</td></tr>
+<tr><td><code>(1 | Panelist:Product)</code></td><td>hodnotitelia sa nezhodujú v poradí produktov – nezhoda panelu</td></tr>
+<tr><td>reziduum</td><td>kolísanie pri opakovaní – opakovateľnosť</td></tr>
+</table></div>
+<figure>
+<svg viewBox="0 0 640 84" role="img" aria-label="Rozklad rozptylu">
+  <rect x="20" y="36" width="113" height="40" class="f3" opacity=".75"/><rect x="133" y="36" width="56" height="40" class="f2" opacity=".75"/><rect x="189" y="36" width="431" height="40" class="fs"/>
+  <g class="t-small t-strong"><text x="76" y="28" text-anchor="middle">Panelist 19 %</text><text x="161" y="28" text-anchor="middle">interakcia 9 %</text><text x="404" y="61" text-anchor="middle">reziduum (opakovanie) 72 %</text></g>
+</svg>
+<figcaption>Horkosť (Bitterness), <code>VarCorr(m)</code>: 0,82 / 0,41 / 3,14. Súvis s cvičením 15: veľká interakcia = zlá zhoda, veľké reziduum = zlá opakovateľnosť.</figcaption>
+</figure>
+
+<h2>Post-hoc: <code>emmeans</code></h2>
+<p><code>TukeyHSD()</code> na zmiešaný model nefunguje. Náhradou je <code>emmeans(m, pairwise ~ Product)</code>: vypočíta odhadnuté priemery produktov s intervalmi spoľahlivosti a párové rozdiely s Tukeyho korekciou.</p>
+<div class="note"><strong>Nevyvážené dáta</strong>Najväčšia výhoda <code>lmer</code> sa ukáže, keď chýbajú hodnotenia (hodnotiteľ vynechal sedenie). Klasická ANOVA s ručne zvoleným chybovým členom vtedy prestane byť presná, zmiešaný model si s tým poradí.</div>
+<div class="warn"><strong>Varovanie „boundary (singular) fit“</strong>Znamená, že niektorý náhodný efekt má odhadnutý rozptyl 0 – dáta ho nepotrebujú. Presne to sa stane pri CocoaA (úloha 1): interakcia má p = 0,99, jej rozptyl je 0 a lmer ju zlúči s reziduom. Model je stále použiteľný, ale zvážte jeho zjednodušenie (<code>ranova()</code> ukáže, ktorý efekt vypustiť).</div>
+
+<nav class="pager">
+<a class="prev" href="cvicenie15.html"><span>← Predchádzajúce</span>15. Výkonnosť senzorického panelu</a>
+<a class="next" href="cvicenie17.html"><span>Nasledujúce →</span>17. CATA a napping</a>
+</nav>
+</div>
+</body>
+</html>

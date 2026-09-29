@@ -1,0 +1,62 @@
+# ============================================================
+# Cvičenie 16: Zmiešané modely – hodnotiteľ ako náhodný efekt
+# Teória: https://senzorika.github.io/SaIT/teoria/cvicenie16.html
+# ============================================================
+
+# install.packages(c("lme4", "lmerTest", "emmeans", "SensoMineR"))
+library(lmerTest)   # nacita aj lme4 a doplni p-hodnoty
+library(emmeans)
+library(SensoMineR)
+
+data(chocolates)
+sensochoc$Panelist <- factor(sensochoc$Panelist)
+sensochoc$Session <- factor(sensochoc$Session)
+
+#---------------------------------------------------------------------------------------
+# 1. Klasicka dvojfaktorova ANOVA (vsetky efekty pevne)
+#---------------------------------------------------------------------------------------
+pevny <- aov(Bitterness ~ Product * Panelist, data = sensochoc)
+tab <- summary(pevny)[[1]]
+rownames(tab) <- trimws(rownames(tab))
+tab
+
+# Hodnotitelia su nahodny vyber z populacie - produkt treba testovat voci interakcii
+F_produkt <- tab["Product", "Mean Sq"] / tab["Product:Panelist", "Mean Sq"]
+p_produkt <- pf(F_produkt, tab["Product", "Df"], tab["Product:Panelist", "Df"], lower.tail = FALSE)
+c(F = F_produkt, p = p_produkt)
+
+#---------------------------------------------------------------------------------------
+# 2. Zmieseny model: Product pevny, Panelist a Panelist:Product nahodne
+#---------------------------------------------------------------------------------------
+zmieseny <- lmer(Bitterness ~ Product + Session + (1 | Panelist) + (1 | Panelist:Product),
+                 data = sensochoc)
+summary(zmieseny)
+anova(zmieseny)      # F-test pevnych efektov (Satterthwaite)
+ranova(zmieseny)     # test nahodnych efektov (likelihood ratio)
+
+# rozklad variability: kolko pripada na hodnotitelov, interakciu a sum
+VarCorr(zmieseny)
+
+#---------------------------------------------------------------------------------------
+# 3. Post-hoc porovnanie produktov
+#---------------------------------------------------------------------------------------
+porovnanie <- emmeans(zmieseny, pairwise ~ Product, adjust = "tukey")
+porovnanie$emmeans
+porovnanie$contrasts
+plot(porovnanie$emmeans, xlab = "odhadnuty priemer Bitterness")
+
+#---------------------------------------------------------------------------------------
+# 4. Kontrola predpokladov
+#---------------------------------------------------------------------------------------
+plot(zmieseny)                       # rezidua vs. predikcie
+qqnorm(resid(zmieseny)); qqline(resid(zmieseny))
+
+
+# ULOHA1:
+# =========
+# Zopakujte analyzu pre deskriptor CocoaA. Je interakcia hodnotitel x produkt vyznamna?
+# Preco lmer hlasi "boundary (singular) fit" a co ukaze VarCorr()?
+
+# ULOHA2:
+# =========
+# Pridajte do modelu nahodny efekt (1 | Panelist:Session). Zlepsi sa model? (pomocka: anova(m1, m2))

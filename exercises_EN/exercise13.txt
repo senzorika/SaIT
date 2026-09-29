@@ -1,0 +1,58 @@
+# ============================================================
+# Exercise 13: Thurstonian model and d' (sensR)
+# Theory: https://senzorika.github.io/SaIT/theory_EN/exercise13.html
+# ============================================================
+
+# install.packages("sensR")
+library(sensR)
+
+#---------------------------------------------------------------------------------------
+# 1. From the proportion of correct answers to d'
+#---------------------------------------------------------------------------------------
+# Triangle test: 42 of 100 assessors identified the odd sample (task 2 of exercise 5a)
+triangle <- discrim(42, 100, method = "triangle")
+triangle
+# pc - proportion correct, pd - proportion of "true discriminators", d.prime - Thurstonian d'
+
+# the same result expressed for other methods: d' does not depend on the method, pc does
+rescale(d.prime = coef(triangle)["d-prime", "Estimate"], method = "duotrio")
+rescale(d.prime = coef(triangle)["d-prime", "Estimate"], method = "twoAFC")
+
+#---------------------------------------------------------------------------------------
+# 2. Psychometric functions - how fast pc grows with d' in each test
+#---------------------------------------------------------------------------------------
+curve(psyfun(x, method = "twoAFC"), from = 0, to = 4, lwd = 2, col = "darkgreen",
+      xlab = "d'", ylab = "pc (proportion correct)", ylim = c(0, 1))
+curve(psyfun(x, method = "threeAFC"), add = TRUE, lwd = 2, col = "blue")
+curve(psyfun(x, method = "duotrio"), add = TRUE, lwd = 2, col = "orange")
+curve(psyfun(x, method = "triangle"), add = TRUE, lwd = 2, col = "red")
+legend("bottomright", legend = c("2-AFC", "3-AFC", "duo-trio", "triangle"),
+       col = c("darkgreen", "blue", "orange", "red"), lwd = 2, bty = "n")
+
+#---------------------------------------------------------------------------------------
+# 3. Comparing methods for the same difference between samples (d' = 1)
+#---------------------------------------------------------------------------------------
+methods <- c("twoAFC", "threeAFC", "duotrio", "triangle", "tetrad")
+pc_at_d1 <- sapply(methods, function(m) psyfun(1, method = m))
+round(pc_at_d1, 3)
+
+#---------------------------------------------------------------------------------------
+# 4. Similarity test - are the samples "similar enough"?
+#---------------------------------------------------------------------------------------
+# Ingredient substitution: we want to show that the difference is smaller than pd0 = 0.2
+discrim(38, 100, method = "triangle", test = "similarity", pd0 = 0.2)
+
+# distributions of both samples according to the Thurstonian model
+plot(triangle)
+
+
+# TASK1:
+# =========
+# In a duo-trio test, 36 of 50 assessors correctly matched the reference sample.
+# Compute d' and compare it with the triangle test result above.
+# Which of the two products differs more from the control?
+
+# TASK2:
+# =========
+# Compute how many correct answers out of 60 would be needed in 2-AFC, 3-AFC and the triangle
+# for d' to be 1.5 (hint: psyfun()).

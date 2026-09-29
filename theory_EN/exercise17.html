@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>17. CATA and napping</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../teoria/style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ink-3)"/></marker></defs></svg>
+<div class="wrap">
+<header class="top"><a class="brand" href="index.html">Sensometrics in R · theory</a><span class="toplinks"><a href="index.html">All exercises</a><a class="lang" href="../teoria/cvicenie17.html">Slovensky</a></span></header>
+
+<section class="hero"><span class="num">EXERCISE 17</span><h1>CATA and napping</h1><p class="lead">Rapid profiling methods with consumers: check-all-that-apply questions and projective mapping.</p>
+<div class="files"><a href="../cvicenie17.txt">Script (SK): cvicenie17.txt</a><a href="../exercises_EN/exercise17.txt">Script (EN): exercise17.txt</a></div></section>
+<div class="goals"><h2>What you will learn</h2><ul>
+<li>when to replace a classical descriptive profile with a rapid consumer method,</li>
+<li>to analyse CATA questions with Cochran’s Q test and correspondence analysis,</li>
+<li>to process napping (projective mapping) with multiple factor analysis (MFA).</li>
+</ul></div>
+
+<h2>Why rapid methods?</h2>
+<p>A classical descriptive profile (exercises 7 – 8, 15) requires months of panel training. Rapid methods use untrained consumers and deliver a result in a day. The price is lower precision and more assessors (40 – 100).</p>
+<div class="tablewrap"><table>
+<tr><th></th><th>Descriptive profile</th><th>CATA</th><th>Napping</th></tr>
+<tr><td>assessors</td><td>8 – 12 trained</td><td>40 – 100 consumers</td><td>15 – 50</td></tr>
+<tr><td>task</td><td>intensity of every descriptor</td><td>tick the applicable attributes</td><td>place samples on paper by similarity</td></tr>
+<tr><td>data</td><td>continuous scales</td><td>0 / 1</td><td>X, Y coordinates</td></tr>
+<tr><td>analysis</td><td>ANOVA, PCA</td><td>Cochran’s Q, CA</td><td>MFA</td></tr>
+</table></div>
+
+<h2>CATA – Check-All-That-Apply</h2>
+<p>For each sample the consumer gets a list of attributes and ticks all that apply. The result is a value of 0 or 1 for every consumer × product × attribute combination.</p>
+<figure>
+<svg viewBox="0 0 640 230" role="img" aria-label="CATA – citation proportions">
+<text x="150" y="26" text-anchor="middle" class="t-strong">sweet</text>
+<text x="228" y="26" text-anchor="middle" class="t-strong">sour</text>
+<text x="306" y="26" text-anchor="middle" class="t-strong">creamy</text>
+<text x="384" y="26" text-anchor="middle" class="t-strong">fruity</text>
+<text x="462" y="26" text-anchor="middle" class="t-strong">thick</text>
+<text x="540" y="26" text-anchor="middle" class="t-strong">artificial</text>
+<text x="92" y="66" text-anchor="end" class="t-strong">yogurt A</text>
+<rect x="112" y="40" width="74" height="40" rx="4" style="fill:var(--c1);fill-opacity:0.70"/>
+<text x="149" y="65" text-anchor="middle" class="t-inv">70 %</text>
+<rect x="190" y="40" width="74" height="40" rx="4" style="fill:var(--c1);fill-opacity:0.20"/>
+<text x="227" y="65" text-anchor="middle" class="t-strong">20 %</text>
+<rect x="268" y="40" width="74" height="40" rx="4" style="fill:var(--c1);fill-opacity:0.80"/>
+<text x="305" y="65" text-anchor="middle" class="t-inv">80 %</text>
+<rect x="346" y="40" width="74" height="40" rx="4" style="fill:var(--c1);fill-opacity:0.30"/>
+<text x="383" y="65" text-anchor="middle" class="t-strong">30 %</text>
+<rect x="424" y="40" width="74" height="40" rx="4" style="fill:var(--c1);fill-opacity:0.60"/>
+<text x="461" y="65" text-anchor="middle" class="t-inv">60 %</text>
+<rect x="502" y="40" width="74" height="40" rx="4" style="fill:var(--c1);fill-opacity:0.10"/>
+<text x="539" y="65" text-anchor="middle" class="t-strong">10 %</text>
+<text x="92" y="110" text-anchor="end" class="t-strong">yogurt B</text>
+<rect x="112" y="84" width="74" height="40" rx="4" style="fill:var(--c1);fill-opacity:0.30"/>
+<text x="149" y="109" text-anchor="middle" class="t-strong">30 %</text>
+<rect x="190" y="84" width="74" height="40" rx="4" style="fill:var(--c1);fill-opacity:0.70"/>
+<text x="227" y="109" text-anchor="middle" class="t-inv">70 %</text>
+<rect x="268" y="84" width="74" height="40" rx="4" style="fill:var(--c1);fill-opacity:0.30"/>
+<text x="305" y="109" text-anchor="middle" class="t-strong">30 %</text>
+<rect x="346" y="84" width="74" height="40" rx="4" style="fill:var(--c1);fill-opacity:0.20"/>
+<text x="383" y="109" text-anchor="middle" class="t-strong">20 %</text>
+<rect x="424" y="84" width="74" height="40" rx="4" style="fill:var(--c1);fill-opacity:0.20"/>
+<text x="461" y="109" text-anchor="middle" class="t-strong">20 %</text>
+<rect x="502" y="84" width="74" height="40" rx="4" style="fill:var(--c1);fill-opacity:0.20"/>
+<text x="539" y="109" text-anchor="middle" class="t-strong">20 %</text>
+<text x="92" y="154" text-anchor="end" class="t-strong">yogurt C</text>
+<rect x="112" y="128" width="74" height="40" rx="4" style="fill:var(--c1);fill-opacity:0.60"/>
+<text x="149" y="153" text-anchor="middle" class="t-inv">60 %</text>
+<rect x="190" y="128" width="74" height="40" rx="4" style="fill:var(--c1);fill-opacity:0.30"/>
+<text x="227" y="153" text-anchor="middle" class="t-strong">30 %</text>
+<rect x="268" y="128" width="74" height="40" rx="4" style="fill:var(--c1);fill-opacity:0.40"/>
+<text x="305" y="153" text-anchor="middle" class="t-strong">40 %</text>
+<rect x="346" y="128" width="74" height="40" rx="4" style="fill:var(--c1);fill-opacity:0.80"/>
+<text x="383" y="153" text-anchor="middle" class="t-inv">80 %</text>
+<rect x="424" y="128" width="74" height="40" rx="4" style="fill:var(--c1);fill-opacity:0.30"/>
+<text x="461" y="153" text-anchor="middle" class="t-strong">30 %</text>
+<rect x="502" y="128" width="74" height="40" rx="4" style="fill:var(--c1);fill-opacity:0.50"/>
+<text x="539" y="153" text-anchor="middle" class="t-strong">50 %</text>
+<text x="92" y="198" text-anchor="end" class="t-strong">yogurt D</text>
+<rect x="112" y="172" width="74" height="40" rx="4" style="fill:var(--c1);fill-opacity:0.50"/>
+<text x="149" y="197" text-anchor="middle" class="t-strong">50 %</text>
+<rect x="190" y="172" width="74" height="40" rx="4" style="fill:var(--c1);fill-opacity:0.40"/>
+<text x="227" y="197" text-anchor="middle" class="t-strong">40 %</text>
+<rect x="268" y="172" width="74" height="40" rx="4" style="fill:var(--c1);fill-opacity:0.60"/>
+<text x="305" y="197" text-anchor="middle" class="t-inv">60 %</text>
+<rect x="346" y="172" width="74" height="40" rx="4" style="fill:var(--c1);fill-opacity:0.50"/>
+<text x="383" y="197" text-anchor="middle" class="t-strong">50 %</text>
+<rect x="424" y="172" width="74" height="40" rx="4" style="fill:var(--c1);fill-opacity:0.70"/>
+<text x="461" y="197" text-anchor="middle" class="t-inv">70 %</text>
+<rect x="502" y="172" width="74" height="40" rx="4" style="fill:var(--c1);fill-opacity:0.10"/>
+<text x="539" y="197" text-anchor="middle" class="t-strong">10 %</text>
+<text x="112" y="224" class="t-small">share of consumers who ticked the attribute (probabilities from the simulation in the script)</text>
+</svg>
+<figcaption>CATA summary table: share of ticks. The profile is already visible – yogurt B is sour, C fruity and “artificial”, A creamy and thick.</figcaption>
+</figure>
+<h3>Cochran’s Q test</h3>
+<p>For each attribute it tests whether the share of ticks differs between products. It is the counterpart of McNemar’s test (exercise 5a) for more than two samples: the same consumers rate all products, so the consumer is a block (as in the Friedman test).</p>
+<pre>CochranQTest(cata$fruity ~ cata$product | cata$consumer)</pre>
+<h3>CATA map</h3>
+<p>The table of counts products × attributes is a contingency table – so we display it with correspondence analysis (exercise 9). A product lies close to the attributes consumers assigned to it more often than to the others.</p>
+<div class="note"><strong>Attribute order</strong>Consumers tick attributes at the top of the list more often. Randomise the order between consumers (but keep it the same for one consumer).</div>
+
+<h2>Napping – projective mapping</h2>
+<p>The assessor gets all samples at once and a sheet of paper (usually 60 × 40 cm). He/she places the samples so that similar ones are close and different ones far apart – by their own criteria. The X, Y coordinates of each sample are recorded.</p>
+<figure>
+<svg viewBox="0 0 640 250" role="img" aria-label="Napping – sheets of two assessors">
+  <rect x="20" y="20" width="280" height="187" rx="6" class="box"/>
+  <text x="30" y="40" class="t-small t-strong">assessor 1</text>
+  <g class="t-small t-strong" text-anchor="middle">
+    <circle cx="70" cy="80" r="14" class="f1" opacity=".8"/><text x="70" y="84" class="t-inv">1</text>
+    <circle cx="105" cy="100" r="14" class="f1" opacity=".8"/><text x="105" y="104" class="t-inv">4</text>
+    <circle cx="230" cy="70" r="14" class="f2" opacity=".8"/><text x="230" y="74" class="t-inv">2</text>
+    <circle cx="250" cy="170" r="14" class="f3" opacity=".8"/><text x="250" y="174" class="t-inv">3</text>
+    <circle cx="210" cy="160" r="14" class="f3" opacity=".8"/><text x="210" y="164" class="t-inv">5</text>
+  </g>
+  <rect x="340" y="20" width="280" height="187" rx="6" class="box"/>
+  <text x="350" y="40" class="t-small t-strong">assessor 2</text>
+  <g class="t-small t-strong" text-anchor="middle">
+    <circle cx="560" cy="170" r="14" class="f1" opacity=".8"/><text x="560" y="174" class="t-inv">1</text>
+    <circle cx="590" cy="140" r="14" class="f1" opacity=".8"/><text x="590" y="144" class="t-inv">4</text>
+    <circle cx="400" cy="160" r="14" class="f2" opacity=".8"/><text x="400" y="164" class="t-inv">2</text>
+    <circle cx="420" cy="60" r="14" class="f3" opacity=".8"/><text x="420" y="64" class="t-inv">3</text>
+    <circle cx="460" cy="75" r="14" class="f3" opacity=".8"/><text x="460" y="79" class="t-inv">5</text>
+  </g>
+  <text x="320" y="236" text-anchor="middle" class="t-small">The sheets look different (rotated, mirrored), but the groups {1, 4}, {3, 5} and a separate 2 repeat.</text>
+</svg>
+</figure>
+<p>Absolute coordinates cannot be compared between assessors – each rotates the map differently and uses the space differently. We compare <em>configurations</em>: <strong>MFA</strong> (multiple factor analysis) treats each assessor as a group of two variables (X, Y), balances their weight and finds a common consensus map.</p>
+<pre>MFA(napping.don, group = rep(2, n_assessors), type = rep("c", n_assessors))</pre>
+<div class="tablewrap"><table>
+<tr><th>MFA output</th><th>Meaning</th></tr>
+<tr><td><code>choix = "ind"</code></td><td>consensus map of samples</td></tr>
+<tr><td><code>choix = "group"</code></td><td>assessors near an axis share the consensus; assessors near the origin placed samples “their own way”</td></tr>
+</table></div>
+<div class="note"><strong>Type “c”, not “s”</strong>The coordinates are measured in centimetres on the same sheet, so we do <em>not</em> scale them (<code>type = "c"</code>). Distances in X and Y are equally important.</div>
+
+<nav class="pager">
+<a class="prev" href="exercise16.html"><span>← Previous</span>16. Mixed models</a>
+<a class="next" href="exercise18.html"><span>Next →</span>18. Temporal methods – TDS and TCATA</a>
+</nav>
+</div>
+</body>
+</html>

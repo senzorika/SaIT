@@ -1,3 +1,8 @@
+# ============================================================
+# Exercise 5d: Durbin test and incomplete blocks
+# Theory: https://senzorika.github.io/SaIT/theory_EN/exercise05d.html
+# ============================================================
+
 # Durbin test example, VV 2020
 # load the package (PMCMR was removed from CRAN, PMCMRplus replaces it)
 library(PMCMRplus)

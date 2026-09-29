@@ -1,0 +1,62 @@
+# ============================================================
+# Exercise 16: Mixed models – the assessor as a random effect
+# Theory: https://senzorika.github.io/SaIT/theory_EN/exercise16.html
+# ============================================================
+
+# install.packages(c("lme4", "lmerTest", "emmeans", "SensoMineR"))
+library(lmerTest)   # also loads lme4 and adds p-values
+library(emmeans)
+library(SensoMineR)
+
+data(chocolates)
+sensochoc$Panelist <- factor(sensochoc$Panelist)
+sensochoc$Session <- factor(sensochoc$Session)
+
+#---------------------------------------------------------------------------------------
+# 1. Classical two-way ANOVA (all effects fixed)
+#---------------------------------------------------------------------------------------
+fixed <- aov(Bitterness ~ Product * Panelist, data = sensochoc)
+tab <- summary(fixed)[[1]]
+rownames(tab) <- trimws(rownames(tab))
+tab
+
+# Assessors are a random sample from a population - the product must be tested against the interaction
+F_product <- tab["Product", "Mean Sq"] / tab["Product:Panelist", "Mean Sq"]
+p_product <- pf(F_product, tab["Product", "Df"], tab["Product:Panelist", "Df"], lower.tail = FALSE)
+c(F = F_product, p = p_product)
+
+#---------------------------------------------------------------------------------------
+# 2. Mixed model: Product fixed, Panelist and Panelist:Product random
+#---------------------------------------------------------------------------------------
+mixed <- lmer(Bitterness ~ Product + Session + (1 | Panelist) + (1 | Panelist:Product),
+              data = sensochoc)
+summary(mixed)
+anova(mixed)      # F-test of the fixed effects (Satterthwaite)
+ranova(mixed)     # test of the random effects (likelihood ratio)
+
+# decomposition of variability: assessors, interaction and noise
+VarCorr(mixed)
+
+#---------------------------------------------------------------------------------------
+# 3. Post-hoc comparison of products
+#---------------------------------------------------------------------------------------
+comparison <- emmeans(mixed, pairwise ~ Product, adjust = "tukey")
+comparison$emmeans
+comparison$contrasts
+plot(comparison$emmeans, xlab = "estimated mean of Bitterness")
+
+#---------------------------------------------------------------------------------------
+# 4. Checking the assumptions
+#---------------------------------------------------------------------------------------
+plot(mixed)                       # residuals vs. fitted values
+qqnorm(resid(mixed)); qqline(resid(mixed))
+
+
+# TASK1:
+# =========
+# Repeat the analysis for the descriptor CocoaA. Is the assessor x product interaction significant?
+# Why does lmer report "boundary (singular) fit" and what does VarCorr() show?
+
+# TASK2:
+# =========
+# Add the random effect (1 | Panelist:Session) to the model. Does the model improve? (hint: anova(m1, m2))

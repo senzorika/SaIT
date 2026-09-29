@@ -1,3 +1,8 @@
+# ============================================================
+# Exercise 10: Survival analysis and sensory shelf life
+# Theory: https://senzorika.github.io/SaIT/theory_EN/exercise10.html
+# ============================================================
+
 # ------------------------------------------------------------------------
 # Survival analysis (Kaplan-Meier model) (Vietoris, 2013)
 # + predictive modelling
@@ -10,18 +15,18 @@
 # ----------------------------------------------------------------------------------------
 # load the survival analysis package
 library(survival)
-time =c(0,4,8,12,24,36,48,0,4,8,12,24,36,48,0,4,8,12,24,36,48,0,4,8,12,24,36,48,0,4,8,12,24,36,48)
-event=c(TRUE,TRUE,TRUE,TRUE,FALSE,FALSE,FALSE,
+time <- c(0,4,8,12,24,36,48,0,4,8,12,24,36,48,0,4,8,12,24,36,48,0,4,8,12,24,36,48,0,4,8,12,24,36,48)
+event <- c(TRUE,TRUE,TRUE,TRUE,FALSE,FALSE,FALSE,
         TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
         TRUE,TRUE,FALSE,TRUE,FALSE,FALSE,FALSE,
         TRUE,FALSE,TRUE,FALSE,FALSE,FALSE,FALSE,
         FALSE,FALSE,TRUE,TRUE,TRUE,TRUE,FALSE)
 
 # create the survival object and set the basic parameters
-food_shelf_life= Surv(time,event)
+food_shelf_life <- Surv(time,event)
 food_shelf_life
 
-fit = survfit(food_shelf_life~1,conf.int=F)
+fit <- survfit(food_shelf_life~1,conf.int=FALSE)
 # results and visualisation
 fit
 summary(fit)
@@ -36,11 +41,11 @@ abline(h=0.5, col="red")
 # where x is time (hours) and y is the survival value
 y <- fit$surv
 x <- fit$time
-linear=data.frame(x,y)
+linear <- data.frame(x,y)
 linear
 
 # linear model: time as a function of survival, x = a*y + b
-regression=lm(x~y)
+regression <- lm(x~y)
 regression
 
 # and now we write our first function ever :)

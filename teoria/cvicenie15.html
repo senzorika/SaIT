@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>15. Výkonnosť senzorického panelu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ink-3)"/></marker></defs></svg>
+<div class="wrap">
+<header class="top"><a class="brand" href="index.html">Senzometria v R · teória</a><span class="toplinks"><a href="index.html">Všetky cvičenia</a><a class="lang" href="../theory_EN/exercise15.html">English</a></span></header>
+
+<section class="hero"><span class="num">CVIČENIE 15</span><h1>Výkonnosť senzorického panelu</h1><p class="lead">Rozlišovanie, zhoda a opakovateľnosť – ako overiť, že panelu a jednotlivým hodnotiteľom možno veriť.</p>
+<div class="files"><a href="../cvicenie15.txt">Skript (SK): cvicenie15.txt</a><a href="../exercises_EN/exercise15.txt">Script (EN): exercise15.txt</a></div></section>
+<div class="goals"><h2>Čo sa naučíte</h2><ul>
+<li>tri piliere výkonnosti panelu: rozlišovanie, zhoda a opakovateľnosť,</li>
+<li>čítať tabuľky p-hodnôt z <code>panelperf()</code> a <code>paneliperf()</code>,</li>
+<li>nájsť hodnotiteľov, ktorí potrebujú dotréning.</li>
+</ul></div>
+
+<h2>Senzorický panel je merací prístroj</h2>
+<p>Pri deskriptívnom profilovaní nahrádza panel laboratórny prístroj. Rovnako ako prístroj ho treba pravidelne <strong>kalibrovať a overovať</strong>. Dataset <code>sensochoc</code> (SensoMineR) obsahuje hodnotenia 6 čokolád od 29 hodnotiteľov v 2 opakovaniach a 14 deskriptorov.</p>
+<figure>
+<svg viewBox="0 0 640 230" role="img" aria-label="Tri piliere výkonnosti panelu">
+  <rect x="20" y="30" width="180" height="150" rx="10" class="boxa"/>
+  <text x="110" y="62" text-anchor="middle" class="t-strong">Rozlišovanie</text>
+  <text x="110" y="86" text-anchor="middle" class="t-small">odlišuje hodnotiteľ</text><text x="110" y="102" text-anchor="middle" class="t-small">produkty?</text>
+  <text x="110" y="134" text-anchor="middle" class="t-small" style="font-family:var(--mono)">efekt Product</text>
+  <text x="110" y="156" text-anchor="middle" class="t-acc">chceme malé p</text>
+  <rect x="230" y="30" width="180" height="150" rx="10" class="boxa"/>
+  <text x="320" y="62" text-anchor="middle" class="t-strong">Zhoda</text>
+  <text x="320" y="86" text-anchor="middle" class="t-small">hodnotí rovnako</text><text x="320" y="102" text-anchor="middle" class="t-small">ako ostatní?</text>
+  <text x="320" y="134" text-anchor="middle" class="t-small" style="font-family:var(--mono)">Product:Panelist</text>
+  <text x="320" y="156" text-anchor="middle" class="t-acc">chceme veľké p</text>
+  <rect x="440" y="30" width="180" height="150" rx="10" class="boxa"/>
+  <text x="530" y="62" text-anchor="middle" class="t-strong">Opakovateľnosť</text>
+  <text x="530" y="86" text-anchor="middle" class="t-small">hodnotí rovnako</text><text x="530" y="102" text-anchor="middle" class="t-small">pri opakovaní?</text>
+  <text x="530" y="134" text-anchor="middle" class="t-small" style="font-family:var(--mono)">Session, reziduum</text>
+  <text x="530" y="156" text-anchor="middle" class="t-acc">chceme malý rozptyl</text>
+  <text x="320" y="214" text-anchor="middle" class="t-small">všetky tri musia platiť naraz – inak priemery panelu neopisujú produkty spoľahlivo</text>
+</svg>
+</figure>
+
+<h2>Výkonnosť celého panelu – <code>panelperf()</code></h2>
+<p>Pre každý deskriptor sa vypočíta ANOVA s efektmi produktu, hodnotiteľa, opakovania a ich interakcií. <code>coltable()</code> tabuľku p-hodnôt zafarbí:</p>
+<figure>
+<svg viewBox="0 0 640 210" role="img" aria-label="Ukážka farebnej tabuľky p-hodnôt">
+  <g class="t-small t-strong" text-anchor="middle"><text x="230" y="24">Product</text><text x="340" y="24">Panelist</text><text x="450" y="24">Product:Panelist</text><text x="560" y="24">Session</text></g>
+  <g class="t-small">
+    <text x="160" y="52" text-anchor="end">CocoaA</text><text x="160" y="90" text-anchor="end">Bitterness</text><text x="160" y="128" text-anchor="end">Caramel</text><text x="160" y="166" text-anchor="end">Granular</text>
+  </g>
+  <g>
+    <rect x="180" y="34" width="100" height="30" class="fa"/><rect x="290" y="34" width="100" height="30" class="fa"/><rect x="400" y="34" width="100" height="30" class="fs"/><rect x="510" y="34" width="100" height="30" class="fs"/><rect x="180" y="72" width="100" height="30" class="fa"/><rect x="290" y="72" width="100" height="30" class="fa"/><rect x="400" y="72" width="100" height="30" class="fw"/><rect x="510" y="72" width="100" height="30" class="fw"/><rect x="180" y="110" width="100" height="30" class="fa"/><rect x="290" y="110" width="100" height="30" class="fa"/><rect x="400" y="110" width="100" height="30" class="fw"/><rect x="510" y="110" width="100" height="30" class="fs"/><rect x="180" y="148" width="100" height="30" class="fa"/><rect x="290" y="148" width="100" height="30" class="fa"/><rect x="400" y="148" width="100" height="30" class="fw"/><rect x="510" y="148" width="100" height="30" class="fs"/>
+  </g>
+  <g class="t-small" text-anchor="middle">
+    <text x="230" y="54">&lt; 0,001</text><text x="340" y="54">&lt; 0,001</text><text x="450" y="54">0,99</text><text x="560" y="54">0,24</text><text x="230" y="92">&lt; 0,001</text><text x="340" y="92">&lt; 0,001</text><text x="450" y="92">0,026</text><text x="560" y="92">0,012</text><text x="230" y="130">&lt; 0,001</text><text x="340" y="130">&lt; 0,001</text><text x="450" y="130">0,003</text><text x="560" y="130">0,95</text><text x="230" y="168">&lt; 0,001</text><text x="340" y="168">&lt; 0,001</text><text x="450" y="168">0,015</text><text x="560" y="168">0,15</text>
+  </g>
+  <text x="320" y="202" text-anchor="middle" class="t-small">Skutočné p-hodnoty z panelperf() pre 4 zo 14 deskriptorov (dáta sensochoc).</text>
+</svg>
+<figcaption>Ako čítať: CocoaA je ideálny deskriptor – produkty sa líšia a hodnotitelia sa zhodujú (interakcia p = 0,99). Pri Caramel a Granular sa hodnotitelia nezhodujú v poradí produktov – treba spoločnú kalibráciu so štandardmi. Bitterness má navyše posun medzi opakovaniami (Session p = 0,012). Všetky deskriptory produkty rozlišujú, takže nijaký netreba z profilu vyradiť.</figcaption>
+</figure>
+<div class="note"><strong>Efekt Panelist je takmer vždy významný</strong>Hodnotitelia používajú rôzne časti škály (jeden hodnotí 3 – 6, iný 5 – 9). Samo osebe to nevadí, kým poradie produktov zostáva rovnaké. Problémom je až interakcia Product:Panelist.</div>
+
+<h2>Jednotliví hodnotitelia</h2>
+<p>Funkcia <code>paneliperf()</code> vypočíta tie isté ukazovatele pre každého hodnotiteľa. Skript ich navyše počíta „ručne“ pre jeden deskriptor:</p>
+<ul>
+<li><strong>zhoda</strong> = korelácia priemerov hodnotiteľa za produkty s priemermi panelu,</li>
+<li><strong>opakovateľnosť</strong> = korelácia medzi 1. a 2. opakovaním toho istého hodnotiteľa.</li>
+</ul>
+<figure>
+<svg viewBox="0 0 620 320" role="img" aria-label="Mapa hodnotiteľov: zhoda a opakovateľnosť">
+  <rect x="330" y="20" width="270" height="130" class="fa op2"/>
+  <rect x="60" y="150" width="270" height="130" class="fw"/>
+  <line x1="60" y1="280" x2="600" y2="280" class="ax"/><line x1="60" y1="20" x2="60" y2="280" class="ax"/>
+  <line x1="330" y1="20" x2="330" y2="280" class="warnl dash"/><line x1="60" y1="150" x2="600" y2="150" class="warnl dash"/>
+  <text x="590" y="42" text-anchor="end" class="t-acc">spoľahlivý hodnotiteľ</text>
+  <text x="70" y="42" class="t-strong">opakovateľný, ale „po svojom“</text><text x="70" y="58" class="t-small">→ kalibrácia na štandardy</text>
+  <text x="590" y="270" text-anchor="end" class="t-strong">zhoduje sa, ale nestabilne</text><text x="590" y="254" text-anchor="end" class="t-small">→ viac opakovaní, tréning</text>
+  <text x="70" y="270" class="t-warn" style="font-weight:600">problémový – dotréning / vyradenie</text>
+  <g class="f3" opacity=".8"><circle cx="480" cy="60" r="5"/><circle cx="520" cy="80" r="5"/><circle cx="450" cy="100" r="5"/><circle cx="560" cy="50" r="5"/><circle cx="500" cy="120" r="5"/><circle cx="420" cy="70" r="5"/><circle cx="390" cy="110" r="5"/><circle cx="540" cy="130" r="5"/><circle cx="260" cy="90" r="5"/><circle cx="430" cy="200" r="5"/><circle cx="360" cy="180" r="5"/></g>
+  <g class="f2"><circle cx="200" cy="220" r="6"/><circle cx="150" cy="190" r="6"/></g>
+  <text x="330" y="300" text-anchor="middle" class="t-small">zhoda s panelom (r) →  hranica 0,5</text>
+  <text x="20" y="150" text-anchor="middle" transform="rotate(-90 20 150)" class="t-small">opakovateľnosť (r)</text>
+</svg>
+<figcaption>Schéma grafu, ktorý kreslí skript. Hranica 0,5 je orientačná – pri 6 produktoch je korelácia pomerne nestabilná.</figcaption>
+</figure>
+<div class="warn"><strong>Vyradiť hodnotiteľa až ako poslednú možnosť</strong>Slabý výsledok v jednom deskriptore býva spôsobený nejasnou definíciou atribútu, nie hodnotiteľom. Najprv skontrolujte, či rovnaký problém nemajú aj ďalší, a vyjasnite definíciu a referenčné štandardy.</div>
+
+<nav class="pager">
+<a class="prev" href="cvicenie14.html"><span>← Predchádzajúce</span>14. Sila testu a veľkosť panelu</a>
+<a class="next" href="cvicenie16.html"><span>Nasledujúce →</span>16. Zmiešané modely</a>
+</nav>
+</div>
+</body>
+</html>

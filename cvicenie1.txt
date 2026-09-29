@@ -1,3 +1,8 @@
+# ============================================================
+# Cvičenie 1: R, RStudio a spolupráca
+# Teória: https://senzorika.github.io/SaIT/teoria/cvicenie01.html
+# ============================================================
+
 #--------------------------------------------------------------------------
 # Instalacia potrebneho softwaru
 #--------------------------------------------------------------------------
@@ -28,16 +33,15 @@
 #webkonferencie a online chat
 # https://meet.jit.si/sait2024
 
-# instalacia balikov (nie vsetky su potrebne k cviceniam)
-install.packages('devtools')
-install.packages('quantmod')
-install.packages('sensR')
-install.packages('gsheet')
-install.packages('telegram')
-install.packages('telegram.bot')
-install.packages("rmarkdown")
-library("devtools")
-devtools::install_github("leonawicz/rockchain")
-devtools::install_github("Ram-N/weatherData")
-devtools::install_github("m-dev-/likert")
+# instalacia balikov pre cvicenia 1-18 (staci raz)
+install.packages(c("sensR", "pwr", "SensoMineR", "FactoMineR", "lmerTest", "emmeans", "DescTools",
+                   "PMCMRplus", "readxl", "curl", "cluster", "factoextra", "tidyverse", "quantmod",
+                   "gsheet", "tm", "SnowballC", "wordcloud", "RColorBrewer", "syuzhet", "ggplot2",
+                   "HH", "latticeExtra", "fmsb"))
+# turfR (cvicenie 11a) je len v archive CRAN - postup instalacie je v cvicenie11a.txt
 
+# volitelne baliky (v cviceniach sa nepouzivaju)
+# install.packages(c("devtools", "rmarkdown", "telegram", "telegram.bot"))
+# devtools::install_github("leonawicz/rockchain")
+# devtools::install_github("Ram-N/weatherData")
+# devtools::install_github("m-dev-/likert")

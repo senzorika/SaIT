@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>15. Sensory panel performance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../teoria/style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ink-3)"/></marker></defs></svg>
+<div class="wrap">
+<header class="top"><a class="brand" href="index.html">Sensometrics in R · theory</a><span class="toplinks"><a href="index.html">All exercises</a><a class="lang" href="../teoria/cvicenie15.html">Slovensky</a></span></header>
+
+<section class="hero"><span class="num">EXERCISE 15</span><h1>Sensory panel performance</h1><p class="lead">Discrimination, agreement and repeatability – how to check that the panel and each assessor can be trusted.</p>
+<div class="files"><a href="../cvicenie15.txt">Script (SK): cvicenie15.txt</a><a href="../exercises_EN/exercise15.txt">Script (EN): exercise15.txt</a></div></section>
+<div class="goals"><h2>What you will learn</h2><ul>
+<li>the three pillars of panel performance: discrimination, agreement and repeatability,</li>
+<li>to read the p-value tables of <code>panelperf()</code> and <code>paneliperf()</code>,</li>
+<li>to find assessors who need retraining.</li>
+</ul></div>
+
+<h2>A sensory panel is a measuring instrument</h2>
+<p>In descriptive profiling the panel replaces a laboratory instrument. Like an instrument, it must be regularly <strong>calibrated and checked</strong>. The dataset <code>sensochoc</code> (SensoMineR) contains ratings of 6 chocolates by 29 assessors in 2 sessions on 14 descriptors.</p>
+<figure>
+<svg viewBox="0 0 640 230" role="img" aria-label="Three pillars of panel performance">
+  <rect x="20" y="30" width="180" height="150" rx="10" class="boxa"/>
+  <text x="110" y="62" text-anchor="middle" class="t-strong">Discrimination</text>
+  <text x="110" y="86" text-anchor="middle" class="t-small">does the assessor</text><text x="110" y="102" text-anchor="middle" class="t-small">separate products?</text>
+  <text x="110" y="134" text-anchor="middle" class="t-small" style="font-family:var(--mono)">Product effect</text>
+  <text x="110" y="156" text-anchor="middle" class="t-acc">we want a small p</text>
+  <rect x="230" y="30" width="180" height="150" rx="10" class="boxa"/>
+  <text x="320" y="62" text-anchor="middle" class="t-strong">Agreement</text>
+  <text x="320" y="86" text-anchor="middle" class="t-small">does he/she rate like</text><text x="320" y="102" text-anchor="middle" class="t-small">the others?</text>
+  <text x="320" y="134" text-anchor="middle" class="t-small" style="font-family:var(--mono)">Product:Panelist</text>
+  <text x="320" y="156" text-anchor="middle" class="t-acc">we want a large p</text>
+  <rect x="440" y="30" width="180" height="150" rx="10" class="boxa"/>
+  <text x="530" y="62" text-anchor="middle" class="t-strong">Repeatability</text>
+  <text x="530" y="86" text-anchor="middle" class="t-small">the same rating</text><text x="530" y="102" text-anchor="middle" class="t-small">when repeated?</text>
+  <text x="530" y="134" text-anchor="middle" class="t-small" style="font-family:var(--mono)">Session, residual</text>
+  <text x="530" y="156" text-anchor="middle" class="t-acc">we want a small variance</text>
+  <text x="320" y="214" text-anchor="middle" class="t-small">all three must hold at once – otherwise panel means do not describe the products reliably</text>
+</svg>
+</figure>
+
+<h2>Performance of the whole panel – <code>panelperf()</code></h2>
+<p>For every descriptor an ANOVA is computed with the effects of product, assessor, session and their interactions. <code>coltable()</code> colours the table of p-values:</p>
+<figure>
+<svg viewBox="0 0 640 210" role="img" aria-label="Example of a coloured p-value table">
+  <g class="t-small t-strong" text-anchor="middle"><text x="230" y="24">Product</text><text x="340" y="24">Panelist</text><text x="450" y="24">Product:Panelist</text><text x="560" y="24">Session</text></g>
+  <g class="t-small">
+    <text x="160" y="52" text-anchor="end">CocoaA</text><text x="160" y="90" text-anchor="end">Bitterness</text><text x="160" y="128" text-anchor="end">Caramel</text><text x="160" y="166" text-anchor="end">Granular</text>
+  </g>
+  <g>
+    <rect x="180" y="34" width="100" height="30" class="fa"/><rect x="290" y="34" width="100" height="30" class="fa"/><rect x="400" y="34" width="100" height="30" class="fs"/><rect x="510" y="34" width="100" height="30" class="fs"/><rect x="180" y="72" width="100" height="30" class="fa"/><rect x="290" y="72" width="100" height="30" class="fa"/><rect x="400" y="72" width="100" height="30" class="fw"/><rect x="510" y="72" width="100" height="30" class="fw"/><rect x="180" y="110" width="100" height="30" class="fa"/><rect x="290" y="110" width="100" height="30" class="fa"/><rect x="400" y="110" width="100" height="30" class="fw"/><rect x="510" y="110" width="100" height="30" class="fs"/><rect x="180" y="148" width="100" height="30" class="fa"/><rect x="290" y="148" width="100" height="30" class="fa"/><rect x="400" y="148" width="100" height="30" class="fw"/><rect x="510" y="148" width="100" height="30" class="fs"/>
+  </g>
+  <g class="t-small" text-anchor="middle">
+    <text x="230" y="54">&lt; 0.001</text><text x="340" y="54">&lt; 0.001</text><text x="450" y="54">0.99</text><text x="560" y="54">0.24</text><text x="230" y="92">&lt; 0.001</text><text x="340" y="92">&lt; 0.001</text><text x="450" y="92">0.026</text><text x="560" y="92">0.012</text><text x="230" y="130">&lt; 0.001</text><text x="340" y="130">&lt; 0.001</text><text x="450" y="130">0.003</text><text x="560" y="130">0.95</text><text x="230" y="168">&lt; 0.001</text><text x="340" y="168">&lt; 0.001</text><text x="450" y="168">0.015</text><text x="560" y="168">0.15</text>
+  </g>
+  <text x="320" y="202" text-anchor="middle" class="t-small">Real p-values from panelperf() for 4 of the 14 descriptors (sensochoc data).</text>
+</svg>
+<figcaption>How to read it: CocoaA is an ideal descriptor – products differ and assessors agree (interaction p = 0.99). For Caramel and Granular assessors disagree on the product order – joint calibration with reference standards is needed. Bitterness also shifts between sessions (Session p = 0.012). All descriptors discriminate the products, so none has to be removed from the profile.</figcaption>
+</figure>
+<div class="note"><strong>The Panelist effect is almost always significant</strong>Assessors use different parts of the scale (one rates 3 – 6, another 5 – 9). That alone is fine as long as the product order stays the same. The problem is the Product:Panelist interaction.</div>
+
+<h2>Individual assessors</h2>
+<p>The function <code>paneliperf()</code> computes the same indicators for each assessor. The script also computes them “by hand” for one descriptor:</p>
+<ul>
+<li><strong>agreement</strong> = correlation of the assessor’s product means with the panel means,</li>
+<li><strong>repeatability</strong> = correlation between session 1 and session 2 of the same assessor.</li>
+</ul>
+<figure>
+<svg viewBox="0 0 620 320" role="img" aria-label="Map of assessors: agreement and repeatability">
+  <rect x="330" y="20" width="270" height="130" class="fa op2"/>
+  <rect x="60" y="150" width="270" height="130" class="fw"/>
+  <line x1="60" y1="280" x2="600" y2="280" class="ax"/><line x1="60" y1="20" x2="60" y2="280" class="ax"/>
+  <line x1="330" y1="20" x2="330" y2="280" class="warnl dash"/><line x1="60" y1="150" x2="600" y2="150" class="warnl dash"/>
+  <text x="590" y="42" text-anchor="end" class="t-acc">reliable assessor</text>
+  <text x="70" y="42" class="t-strong">repeatable, but “own way”</text><text x="70" y="58" class="t-small">→ calibrate with standards</text>
+  <text x="590" y="270" text-anchor="end" class="t-strong">agrees, but unstable</text><text x="590" y="254" text-anchor="end" class="t-small">→ more replicates, training</text>
+  <text x="70" y="270" class="t-warn" style="font-weight:600">problematic – retrain / remove</text>
+  <g class="f3" opacity=".8"><circle cx="480" cy="60" r="5"/><circle cx="520" cy="80" r="5"/><circle cx="450" cy="100" r="5"/><circle cx="560" cy="50" r="5"/><circle cx="500" cy="120" r="5"/><circle cx="420" cy="70" r="5"/><circle cx="390" cy="110" r="5"/><circle cx="540" cy="130" r="5"/><circle cx="260" cy="90" r="5"/><circle cx="430" cy="200" r="5"/><circle cx="360" cy="180" r="5"/></g>
+  <g class="f2"><circle cx="200" cy="220" r="6"/><circle cx="150" cy="190" r="6"/></g>
+  <text x="330" y="300" text-anchor="middle" class="t-small">agreement with the panel (r) →  limit 0.5</text>
+  <text x="20" y="150" text-anchor="middle" transform="rotate(-90 20 150)" class="t-small">repeatability (r)</text>
+</svg>
+<figcaption>Schema of the plot drawn by the script. The 0.5 limit is a rule of thumb – with 6 products the correlation is fairly unstable.</figcaption>
+</figure>
+<div class="warn"><strong>Remove an assessor only as a last resort</strong>A poor result on one descriptor is usually caused by an unclear attribute definition, not by the assessor. First check whether others have the same problem, and clarify the definition and reference standards.</div>
+
+<nav class="pager">
+<a class="prev" href="exercise14.html"><span>← Previous</span>14. Statistical power and panel size</a>
+<a class="next" href="exercise16.html"><span>Next →</span>16. Mixed models</a>
+</nav>
+</div>
+</body>
+</html>

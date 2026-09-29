@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>18. Temporal methods – TDS and TCATA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../teoria/style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ink-3)"/></marker></defs></svg>
+<div class="wrap">
+<header class="top"><a class="brand" href="index.html">Sensometrics in R · theory</a><span class="toplinks"><a href="index.html">All exercises</a><a class="lang" href="../teoria/cvicenie18.html">Slovensky</a></span></header>
+
+<section class="hero"><span class="num">EXERCISE 18</span><h1>Temporal methods – TDS and TCATA</h1><p class="lead">How perception changes over time: dominance of sensations and temporal CATA curves.</p>
+<div class="files"><a href="../cvicenie18.txt">Script (SK): cvicenie18.txt</a><a href="../exercises_EN/exercise18.txt">Script (EN): exercise18.txt</a></div></section>
+<div class="goals"><h2>What you will learn</h2><ul>
+<li>why a static profile is not enough for products whose taste develops in the mouth,</li>
+<li>to read TDS curves with the chance level and the significance limit,</li>
+<li>to compare two products with TCATA curves.</li>
+</ul></div>
+
+<h2>Perception changes over time</h2>
+<p>With wine, beer, chocolate or chewing gum the perception develops: first sweetness, then sourness, at the end bitterness and a drying (astringent) feeling. A static profile (one number per attribute) blends this course into an average. Temporal methods record perception <strong>every second</strong>. Data are collected by the apps <code>TDS_app.R</code> and <code>TCATA_app.R</code> in the <code>Senzometricke_appky/</code> folder.</p>
+<div class="tablewrap"><table>
+<tr><th></th><th>TDS – Temporal Dominance of Sensations</th><th>TCATA – Temporal CATA</th></tr>
+<tr><td>question</td><td>Which sensation is <em>dominant now</em>?</td><td>Which sensations do you <em>perceive now</em>?</td></tr>
+<tr><td>choice</td><td>exactly one attribute at any moment</td><td>any number of attributes at once</td></tr>
+<tr><td>output</td><td>dominance rate over time</td><td>citation proportion over time</td></tr>
+</table></div>
+
+<h2>TDS curves</h2>
+<p>At every time <em>t</em> we count how many assessors marked the attribute as dominant and divide by the number of assessors. The dominance rates of all attributes sum to 1 at every time point.</p>
+<figure>
+<svg viewBox="0 0 640 270" role="img" aria-label="TDS curves">
+<line x1="60" y1="230" x2="600" y2="230" class="ax"/><line x1="60" y1="230" x2="60" y2="20" class="ax"/>
+<text x="52" y="234" text-anchor="end" class="t-small">0</text>
+<text x="52" y="194.0" text-anchor="end" class="t-small">0.2</text>
+<text x="52" y="154.0" text-anchor="end" class="t-small">0.4</text>
+<text x="52" y="114.0" text-anchor="end" class="t-small">0.6</text>
+<text x="52" y="74.0" text-anchor="end" class="t-small">0.8</text>
+<text x="52" y="34" text-anchor="end" class="t-small">1</text>
+<text x="60" y="248" text-anchor="middle" class="t-small">0</text>
+<text x="150" y="248" text-anchor="middle" class="t-small">10</text>
+<text x="240" y="248" text-anchor="middle" class="t-small">20</text>
+<text x="330" y="248" text-anchor="middle" class="t-small">30</text>
+<text x="420" y="248" text-anchor="middle" class="t-small">40</text>
+<text x="510" y="248" text-anchor="middle" class="t-small">50</text>
+<text x="600" y="248" text-anchor="middle" class="t-small">60</text>
+<rect x="60" y="166.0" width="540" height="64.0" class="fs op2"/>
+<line x1="60" y1="190.0" x2="600" y2="190.0" style="stroke:var(--ink-3);stroke-dasharray:2 3"/>
+<line x1="60" y1="166.0" x2="600" y2="166.0" class="warnl dash"/>
+<text x="596" y="160.0" text-anchor="end" class="t-small t-warn">significance limit 0.32</text>
+<text x="596" y="204.0" text-anchor="end" class="t-small">chance P₀ = 1/5</text>
+<polyline points="60.0,71.9 69.0,76.0 78.0,80.6 87.0,85.6 96.0,91.2 105.0,97.2 114.0,103.7 123.0,110.6 132.0,117.9 141.0,125.4 150.0,133.1 159.0,140.9 168.0,148.7 177.0,156.4 186.0,164.0 195.0,171.2 204.0,178.1 213.0,184.6 222.0,190.6 231.0,196.1 240.0,201.1 249.0,205.6 258.0,209.5 267.0,213.0 276.0,216.1 285.0,218.7 294.0,220.9 303.0,222.8 312.0,224.4 321.0,225.6 330.0,226.7 339.0,227.5 348.0,228.1 357.0,228.5 366.0,228.9 375.0,229.1 384.0,229.3 393.0,229.4 402.0,229.5 411.0,229.6 420.0,229.6 429.0,229.6 438.0,229.7 447.0,229.7 456.0,229.7 465.0,229.7 474.0,229.7 483.0,229.7 492.0,229.7 501.0,229.7 510.0,229.7 519.0,229.7 528.0,229.7 537.0,229.7 546.0,229.6 555.0,229.6 564.0,229.6 573.0,229.6 582.0,229.6 591.0,229.5 600.0,229.5" style="stroke:var(--c5);stroke-width:2.5;fill:none"/>
+<text x="60.0" y="63.9" text-anchor="middle" class="t-small t-strong" style="fill:var(--c5)">sweet</text>
+<polyline points="60.0,208.8 69.0,206.0 78.0,202.9 87.0,199.5 96.0,195.7 105.0,191.8 114.0,187.5 123.0,183.1 132.0,178.5 141.0,173.9 150.0,169.3 159.0,164.8 168.0,160.5 177.0,156.4 186.0,152.8 195.0,149.7 204.0,147.2 213.0,145.3 222.0,144.1 231.0,143.7 240.0,144.0 249.0,145.2 258.0,147.1 267.0,149.8 276.0,153.3 285.0,157.5 294.0,162.4 303.0,167.7 312.0,173.6 321.0,179.7 330.0,185.9 339.0,192.1 348.0,198.0 357.0,203.6 366.0,208.6 375.0,213.1 384.0,216.9 393.0,220.0 402.0,222.6 411.0,224.5 420.0,226.0 429.0,227.1 438.0,227.9 447.0,228.5 456.0,228.9 465.0,229.2 474.0,229.4 483.0,229.5 492.0,229.6 501.0,229.6 510.0,229.6 519.0,229.6 528.0,229.7 537.0,229.6 546.0,229.6 555.0,229.6 564.0,229.6 573.0,229.6 582.0,229.6 591.0,229.5 600.0,229.5" style="stroke:var(--c2);stroke-width:2.5;fill:none"/>
+<text x="231.0" y="135.7" text-anchor="middle" class="t-small t-strong" style="fill:var(--c2)">sour</text>
+<polyline points="60.0,228.8 69.0,228.8 78.0,228.7 87.0,228.6 96.0,228.5 105.0,228.4 114.0,228.2 123.0,227.9 132.0,227.6 141.0,227.3 150.0,226.9 159.0,226.4 168.0,225.8 177.0,225.1 186.0,224.3 195.0,223.3 204.0,222.1 213.0,220.8 222.0,219.2 231.0,217.3 240.0,215.1 249.0,212.5 258.0,209.5 267.0,206.0 276.0,202.0 285.0,197.4 294.0,192.3 303.0,186.5 312.0,180.1 321.0,173.3 330.0,166.1 339.0,158.7 348.0,151.5 357.0,144.5 366.0,138.2 375.0,132.8 384.0,128.4 393.0,125.2 402.0,123.2 411.0,122.4 420.0,122.8 429.0,124.1 438.0,126.3 447.0,129.2 456.0,132.5 465.0,136.2 474.0,140.1 483.0,144.2 492.0,148.2 501.0,152.2 510.0,156.2 519.0,159.9 528.0,163.6 537.0,167.0 546.0,170.2 555.0,173.3 564.0,176.1 573.0,178.8 582.0,181.2 591.0,183.5 600.0,185.6" style="stroke:var(--c4);stroke-width:2.5;fill:none"/>
+<text x="411.0" y="114.4" text-anchor="middle" class="t-small t-strong" style="fill:var(--c4)">bitter</text>
+<polyline points="60.0,211.0 69.0,209.7 78.0,208.2 87.0,206.6 96.0,204.8 105.0,202.9 114.0,200.8 123.0,198.6 132.0,196.2 141.0,193.6 150.0,190.9 159.0,188.1 168.0,185.2 177.0,182.2 186.0,179.1 195.0,176.0 204.0,172.8 213.0,169.7 222.0,166.5 231.0,163.4 240.0,160.4 249.0,157.5 258.0,154.8 267.0,152.4 276.0,150.4 285.0,148.7 294.0,147.7 303.0,147.3 312.0,147.7 321.0,149.0 330.0,151.3 339.0,154.5 348.0,158.6 357.0,163.5 366.0,169.2 375.0,175.2 384.0,181.4 393.0,187.7 402.0,193.7 411.0,199.2 420.0,204.3 429.0,208.8 438.0,212.7 447.0,216.0 456.0,218.7 465.0,221.0 474.0,222.9 483.0,224.3 492.0,225.5 501.0,226.5 510.0,227.2 519.0,227.8 528.0,228.2 537.0,228.6 546.0,228.8 555.0,229.0 564.0,229.1 573.0,229.2 582.0,229.3 591.0,229.3 600.0,229.3" style="stroke:var(--c3);stroke-width:2.5;fill:none"/>
+<text x="303.0" y="139.3" text-anchor="middle" class="t-small t-strong" style="fill:var(--c3)">fruity</text>
+<polyline points="60.0,229.5 69.0,229.5 78.0,229.6 87.0,229.6 96.0,229.7 105.0,229.7 114.0,229.7 123.0,229.8 132.0,229.8 141.0,229.8 150.0,229.8 159.0,229.8 168.0,229.8 177.0,229.8 186.0,229.8 195.0,229.8 204.0,229.7 213.0,229.7 222.0,229.6 231.0,229.5 240.0,229.4 249.0,229.2 258.0,229.0 267.0,228.6 276.0,228.2 285.0,227.6 294.0,226.7 303.0,225.7 312.0,224.2 321.0,222.4 330.0,220.1 339.0,217.3 348.0,213.8 357.0,209.8 366.0,205.1 375.0,199.8 384.0,193.9 393.0,187.7 402.0,181.1 411.0,174.2 420.0,167.3 429.0,160.3 438.0,153.4 447.0,146.7 456.0,140.2 465.0,133.9 474.0,128.0 483.0,122.3 492.0,117.0 501.0,112.0 510.0,107.3 519.0,102.9 528.0,98.9 537.0,95.1 546.0,91.7 555.0,88.5 564.0,85.5 573.0,82.8 582.0,80.4 591.0,78.2 600.0,76.1" style="stroke:var(--c1);stroke-width:2.5;fill:none"/>
+<text x="600.0" y="68.1" text-anchor="middle" class="t-small t-strong" style="fill:var(--c1)">astringent</text>
+<text x="330" y="266" text-anchor="middle" class="t-small">time (s)</text>
+<text x="16" y="125" text-anchor="middle" transform="rotate(-90 16 125)" class="t-small">dominance rate</text>
+</svg>
+<figcaption>Expected TDS curves from the simulation in the script (30 assessors, 5 attributes). An attribute is significantly dominant only when its curve crosses the red limit – the grey band is the chance region.</figcaption>
+</figure>
+<div class="formula">P<sub>s</sub> = P<sub>0</sub> + 1.645 · √[ P<sub>0</sub> (1 − P<sub>0</sub>) / n ], &nbsp; P<sub>0</sub> = 1 / k
+<small>k – number of attributes, n – number of evaluations (assessors × replicates). Limit according to Pineau et al. (2009) for a one-sided test at 0.05.</small></div>
+<ul>
+<li><strong>Chance level P<sub>0</sub></strong> – the dominance rate an attribute would reach if assessors chose randomly.</li>
+<li><strong>Significance limit</strong> – above it the attribute is dominant more often than chance would allow.</li>
+<li>When reading, follow the <em>sequence</em> of dominant sensations and their duration (width above the limit).</li>
+</ul>
+
+<h2>TCATA curves and comparing products</h2>
+<p>In TCATA an assessor may cite several attributes at one moment, so the proportions do not sum to 1. We draw the curves of two products in one plot and at every time point test whether the citation proportion differs – e.g. with Fisher’s test on a 2 × 2 table.</p>
+<figure>
+<svg viewBox="0 0 640 250" role="img" aria-label="TCATA comparison of two products">
+  <line x1="60" y1="210" x2="600" y2="210" class="ax"/><line x1="60" y1="210" x2="60" y2="20" class="ax"/>
+  <rect x="300" y="20" width="170" height="190" class="fw" opacity=".6"/>
+  <path d="M60,205 C150,204 220,190 280,120 C320,70 360,55 400,60 C450,70 500,130 600,190" style="stroke:var(--c4);stroke-width:3;fill:none"/>
+  <path d="M60,206 C150,206 220,202 280,180 C320,165 360,160 400,162 C450,168 500,185 600,200" style="stroke:var(--c4);stroke-width:3;fill:none;stroke-dasharray:7 5"/>
+  <text x="400" y="48" text-anchor="middle" class="t-small t-strong" style="fill:var(--c4)">bitter – product A</text>
+  <text x="430" y="152" class="t-small" style="fill:var(--c4)">product B</text>
+  <text x="385" y="232" text-anchor="middle" class="t-small t-warn">interval where p &lt; 0.05</text>
+  <text x="330" y="246" text-anchor="middle" class="t-small">time (s)</text>
+  <text x="18" y="115" text-anchor="middle" transform="rotate(-90 18 115)" class="t-small">citation proportion</text>
+</svg>
+<figcaption>Schema: product B (dashed line) is significantly less bitter in the middle phase. The script prints the times at which Fisher’s test gives p &lt; 0.05.</figcaption>
+</figure>
+<div class="warn"><strong>Multiple testing</strong>A test every second means dozens of tests – a few “significant” points arise by chance. Consider a difference significant only over a continuous interval of several seconds, not isolated points.</div>
+<div class="note"><strong>Recording length</strong>Assessors swallow and the perception fades at different rates. With real data time is often <em>standardised</em> (0 = first selection, 1 = end of that assessor’s recording) so that curves can be averaged. The <code>tempR</code> package offers ready-made functions for standardisation and plotting.</div>
+
+<nav class="pager">
+<a class="prev" href="exercise17.html"><span>← Previous</span>17. CATA and napping</a>
+</nav>
+</div>
+</body>
+</html>

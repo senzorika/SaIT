@@ -1,3 +1,8 @@
+# ============================================================
+# Cvičenie 10: Analýza prežitia a senzorická trvanlivosť
+# Teória: https://senzorika.github.io/SaIT/teoria/cvicenie10.html
+# ============================================================
+
 # ------------------------------------------------------------------------
 # Analyza prezitia (Survival analysis, Kaplan-Meier model) (Vietoris,2013)
 # + predikcne modelovanie
@@ -10,18 +15,18 @@
 # ----------------------------------------------------------------------------------------
 # Nacitanie kniznice pre analyzu prezitia
 library(survival)
-time =c(0,4,8,12,24,36,48,0,4,8,12,24,36,48,0,4,8,12,24,36,48,0,4,8,12,24,36,48,0,4,8,12,24,36,48)
-event=c(TRUE,TRUE,TRUE,TRUE,FALSE,FALSE,FALSE,
+time <- c(0,4,8,12,24,36,48,0,4,8,12,24,36,48,0,4,8,12,24,36,48,0,4,8,12,24,36,48,0,4,8,12,24,36,48)
+event <- c(TRUE,TRUE,TRUE,TRUE,FALSE,FALSE,FALSE,
         TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
         TRUE,TRUE,FALSE,TRUE,FALSE,FALSE,FALSE,
         TRUE,FALSE,TRUE,FALSE,FALSE,FALSE,FALSE,
         FALSE,FALSE,TRUE,TRUE,TRUE,TRUE,FALSE)
 
 # vytvorenie datasetu a nastavenie zakladnych parametrov
-foodshelflife= Surv(time,event)
+foodshelflife <- Surv(time,event)
 foodshelflife
 
-fit = survfit(foodshelflife~1,conf.int=F)
+fit <- survfit(foodshelflife~1,conf.int=FALSE)
 # vysledky a vizualizacia grafu
 fit
 summary(fit)
@@ -36,11 +41,11 @@ abline(h=0.5, col="red")
 # kde x su casove data (hodiny) a y (je survival hodnota)
 y <- fit$surv
 x <- fit$time
-linear=data.frame(x,y)
+linear <- data.frame(x,y)
 linear
 
 # linearny model: cas ako funkcia prezivania, x = a*y + b
-regresia=lm(x~y)
+regresia <- lm(x~y)
 regresia
 
 # a ideme programovat nasu prvu funkciu v zivote :)

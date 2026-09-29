@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>14. Sila testu a veľkosť panelu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ink-3)"/></marker></defs></svg>
+<div class="wrap">
+<header class="top"><a class="brand" href="index.html">Senzometria v R · teória</a><span class="toplinks"><a href="index.html">Všetky cvičenia</a><a class="lang" href="../theory_EN/exercise14.html">English</a></span></header>
+
+<section class="hero"><span class="num">CVIČENIE 14</span><h1>Sila testu a veľkosť panelu</h1><p class="lead">Koľko hodnotiteľov treba? Sila testu, veľkosť vzorky pre rozlišovacie testy, t-test a ANOVA.</p>
+<div class="files"><a href="../cvicenie14.txt">Skript (SK): cvicenie14.txt</a><a href="../exercises_EN/exercise14.txt">Script (EN): exercise14.txt</a></div></section>
+<div class="goals"><h2>Čo sa naučíte</h2><ul>
+<li>čo je sila testu a prečo „nepreukázaný rozdiel“ často znamená len malý panel,</li>
+<li>vypočítať potrebný počet hodnotiteľov pre rozlišovacie testy (<code>sensR</code>),</li>
+<li>naplánovať veľkosť vzorky pre t-test a ANOVA (<code>power.t.test</code>, <code>pwr</code>).</li>
+</ul></div>
+
+<h2>Dve chyby rozhodovania</h2>
+<div class="tablewrap"><table>
+<tr><th></th><th>v skutočnosti rozdiel nie je</th><th>v skutočnosti rozdiel je</th></tr>
+<tr><th>test: preukazný (p &lt; α)</th><td class="t-warn"><strong>chyba I. druhu α</strong><br>falošný poplach (zvyčajne 5 %)</td><td><strong>správne</strong> – pravdepodobnosť = <strong>sila 1 − β</strong></td></tr>
+<tr><th>test: nepreukazný</th><td><strong>správne</strong></td><td><strong>chyba II. druhu β</strong><br>prehliadnutý rozdiel</td></tr>
+</table></div>
+<p><strong>Sila testu</strong> je pravdepodobnosť, že test odhalí rozdiel, ktorý naozaj existuje. Štandardne plánujeme silu 80 % (β = 0,2), pri drahých rozhodnutiach 90 %. Sila rastie s veľkosťou rozdielu, s počtom hodnotiteľov a s citlivosťou metódy.</p>
+
+<h2>Sila v rozlišovacích testoch</h2>
+<figure>
+<svg viewBox="0 0 640 270" role="img" aria-label="Sila trojuholníkového testu">
+<line x1="60" y1="230" x2="600" y2="230" class="ax"/><line x1="60" y1="230" x2="60" y2="20" class="ax"/>
+<line x1="60" y1="230" x2="600" y2="230" class="gridl"/><text x="52" y="234" text-anchor="end" class="t-small">0</text>
+<line x1="60" y1="190.0" x2="600" y2="190.0" class="gridl"/><text x="52" y="194.0" text-anchor="end" class="t-small">0,2</text>
+<line x1="60" y1="150.0" x2="600" y2="150.0" class="gridl"/><text x="52" y="154.0" text-anchor="end" class="t-small">0,4</text>
+<line x1="60" y1="110.0" x2="600" y2="110.0" class="gridl"/><text x="52" y="114.0" text-anchor="end" class="t-small">0,6</text>
+<line x1="60" y1="70.0" x2="600" y2="70.0" class="gridl"/><text x="52" y="74.0" text-anchor="end" class="t-small">0,8</text>
+<line x1="60" y1="30" x2="600" y2="30" class="gridl"/><text x="52" y="34" text-anchor="end" class="t-small">1</text>
+<text x="60" y="248" text-anchor="middle" class="t-small">0</text>
+<text x="190.0" y="248" text-anchor="middle" class="t-small">0,5</text>
+<text x="320" y="248" text-anchor="middle" class="t-small">1</text>
+<text x="450.0" y="248" text-anchor="middle" class="t-small">1,5</text>
+<text x="580" y="248" text-anchor="middle" class="t-small">2</text>
+<polyline points="60.0,221.5 73.0,221.5 86.0,221.3 99.0,220.9 112.0,220.5 125.0,219.8 138.0,219.0 151.0,218.0 164.0,216.7 177.0,215.1 190.0,213.3 203.0,211.0 216.0,208.4 229.0,205.2 242.0,201.5 255.0,197.3 268.0,192.4 281.0,186.8 294.0,180.5 307.0,173.5 320.0,165.7 333.0,157.3 346.0,148.3 359.0,138.9 372.0,129.0 385.0,119.0 398.0,109.0 411.0,99.2 424.0,89.7 437.0,80.8 450.0,72.5 463.0,65.0 476.0,58.3 489.0,52.5 502.0,47.6 515.0,43.5 528.0,40.1 541.0,37.5 554.0,35.4 567.0,33.8 580.0,32.7" style="stroke:var(--c3);stroke-width:2.5;fill:none"/>
+<polyline points="60.0,221.3 73.0,221.2 86.0,221.0 99.0,220.5 112.0,219.8 125.0,218.8 138.0,217.5 151.0,215.9 164.0,213.9 177.0,211.3 190.0,208.2 203.0,204.3 216.0,199.6 229.0,194.0 242.0,187.4 255.0,179.7 268.0,170.8 281.0,160.8 294.0,149.8 307.0,138.0 320.0,125.5 333.0,112.8 346.0,100.2 359.0,88.1 372.0,76.8 385.0,66.7 398.0,57.9 411.0,50.6 424.0,44.6 437.0,40.1 450.0,36.7 463.0,34.3 476.0,32.6 489.0,31.6 502.0,30.9 515.0,30.5 528.0,30.3 541.0,30.1 554.0,30.1 567.0,30.0 580.0,30.0" style="stroke:var(--c2);stroke-width:2.5;fill:none"/>
+<polyline points="60.0,222.1 73.0,222.0 86.0,221.7 99.0,221.0 112.0,220.1 125.0,218.7 138.0,216.9 151.0,214.5 164.0,211.3 177.0,207.3 190.0,202.1 203.0,195.5 216.0,187.4 229.0,177.7 242.0,166.1 255.0,152.9 268.0,138.2 281.0,122.5 294.0,106.5 307.0,91.0 320.0,76.5 333.0,63.9 346.0,53.4 359.0,45.3 372.0,39.4 385.0,35.5 398.0,32.9 411.0,31.5 424.0,30.7 437.0,30.3 450.0,30.1 463.0,30.0 476.0,30.0 489.0,30.0 502.0,30.0 515.0,30.0 528.0,30.0 541.0,30.0 554.0,30.0 567.0,30.0 580.0,30.0" style="stroke:var(--c1);stroke-width:2.5;fill:none"/>
+<line x1="500" y1="150" x2="522" y2="150" style="stroke:var(--c3);stroke-width:3"/><text x="528" y="154" class="t-small">n = 50</text>
+<line x1="500" y1="168" x2="522" y2="168" style="stroke:var(--c2);stroke-width:3"/><text x="528" y="172" class="t-small">n = 100</text>
+<line x1="500" y1="186" x2="522" y2="186" style="stroke:var(--c1);stroke-width:3"/><text x="528" y="190" class="t-small">n = 200</text>
+<line x1="60" y1="70.0" x2="600" y2="70.0" class="warnl dash"/><text x="66" y="64.0" class="t-small t-warn">cieľová sila 0,8</text>
+<text x="330" y="266" text-anchor="middle" class="t-small">skutočný rozdiel d′</text>
+<text x="16" y="125" text-anchor="middle" transform="rotate(-90 16 125)" class="t-small">sila testu</text>
+</svg>
+<figcaption>Sila trojuholníkového testu v závislosti od skutočného rozdielu d′. So 100 hodnotiteľmi zachytíme d′ = 1 len asi s 50 % pravdepodobnosťou – je to hod mincou. Na silu 80 % pri d′ = 1 treba asi 200 hodnotiteľov.</figcaption>
+</figure>
+<figure>
+<svg viewBox="0 0 640 220" role="img" aria-label="Potrebný počet hodnotiteľov pre d′ = 1">
+<text x="120" y="39" text-anchor="end" class="t-strong">2-AFC</text>
+<rect x="130" y="20" width="42.4" height="26" rx="4" style="fill:var(--c1)"/>
+<text x="178.4" y="39" class="t-strong">23</text>
+<text x="120" y="77" text-anchor="end" class="t-strong">3-AFC</text>
+<rect x="130" y="58" width="29.5" height="26" rx="4" style="fill:var(--c3)"/>
+<text x="165.5" y="77" class="t-strong">16</text>
+<text x="120" y="115" text-anchor="end" class="t-strong">tetráda</text>
+<rect x="130" y="96" width="112.4" height="26" rx="4" style="fill:var(--c4)"/>
+<text x="248.4" y="115" class="t-strong">61</text>
+<text x="120" y="153" text-anchor="end" class="t-strong">triangel</text>
+<rect x="130" y="134" width="372.1" height="26" rx="4" style="fill:var(--c2)"/>
+<text x="508.1" y="153" class="t-strong">202</text>
+<text x="120" y="191" text-anchor="end" class="t-strong">duo-trio</text>
+<rect x="130" y="172" width="420.0" height="26" rx="4" style="fill:var(--c5)"/>
+<text x="556.0" y="191" class="t-strong">228</text>
+<text x="130" y="214" class="t-small">počet hodnotiteľov pre d′ = 1, α = 0,05, sila 80 % (presný binomický výpočet)</text>
+</svg>
+<figcaption>Výber metódy rozhoduje o veľkosti panelu desaťnásobne. Ak viete, v ktorom atribúte sa vzorky líšia, použite 2-AFC alebo 3-AFC; tetráda je dobrou náhradou trianglu, keď smer rozdielu nepoznáte.</figcaption>
+</figure>
+<pre>d.primeSS(1, target.power = 0.80, method = "triangle")  # potrebné n
+d.primePwr(1, sample.size = 100, method = "triangle")   # sila pri danom n
+discrimSS(pdA = 0.2, target.power = 0.80, pGuess = 1/3) # zadanie cez pd namiesto d′</pre>
+
+<h2>Odpoveď na otázku z cvičenia 5a</h2>
+<p>V párovom preferenčnom teste zvolilo vzorku A 34 zo 60 spotrebiteľov (57 %), p = 0,37. Ak je skutočná preferencia naozaj 57 %:</p>
+<ul>
+<li>sila testu so 60 ľuďmi je len asi <strong>26 %</strong> – nevýznamný výsledok bol takmer istý,</li>
+<li>na silu 80 % treba približne <strong>350 spotrebiteľov</strong>.</li>
+</ul>
+<div class="note"><strong>Prečo nie 236?</strong>V cvičení 5a sme uviedli, že pri 57 % by bol výsledok preukazný asi od 236 respondentov. To je počet, pri ktorom <em>presne 57 %</em> prekročí hranicu významnosti – ale skutočný výsledok kolíše, takže taký test by uspel len asi v polovici prípadov. Plánovanie so silou 80 % dáva väčšie a bezpečnejšie číslo.</div>
+
+<h2>Škálové dáta: t-test a ANOVA</h2>
+<p>Pri spojitých hodnoteniach potrebujeme poznať <strong>veľkosť efektu</strong>: rozdiel, ktorý chceme zachytiť (δ), a smerodajnú odchýlku (σ) – z pilotného testu alebo z minulých meraní.</p>
+<div class="formula">n ≈ 2 (z<sub>1−α/2</sub> + z<sub>1−β</sub>)² σ² / δ² &nbsp; (dve nezávislé skupiny)
+<small>Pri δ = 0,5 a σ = 1: dve nezávislé skupiny potrebujú 64 ľudí na skupinu, párový dizajn len 34 hodnotiteľov spolu.</small></div>
+<div class="tablewrap"><table>
+<tr><th>Situácia</th><th>R</th><th>Výsledok (α = 0,05, sila 80 %)</th></tr>
+<tr><td>párový t-test, δ = 0,5, σ = 1</td><td><code>power.t.test(delta=0.5, sd=1, power=0.8, type="paired")</code></td><td>n = 34</td></tr>
+<tr><td>dve nezávislé skupiny</td><td><code>… type="two.sample"</code></td><td>n = 64 na skupinu</td></tr>
+<tr><td>ANOVA, 4 produkty, stredný efekt f = 0,25</td><td><code>pwr.anova.test(k=4, f=0.25, power=0.8)</code></td><td>n = 45 na skupinu</td></tr>
+</table></div>
+<div class="warn"><strong>Silu plánujte pred experimentom</strong>Výpočet „sily po teste“ z pozorovaného rozdielu (post-hoc power) nič nové nepovie – je len prepočtom p-hodnoty. Zmysel má otázka: aký najmenší rozdiel je pre nás prakticky dôležitý, a koľko hodnotiteľov treba na jeho spoľahlivé zachytenie?</div>
+
+<nav class="pager">
+<a class="prev" href="cvicenie13.html"><span>← Predchádzajúce</span>13. Thurstonov model a d′</a>
+<a class="next" href="cvicenie15.html"><span>Nasledujúce →</span>15. Výkonnosť senzorického panelu</a>
+</nav>
+</div>
+</body>
+</html>

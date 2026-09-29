@@ -8,7 +8,7 @@
 <p align="center">
   <a href="https://cran.r-project.org/"><img src="https://img.shields.io/badge/R-%E2%89%A5%204.0-276DC3?logo=r&logoColor=white" alt="R"></a>
   <a href="https://posit.co/download/rstudio-desktop/"><img src="https://img.shields.io/badge/RStudio-IDE-75AADB?logo=rstudioide&logoColor=white" alt="RStudio"></a>
-  <img src="https://img.shields.io/badge/cvi%C4%8Denia%20%7C%20exercises-16-0f7b6c" alt="16 exercises">
+  <img src="https://img.shields.io/badge/cvi%C4%8Denia%20%7C%20exercises-22-0f7b6c" alt="22 exercises">
   <img src="https://img.shields.io/badge/jazyk%20%7C%20language-SK%20%C2%B7%20EN-d9622b" alt="SK · EN">
   <a href="https://senzorika.github.io/SaIT/teoria/index.html"><img src="https://img.shields.io/badge/te%C3%B3ria%20%7C%20theory-GitHub%20Pages-3a5fcd?logo=github" alt="Theory"></a>
 </p>
@@ -31,14 +31,19 @@ flowchart LR
     B1["🧪 Testovanie hypotéz<br/>cvičenia 5a, 5b, 5c, 5d"]
     B2["📈 Vzťahy a modelovanie<br/>cvičenia 6, 10"]
     B3["🗺️ Viacrozmerné metódy<br/>cvičenia 7, 8, 9"]
-    B4["🛒 Spotrebiteľský výskum<br/>cvičenia 11a, 11b, 12"]
+    B4["🎯 Rozlišovacie testy a panel<br/>cvičenia 13, 14, 15, 16"]
+    B5["🛒 Spotrebiteľský výskum<br/>cvičenia 11a, 11b, 12"]
+    B6["⏱️ Rýchle a temporálne metódy<br/>cvičenia 17, 18"]
     B0 --> B1
     B1 --> B2
     B1 --> B3
-    B2 --> B4
-    B3 --> B4
+    B1 --> B4
+    B2 --> B5
+    B3 --> B5
+    B4 --> B5
+    B5 --> B6
     classDef blk fill:#d6efe9,stroke:#0f7b6c,color:#1d1f24
-    class B0,B1,B2,B3,B4 blk
+    class B0,B1,B2,B3,B4,B5,B6 blk
 ```
 
 ### 🧪 Cvičenia
@@ -76,6 +81,15 @@ flowchart LR
 | **8** | **Zhluková analýza**<br><sub>Hierarchické zhlukovanie (Ward), dendrogram a metóda k-priemerov pre segmentáciu produktov.</sub> | [📖](https://senzorika.github.io/SaIT/teoria/cvicenie08.html) | [`cvicenie8.txt`](cvicenie8.txt) | [`exercise8.txt`](exercises_EN/exercise8.txt) |
 | **9** | **Korešpondenčná analýza**<br><sub>Mapa vzťahov medzi kategóriami kontingenčnej tabuľky – produkty a cieľové skupiny.</sub> | [📖](https://senzorika.github.io/SaIT/teoria/cvicenie09.html) | [`cvicenie9.txt`](cvicenie9.txt) | [`exercise9.txt`](exercises_EN/exercise9.txt) |
 
+#### 🎯 Rozlišovacie testy a panel
+
+| # | Téma | Teória | Skript SK | Script EN |
+|:-:|------|:------:|:---------:|:---------:|
+| **13** | **Thurstonov model a d′**<br><sub>Rozlišovacie testy inak: d′ ako miera rozdielu nezávislá od metódy, psychometrické funkcie a test podobnosti.</sub> | [📖](https://senzorika.github.io/SaIT/teoria/cvicenie13.html) | [`cvicenie13.txt`](cvicenie13.txt) | [`exercise13.txt`](exercises_EN/exercise13.txt) |
+| **14** | **Sila testu a veľkosť panelu**<br><sub>Koľko hodnotiteľov treba? Sila testu, veľkosť vzorky pre rozlišovacie testy, t-test a ANOVA.</sub> | [📖](https://senzorika.github.io/SaIT/teoria/cvicenie14.html) | [`cvicenie14.txt`](cvicenie14.txt) | [`exercise14.txt`](exercises_EN/exercise14.txt) |
+| **15** | **Výkonnosť senzorického panelu**<br><sub>Rozlišovanie, zhoda a opakovateľnosť – ako overiť, že panelu a jednotlivým hodnotiteľom možno veriť.</sub> | [📖](https://senzorika.github.io/SaIT/teoria/cvicenie15.html) | [`cvicenie15.txt`](cvicenie15.txt) | [`exercise15.txt`](exercises_EN/exercise15.txt) |
+| **16** | **Zmiešané modely**<br><sub>Hodnotiteľ ako náhodný efekt: prečo a ako nahradiť dvojfaktorovú ANOVA modelom lmer.</sub> | [📖](https://senzorika.github.io/SaIT/teoria/cvicenie16.html) | [`cvicenie16.txt`](cvicenie16.txt) | [`exercise16.txt`](exercises_EN/exercise16.txt) |
+
 #### 🛒 Spotrebiteľský výskum
 
 | # | Téma | Teória | Skript SK | Script EN |
@@ -83,6 +97,13 @@ flowchart LR
 | **11a** | **TURF analýza a mapa preferencií**<br><sub>Optimálna kombinácia ingrediencií (reach & frequency) a prepojenie senzorického profilu s hedonikou.</sub> | [📖](https://senzorika.github.io/SaIT/teoria/cvicenie11a.html) | [`cvicenie11a.txt`](cvicenie11a.txt) | [`exercise11a.txt`](exercises_EN/exercise11a.txt) |
 | **11b** | **Text mining a analýza sentimentu**<br><sub>Od voľného textu recenzií k frekvenciám slov, word cloudu a emóciám podľa lexikónu NRC.</sub> | [📖](https://senzorika.github.io/SaIT/teoria/cvicenie11b.html) | [`cvicenie11b.txt`](cvicenie11b.txt) | [`exercise11b.txt`](exercises_EN/exercise11b.txt) |
 | **12** | **JAR škála a radarový graf**<br><sub>Just-About-Right hodnotenie pre optimalizáciu receptúry a profilogram senzorických vlastností.</sub> | [📖](https://senzorika.github.io/SaIT/teoria/cvicenie12.html) | [`cvicenie12.txt`](cvicenie12.txt) | [`exercise12.txt`](exercises_EN/exercise12.txt) |
+
+#### ⏱️ Rýchle a temporálne metódy
+
+| # | Téma | Teória | Skript SK | Script EN |
+|:-:|------|:------:|:---------:|:---------:|
+| **17** | **CATA a napping**<br><sub>Rýchle metódy profilovania so spotrebiteľmi: začiarkavacie otázky a projektívne mapovanie.</sub> | [📖](https://senzorika.github.io/SaIT/teoria/cvicenie17.html) | [`cvicenie17.txt`](cvicenie17.txt) | [`exercise17.txt`](exercises_EN/exercise17.txt) |
+| **18** | **Temporálne metódy – TDS a TCATA**<br><sub>Ako sa vnem mení v čase: dominancia vnemov a časové CATA krivky.</sub> | [📖](https://senzorika.github.io/SaIT/teoria/cvicenie18.html) | [`cvicenie18.txt`](cvicenie18.txt) | [`exercise18.txt`](exercises_EN/exercise18.txt) |
 
 ### 🚀 Ako začať
 
@@ -129,14 +150,19 @@ flowchart LR
     B1["🧪 Hypothesis testing<br/>exercises 5a, 5b, 5c, 5d"]
     B2["📈 Relationships and modelling<br/>exercises 6, 10"]
     B3["🗺️ Multivariate methods<br/>exercises 7, 8, 9"]
-    B4["🛒 Consumer research<br/>exercises 11a, 11b, 12"]
+    B4["🎯 Discrimination tests and the panel<br/>exercises 13, 14, 15, 16"]
+    B5["🛒 Consumer research<br/>exercises 11a, 11b, 12"]
+    B6["⏱️ Rapid and temporal methods<br/>exercises 17, 18"]
     B0 --> B1
     B1 --> B2
     B1 --> B3
-    B2 --> B4
-    B3 --> B4
+    B1 --> B4
+    B2 --> B5
+    B3 --> B5
+    B4 --> B5
+    B5 --> B6
     classDef blk fill:#d6efe9,stroke:#0f7b6c,color:#1d1f24
-    class B0,B1,B2,B3,B4 blk
+    class B0,B1,B2,B3,B4,B5,B6 blk
 ```
 
 ### 🧪 Exercises
@@ -174,6 +200,15 @@ flowchart LR
 | **8** | **Cluster analysis**<br><sub>Hierarchical clustering (Ward), the dendrogram and k-means for product segmentation.</sub> | [📖](https://senzorika.github.io/SaIT/theory_EN/exercise08.html) | [`exercise8.txt`](exercises_EN/exercise8.txt) | [`cvicenie8.txt`](cvicenie8.txt) |
 | **9** | **Correspondence analysis**<br><sub>A map of associations between the categories of a contingency table – products and target groups.</sub> | [📖](https://senzorika.github.io/SaIT/theory_EN/exercise09.html) | [`exercise9.txt`](exercises_EN/exercise9.txt) | [`cvicenie9.txt`](cvicenie9.txt) |
 
+#### 🎯 Discrimination tests and the panel
+
+| # | Topic | Theory | Script EN | Skript SK |
+|:-:|------|:------:|:---------:|:---------:|
+| **13** | **Thurstonian model and d′**<br><sub>Discrimination tests revisited: d′ as a method-independent measure of difference, psychometric functions and the similarity test.</sub> | [📖](https://senzorika.github.io/SaIT/theory_EN/exercise13.html) | [`exercise13.txt`](exercises_EN/exercise13.txt) | [`cvicenie13.txt`](cvicenie13.txt) |
+| **14** | **Statistical power and panel size**<br><sub>How many assessors are needed? Power, sample size for discrimination tests, the t-test and ANOVA.</sub> | [📖](https://senzorika.github.io/SaIT/theory_EN/exercise14.html) | [`exercise14.txt`](exercises_EN/exercise14.txt) | [`cvicenie14.txt`](cvicenie14.txt) |
+| **15** | **Sensory panel performance**<br><sub>Discrimination, agreement and repeatability – how to check that the panel and each assessor can be trusted.</sub> | [📖](https://senzorika.github.io/SaIT/theory_EN/exercise15.html) | [`exercise15.txt`](exercises_EN/exercise15.txt) | [`cvicenie15.txt`](cvicenie15.txt) |
+| **16** | **Mixed models**<br><sub>The assessor as a random effect: why and how to replace two-way ANOVA with an lmer model.</sub> | [📖](https://senzorika.github.io/SaIT/theory_EN/exercise16.html) | [`exercise16.txt`](exercises_EN/exercise16.txt) | [`cvicenie16.txt`](cvicenie16.txt) |
+
 #### 🛒 Consumer research
 
 | # | Topic | Theory | Script EN | Skript SK |
@@ -181,6 +216,13 @@ flowchart LR
 | **11a** | **TURF analysis and preference mapping**<br><sub>The optimal combination of ingredients (reach & frequency) and linking the sensory profile with hedonic data.</sub> | [📖](https://senzorika.github.io/SaIT/theory_EN/exercise11a.html) | [`exercise11a.txt`](exercises_EN/exercise11a.txt) | [`cvicenie11a.txt`](cvicenie11a.txt) |
 | **11b** | **Text mining and sentiment analysis**<br><sub>From free-text reviews to word frequencies, a word cloud and emotions from the NRC lexicon.</sub> | [📖](https://senzorika.github.io/SaIT/theory_EN/exercise11b.html) | [`exercise11b.txt`](exercises_EN/exercise11b.txt) | [`cvicenie11b.txt`](cvicenie11b.txt) |
 | **12** | **JAR scale and radar chart**<br><sub>Just-About-Right evaluation for recipe optimisation and a profile chart of sensory attributes.</sub> | [📖](https://senzorika.github.io/SaIT/theory_EN/exercise12.html) | [`exercise12.txt`](exercises_EN/exercise12.txt) | [`cvicenie12.txt`](cvicenie12.txt) |
+
+#### ⏱️ Rapid and temporal methods
+
+| # | Topic | Theory | Script EN | Skript SK |
+|:-:|------|:------:|:---------:|:---------:|
+| **17** | **CATA and napping**<br><sub>Rapid profiling methods with consumers: check-all-that-apply questions and projective mapping.</sub> | [📖](https://senzorika.github.io/SaIT/theory_EN/exercise17.html) | [`exercise17.txt`](exercises_EN/exercise17.txt) | [`cvicenie17.txt`](cvicenie17.txt) |
+| **18** | **Temporal methods – TDS and TCATA**<br><sub>How perception changes over time: dominance of sensations and temporal CATA curves.</sub> | [📖](https://senzorika.github.io/SaIT/theory_EN/exercise18.html) | [`exercise18.txt`](exercises_EN/exercise18.txt) | [`cvicenie18.txt`](cvicenie18.txt) |
 
 ### 🚀 Getting started
 
