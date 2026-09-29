@@ -1,0 +1,29 @@
+lang: en
+author: "Sensometrics in R · SaIT"
+format:
+  revealjs:
+    theme: [default, ../theme.scss]
+    slide-number: true
+    embed-resources: true
+    code-copy: true
+    highlight-style: github
+    code-overflow: wrap
+    footer: "Sensometrics in R · SaIT"
+    fig-width: 8
+    fig-height: 4.4
+    fig-align: center
+    fig-dpi: 150
+    include-in-header:
+      text: |
+        <script>
+        (function () {
+          var l = document.createElement("link");
+          l.rel = "stylesheet";
+          l.href = "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap";
+          document.head.appendChild(l);
+        })();
+        </script>
+execute:
+  echo: true
+  warning: false
+  message: false

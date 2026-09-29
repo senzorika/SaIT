@@ -1,0 +1,178 @@
+---
+title: "Rozlišovacie testy a Thurstonov model"
+subtitle: "Blok 3 · cvičenia 13 – 14"
+---
+
+```{r}
+#| include: false
+source("../setup.R")
+library(sensR)
+```
+
+## Problém: 42 % nie je vždy 42 %
+
+- Triangel: 42 zo 100 správnych odpovedí
+- 2-AFC: 76 zo 100 správnych odpovedí
+
+. . .
+
+Ktorý produkt sa od kontroly líši viac?
+
+. . .
+
+::: key
+**Rovnako.** Oba výsledky zodpovedajú rovnakému rozdielu medzi vzorkami. Podiel správnych odpovedí závisí od **metódy**, nie len od vzoriek.
+:::
+
+## Thurstonov model
+
+```{r}
+#| fig-height: 3.4
+z <- seq(-3.5, 4.5, length.out = 300)
+plot(z, dnorm(z), type = "l", lwd = 3, col = pal[3], ylim = c(0, 0.45),
+     xlab = "vnímaná intenzita (v smerodajných odchýlkach)", ylab = "")
+lines(z, dnorm(z, mean = 1), lwd = 3, col = pal[2])
+arrows(0, 0.42, 1, 0.42, code = 3, length = 0.1); text(0.5, 0.44, "d′ = 1")
+```
+
+::: small
+Vnem pri každom ochutnaní kolíše. **d′** = vzdialenosť dvoch rozdelení v smerodajných odchýlkach – miera rozdielu nezávislá od metódy.
+:::
+
+## Psychometrické funkcie
+
+```{r}
+#| output-location: column
+metody <- c("twoAFC", "threeAFC", "tetrad",
+            "duotrio", "triangle")
+curve(psyfun(x, method = "twoAFC"), 0, 4,
+      lwd = 3, col = pal[1], ylim = c(0, 1),
+      xlab = "d′", ylab = "pc")
+for (i in 2:5) curve(psyfun(x, method = metody[i]),
+                     add = TRUE, lwd = 3, col = pal[i])
+abline(v = 1, lty = 2)
+legend("bottomright", metody, col = pal, lwd = 3,
+       bty = "n", cex = 0.8)
+```
+
+```{r}
+round(sapply(metody, function(m) psyfun(1, method = m)), 2)
+```
+
+## `discrim()` – od pc k d′
+
+```{r}
+discrim(42, 100, method = "triangle")
+```
+
+## Porovnanie dvoch testov
+
+```{r}
+rbind(
+  triangel = coef(discrim(42, 100, method = "triangle"))["d-prime", ],
+  duotrio  = coef(discrim(36, 50, method = "duotrio"))["d-prime", ]
+) |> round(2)
+```
+
+::: key
+Duo-trio 36/50 (72 %) zodpovedá d′ = 1,83 – takmer dvojnásobný rozdiel oproti trianglu (d′ = 1,01). Bez d′ by sme to nevideli.
+:::
+
+## Test podobnosti
+
+Pri zmene dodávateľa chceme preukázať, že vzorky sú **dostatočne rovnaké**.
+
+```{r}
+discrim(38, 100, method = "triangle", test = "similarity", pd0 = 0.2)$p.value
+```
+
+::: warn
+Nevýznamný test rozdielu **nie je** dôkaz podobnosti. Podobnosť sa testuje s vopred zvolenou hranicou pd₀ (napr. najviac 20 % rozlišovateľov).
+:::
+
+## [KVÍZ]{.quiz-label} Rozdiel alebo podobnosť?
+
+Znížili ste cukor o 10 % a chcete na obale nechať „rovnaká chuť“. Ktorý test?
+
+. . .
+
+::: answer
+**Test podobnosti** (`test = "similarity"`). Test rozdielu by pri nevýznamnom výsledku tvrdenie nepodložil – mohol len chýbať dostatok hodnotiteľov.
+:::
+
+## Sila testu
+
+|  | rozdiel nie je | rozdiel je |
+|---|---|---|
+| test preukazný | chyba I. druhu α | **sila 1 − β** |
+| test nepreukazný | správne | chyba II. druhu β |
+
+. . .
+
+::: key
+Sila = pravdepodobnosť, že test odhalí rozdiel, ktorý naozaj existuje. Plánujeme aspoň **80 %**.
+:::
+
+## Sila trianglu podľa veľkosti panelu
+
+```{r}
+#| fig-height: 3.8
+d <- seq(0, 2, by = 0.05)
+plot(NA, xlim = c(0, 2), ylim = c(0, 1), xlab = "skutočný rozdiel d′", ylab = "sila testu")
+for (i in 1:3) {
+  n <- c(50, 100, 200)[i]
+  lines(d, sapply(d, d.primePwr, sample.size = n, method = "triangle"), lwd = 3, col = pal[i])
+}
+abline(h = 0.8, lty = 2); legend("bottomright", c("n = 50", "n = 100", "n = 200"), col = pal[1:3], lwd = 3, bty = "n")
+```
+
+## Koľko hodnotiteľov pre d′ = 1?
+
+```{r}
+#| output-location: column
+n <- sapply(metody, function(m)
+  d.primeSS(1, target.power = 0.8, method = m))
+barplot(n, col = pal, border = NA, horiz = TRUE,
+        las = 1, xlab = "počet hodnotiteľov")
+n
+```
+
+::: small
+Výber metódy mení veľkosť panelu až **10-násobne**. Ak viete, v čom sa vzorky líšia, použite 2-AFC / 3-AFC.
+:::
+
+## Odpoveď pre cvičenie 5a
+
+Párová preferencia: 34 zo 60 (57 %), p = 0,37. Ak je preferencia naozaj 57 %:
+
+```{r}
+pd <- 2 * 34 / 60 - 1
+c(sila_pri_60 = discrimPwr(pd, sample.size = 60, pGuess = 1 / 2),
+  potrebne_n = discrimSS(pd, target.power = 0.8, pGuess = 1 / 2))
+```
+
+::: key
+So 60 ľuďmi mal test silu len 26 % – nevýznamný výsledok bol takmer istý. Na 80 % treba asi 350 spotrebiteľov.
+:::
+
+## Škálové dáta
+
+```{r}
+c(parovy = power.t.test(delta = 0.5, sd = 1, power = 0.8, type = "paired")$n,
+  dve_skupiny = power.t.test(delta = 0.5, sd = 1, power = 0.8)$n) |> ceiling()
+```
+
+::: small
+Rovnaký rozdiel 0,5 bodu: párový dizajn potrebuje 34 hodnotiteľov, dve nezávislé skupiny 2 × 64. **Nechajte každého hodnotiť všetky vzorky**, ak sa dá.
+:::
+
+## Zhrnutie
+
+- **d′** je miera rozdielu nezávislá od metódy; pc a pd závisia od testu.
+- Podobnosť sa preukazuje **testom podobnosti**, nie nevýznamným testom rozdielu.
+- Veľkosť panelu plánujte **pred** experimentom: rozdiel, α, sila 80 %.
+- Citlivé metódy (2-AFC, tetráda) šetria hodnotiteľov.
+
+::: links
+[Teória 13](../../teoria/cvicenie13.html) [Teória 14](../../teoria/cvicenie14.html)
+:::

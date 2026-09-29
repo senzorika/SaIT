@@ -1,0 +1,214 @@
+---
+title: "Hypothesis testing in sensory analysis"
+subtitle: "Block 2 · exercises 5a – 5d"
+---
+
+```{r}
+#| include: false
+source("../setup.R")
+```
+
+## The logic of a test
+
+- **H₀**: there is no difference between the samples (assessors are only guessing)
+- **H₁**: a difference exists
+- **p-value**: how likely is the observed (or a more extreme) situation if H₀ holds
+
+. . .
+
+::: key
+p &lt; 0.05 → reject H₀. But p ≥ 0.05 does **not** mean the samples are the same – the panel may have been small (block 3).
+:::
+
+## Which test for two samples?
+
+| data type | situation | test in R |
+|---|---|---|
+| continuous / scale | normal distribution | `t.test()` |
+| continuous / scale | non-normal distribution | `wilcox.test()` |
+| counts of correct answers | sample vs. chance (duo, triangle) | `binom.test()` |
+| counts in categories | several categories (Likert, preferences) | `chisq.test()` |
+| yes / no | the same people before / after | `mcnemar.test()` |
+
+::: small
+Paired (dependent) data = the same assessors rated both samples → `paired = TRUE`.
+:::
+
+## Checking normality
+
+```{r}
+#| output-location: column
+B <- c(7.5, 8.1, 7.5, 7.4, 7.1, 7.5, 7.2, 7.2, 6.9)
+E <- c(6.8, 6.9, 6.9, 7, 7, 7, 7.1, 7.1, 7.2)
+difference <- B - E
+qqnorm(difference, pch = 19, col = pal[3])
+qqline(difference, col = pal[2], lwd = 2)
+shapiro.test(difference)$p.value
+```
+
+::: small
+In the Shapiro-Wilk test H₀ is “the data are normal” → **p ≥ 0.05 is good news**. For paired data we test the normality of the **differences**.
+:::
+
+## Paired t-test: cheese B vs. original E
+
+```{r}
+t.test(B, E, paired = TRUE)
+```
+
+::: key
+Cheese B is significantly better than the original (p = 0.032). The Wilcoxon test gives the same conclusion.
+:::
+
+## Discrimination tests and the binomial test
+
+| Test | samples | guessing probability |
+|---|---|---|
+| paired, duo-trio | 2 (+ reference) | 1/2 |
+| triangle, tetrad | 3 / 4 | 1/3 |
+
+```{r}
+binom.test(34, 60, p = 1 / 2)$p.value                                 # paired preference
+binom.test(42, 100, p = 1 / 3, alternative = "greater")$p.value       # triangle
+```
+
+## Where does 34 of 60 lie?
+
+```{r}
+#| fig-height: 3.8
+k <- 15:45
+colours <- ifelse(k >= 39 | k <= 21, pal[2], ifelse(k == 34, pal[3], "#0f7b6c55"))
+barplot(dbinom(k, 60, 0.5), names.arg = k, col = colours, border = NA,
+        xlab = "votes for sample A (out of 60)", ylab = "probability")
+```
+
+::: small
+Orange = critical region (p &lt; 0.05). The observed 34 (blue) is in the usual guessing region.
+:::
+
+## χ² test and McNemar test
+
+:::: columns
+::: {.column width="50%"}
+**Yogurt preference**
+
+```{r}
+chisq.test(c(25, 34, 17, 7))$p.value
+```
+Preferences are not uniform.
+:::
+
+::: {.column width="50%"}
+**Old vs. new recipe**
+
+```{r}
+rum <- matrix(c(40, 8, 24, 28), nrow = 2)
+mcnemar.test(rum, correct = FALSE)$p.value
+```
+Only those who changed their mind count (24 vs. 8).
+:::
+::::
+
+## [QUIZ]{.quiz-label} Which test?
+
+50 consumers tasted **both the old and the new** recipe and said for each whether they would buy it (yes/no). Which test shows whether the new recipe changed purchase intent?
+
+. . .
+
+::: answer
+**McNemar test** – the same people, a binary answer, before/after. A χ² test of independence would ignore the pairing.
+:::
+
+## More than two samples
+
+With 5 samples there are 10 pairs → with 10 t-tests the chance of a false alarm is about **40%**.
+
+```{r}
+round(1 - 0.95^c(1, 3, 6, 10), 2)
+```
+
+. . .
+
+::: key
+First **one global test** (ANOVA, Kruskal-Wallis, Friedman), only then **post-hoc** comparisons with a correction.
+:::
+
+## ANOVA: between vs. within groups
+
+```{r}
+#| output-location: column
+chocolate <- data.frame(
+  quality = c(1.5, 2, 2.5, 3, 2.5, 2.5, 3, 3, 2, 5,
+              4, 3, 6, 5, 2, 6, 1, 6, 5.5, 4,
+              6, 6, 7.5, 7, 5, 1, 8, 7, 7.5, 5.5),
+  sample = factor(rep(c("A", "B", "C"), each = 10))
+)
+stripchart(quality ~ sample, data = chocolate,
+           vertical = TRUE, method = "jitter",
+           pch = 19, col = pal[1:3])
+abline(h = mean(chocolate$quality), lty = 2)
+```
+
+::: small
+F = variability between means / variability within groups.
+:::
+
+## ANOVA and Kruskal-Wallis in R
+
+```{r}
+summary(aov(quality ~ sample, data = chocolate))
+kruskal.test(quality ~ sample, data = chocolate)$p.value
+```
+
+::: warn
+In the formula the **measured value is on the left, the group on the right**: `quality ~ sample`. The reversed form gives a meaningless result.
+:::
+
+## Post-hoc: which samples differ?
+
+```{r}
+TukeyHSD(aov(quality ~ sample, data = chocolate))$sample
+pairwise.wilcox.test(chocolate$quality, chocolate$sample, p.adjust.method = "bonferroni", exact = FALSE)$p.value
+```
+
+## Blocks: Friedman and Durbin
+
+- **Friedman** – every assessor (block) ranks **all** samples: `friedman.test(y ~ sample | assessor)`
+- **Durbin** – every assessor gets only **part** of the samples according to a balanced plan (BIBD)
+
+```{r}
+#| echo: false
+bibd <- matrix(c(
+  2, NA, NA, NA, 3, NA, 3, 3, 3, NA, NA, NA, 3, NA, NA,
+  1, 2, NA, NA, NA, 1, 1, NA, 1, 1,
+  NA, NA, NA, NA, 2, NA, 2, 1, NA, NA, NA, NA,
+  3, NA, 2, 1, NA, NA, NA, NA, 3, NA, 2, 2
+), nrow = 7, dimnames = list(paste0("H", 1:7), LETTERS[1:7]))
+bibd <- ifelse(is.na(bibd), "", bibd)
+knitr::kable(bibd, align = "c")
+```
+
+::: small
+7 samples, each assessor tastes 3, every pair of samples meets exactly once.
+:::
+
+## [QUIZ]{.quiz-label} Independent or blocks?
+
+4 ketchups were rated by 13 assessors **in one session** – each tasted all 4. The ratings are not normal. Which test?
+
+. . .
+
+::: answer
+**Friedman test** – the assessor is a block (everyone rated everything) and the data are not normal. Kruskal-Wallis would ignore that these are the same people.
+:::
+
+## Summary
+
+- First the **design**: paired / independent, two / more samples, blocks.
+- Then the **assumptions**: normality (plot + test).
+- **One global test**, then post-hoc with a correction.
+- Discrimination tests: the binomial test with a guessing probability of 1/2 or 1/3.
+
+::: links
+[Theory 5a](../../theory_EN/exercise05a.html) [Theory 5b](../../theory_EN/exercise05b.html) [Theory 5c](../../theory_EN/exercise05c.html) [Theory 5d](../../theory_EN/exercise05d.html)
+:::

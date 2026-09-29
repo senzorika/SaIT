@@ -1,0 +1,166 @@
+---
+title: "Senzorický panel ako merací prístroj"
+subtitle: "Blok 4 · cvičenia 15 – 16"
+---
+
+```{r}
+#| include: false
+source("../setup.R")
+library(SensoMineR)
+library(lmerTest)
+library(emmeans)
+data(chocolates)
+sensochoc$Panelist <- factor(sensochoc$Panelist)
+sensochoc$Session <- factor(sensochoc$Session)
+```
+
+## Panel musíme kalibrovať
+
+Pri deskriptívnom profile nahrádza panel laboratórny prístroj. Musí spĺňať tri podmienky naraz:
+
+| pilier | otázka | ANOVA efekt |
+|---|---|---|
+| **rozlišovanie** | odlišuje produkty? | Product – chceme malé p |
+| **zhoda** | hodnotí ako ostatní? | Product:Panelist – chceme veľké p |
+| **opakovateľnosť** | rovnako pri opakovaní? | Session, reziduum – malý rozptyl |
+
+::: small
+Dataset `sensochoc`: 29 hodnotiteľov, 6 čokolád, 2 opakovania, 14 deskriptorov.
+:::
+
+## Výkonnosť celého panelu
+
+```{r}
+vykon <- panelperf(sensochoc, firstvar = 5,
+  formul = "~Product+Panelist+Session+Product:Panelist+Product:Session+Panelist:Session")
+round(vykon$p.value[c("CocoaA", "Bitterness", "Caramel", "Granular"), 1:4], 3)
+```
+
+::: small
+CocoaA: ideálny deskriptor. Caramel, Granular: hodnotitelia sa nezhodujú v poradí produktov. Bitterness: posun medzi opakovaniami.
+:::
+
+## Ktoré deskriptory panel rozlišuje najlepšie?
+
+```{r}
+#| output-location: column
+F_prod <- sapply(names(sensochoc)[5:18], function(v) {
+  a <- summary(aov(reformulate(
+    c("Product", "Panelist", "Session"), v),
+    data = sensochoc))[[1]]
+  a[1, "F value"]
+})
+par(mar = c(4, 7, 1, 1))
+barplot(sort(F_prod), horiz = TRUE, las = 1,
+        col = pal[1], border = NA,
+        xlab = "F produktu")
+```
+
+::: small
+Čím vyššie F, tým lepšie panel produkty odlišuje. Graficky to isté ukáže `coltable()` zo SensoMineR (farebná tabuľka p-hodnôt).
+:::
+
+## Zhoda a opakovateľnosť hodnotiteľov
+
+```{r}
+#| output-location: column
+prum <- with(sensochoc, tapply(CocoaA, list(Product, Panelist), mean))
+zhoda <- apply(prum, 2, cor, y = rowMeans(prum))
+s1 <- with(subset(sensochoc, Session == 1),
+           tapply(CocoaA, list(Product, Panelist), mean))
+s2 <- with(subset(sensochoc, Session == 2),
+           tapply(CocoaA, list(Product, Panelist), mean))
+opak <- sapply(colnames(s1), function(h) cor(s1[, h], s2[, h]))
+slabi <- zhoda < 0.5 & opak < 0.5
+plot(zhoda, opak, pch = 19, cex = 1.4,
+     col = ifelse(slabi, pal[2], pal[3]),
+     xlim = c(-1, 1), ylim = c(-1, 1),
+     xlab = "zhoda s panelom", ylab = "opakovateľnosť")
+abline(h = 0.5, v = 0.5, lty = 2)
+```
+
+::: small
+Oranžoví hodnotitelia (`r sum(slabi)`) sú pod hranicou v oboch ukazovateľoch – kandidáti na dotréning.
+:::
+
+## [KVÍZ]{.quiz-label} Čo s hodnotiteľom?
+
+Hodnotiteľ má vysokú **opakovateľnosť**, ale nízku **zhodu** s panelom. Čo to znamená?
+
+. . .
+
+::: answer
+Hodnotí stabilne, ale „po svojom“ – pravdepodobne inak chápe deskriptor. Riešenie: **kalibrácia na referenčné štandardy**, nie vyradenie.
+:::
+
+## Pevné vs. náhodné efekty
+
+| | pevný | náhodný |
+|---|---|---|
+| úrovne | vybrané zámerne | náhodný výber z populácie |
+| príklad | **produkt** | **hodnotiteľ**, šarža, deň |
+| zápis v `lmer` | `Product` | `(1 | Panelist)` |
+
+::: key
+Záver „A je lepší ako B“ chceme pre **každý** podobný panel, nie len pre našich 29 ľudí → produkt sa testuje voči **nezhode hodnotiteľov** (interakcii).
+:::
+
+## Pevný model vs. zmiešaný model
+
+```{r}
+tab <- summary(aov(Bitterness ~ Product * Panelist, data = sensochoc))[[1]]
+rownames(tab) <- trimws(rownames(tab))
+c(F_pevny = tab["Product", "F value"],
+  F_voci_interakcii = tab["Product", "Mean Sq"] / tab["Product:Panelist", "Mean Sq"])
+```
+
+```{r}
+m <- lmer(Bitterness ~ Product + Session + (1 | Panelist) + (1 | Panelist:Product), data = sensochoc)
+anova(m)
+```
+
+## Rozklad rozptylu
+
+```{r}
+#| output-location: column
+vc <- as.data.frame(VarCorr(m))
+podiel <- setNames(vc$vcov / sum(vc$vcov),
+                   c("interakcia", "hodnotiteľ", "reziduum"))
+barplot(as.matrix(podiel), horiz = TRUE,
+        col = pal[c(2, 3, 1)], border = NA,
+        xlab = "podiel rozptylu")
+round(podiel, 2)
+```
+
+::: small
+Veľká **interakcia** = zlá zhoda. Veľké **reziduum** = zlá opakovateľnosť. Most medzi výkonnosťou panelu a modelom.
+:::
+
+## Post-hoc v zmiešanom modeli
+
+```{r}
+#| fig-height: 3.4
+por <- emmeans(m, pairwise ~ Product, adjust = "tukey")
+plot(por$emmeans) + ggplot2::labs(x = "odhadnutý priemer Bitterness", y = NULL)
+```
+
+## [KVÍZ]{.quiz-label} Singular fit
+
+Pri CocoaA vypíše `lmer` varovanie **„boundary (singular) fit“**. Čo sa stalo?
+
+. . .
+
+::: answer
+Rozptyl interakcie hodnotiteľ × produkt je odhadnutý na **0** (p interakcie = 0,99) – hodnotitelia sa v CocoaA zhodujú. Model je použiteľný, efekt možno vynechať.
+:::
+
+## Zhrnutie
+
+- Panel kontrolujeme pravidelne: **rozlišovanie, zhoda, opakovateľnosť**.
+- Slabý hodnotiteľ → najprv **kalibrácia**, vyradenie až nakoniec.
+- Hodnotiteľ je **náhodný efekt** → `lmer(y ~ Product + (1 | Panelist) + (1 | Panelist:Product))`.
+- Post-hoc cez `emmeans`, nie `TukeyHSD`.
+
+::: links
+[Teória 15](../../teoria/cvicenie15.html) [Teória 16](../../teoria/cvicenie16.html)
+:::

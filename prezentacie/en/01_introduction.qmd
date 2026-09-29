@@ -1,0 +1,207 @@
+---
+title: "Introduction to sensometrics and R"
+subtitle: "Block 1 · exercises 1 – 4"
+---
+
+```{r}
+#| include: false
+source("../setup.R")
+```
+
+## What is sensometrics?
+
+- **Sensory analysis** measures food properties with the human senses.
+- **Sensometrics** is the statistics for these measurements: how to design an experiment, analyse it and what to trust in the results.
+
+. . .
+
+::: key
+The measuring instrument is a **human being**: gets tired, adapts, everyone uses the scale differently. That is why we need statistics, not just means.
+:::
+
+## The path of a sensory experiment
+
+```{=html}
+<div class="flow"><span class="step"><b>Question</b><br>does the new recipe differ?</span><span class="arr">→</span><span class="step"><b>Design</b><br>test, panel, order</span><span class="arr">→</span><span class="step"><b>Evaluation</b><br>sheets, apps</span><span class="arr">→</span><span class="step"><b>Data</b><br>data.frame in R</span><span class="arr">→</span><span class="step"><b>Analysis</b><br>test, model, plot</span><span class="arr">→</span><span class="step"><b>Decision</b><br>change / keep</span></div>
+```
+
+::: small
+In this course we go through all the steps – from design through analysis to interpretation.
+:::
+
+## R and RStudio
+
+:::: columns
+::: {.column width="50%"}
+**R** – the language and computing engine
+
+**RStudio** – the editor around it:
+
+1. script editor
+2. console
+3. variables (Environment)
+4. plots and help
+:::
+
+::: {.column width="50%"}
+```{r}
+#| eval: false
+install.packages("sensR")  # once
+library(sensR)             # every time
+?binom.test                # help
+```
+
+::: warn
+Write code in a **script**, not in the console – otherwise you cannot repeat the analysis.
+:::
+:::
+::::
+
+## Data structures
+
+```{r}
+vector <- c(7.5, 6.9, 7.0, 7.2)            # one dimension, one type
+m <- matrix(1:6, nrow = 2)                 # filled by columns
+tab <- data.frame(
+  assessor = c("H1", "H2", "H3"),
+  product = c("A", "A", "B"),
+  taste = c(7, 6, 8)
+)
+tab$taste                                  # column via $
+mean(tab$taste)
+```
+
+## Designing an experiment in R
+
+```{r}
+plan <- expand.grid(assessor = paste0("H", 1:4), product = c("A", "B", "C"))
+set.seed(24)
+plan$order <- ave(seq_len(nrow(plan)), plan$assessor, FUN = function(x) sample(length(x)))
+head(plan[order(plan$assessor, plan$order), ], 6)
+```
+
+::: small
+Every assessor gets every product in a random serving order – this suppresses order and fatigue effects.
+:::
+
+## [QUIZ]{.quiz-label} `each` or `times`?
+
+What does `rep(c("A", "B"), each = 2)` return?
+
+1. `"A" "B" "A" "B"`
+2. `"A" "A" "B" "B"`
+
+. . .
+
+::: answer
+**2.** `each` repeats every element, `times` the whole vector. Together they create a complete assessor × product plan.
+:::
+
+## Modified BCG matrix
+
+```{r}
+#| output-location: column
+price <- c(7.40, 8.51, 7.62, 5.54, 7.20, 6.62)
+quality <- c(4.5, 7.2, 8.5, 4.8, 7.5, 7.1)
+plot(price, quality, pch = 19, col = pal[3],
+     cex = 1.6, xlab = "price (€)",
+     ylab = "quality")
+abline(v = mean(price), h = mean(quality),
+       col = pal[2], lty = 2)
+text(price, quality, LETTERS[1:6], pos = 4)
+```
+
+::: small
+Quadrants by the means: top left **good value** (F), bottom right **problem** (A – expensive and the worst).
+:::
+
+## Confidence interval of the mean
+
+The panel mean is only an **estimate**. A confidence interval shows its uncertainty:
+
+$$\bar{x} \pm t_{0.975;\,n-1} \cdot \frac{s}{\sqrt{n}}$$
+
+```{r}
+x <- c(10, 9, 11, 10, 10, 9, 10)                      # 7 assessors
+delta <- sd(x) / sqrt(length(x)) * qt(0.975, df = length(x) - 1)
+round(c(lower = mean(x) - delta, mean = mean(x), upper = mean(x) + delta), 2)
+```
+
+. . .
+
+::: warn
+The denominator uses the **number of ratings** `length(x)`, not the number of distinct values `length(unique(x))`.
+:::
+
+## Why t and not 1.96?
+
+```{r}
+n <- c(5, 7, 10, 20, 30, 100)
+round(data.frame(n = n, t = qt(0.975, df = n - 1)), 2) |> t()
+```
+
+::: key
+With a small panel we only have an estimate of the variance → the t-distribution has heavier tails and the interval is wider. With 7 assessors t = 2.45, not 1.96.
+:::
+
+## Which chart when?
+
+| Question | Chart in R |
+|---|---|
+| Which product has the highest rating? | `barplot()`, `dotchart()` |
+| Do products also differ in spread? | `boxplot()` |
+| What is the distribution of values? | `hist()`, `plot(density())` |
+| How does a value change over time? | `plot(type = "l")` + `lines()` |
+| Are two variables related? | `plot(x, y)` |
+
+## Box plot: five numbers in one chart
+
+```{r}
+#| output-location: column
+cheeses <- data.frame(
+  A = c(7.5, 6.9, 7, 7, 6.9, 7.1, 7.2, 7.5, 6.9),
+  B = c(7.5, 8.1, 7.5, 7.4, 7.1, 7.5, 7.2, 7.2, 6.9),
+  C = c(7, 6.1, 6.7, 6.1, 6.9, 7.1, 7.2, 7.2, 6.9),
+  E = c(6.8, 6.9, 6.9, 7, 7, 7, 7.1, 7.1, 7.2)
+)
+boxplot(cheeses, col = paste0(pal[1:4], "55"),
+        border = pal[1:4],
+        ylab = "overall quality")
+```
+
+::: small
+Thick line = median, box = middle 50% of the data, points beyond the whiskers = outliers.
+:::
+
+## Charts in layers
+
+```{r}
+#| fig-height: 3.6
+set.seed(1)
+line1 <- rnorm(120, mean = 1000, sd = 0.6)
+line2 <- rnorm(120, mean = 1000, sd = 0.6)
+plot(line1, type = "l", col = pal[2], xlab = "filling seconds", ylab = "volume (ml)")
+lines(line2, col = pal[3])
+abline(h = c(mean(line1), mean(line2)), col = pal[2:3], lwd = 2)
+```
+
+## [QUIZ]{.quiz-label} Choose a chart
+
+You want to show management that the **new recipe has a smaller spread** of ratings than the old one. Which chart?
+
+. . .
+
+::: answer
+**Box plot** – it shows the median and the spread (box height) of both recipes side by side. A bar chart of means would hide the spread.
+:::
+
+## Summary
+
+- Sensory data = a human measuring instrument → **variability** is part of the measurement.
+- In R we work with **scripts** and data in a **data.frame** (one row = one rating).
+- Always report a mean with a **confidence interval**, with the t-distribution for small panels.
+- First the **plot**, then the test.
+
+::: links
+[Theory 1](../../theory_EN/exercise01.html) [Theory 2](../../theory_EN/exercise02.html) [Theory 3](../../theory_EN/exercise03.html) [Theory 4](../../theory_EN/exercise04.html) [Scripts](https://github.com/senzorika/SaIT)
+:::

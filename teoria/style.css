@@ -225,3 +225,5 @@ details.sol summary::before { content: "▸"; color: var(--accent); transition: 
 details.sol[open] summary::before { transform: rotate(90deg); }
 details.sol summary span { font-weight: 400; color: var(--ink-2); }
 details.sol .answer { background: var(--accent-soft); border-radius: 8px; padding: 10px 14px; margin-top: 10px; }
+
+.files a.deck { border-color: var(--accent); color: var(--accent); font-weight: 600; }

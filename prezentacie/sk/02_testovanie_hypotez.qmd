@@ -1,0 +1,214 @@
+---
+title: "Testovanie hypotéz v senzorike"
+subtitle: "Blok 2 · cvičenia 5a – 5d"
+---
+
+```{r}
+#| include: false
+source("../setup.R")
+```
+
+## Logika testu
+
+- **H₀**: medzi vzorkami nie je rozdiel (hodnotitelia len hádajú)
+- **H₁**: rozdiel existuje
+- **p-hodnota**: aká pravdepodobná je pozorovaná (alebo extrémnejšia) situácia, ak platí H₀
+
+. . .
+
+::: key
+p &lt; 0,05 → zamietame H₀. Ale p ≥ 0,05 **neznamená**, že vzorky sú rovnaké – možno bol panel malý (blok 3).
+:::
+
+## Ktorý test pre dve vzorky?
+
+| typ dát | situácia | test v R |
+|---|---|---|
+| spojité / škála | normálne rozdelenie | `t.test()` |
+| spojité / škála | nenormálne rozdelenie | `wilcox.test()` |
+| počty správnych | vzorka vs. náhoda (duo, triangel) | `binom.test()` |
+| počty v kategóriách | viac kategórií (Likert, preferencie) | `chisq.test()` |
+| áno / nie | tí istí ľudia pred / po | `mcnemar.test()` |
+
+::: small
+Párové (závislé) dáta = tí istí hodnotitelia hodnotili obe vzorky → `paired = TRUE`.
+:::
+
+## Overenie normality
+
+```{r}
+#| output-location: column
+B <- c(7.5, 8.1, 7.5, 7.4, 7.1, 7.5, 7.2, 7.2, 6.9)
+E <- c(6.8, 6.9, 6.9, 7, 7, 7, 7.1, 7.1, 7.2)
+rozdiel <- B - E
+qqnorm(rozdiel, pch = 19, col = pal[3])
+qqline(rozdiel, col = pal[2], lwd = 2)
+shapiro.test(rozdiel)$p.value
+```
+
+::: small
+Pri Shapiro-Wilkovom teste je H₀ „dáta sú normálne“ → **p ≥ 0,05 je dobrá správa**. Pri párových dátach testujeme normalitu **rozdielov**.
+:::
+
+## Párový t-test: syr B vs. pôvodný E
+
+```{r}
+t.test(B, E, paired = TRUE)
+```
+
+::: key
+Syr B je preukazne lepší ako pôvodný (p = 0,032). Wilcoxonov test dá rovnaký záver.
+:::
+
+## Rozlišovacie testy a binomický test
+
+| Test | vzorky | pravdepodobnosť uhádnutia |
+|---|---|---|
+| párový, duo-trio | 2 (+ referencia) | 1/2 |
+| triangel, tetráda | 3 / 4 | 1/3 |
+
+```{r}
+binom.test(34, 60, p = 1 / 2)$p.value                                 # párová preferencia
+binom.test(42, 100, p = 1 / 3, alternative = "greater")$p.value       # triangel
+```
+
+## Kde leží 34 zo 60?
+
+```{r}
+#| fig-height: 3.8
+k <- 15:45
+barvy <- ifelse(k >= 39 | k <= 21, pal[2], ifelse(k == 34, pal[3], "#0f7b6c55"))
+barplot(dbinom(k, 60, 0.5), names.arg = k, col = barvy, border = NA,
+        xlab = "počet hlasov pre vzorku A (z 60)", ylab = "pravdepodobnosť")
+```
+
+::: small
+Oranžová = kritická oblasť (p &lt; 0,05). Pozorovaných 34 (modrá) je v bežnej oblasti hádania.
+:::
+
+## χ² test a McNemarov test
+
+:::: columns
+::: {.column width="50%"}
+**Preferencia jogurtov**
+
+```{r}
+chisq.test(c(25, 34, 17, 7))$p.value
+```
+Preferencie nie sú rovnomerné.
+:::
+
+::: {.column width="50%"}
+**Stará vs. nová receptúra**
+
+```{r}
+rum <- matrix(c(40, 8, 24, 28), nrow = 2)
+mcnemar.test(rum, correct = FALSE)$p.value
+```
+Rozhodujú len tí, čo zmenili názor (24 vs. 8).
+:::
+::::
+
+## [KVÍZ]{.quiz-label} Aký test?
+
+50 spotrebiteľov ochutnalo **starú aj novú** receptúru a pri každej povedalo, či by ju kúpili (áno/nie). Ktorým testom zistíte, či nová receptúra zmenila kúpny zámer?
+
+. . .
+
+::: answer
+**McNemarov test** – tí istí ľudia, binárna odpoveď, pred/po. χ² test nezávislosti by ignoroval párovanie.
+:::
+
+## Viac ako dve vzorky
+
+Pri 5 vzorkách je 10 párov → pri 10 t-testoch je šanca falošného poplachu asi **40 %**.
+
+```{r}
+round(1 - 0.95^c(1, 3, 6, 10), 2)
+```
+
+. . .
+
+::: key
+Najprv **jeden globálny test** (ANOVA, Kruskal-Wallis, Friedman), až potom **post-hoc** porovnania s korekciou.
+:::
+
+## ANOVA: medzi vs. vnútri skupín
+
+```{r}
+#| output-location: column
+cokolada <- data.frame(
+  kvalita = c(1.5, 2, 2.5, 3, 2.5, 2.5, 3, 3, 2, 5,
+              4, 3, 6, 5, 2, 6, 1, 6, 5.5, 4,
+              6, 6, 7.5, 7, 5, 1, 8, 7, 7.5, 5.5),
+  vzorka = factor(rep(c("A", "B", "C"), each = 10))
+)
+stripchart(kvalita ~ vzorka, data = cokolada,
+           vertical = TRUE, method = "jitter",
+           pch = 19, col = pal[1:3])
+abline(h = mean(cokolada$kvalita), lty = 2)
+```
+
+::: small
+F = variabilita medzi priemermi / variabilita vnútri skupín.
+:::
+
+## ANOVA a Kruskal-Wallis v R
+
+```{r}
+summary(aov(kvalita ~ vzorka, data = cokolada))
+kruskal.test(kvalita ~ vzorka, data = cokolada)$p.value
+```
+
+::: warn
+Vo vzorci je **vľavo meraná hodnota, vpravo skupina**: `kvalita ~ vzorka`. Opačný zápis dá nezmyselný výsledok.
+:::
+
+## Post-hoc: ktoré vzorky sa líšia?
+
+```{r}
+TukeyHSD(aov(kvalita ~ vzorka, data = cokolada))$vzorka
+pairwise.wilcox.test(cokolada$kvalita, cokolada$vzorka, p.adjust.method = "bonferroni", exact = FALSE)$p.value
+```
+
+## Bloky: Friedman a Durbin
+
+- **Friedman** – každý hodnotiteľ (blok) zoradí **všetky** vzorky: `friedman.test(y ~ vzorka | hodnotitel)`
+- **Durbin** – každý hodnotiteľ dostane len **časť** vzoriek podľa vyváženého plánu (BIBD)
+
+```{r}
+#| echo: false
+bibd <- matrix(c(
+  2, NA, NA, NA, 3, NA, 3, 3, 3, NA, NA, NA, 3, NA, NA,
+  1, 2, NA, NA, NA, 1, 1, NA, 1, 1,
+  NA, NA, NA, NA, 2, NA, 2, 1, NA, NA, NA, NA,
+  3, NA, 2, 1, NA, NA, NA, NA, 3, NA, 2, 2
+), nrow = 7, dimnames = list(paste0("H", 1:7), LETTERS[1:7]))
+bibd <- ifelse(is.na(bibd), "", bibd)
+knitr::kable(bibd, align = "c")
+```
+
+::: small
+7 vzoriek, každý hodnotiteľ ochutná 3, každý pár vzoriek sa stretne práve raz.
+:::
+
+## [KVÍZ]{.quiz-label} Nezávislé alebo bloky?
+
+4 kečupy hodnotilo 13 hodnotiteľov **v jednom sedení** – každý ochutnal všetky 4. Hodnotenia nie sú normálne. Ktorý test?
+
+. . .
+
+::: answer
+**Friedmanov test** – hodnotiteľ je blok (každý hodnotil všetko), dáta nie sú normálne. Kruskal-Wallis by ignoroval, že ide o tých istých ľudí.
+:::
+
+## Zhrnutie
+
+- Najprv **dizajn**: párové / nezávislé, dve / viac vzoriek, bloky.
+- Potom **predpoklady**: normalita (graf + test).
+- **Jeden globálny test**, potom post-hoc s korekciou.
+- Rozlišovacie testy: binomický test s pravdepodobnosťou uhádnutia 1/2 alebo 1/3.
+
+::: links
+[Teória 5a](../../teoria/cvicenie05a.html) [Teória 5b](../../teoria/cvicenie05b.html) [Teória 5c](../../teoria/cvicenie05c.html) [Teória 5d](../../teoria/cvicenie05d.html)
+:::

@@ -1,0 +1,154 @@
+---
+title: "Rapid and temporal methods"
+subtitle: "Block 7 · exercises 17 – 18"
+---
+
+```{r}
+#| include: false
+source("../setup.R")
+library(FactoMineR)
+library(SensoMineR)
+library(DescTools)
+```
+
+## Why rapid methods?
+
+| | descriptive profile | CATA | napping |
+|---|---|---|---|
+| assessors | 8 – 12 trained | 40 – 100 consumers | 15 – 50 |
+| preparation | months of training | none | none |
+| task | intensity of descriptors | tick the applicable attributes | place samples on paper |
+| analysis | ANOVA, PCA | Cochran’s Q, CA | MFA |
+
+## CATA – Check-All-That-Apply
+
+```{r}
+set.seed(2024)
+attributes <- c("sweet", "sour", "creamy", "fruity", "thick", "artificial")
+p <- rbind(A = c(.7, .2, .8, .3, .6, .1), B = c(.3, .7, .3, .2, .2, .2),
+           C = c(.6, .3, .4, .8, .3, .5), D = c(.5, .4, .6, .5, .7, .1))
+colnames(p) <- attributes
+cata <- expand.grid(consumer = factor(1:40), product = factor(rownames(p)))
+for (a in attributes) cata[[a]] <- rbinom(nrow(cata), 1, p[as.character(cata$product), a])
+counts <- sapply(attributes, function(a) tapply(cata[[a]], cata$product, sum))
+counts
+```
+
+## Cochran’s Q test
+
+```{r}
+q_p <- sapply(attributes, function(a) {
+  d <- data.frame(y = cata[[a]], product = cata$product, consumer = cata$consumer)
+  CochranQTest(y ~ product | consumer, data = d)$p.value
+})
+round(q_p, 4)
+```
+
+::: key
+The counterpart of McNemar’s test for more samples: the same consumers rate all products → the consumer is a **block**.
+:::
+
+## CATA map
+
+```{r}
+#| fig-height: 4.4
+ca <- CA(counts, graph = FALSE)
+plot(rbind(ca$row$coord[, 1:2], ca$col$coord[, 1:2]), type = "n", asp = 1,
+     xlab = sprintf("Dim 1 (%.0f%%)", ca$eig[1, 2]), ylab = sprintf("Dim 2 (%.0f%%)", ca$eig[2, 2]))
+abline(h = 0, v = 0, lty = 3, col = "grey60")
+text(ca$row$coord[, 1:2], rownames(counts), col = pal[3], font = 2, cex = 1.6)
+text(ca$col$coord[, 1:2], colnames(counts), col = pal[2])
+```
+
+## Napping – projective mapping
+
+:::: columns
+::: {.column width="45%"}
+- all samples at once, a 60 × 40 cm sheet
+- similar samples close, different ones far apart
+- X, Y coordinates are recorded
+- every assessor = a group of 2 variables → **MFA**
+:::
+
+::: {.column width="55%"}
+```{r}
+#| echo: false
+#| fig-width: 5.5
+#| fig-height: 4.6
+data(napping)
+n <- ncol(napping.don) / 2
+mfa <- MFA(napping.don, group = rep(2, n), type = rep("c", n), graph = FALSE)
+xy <- mfa$ind$coord[, 1:2]
+plot(xy, pch = 19, col = ifelse(grepl("^([0-9]+ )?T ", rownames(xy)), pal[1], pal[4]), cex = 1.6,
+     xlab = "Dim 1", ylab = "Dim 2", xlim = range(xy[, 1]) * 1.35)
+text(xy, gsub("^[0-9]+ ", "", rownames(xy)), pos = 3, cex = 0.7)
+```
+:::
+::::
+
+::: small
+Consensus map of 10 wines: MFA balances the assessors and finds a common configuration. Green = Touraine, purple = Vouvray.
+:::
+
+## [QUIZ]{.quiz-label} Scale the coordinates?
+
+In MFA for napping we use `type = "c"` (unscaled). Why not `"s"`?
+
+. . .
+
+::: answer
+The coordinates are in **centimetres on the same sheet** – a distance of 5 cm in X and in Y means the same degree of difference. Scaling would distort this information.
+:::
+
+## Perception changes over time
+
+| | TDS | TCATA |
+|---|---|---|
+| question | which sensation is **dominant now**? | which sensations do you **perceive now**? |
+| choice | exactly one attribute | any number |
+| output | dominance rate | citation proportion |
+
+::: small
+Data are collected by the apps `TDS_app.R` and `TCATA_app.R` in the `Senzometricke_appky/` folder.
+:::
+
+## TDS curves
+
+```{r}
+#| code-fold: true
+#| fig-height: 4
+set.seed(18)
+atr <- c("sweet", "sour", "bitter", "fruity", "astringent"); time <- 0:60; n <- 30
+weight <- cbind(dnorm(time, 8, 8), dnorm(time, 18, 8), dnorm(time, 40, 12), dnorm(time, 22, 10), dnorm(time, 52, 10))
+tds <- t(sapply(1:n, function(h) apply(weight, 1, function(w) sample(atr, 1, prob = w + 1e-4))))
+dom <- sapply(atr, function(a) colMeans(tds == a))
+limit <- 0.2 + 1.645 * sqrt(0.2 * 0.8 / n)
+matplot(time, dom, type = "l", lty = 1, lwd = 3, col = pal, ylim = c(0, 1), xlab = "time (s)", ylab = "dominance rate")
+abline(h = c(0.2, limit), lty = c(3, 2), col = c("grey50", pal[2]))
+legend("topright", atr, col = pal, lwd = 3, bty = "n", cex = 0.8)
+```
+
+::: small
+An attribute is significantly dominant above the red limit P₀ + 1.645·√(P₀(1 − P₀)/n) = `r round(limit, 2)`.
+:::
+
+## TCATA: comparing two products
+
+- curves of both products in one plot
+- Fisher’s test of the citation proportion at every time point
+- consider a difference only over a **continuous interval**, not isolated points (dozens of tests!)
+
+::: warn
+With real data assessors swallow at different times → time is often **standardised** (0 = first selection, 1 = end of recording). See the `tempR` package.
+:::
+
+## Summary
+
+- **CATA**: binary data → Cochran’s Q (differences), CA (map).
+- **Napping**: X, Y coordinates → MFA, consensus map.
+- **TDS / TCATA**: curves over time, significance limit, beware of multiple testing.
+- Rapid methods: less precise, but cheap and fast – ideal for screening.
+
+::: links
+[Theory 17](../../theory_EN/exercise17.html) [Theory 18](../../theory_EN/exercise18.html)
+:::

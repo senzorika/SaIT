@@ -1,0 +1,207 @@
+---
+title: "Úvod do senzometrie a R"
+subtitle: "Blok 1 · cvičenia 1 – 4"
+---
+
+```{r}
+#| include: false
+source("../setup.R")
+```
+
+## Čo je senzometria?
+
+- **Senzorická analýza** meria vlastnosti potravín ľudskými zmyslami.
+- **Senzometria** je štatistika pre tieto merania: ako navrhnúť experiment, vyhodnotiť ho a čomu z výsledkov veriť.
+
+. . .
+
+::: key
+Merací prístroj je **človek**: unaví sa, adaptuje, každý používa škálu inak. Preto potrebujeme štatistiku, nie len priemery.
+:::
+
+## Cesta senzorického experimentu
+
+```{=html}
+<div class="flow"><span class="step"><b>Otázka</b><br>líši sa nová receptúra?</span><span class="arr">→</span><span class="step"><b>Dizajn</b><br>test, panel, poradie</span><span class="arr">→</span><span class="step"><b>Hodnotenie</b><br>hárky, aplikácie</span><span class="arr">→</span><span class="step"><b>Dáta</b><br>data.frame v R</span><span class="arr">→</span><span class="step"><b>Analýza</b><br>test, model, graf</span><span class="arr">→</span><span class="step"><b>Rozhodnutie</b><br>zmeniť / nechať</span></div>
+```
+
+::: small
+V tomto kurze prejdeme všetkými krokmi – od návrhu cez analýzu po interpretáciu.
+:::
+
+## R a RStudio
+
+:::: columns
+::: {.column width="50%"}
+**R** – jazyk a výpočtové jadro
+
+**RStudio** – editor okolo neho:
+
+1. editor skriptov
+2. konzola
+3. premenné (Environment)
+4. grafy a nápoveda
+:::
+
+::: {.column width="50%"}
+```{r}
+#| eval: false
+install.packages("sensR")  # raz
+library(sensR)             # vždy
+?binom.test                # nápoveda
+```
+
+::: warn
+Kód píšte do **skriptu**, nie do konzoly – inak analýzu nezopakujete.
+:::
+:::
+::::
+
+## Dátové štruktúry
+
+```{r}
+vektor <- c(7.5, 6.9, 7.0, 7.2)            # jeden rozmer, jeden typ
+matica <- matrix(1:6, nrow = 2)            # plní sa po stĺpcoch
+tabulka <- data.frame(
+  hodnotitel = c("H1", "H2", "H3"),
+  produkt = c("A", "A", "B"),
+  chut = c(7, 6, 8)
+)
+tabulka$chut                               # stĺpec cez $
+mean(tabulka$chut)
+```
+
+## Návrh experimentu v R
+
+```{r}
+plan <- expand.grid(hodnotitel = paste0("H", 1:4), produkt = c("A", "B", "C"))
+set.seed(24)
+plan$poradie <- ave(seq_len(nrow(plan)), plan$hodnotitel, FUN = function(x) sample(length(x)))
+head(plan[order(plan$hodnotitel, plan$poradie), ], 6)
+```
+
+::: small
+Každý hodnotiteľ dostane každý produkt, poradie podávania je náhodné – potláča sa tým vplyv poradia a únavy.
+:::
+
+## [KVÍZ]{.quiz-label} `each` alebo `times`?
+
+Aký vektor vráti `rep(c("A", "B"), each = 2)`?
+
+1. `"A" "B" "A" "B"`
+2. `"A" "A" "B" "B"`
+
+. . .
+
+::: answer
+**2.** `each` opakuje každý prvok, `times` celý vektor. Spolu vytvoria úplný plán hodnotiteľ × produkt.
+:::
+
+## Modifikovaná BCG matica
+
+```{r}
+#| output-location: column
+cena <- c(7.40, 8.51, 7.62, 5.54, 7.20, 6.62)
+kvalita <- c(4.5, 7.2, 8.5, 4.8, 7.5, 7.1)
+plot(cena, kvalita, pch = 19, col = pal[3],
+     cex = 1.6, xlab = "cena (€)",
+     ylab = "kvalita")
+abline(v = mean(cena), h = mean(kvalita),
+       col = pal[2], lty = 2)
+text(cena, kvalita, LETTERS[1:6], pos = 4)
+```
+
+::: small
+Kvadranty podľa priemerov: vľavo hore **výhodná kúpa** (F), vpravo dole **problém** (A – drahý a najhorší).
+:::
+
+## Interval spoľahlivosti priemeru
+
+Priemer panelu je len **odhad**. Interval spoľahlivosti ukáže jeho neistotu:
+
+$$\bar{x} \pm t_{0.975;\,n-1} \cdot \frac{s}{\sqrt{n}}$$
+
+```{r}
+x <- c(10, 9, 11, 10, 10, 9, 10)                      # 7 hodnotiteľov
+delta <- sd(x) / sqrt(length(x)) * qt(0.975, df = length(x) - 1)
+round(c(dolna = mean(x) - delta, priemer = mean(x), horna = mean(x) + delta), 2)
+```
+
+. . .
+
+::: warn
+V menovateli je **počet hodnotení** `length(x)`, nie počet rôznych hodnôt `length(unique(x))`.
+:::
+
+## Prečo t a nie 1,96?
+
+```{r}
+n <- c(5, 7, 10, 20, 30, 100)
+round(data.frame(n = n, t = qt(0.975, df = n - 1)), 2) |> t()
+```
+
+::: key
+Pri malom paneli poznáme len odhad rozptylu → t-rozdelenie má ťažšie chvosty a interval je širší. Pri 7 hodnotiteľoch je t = 2,45, nie 1,96.
+:::
+
+## Ktorý graf kedy?
+
+| Otázka | Graf v R |
+|---|---|
+| Ktorý produkt má najvyššie hodnotenie? | `barplot()`, `dotchart()` |
+| Líšia sa produkty aj rozptylom? | `boxplot()` |
+| Aké je rozdelenie hodnôt? | `hist()`, `plot(density())` |
+| Ako sa hodnota mení v čase? | `plot(type = "l")` + `lines()` |
+| Súvisia dve premenné? | `plot(x, y)` |
+
+## Boxplot: päť čísel v jednom grafe
+
+```{r}
+#| output-location: column
+syry <- data.frame(
+  A = c(7.5, 6.9, 7, 7, 6.9, 7.1, 7.2, 7.5, 6.9),
+  B = c(7.5, 8.1, 7.5, 7.4, 7.1, 7.5, 7.2, 7.2, 6.9),
+  C = c(7, 6.1, 6.7, 6.1, 6.9, 7.1, 7.2, 7.2, 6.9),
+  E = c(6.8, 6.9, 6.9, 7, 7, 7, 7.1, 7.1, 7.2)
+)
+boxplot(syry, col = paste0(pal[1:4], "55"),
+        border = pal[1:4],
+        ylab = "celková kvalita")
+```
+
+::: small
+Hrubá čiara = medián, krabica = stred 50 % dát, body mimo fúzov = odľahlé hodnoty.
+:::
+
+## Grafy po vrstvách
+
+```{r}
+#| fig-height: 3.6
+set.seed(1)
+linka1 <- rnorm(120, mean = 1000, sd = 0.6)
+linka2 <- rnorm(120, mean = 1000, sd = 0.6)
+plot(linka1, type = "l", col = pal[2], xlab = "sekundy plnenia", ylab = "objem (ml)")
+lines(linka2, col = pal[3])
+abline(h = c(mean(linka1), mean(linka2)), col = pal[2:3], lwd = 2)
+```
+
+## [KVÍZ]{.quiz-label} Vyberte graf
+
+Chcete ukázať vedeniu, že **nová receptúra má menší rozptyl** hodnotení ako stará. Ktorý graf?
+
+. . .
+
+::: answer
+**Boxplot** – ukáže medián aj rozptyl (výšku krabice) oboch receptúr vedľa seba. Stĺpcový graf priemerov by rozptyl skryl.
+:::
+
+## Zhrnutie
+
+- Senzorické dáta = ľudský merací prístroj → **variabilita** je súčasť merania.
+- V R pracujeme so **skriptami** a dátami v **data.frame** (jeden riadok = jedno hodnotenie).
+- Priemer vždy s **intervalom spoľahlivosti**, pri malom paneli s t-rozdelením.
+- Najprv **graf**, potom test.
+
+::: links
+[Teória 1](../../teoria/cvicenie01.html) [Teória 2](../../teoria/cvicenie02.html) [Teória 3](../../teoria/cvicenie03.html) [Teória 4](../../teoria/cvicenie04.html) [Skripty SK](https://github.com/senzorika/SaIT)
+:::

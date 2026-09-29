@@ -1,0 +1,154 @@
+---
+title: "Rýchle a temporálne metódy"
+subtitle: "Blok 7 · cvičenia 17 – 18"
+---
+
+```{r}
+#| include: false
+source("../setup.R")
+library(FactoMineR)
+library(SensoMineR)
+library(DescTools)
+```
+
+## Prečo rýchle metódy?
+
+| | deskriptívny profil | CATA | napping |
+|---|---|---|---|
+| hodnotitelia | 8 – 12 trénovaných | 40 – 100 spotrebiteľov | 15 – 50 |
+| príprava | mesiace tréningu | žiadna | žiadna |
+| úloha | intenzita deskriptorov | začiarknuť platné atribúty | rozložiť vzorky na papier |
+| analýza | ANOVA, PCA | Cochranov Q, CA | MFA |
+
+## CATA – Check-All-That-Apply
+
+```{r}
+set.seed(2024)
+atributy <- c("sladky", "kysly", "kremovy", "ovocny", "husty", "umely")
+p <- rbind(A = c(.7, .2, .8, .3, .6, .1), B = c(.3, .7, .3, .2, .2, .2),
+           C = c(.6, .3, .4, .8, .3, .5), D = c(.5, .4, .6, .5, .7, .1))
+colnames(p) <- atributy
+cata <- expand.grid(spotrebitel = factor(1:40), produkt = factor(rownames(p)))
+for (a in atributy) cata[[a]] <- rbinom(nrow(cata), 1, p[as.character(cata$produkt), a])
+tabulka <- sapply(atributy, function(a) tapply(cata[[a]], cata$produkt, sum))
+tabulka
+```
+
+## Cochranov Q test
+
+```{r}
+q_p <- sapply(atributy, function(a) {
+  d <- data.frame(y = cata[[a]], produkt = cata$produkt, spotrebitel = cata$spotrebitel)
+  CochranQTest(y ~ produkt | spotrebitel, data = d)$p.value
+})
+round(q_p, 4)
+```
+
+::: key
+Obdoba McNemarovho testu pre viac vzoriek: tí istí spotrebitelia hodnotia všetky produkty → spotrebiteľ je **blok**.
+:::
+
+## Mapa CATA
+
+```{r}
+#| fig-height: 4.4
+ca <- CA(tabulka, graph = FALSE)
+plot(rbind(ca$row$coord[, 1:2], ca$col$coord[, 1:2]), type = "n", asp = 1,
+     xlab = sprintf("Dim 1 (%.0f %%)", ca$eig[1, 2]), ylab = sprintf("Dim 2 (%.0f %%)", ca$eig[2, 2]))
+abline(h = 0, v = 0, lty = 3, col = "grey60")
+text(ca$row$coord[, 1:2], rownames(tabulka), col = pal[3], font = 2, cex = 1.6)
+text(ca$col$coord[, 1:2], colnames(tabulka), col = pal[2])
+```
+
+## Napping – projektívne mapovanie
+
+:::: columns
+::: {.column width="45%"}
+- všetky vzorky naraz, hárok 60 × 40 cm
+- podobné vzorky blízko, odlišné ďaleko
+- zaznamenajú sa súradnice X, Y
+- každý hodnotiteľ = skupina 2 premenných → **MFA**
+:::
+
+::: {.column width="55%"}
+```{r}
+#| echo: false
+#| fig-width: 5.5
+#| fig-height: 4.6
+data(napping)
+n <- ncol(napping.don) / 2
+mfa <- MFA(napping.don, group = rep(2, n), type = rep("c", n), graph = FALSE)
+xy <- mfa$ind$coord[, 1:2]
+plot(xy, pch = 19, col = ifelse(grepl("^([0-9]+ )?T ", rownames(xy)), pal[1], pal[4]), cex = 1.6,
+     xlab = "Dim 1", ylab = "Dim 2", xlim = range(xy[, 1]) * 1.35)
+text(xy, gsub("^[0-9]+ ", "", rownames(xy)), pos = 3, cex = 0.7)
+```
+:::
+::::
+
+::: small
+Konsenzuálna mapa 10 vín: MFA vyváži hodnotiteľov a nájde spoločnú konfiguráciu. Zelené = Touraine, fialové = Vouvray.
+:::
+
+## [KVÍZ]{.quiz-label} Škálovať súradnice?
+
+V MFA pre napping používame `type = "c"` (neškálované). Prečo nie `"s"`?
+
+. . .
+
+::: answer
+Súradnice sú v **centimetroch na tom istom hárku** – vzdialenosť 5 cm v smere X aj Y znamená rovnakú mieru odlišnosti. Škálovanie by túto informáciu skreslilo.
+:::
+
+## Vnem sa mení v čase
+
+| | TDS | TCATA |
+|---|---|---|
+| otázka | ktorý vnem je **teraz dominantný**? | ktoré vnemy **teraz vnímate**? |
+| výber | práve jeden atribút | ľubovoľný počet |
+| výstup | miera dominancie | podiel citácií |
+
+::: small
+Dáta zbierajú aplikácie `TDS_app.R` a `TCATA_app.R` v priečinku `Senzometricke_appky/`.
+:::
+
+## TDS krivky
+
+```{r}
+#| code-fold: true
+#| fig-height: 4
+set.seed(18)
+atr <- c("sladky", "kysly", "horky", "ovocny", "adstringentny"); cas <- 0:60; n <- 30
+vaha <- cbind(dnorm(cas, 8, 8), dnorm(cas, 18, 8), dnorm(cas, 40, 12), dnorm(cas, 22, 10), dnorm(cas, 52, 10))
+tds <- t(sapply(1:n, function(h) apply(vaha, 1, function(w) sample(atr, 1, prob = w + 1e-4))))
+dom <- sapply(atr, function(a) colMeans(tds == a))
+hranica <- 0.2 + 1.645 * sqrt(0.2 * 0.8 / n)
+matplot(cas, dom, type = "l", lty = 1, lwd = 3, col = pal, ylim = c(0, 1), xlab = "čas (s)", ylab = "miera dominancie")
+abline(h = c(0.2, hranica), lty = c(3, 2), col = c("grey50", pal[2]))
+legend("topright", atr, col = pal, lwd = 3, bty = "n", cex = 0.8)
+```
+
+::: small
+Atribút je preukazne dominantný nad červenou hranicou P₀ + 1,645·√(P₀(1 − P₀)/n) = `r round(hranica, 2)`.
+:::
+
+## TCATA: porovnanie dvoch produktov
+
+- krivky oboch produktov v jednom grafe
+- v každom čase Fisherov test podielu citácií
+- za rozdiel považujeme **súvislý interval**, nie osamotené body (desiatky testov!)
+
+::: warn
+Pri reálnych dátach hodnotitelia prehĺtajú v rôznom čase → čas sa často **štandardizuje** (0 = prvý výber, 1 = koniec záznamu). Balík `tempR`.
+:::
+
+## Zhrnutie
+
+- **CATA**: binárne dáta → Cochranov Q (rozdiely), CA (mapa).
+- **Napping**: súradnice X, Y → MFA, konsenzuálna mapa.
+- **TDS / TCATA**: krivky v čase, hranica významnosti, pozor na mnohonásobné testovanie.
+- Rýchle metódy: menej presné, ale lacné a rýchle – vhodné na skríning.
+
+::: links
+[Teória 17](../../teoria/cvicenie17.html) [Teória 18](../../teoria/cvicenie18.html)
+:::

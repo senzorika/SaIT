@@ -1,0 +1,172 @@
+---
+title: "Relationships and multivariate methods"
+subtitle: "Block 5 · exercises 6 – 9"
+---
+
+```{r}
+#| include: false
+source("../setup.R")
+library(MASS)
+sensory <- read.table("http://senzorika.com/sait/datasety/senzorika.txt", sep = ",")
+```
+
+## Correlation: direction and strength
+
+```{r}
+#| fig-height: 3.2
+set.seed(3); x <- rnorm(40)
+par(mfrow = c(1, 3))
+for (k in list(c(0.9, 0.4), c(0, 1), c(-0.8, 0.55))) {
+  y <- k[1] * x + rnorm(40) * k[2]
+  plot(x, y, pch = 19, col = pal[3], main = paste("r =", round(cor(x, y), 2)), xlab = "", ylab = "")
+}
+```
+
+::: small
+Pearson – a linear relationship. **Spearman** – a monotonic relationship on ranks (suitable for sensory scales).
+:::
+
+## Correlation is not everything
+
+```{r}
+#| output-location: column
+sugar <- 1:13
+pleasantness <- c(5, 5, 5, 7, 9, 9, 9, 8, 9, 7, 7, 6, 5)
+plot(sugar, pleasantness, type = "b", pch = 19,
+     col = pal[2], lwd = 2)
+cor(sugar, pleasantness, method = "spearman")
+```
+
+::: warn
+The correlation is almost zero although the relationship is strong – it has an **optimum**. Always plot first.
+:::
+
+## Simple linear regression
+
+```{r}
+#| output-location: column
+sweetness <- c(2, 2, 3, 4, 5, 6, 6, 6, 7, 9, 9, 9, 8)
+model <- lm(sweetness ~ sugar)
+plot(sugar, sweetness, pch = 19, col = pal[3])
+abline(model, col = pal[1], lwd = 3)
+segments(sugar, sweetness, sugar, fitted(model),
+         col = pal[2])
+round(coef(model), 2)
+summary(model)$r.squared
+```
+
+## PCA – many attributes, two axes
+
+```{r}
+#| output-location: column
+survey <- data.frame(
+  sensory = c(3,7,7,5,5,6,5,6,3,3,2,5,2,7,1,2),
+  price = c(5,3,4,7,7,4,7,5,5,3,6,7,4,5,6,3),
+  design = c(3,2,4,1,5,4,2,4,6,5,6,7,5,5,5,7),
+  brand = c(7,3,3,3,5,3,3,4,3,5,3,3,6,5,5,7))
+pca <- princomp(survey, cor = TRUE)
+round(pca$sdev^2, 2)            # eigenvalues
+biplot(pca, col = c("grey40", pal[2]), cex = 0.8)
+```
+
+::: small
+Kaiser: keep components with an eigenvalue &gt; 1. Comp.1 sets **taste** against **image** (brand, package).
+:::
+
+## Factor analysis
+
+```{r}
+fa_data <- data.frame(
+  quality = c(5,3,4,7,7,4,7,5,5,3,6,7,4,5,6,3), price = c(6,7,6,5,7,6,5,6,3,1,2,5,2,3,1,2),
+  aesthetics = c(3,2,4,1,5,2,2,4,6,7,6,7,5,6,5,7), brand = c(4,2,5,3,5,3,1,4,7,5,7,6,6,5,5,7),
+  friend = c(7,2,5,6,2,4,1,7,3,2,6,7,6,2,4,5), family = c(6,3,4,7,1,5,4,5,4,4,5,7,2,3,5,6))
+round(eigen(cor(fa_data))$values, 2)
+print(factanal(fa_data, factors = 2)$loadings, cutoff = 0.4)
+```
+
+## Cluster analysis: dendrogram
+
+```{r}
+#| fig-height: 4
+fit <- hclust(dist(sensory), method = "ward.D")
+plot(fit, main = "", xlab = "pizza", sub = "", ylab = "merge height")
+rect.hclust(fit, k = 3, border = pal[1:3])
+```
+
+::: small
+Similarity is given by the **merge height**, not by how close the labels are on the x-axis.
+:::
+
+## k-means
+
+```{r}
+#| output-location: column
+set.seed(1)
+k3 <- kmeans(scale(sensory), centers = 3, nstart = 25)
+k3$size
+pc <- prcomp(sensory, scale. = TRUE)$x
+plot(pc[, 1:2], pch = 19, cex = 1.6,
+     col = pal[k3$cluster])
+text(pc[, 1:2], labels = 1:16, pos = 3, cex = 0.7)
+```
+
+::: small
+`nstart = 25` – the algorithm runs 25 times and keeps the best solution. Optimal k: `fviz_nbclust(..., method = "silhouette")`.
+:::
+
+## [QUIZ]{.quiz-label} Hierarchical or k-means?
+
+You have 16 products and want to find out **how many** natural groups the market has. Which method do you start with?
+
+. . .
+
+::: answer
+**Hierarchical clustering** – the dendrogram shows the whole structure and you choose the number of groups afterwards. k-means needs the number of clusters in advance.
+:::
+
+## Correspondence analysis
+
+:::: columns
+::: {.column width="45%"}
+```{r}
+age <- matrix(
+  c(15, 2, 8, 7, 14, 4, 5, 5, 15, 11, 5, 9),
+  ncol = 3, byrow = TRUE,
+  dimnames = list(
+    c("Men", "Women", "Children", "Seniors"),
+    c("A", "B", "C")))
+age
+chisq.test(age)$p.value
+```
+:::
+
+::: {.column width="55%"}
+```{r}
+#| echo: false
+#| fig-width: 5.5
+#| fig-height: 5
+ca <- corresp(age, nf = 2)
+plot(rbind(ca$rscore, ca$cscore), type = "n", asp = 1, xlab = "Dim 1", ylab = "Dim 2")
+abline(h = 0, v = 0, lty = 3, col = "grey60")
+text(ca$rscore, rownames(age), col = pal[3], font = 2)
+text(ca$cscore, colnames(age), col = pal[2], font = 2, cex = 1.6)
+```
+:::
+::::
+
+::: small
+A category in the same **direction from the centre** as a product chooses it more often than chance would suggest.
+:::
+
+## Summary
+
+| question | method |
+|---|---|
+| are two attributes related? | correlation (Spearman), regression |
+| which attributes go together? | PCA, factor analysis |
+| which products are similar? | cluster analysis |
+| which group chooses which product? | correspondence analysis |
+
+::: links
+[Theory 6](../../theory_EN/exercise06.html) [Theory 7](../../theory_EN/exercise07.html) [Theory 8](../../theory_EN/exercise08.html) [Theory 9](../../theory_EN/exercise09.html)
+:::

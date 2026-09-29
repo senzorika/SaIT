@@ -21,7 +21,7 @@
 
 Materiály k cvičeniam zo **senzorickej analýzy a senzometrie** v jazyku R. Ku každému cvičeniu patrí R skript (slovenská aj anglická verzia) a **teoretická stránka s grafmi**: čo metóda robí, kedy ju použiť, ako čítať výstup a na čo si dať pozor.
 
-<p align="center"><a href="https://senzorika.github.io/SaIT/teoria/index.html"><b>📖 Otvoriť teóriu</b></a> &nbsp;·&nbsp; <a href="#-cvičenia">🧪 Cvičenia</a> &nbsp;·&nbsp; <a href="#-ako-začať">🚀 Ako začať</a> &nbsp;·&nbsp; <a href="#-užitočné-odkazy">🔗 Odkazy</a></p>
+<p align="center"><a href="https://senzorika.github.io/SaIT/teoria/index.html"><b>📖 Otvoriť teóriu</b></a> &nbsp;·&nbsp; <a href="#-cvičenia">🧪 Cvičenia</a> &nbsp;·&nbsp; <a href="#-prezentácie-k-prednáškam">🎓 Prezentácie</a> &nbsp;·&nbsp; <a href="#-ako-začať">🚀 Ako začať</a> &nbsp;·&nbsp; <a href="#-užitočné-odkazy">🔗 Odkazy</a></p>
 
 ### 🧭 Mapa kurzu
 
@@ -105,6 +105,20 @@ flowchart LR
 | **17** | **CATA a napping**<br><sub>Rýchle metódy profilovania so spotrebiteľmi: začiarkavacie otázky a projektívne mapovanie.</sub> | [📖](https://senzorika.github.io/SaIT/teoria/cvicenie17.html) | [`cvicenie17.R`](cvicenie17.R) | [`exercise17.R`](exercises_EN/exercise17.R) |
 | **18** | **Temporálne metódy – TDS a TCATA**<br><sub>Ako sa vnem mení v čase: dominancia vnemov a časové CATA krivky.</sub> | [📖](https://senzorika.github.io/SaIT/teoria/cvicenie18.html) | [`cvicenie18.R`](cvicenie18.R) | [`exercise18.R`](exercises_EN/exercise18.R) |
 
+### 🎓 Prezentácie k prednáškam
+
+Sedem prezentácií (Quarto, reveal.js) – jedna na každý tematický blok. Obsahujú živé výstupy z R a kvízové otázky. Zdrojové `.qmd` súbory sú v [`prezentacie/`](prezentacie/).
+
+| # | Prezentácia | Cvičenia | SK | EN |
+|:-:|---|:-:|:-:|:-:|
+| 1 | 🧰 **Úvod do senzometrie a R** | 1 – 4 | [▶️](https://senzorika.github.io/SaIT/prezentacie/sk/01_uvod.html) | [▶️](https://senzorika.github.io/SaIT/prezentacie/en/01_introduction.html) |
+| 2 | 🧪 **Testovanie hypotéz v senzorike** | 5a – 5d | [▶️](https://senzorika.github.io/SaIT/prezentacie/sk/02_testovanie_hypotez.html) | [▶️](https://senzorika.github.io/SaIT/prezentacie/en/02_hypothesis_testing.html) |
+| 3 | 🎯 **Rozlišovacie testy a Thurstonov model** | 13 – 14 | [▶️](https://senzorika.github.io/SaIT/prezentacie/sk/03_rozlisovacie_testy.html) | [▶️](https://senzorika.github.io/SaIT/prezentacie/en/03_discrimination_tests.html) |
+| 4 | 🧑‍🔬 **Senzorický panel ako merací prístroj** | 15 – 16 | [▶️](https://senzorika.github.io/SaIT/prezentacie/sk/04_panel.html) | [▶️](https://senzorika.github.io/SaIT/prezentacie/en/04_panel.html) |
+| 5 | 🗺️ **Vzťahy a viacrozmerné metódy** | 6 – 9 | [▶️](https://senzorika.github.io/SaIT/prezentacie/sk/05_viacrozmerne_metody.html) | [▶️](https://senzorika.github.io/SaIT/prezentacie/en/05_multivariate_methods.html) |
+| 6 | 🛒 **Spotrebiteľský výskum** | 10 – 12 | [▶️](https://senzorika.github.io/SaIT/prezentacie/sk/06_spotrebitelsky_vyskum.html) | [▶️](https://senzorika.github.io/SaIT/prezentacie/en/06_consumer_research.html) |
+| 7 | ⏱️ **Rýchle a temporálne metódy** | 17 – 18 | [▶️](https://senzorika.github.io/SaIT/prezentacie/sk/07_rychle_temporalne_metody.html) | [▶️](https://senzorika.github.io/SaIT/prezentacie/en/07_rapid_temporal_methods.html) |
+
 ### 🚀 Ako začať
 
 1. Nainštalujte [R](https://cran.r-project.org/) a potom [RStudio](https://posit.co/download/rstudio-desktop/).
@@ -123,6 +137,7 @@ flowchart LR
 | 🖥️ [`Senzometricke_appky/`](Senzometricke_appky/) | interaktívne Shiny aplikácie (PCA, TDS, TCATA, NPS, LDA…) |
 | 🇬🇧 [`English/`](English/) | rozšírené anglické materiály a prezentácie |
 | 🌐 [`exercises_EN/`](exercises_EN/) · [`teoria/`](teoria/) · [`theory_EN/`](theory_EN/) | anglické skripty, zdrojové súbory teórie SK / EN |
+| 🎓 [`prezentacie/`](prezentacie/) | Quarto prezentácie (`.qmd`) a vyrenderované HTML |
 
 ### 🔗 Užitočné odkazy
 
@@ -140,7 +155,7 @@ flowchart LR
 
 Course materials for **sensory analysis and sensometrics** exercises in R. Every exercise has an R script (in English and Slovak) and a **theory page with graphics**: what the method does, when to use it, how to read the output and what to watch out for.
 
-<p align="center"><a href="https://senzorika.github.io/SaIT/theory_EN/index.html"><b>📖 Open the theory</b></a> &nbsp;·&nbsp; <a href="#-exercises">🧪 Exercises</a> &nbsp;·&nbsp; <a href="#-getting-started">🚀 Getting started</a> &nbsp;·&nbsp; <a href="#-useful-links">🔗 Links</a></p>
+<p align="center"><a href="https://senzorika.github.io/SaIT/theory_EN/index.html"><b>📖 Open the theory</b></a> &nbsp;·&nbsp; <a href="#-exercises">🧪 Exercises</a> &nbsp;·&nbsp; <a href="#-lecture-slides">🎓 Slides</a> &nbsp;·&nbsp; <a href="#-getting-started">🚀 Getting started</a> &nbsp;·&nbsp; <a href="#-useful-links">🔗 Links</a></p>
 
 ### 🧭 Course map
 
@@ -224,6 +239,20 @@ flowchart LR
 | **17** | **CATA and napping**<br><sub>Rapid profiling methods with consumers: check-all-that-apply questions and projective mapping.</sub> | [📖](https://senzorika.github.io/SaIT/theory_EN/exercise17.html) | [`exercise17.R`](exercises_EN/exercise17.R) | [`cvicenie17.R`](cvicenie17.R) |
 | **18** | **Temporal methods – TDS and TCATA**<br><sub>How perception changes over time: dominance of sensations and temporal CATA curves.</sub> | [📖](https://senzorika.github.io/SaIT/theory_EN/exercise18.html) | [`exercise18.R`](exercises_EN/exercise18.R) | [`cvicenie18.R`](cvicenie18.R) |
 
+### 🎓 Lecture slides
+
+Seven presentations (Quarto, reveal.js) – one for each thematic block, with live R output and quiz questions. The `.qmd` sources are in [`prezentacie/`](prezentacie/).
+
+| # | Presentation | Exercises | SK | EN |
+|:-:|---|:-:|:-:|:-:|
+| 1 | 🧰 **Introduction to sensometrics and R** | 1 – 4 | [▶️](https://senzorika.github.io/SaIT/prezentacie/sk/01_uvod.html) | [▶️](https://senzorika.github.io/SaIT/prezentacie/en/01_introduction.html) |
+| 2 | 🧪 **Hypothesis testing in sensory analysis** | 5a – 5d | [▶️](https://senzorika.github.io/SaIT/prezentacie/sk/02_testovanie_hypotez.html) | [▶️](https://senzorika.github.io/SaIT/prezentacie/en/02_hypothesis_testing.html) |
+| 3 | 🎯 **Discrimination tests and the Thurstonian model** | 13 – 14 | [▶️](https://senzorika.github.io/SaIT/prezentacie/sk/03_rozlisovacie_testy.html) | [▶️](https://senzorika.github.io/SaIT/prezentacie/en/03_discrimination_tests.html) |
+| 4 | 🧑‍🔬 **The sensory panel as a measuring instrument** | 15 – 16 | [▶️](https://senzorika.github.io/SaIT/prezentacie/sk/04_panel.html) | [▶️](https://senzorika.github.io/SaIT/prezentacie/en/04_panel.html) |
+| 5 | 🗺️ **Relationships and multivariate methods** | 6 – 9 | [▶️](https://senzorika.github.io/SaIT/prezentacie/sk/05_viacrozmerne_metody.html) | [▶️](https://senzorika.github.io/SaIT/prezentacie/en/05_multivariate_methods.html) |
+| 6 | 🛒 **Consumer research** | 10 – 12 | [▶️](https://senzorika.github.io/SaIT/prezentacie/sk/06_spotrebitelsky_vyskum.html) | [▶️](https://senzorika.github.io/SaIT/prezentacie/en/06_consumer_research.html) |
+| 7 | ⏱️ **Rapid and temporal methods** | 17 – 18 | [▶️](https://senzorika.github.io/SaIT/prezentacie/sk/07_rychle_temporalne_metody.html) | [▶️](https://senzorika.github.io/SaIT/prezentacie/en/07_rapid_temporal_methods.html) |
+
 ### 🚀 Getting started
 
 1. Install [R](https://cran.r-project.org/) and then [RStudio](https://posit.co/download/rstudio-desktop/).
@@ -242,6 +271,7 @@ flowchart LR
 | 🖥️ [`Senzometricke_appky/`](Senzometricke_appky/) | interactive Shiny apps (PCA, TDS, TCATA, NPS, LDA…) |
 | 🇬🇧 [`English/`](English/) | extended English materials and presentations |
 | 🌐 [`exercises_EN/`](exercises_EN/) · [`teoria/`](teoria/) · [`theory_EN/`](theory_EN/) | English scripts, theory source files SK / EN |
+| 🎓 [`prezentacie/`](prezentacie/) | Quarto presentations (`.qmd`) and rendered HTML |
 
 ### 🔗 Useful links
 

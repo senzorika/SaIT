@@ -1,0 +1,190 @@
+---
+title: "Spotrebiteľský výskum"
+subtitle: "Blok 6 · cvičenia 10 – 12"
+---
+
+```{r}
+#| include: false
+source("../setup.R")
+library(survival)
+```
+
+## Trvanlivosť očami spotrebiteľa
+
+- Mikrobiologická trvanlivosť: kedy je produkt **nebezpečný**
+- Senzorická trvanlivosť: kedy ho spotrebiteľ **odmietne**
+
+. . .
+
+::: key
+Udalosť = **odmietnutie**. Ak hodnotiteľ produkt do konca testu neodmietol, jeho údaj je **cenzúrovaný** – vieme len, že vydržal aspoň tak dlho. Presne s tým pracuje analýza prežitia.
+:::
+
+## Kaplan-Meierova krivka
+
+```{r}
+#| output-location: column
+cas <- rep(c(0, 4, 8, 12, 24, 36, 48), 5)
+odmietol <- c(1,1,1,1,0,0,0, 1,1,1,1,1,1,1,
+              1,1,0,1,0,0,0, 1,0,1,0,0,0,0,
+              0,0,1,1,1,1,0) == 1
+fit <- survfit(Surv(cas, odmietol) ~ 1)
+plot(fit, conf.int = FALSE, lwd = 3,
+     col = pal[3], xlab = "čas skladovania (h)",
+     ylab = "P(akceptácia)")
+abline(h = 0.5, col = pal[2], lty = 2)
+fit
+```
+
+::: small
+Medián senzorickej trvanlivosti = čas, keď krivka klesne pod 0,5.
+:::
+
+## TURF – dosah a frekvencia
+
+Pizzeria môže ponúknuť len 3 – 4 ingrediencie. Nechceme **najobľúbenejšie**, ale tie, ktoré **spolu oslovia najviac rôznych** zákazníkov.
+
+| ukazovateľ | otázka |
+|---|---|
+| **Reach** | koľko % zákazníkov má rado aspoň jednu položku? |
+| **Frequency** | koľko obľúbených položiek má zákazník v priemere? |
+
+## TURF v praxi
+
+```{r}
+set.seed(11)
+n <- 150
+p <- c(syr = 0.7, sunka = 0.6, salama = 0.55, olivy = 0.3, kukurica = 0.35, slanina = 0.4)
+chuti <- sapply(p, function(pi) rbinom(n, 1, pi))
+kombinacie <- combn(names(p), 3)
+reach <- apply(kombinacie, 2, function(k) mean(rowSums(chuti[, k]) > 0))
+naj <- order(reach, decreasing = TRUE)[1:4]
+data.frame(kombinacia = apply(kombinacie[, naj], 2, paste, collapse = " + "), reach = round(reach[naj], 3))
+```
+
+::: small
+Balík `turfR` robí to isté pre všetky kombinácie a pridáva frekvenciu a váhy respondentov.
+:::
+
+## Mapa preferencií
+
+:::: columns
+::: {.column width="50%"}
+- **Senzorický profil** (panel): *aký* produkt je
+- **Hedonika** (spotrebitelia): *ako veľmi* sa páči
+- `carto()` premietne preferencie do PCA mapy profilu
+:::
+
+::: {.column width="50%"}
+```{r}
+#| eval: false
+library(SensoMineR)
+res.pca <- PCA(senzorika)
+carto(res.pca$ind$coord[, 1:2],
+      hedonika)
+```
+:::
+::::
+
+::: key
+Vrstevnice ukazujú **percento spokojných spotrebiteľov**. Smer od nášho produktu k „ideálnej zóne“ napovie, ktoré deskriptory posilniť.
+:::
+
+## Text mining: od recenzií k číslam
+
+```{r}
+#| output-location: column
+recenzie <- c("creamy and sweet, fresh fruity taste",
+  "too sour, thin texture, high price",
+  "creamy smooth sweet, great product",
+  "bitter aftertaste, will not buy again",
+  "fresh fruity, pleasant surprise, sweet")
+slova <- unlist(strsplit(gsub("[[:punct:]]", "",
+                              recenzie), " +"))
+stop <- c("and", "not", "will", "too", "again")
+frek <- sort(table(slova[!slova %in% stop]),
+             decreasing = TRUE)[1:8]
+barplot(rev(frek), horiz = TRUE, las = 1,
+        col = pal[1], border = NA)
+```
+
+::: small
+Pred počítaním treba text **vyčistiť**: malé písmená, bez interpunkcie a stop-slov. Balík `tm` na to má `tm_map()`.
+:::
+
+## Analýza sentimentu – lexikón NRC
+
+```{r}
+#| echo: false
+emo <- c(radosť = 9, dôvera = 7, očakávanie = 5, prekvapenie = 3, smútok = 2, znechutenie = 3, hnev = 1, strach = 1)
+barplot(emo, col = c(pal[c(1, 1, 5, 3)], pal[c(4, 2, 2, 4)]), border = NA, las = 2, ylab = "počet slov")
+```
+
+::: small
+`get_nrc_sentiment()` priradí slovám 8 emócií Plutchikovho kolesa a polaritu. Ilustračné hodnoty; lexikón nevidí kontext („not sweet at all“).
+:::
+
+## JAR škála
+
+```{r}
+#| code-fold: true
+#| fig-height: 4.2
+jar <- matrix(c(3, 2, 10, 2, 0, 3, 2, 12, 0, 0, 1, 3, 9, 0, 1, 3, 9, 2, 1, 2, 0, 1, 8, 3, 1, 4, 2, 10, 1, 0),
+  ncol = 5, byrow = TRUE, dimnames = list(c("vzhľad", "pach", "textúra", "chuť", "dochuť", "celkovo"),
+                                          c("--", "-", "JAR", "+", "++")))
+podiel <- prop.table(jar, 1)
+par(mar = c(4, 6, 3, 1))
+barplot(t(podiel), horiz = TRUE, las = 1, col = c(pal[2], "#f0b99a", "#dcd9d0", "#a9b8ee", pal[3]),
+        border = NA, xlab = "podiel odpovedí")
+legend("top", legend = colnames(jar), fill = c(pal[2], "#f0b99a", "#dcd9d0", "#a9b8ee", pal[3]),
+       horiz = TRUE, bty = "n", inset = -0.12, xpd = TRUE, border = NA)
+```
+
+::: small
+Chuť má len 12 % odpovedí „akurát“ a väčšina ju považuje za slabú → posilniť chuť je priorita.
+:::
+
+## [KVÍZ]{.quiz-label} Čo upraviť?
+
+Pri sladkosti je 60 % JAR, 30 % „príliš sladké“ a 10 % „málo sladké“. Čo navrhnete?
+
+. . .
+
+::: answer
+Mierne **znížiť sladkosť** – nadpolovičná JAR, ale jasná asymetria na stranu „príliš“. Pred zmenou overte **penalty analýzou**, či táto skupina produkt aj horšie hodnotí.
+:::
+
+## Radarový graf (profilogram)
+
+```{r}
+#| code-fold: true
+#| fig-height: 4.6
+library(fmsb)
+profil <- data.frame(
+  Vzhlad = c(9, 0, 5.2, 7), Textura = c(9, 0, 4.5, 4.8),
+  Pach = c(9, 0, 3.8, 5.8), Chut = c(9, 0, 8, 8),
+  Dochut = c(9, 0, 8, 8))
+par(mar = c(1, 1, 1, 1))
+radarchart(profil, pcol = pal[2:3], plwd = 3,
+           plty = 1, cglcol = "grey70", vlcex = 1.1)
+legend("topright", c("A", "C"), col = pal[2:3],
+       lwd = 3, bty = "n")
+```
+
+::: small
+Prvé dva riadky dát sú maximum a minimum osí. Pozor – plocha polygónu závisí od poradia osí.
+:::
+
+## Zhrnutie
+
+| otázka | metóda |
+|---|---|
+| dokedy je produkt akceptovaný? | Kaplan-Meier, cenzúrované dáta |
+| ktorá kombinácia osloví najviac ľudí? | TURF (reach, frequency) |
+| prečo sa produkty páčia? | mapa preferencií |
+| čo hovoria recenzie? | text mining, sentiment |
+| čo zmeniť v receptúre? | JAR + penalty analýza |
+
+::: links
+[Teória 10](../../teoria/cvicenie10.html) [Teória 11a](../../teoria/cvicenie11a.html) [Teória 11b](../../teoria/cvicenie11b.html) [Teória 12](../../teoria/cvicenie12.html)
+:::
