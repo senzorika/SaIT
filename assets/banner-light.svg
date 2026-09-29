@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 320" width="1280" height="320">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f7f6f2"/><stop offset="1" stop-color="#d6efe9"/></linearGradient></defs>
+<rect width="1280" height="320" rx="18" fill="url(#g)"/>
+<text x="64" y="100" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="22" font-weight="600" letter-spacing="3" fill="#0f7b6c">SaIT · SENZOMETRIA · SENSOMETRICS</text>
+<text x="64" y="170" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="58" font-weight="700" fill="#1d1f24">Senzometria v R</text>
+<text x="64" y="222" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="34" fill="#4a4f5a">Sensometrics in R</text>
+<text x="64" y="272" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="20" fill="#4a4f5a">16 cvičení · R skripty SK / EN · teória s grafmi</text>
+<polygon points="1110.0,128.3 1140.1,150.2 1128.6,185.6 1091.4,185.6 1079.9,150.2" fill="none" stroke="#d9d6cc" stroke-width="1.5"/>
+<polygon points="1110.0,96.7 1170.2,140.4 1147.2,211.2 1072.8,211.2 1049.8,140.4" fill="none" stroke="#d9d6cc" stroke-width="1.5"/>
+<polygon points="1110.0,65.0 1200.4,130.6 1165.8,236.9 1054.2,236.9 1019.6,130.6" fill="none" stroke="#d9d6cc" stroke-width="1.5"/>
+<polygon points="1110.0,86.1 1158.2,144.3 1146.0,209.5 1060.4,228.3 1029.7,133.9" fill="#0f7b6c" fill-opacity=".15" stroke="#0f7b6c" stroke-width="3"/>
+<polygon points="1110.0,105.1 1155.2,145.3 1133.6,192.5 1060.4,228.3 1029.7,133.9" fill="#d9622b" fill-opacity=".15" stroke="#d9622b" stroke-width="3"/>
+<polygon points="1110.0,149.4 1130.1,153.5 1128.6,185.6 1085.2,194.2 1059.8,143.7" fill="#b8457e" fill-opacity=".15" stroke="#b8457e" stroke-width="3"/>
+<line x1="770" y1="250" x2="770" y2="150" stroke="#4a4f5a" stroke-width="2"/>
+<rect x="752" y="190" width="36" height="35" rx="4" fill="#3a5fcd" fill-opacity=".25" stroke="#3a5fcd" stroke-width="2.5"/>
+<line x1="752" y1="205" x2="788" y2="205" stroke="#3a5fcd" stroke-width="4"/>
+<line x1="830" y1="230" x2="830" y2="105" stroke="#4a4f5a" stroke-width="2"/>
+<rect x="812" y="140" width="36" height="50" rx="4" fill="#d9622b" fill-opacity=".25" stroke="#d9622b" stroke-width="2.5"/>
+<line x1="812" y1="165" x2="848" y2="165" stroke="#d9622b" stroke-width="4"/>
+<line x1="890" y1="200" x2="890" y2="70" stroke="#4a4f5a" stroke-width="2"/>
+<rect x="872" y="100" width="36" height="50" rx="4" fill="#0f7b6c" fill-opacity=".25" stroke="#0f7b6c" stroke-width="2.5"/>
+<line x1="872" y1="125" x2="908" y2="125" stroke="#0f7b6c" stroke-width="4"/>
+</svg>

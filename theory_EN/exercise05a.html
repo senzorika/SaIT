@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>5a. Normality and two-sample comparison</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../teoria/style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ink-3)"/></marker></defs></svg>
+<div class="wrap">
+<header class="top"><a class="brand" href="index.html">Sensometrics in R · theory</a><span class="toplinks"><a href="index.html">All exercises</a><a class="lang" href="../teoria/cvicenie05a.html">Slovensky</a></span></header>
+
+<section class="hero"><span class="num">EXERCISE 5a</span><h1>Normality and two-sample comparison</h1><p class="lead">Normality checks, t-test versus Wilcoxon, the binomial test in discrimination tests, the χ² test and McNemar’s test.</p>
+<div class="files"><a href="../cvicenie5a.txt">Script (SK): cvicenie5a.txt</a><a href="../exercises_EN/exercise5a.txt">Script (EN): exercise5a.txt</a></div></section>
+<div class="goals"><h2>What you will learn</h2><ul>
+<li>to check normality graphically (QQ plot) and with a test (Shapiro-Wilk),</li>
+<li>to choose the right two-sample test: dependent/independent, parametric/non-parametric,</li>
+<li>to evaluate discrimination and preference tests with the binomial, χ² and McNemar tests.</li>
+</ul></div>
+
+<h2>The logic of hypothesis testing</h2>
+<p>Every test compares two statements. The <strong>null hypothesis H<sub>0</sub></strong>: there is no difference between the samples (assessors are only guessing). The <strong>alternative H<sub>1</sub></strong>: a difference exists. The test returns a <strong>p-value</strong> – the probability that, if H<sub>0</sub> were true, we would get a result at least as extreme as the observed one.</p>
+<div class="formula">p &lt; 0.05 → reject H<sub>0</sub> (the difference is statistically significant)
+<small>p ≥ 0.05 does not mean “the samples are the same”, only “the difference could not be shown” – often because there were too few assessors.</small></div>
+
+<h2>Which test for two samples?</h2>
+<figure>
+<svg viewBox="0 0 640 300" role="img" aria-label="Decision tree for choosing a test">
+  <rect x="220" y="10" width="200" height="44" rx="8" class="boxa"/><text x="320" y="37" text-anchor="middle" class="t-strong">What type of data?</text>
+  <rect x="20" y="90" width="220" height="44" rx="8" class="box"/><text x="130" y="117" text-anchor="middle" class="t-strong">continuous / scale</text>
+  <rect x="400" y="90" width="220" height="44" rx="8" class="box"/><text x="510" y="117" text-anchor="middle" class="t-strong">counts / yes–no</text>
+  <line x1="280" y1="54" x2="160" y2="88" class="arrow"/><line x1="360" y1="54" x2="480" y2="88" class="arrow"/>
+  <rect x="20" y="160" width="220" height="40" rx="8" class="box"/><text x="130" y="185" text-anchor="middle">normal? (shapiro.test)</text>
+  <line x1="130" y1="134" x2="130" y2="158" class="arrow"/>
+  <rect x="10" y="230" width="110" height="60" rx="8" class="fa"/><text x="65" y="252" text-anchor="middle" class="t-strong">yes</text><text x="65" y="270" text-anchor="middle" class="t-small">t.test</text><text x="65" y="284" text-anchor="middle" class="t-small">(paired = T/F)</text>
+  <rect x="130" y="230" width="120" height="60" rx="8" class="fw"/><text x="190" y="252" text-anchor="middle" class="t-strong">no</text><text x="190" y="270" text-anchor="middle" class="t-small">wilcox.test</text><text x="190" y="284" text-anchor="middle" class="t-small">(paired = T/F)</text>
+  <line x1="100" y1="200" x2="70" y2="228" class="arrow"/><line x1="160" y1="200" x2="185" y2="228" class="arrow"/>
+  <rect x="290" y="170" width="105" height="70" rx="8" class="box"/><text x="342" y="194" text-anchor="middle" class="t-strong">1 sample vs. chance</text><text x="342" y="214" text-anchor="middle" class="t-small">binom.test</text><text x="342" y="230" text-anchor="middle" class="t-small">duo, triangle</text>
+  <rect x="405" y="170" width="105" height="70" rx="8" class="box"/><text x="457" y="194" text-anchor="middle" class="t-strong">more categories</text><text x="457" y="214" text-anchor="middle" class="t-small">chisq.test</text><text x="457" y="230" text-anchor="middle" class="t-small">Likert, preferences</text>
+  <rect x="520" y="170" width="110" height="70" rx="8" class="box"/><text x="575" y="194" text-anchor="middle" class="t-strong">before / after</text><text x="575" y="214" text-anchor="middle" class="t-small">mcnemar.test</text><text x="575" y="230" text-anchor="middle" class="t-small">same people</text>
+  <line x1="470" y1="134" x2="345" y2="168" class="arrow"/><line x1="510" y1="134" x2="460" y2="168" class="arrow"/><line x1="550" y1="134" x2="575" y2="168" class="arrow"/>
+</svg>
+<figcaption><em>Dependent (paired)</em> samples = the same assessors rated both samples. <em>Independent</em> = each sample was rated by different people.</figcaption>
+</figure>
+
+<h2>Checking normality</h2>
+<p>Parametric tests (t-test, ANOVA) assume that the data come from a normal distribution. We check it with a combination of a plot and a test:</p>
+<div class="grid2">
+<figure>
+<svg viewBox="0 0 240 190" role="img" aria-label="QQ plot of normal data">
+  <line x1="20" y1="170" x2="230" y2="170" class="ax"/><line x1="20" y1="10" x2="20" y2="170" class="ax"/>
+  <line x1="30" y1="160" x2="220" y2="20" class="ln1"/>
+  <g class="f3"><circle cx="40" cy="150" r="3.5"/><circle cx="58" cy="136" r="3.5"/><circle cx="75" cy="122" r="3.5"/><circle cx="92" cy="114" r="3.5"/><circle cx="108" cy="100" r="3.5"/><circle cx="125" cy="90" r="3.5"/><circle cx="142" cy="78" r="3.5"/><circle cx="160" cy="62" r="3.5"/><circle cx="178" cy="52" r="3.5"/><circle cx="200" cy="34" r="3.5"/></g>
+</svg>
+<figcaption>Points lie on the <code>qqline</code> → the distribution is approximately normal.</figcaption>
+</figure>
+<figure>
+<svg viewBox="0 0 240 190" role="img" aria-label="QQ plot of skewed data">
+  <line x1="20" y1="170" x2="230" y2="170" class="ax"/><line x1="20" y1="10" x2="20" y2="170" class="ax"/>
+  <line x1="30" y1="160" x2="220" y2="20" class="ln1"/>
+  <g class="f2"><circle cx="40" cy="128" r="3.5"/><circle cx="58" cy="126" r="3.5"/><circle cx="75" cy="122" r="3.5"/><circle cx="92" cy="118" r="3.5"/><circle cx="108" cy="112" r="3.5"/><circle cx="125" cy="104" r="3.5"/><circle cx="142" cy="92" r="3.5"/><circle cx="160" cy="72" r="3.5"/><circle cx="178" cy="44" r="3.5"/><circle cx="200" cy="12" r="3.5"/></g>
+</svg>
+<figcaption>A curve off the line → skewed data, use a non-parametric test.</figcaption>
+</figure>
+</div>
+<p>The <strong>Shapiro-Wilk test</strong> (<code>shapiro.test</code>) has H<sub>0</sub>: “the data are normal”. The logic is the reverse of what we are used to: <em>p ≥ 0.05 is good news</em> (normality is not rejected). Sensory scales with few distinct values (e.g. 6.9 – 7.5) often violate normality – always look at the box plot and QQ plot as well.</p>
+
+<h2>Binomial test in discrimination tests</h2>
+<p>In a paired (duo) or triangle test every assessor has two outcomes: correct / incorrect. If everyone were only guessing, the number of “correct” answers would follow a binomial distribution with the guessing probability <em>p</em>:</p>
+<div class="tablewrap"><table>
+<tr><th>Test</th><th>Number of samples</th><th>Guessing probability</th><th>R</th></tr>
+<tr><td>paired (duo), paired preference</td><td>2</td><td>1/2</td><td><code>binom.test(x, n, p = 0.5)</code></td></tr>
+<tr><td>duo-trio</td><td>1 + 2</td><td>1/2</td><td><code>binom.test(x, n, p = 0.5)</code></td></tr>
+<tr><td>triangle</td><td>3</td><td>1/3</td><td><code>binom.test(x, n, p = 1/3, alternative = "greater")</code></td></tr>
+</table></div>
+<figure>
+<svg viewBox="0 0 620 250" role="img" aria-label="Binomial distribution n=60, p=0.5">
+<line x1="50" y1="200" x2="585" y2="200" class="ax"/>
+<rect x="55" y="198.7" width="18" height="1.3" class="f2"/>
+<text x="64.0" y="216" text-anchor="middle" class="t-small">18</text>
+<rect x="76" y="197.2" width="18" height="2.8" class="f2"/>
+<rect x="97" y="194.3" width="18" height="5.7" class="f2"/>
+<rect x="118" y="189.2" width="18" height="10.8" class="f2"/>
+<text x="127.0" y="216" text-anchor="middle" class="t-small">21</text>
+<rect x="139" y="180.9" width="18" height="19.1" class="f1 op2"/>
+<rect x="160" y="168.4" width="18" height="31.6" class="f1 op2"/>
+<rect x="181" y="151.2" width="18" height="48.8" class="f1 op2"/>
+<text x="190.0" y="216" text-anchor="middle" class="t-small">24</text>
+<rect x="202" y="129.8" width="18" height="70.2" class="f1 op2"/>
+<rect x="223" y="105.5" width="18" height="94.5" class="f1 op2"/>
+<rect x="244" y="80.9" width="18" height="119.1" class="f1 op2"/>
+<text x="253.0" y="216" text-anchor="middle" class="t-small">27</text>
+<rect x="265" y="59.7" width="18" height="140.3" class="f1 op2"/>
+<rect x="286" y="45.2" width="18" height="154.8" class="f1 op2"/>
+<rect x="307" y="40.0" width="18" height="160.0" class="f1 op2"/>
+<text x="316.0" y="216" text-anchor="middle" class="t-small">30</text>
+<rect x="328" y="45.2" width="18" height="154.8" class="f1 op2"/>
+<rect x="349" y="59.7" width="18" height="140.3" class="f1 op2"/>
+<rect x="370" y="80.9" width="18" height="119.1" class="f1 op2"/>
+<text x="379.0" y="216" text-anchor="middle" class="t-small">33</text>
+<rect x="391" y="105.5" width="18" height="94.5" class="f3"/>
+<rect x="412" y="129.8" width="18" height="70.2" class="f1 op2"/>
+<rect x="433" y="151.2" width="18" height="48.8" class="f1 op2"/>
+<text x="442.0" y="216" text-anchor="middle" class="t-small">36</text>
+<rect x="454" y="168.4" width="18" height="31.6" class="f1 op2"/>
+<rect x="475" y="180.9" width="18" height="19.1" class="f1 op2"/>
+<rect x="496" y="189.2" width="18" height="10.8" class="f2"/>
+<text x="505.0" y="216" text-anchor="middle" class="t-small">39</text>
+<rect x="517" y="194.3" width="18" height="5.7" class="f2"/>
+<rect x="538" y="197.2" width="18" height="2.8" class="f2"/>
+<rect x="559" y="198.7" width="18" height="1.3" class="f2"/>
+<text x="568.0" y="216" text-anchor="middle" class="t-small">42</text>
+<text x="400.0" y="97.5" text-anchor="middle" class="t-strong">34</text>
+<text x="526" y="140" class="t-warn t-small">critical region</text>
+<text x="526" y="155" class="t-warn t-small">≥ 39 (p &lt; 0.05)</text>
+<text x="310.0" y="240" text-anchor="middle" class="t-small">number of assessors who chose sample A (out of 60)</text>
+</svg>
+<figcaption>Distribution of votes for sample A if 60 consumers were only guessing. The observed 34 (blue) lies in the usual region, p = 0.37. To show a difference (two-sided) at least 39 votes would be needed. With the same share of 57%, about 236 consumers would be required.</figcaption>
+</figure>
+<div class="note"><strong>Task 2 – triangle vs. paired test</strong>42 correct out of 100 triangles: p = 0.043 (against 1/3) → the difference is shown. The same number in a paired test (against 1/2) would be below chance level. The triangle is “stricter” on guessing, so a smaller share of correct answers is enough.</div>
+
+<h2>χ² goodness-of-fit test</h2>
+<p>Compares observed counts <em>O</em> in categories with expected counts <em>E</em> (under H<sub>0</sub>, spread evenly):</p>
+<div class="formula">χ² = Σ (O − E)² / E, &nbsp; df = k − 1</div>
+<figure>
+<svg viewBox="0 0 620 220" role="img" aria-label="Observed and expected yogurt preferences">
+  <line x1="60" y1="180" x2="600" y2="180" class="ax"/>
+  <line x1="60" y1="117.75" x2="600" y2="117.75" class="warnl dash"/>
+  <text x="598" y="110" text-anchor="end" class="t-small t-warn">expected E = 83/4 = 20.75</text>
+  <rect x="90" y="105" width="80" height="75" class="f1"/><text x="130" y="98" text-anchor="middle" class="t-strong">25</text><text x="130" y="198" text-anchor="middle" class="t-small">strawberry</text>
+  <rect x="220" y="78" width="80" height="102" class="f1"/><text x="260" y="71" text-anchor="middle" class="t-strong">34</text><text x="260" y="198" text-anchor="middle" class="t-small">chocolate</text>
+  <rect x="350" y="129" width="80" height="51" class="f1"/><text x="390" y="148" text-anchor="middle" class="t-inv">17</text><text x="390" y="198" text-anchor="middle" class="t-small">vanilla</text>
+  <rect x="480" y="159" width="80" height="21" class="f1"/><text x="520" y="152" text-anchor="middle" class="t-strong">7</text><text x="520" y="198" text-anchor="middle" class="t-small">blueberry</text>
+</svg>
+<figcaption>Task 3: χ² = 19.1; df = 3; p = 0.0003 → preferences are not uniform (chocolate leads, blueberry lags behind).</figcaption>
+</figure>
+<p>For the Likert questions about goulash: question 1 (p = 0.12) – opinions are spread randomly; questions 2 and 3 (p &lt; 0.001) – respondents clearly agree. The expected count in every category should be at least 5.</p>
+
+<h2>McNemar test – before and after</h2>
+<p>The same customers decided whether to buy the old and the new recipe. Information about the change is carried only by the <strong>discordant</strong> pairs (b, c) – those who changed their mind:</p>
+<figure>
+<svg viewBox="0 0 620 200" role="img" aria-label="McNemar test table">
+  <text x="330" y="22" text-anchor="middle" class="t-strong">new recipe</text>
+  <text x="270" y="46" text-anchor="middle" class="t-small">bought</text><text x="390" y="46" text-anchor="middle" class="t-small">not bought</text>
+  <text x="90" y="118" text-anchor="middle" class="t-strong">old</text>
+  <text x="180" y="88" text-anchor="end" class="t-small">bought</text><text x="180" y="150" text-anchor="end" class="t-small">not bought</text>
+  <rect x="210" y="56" width="120" height="60" class="fs"/><text x="270" y="92" text-anchor="middle">a = 40</text>
+  <rect x="330" y="56" width="120" height="60" class="fw"/><text x="390" y="92" text-anchor="middle" class="t-strong">b = 24</text>
+  <rect x="210" y="116" width="120" height="60" class="fa"/><text x="270" y="152" text-anchor="middle" class="t-strong">c = 8</text>
+  <rect x="330" y="116" width="120" height="60" class="fs"/><text x="390" y="152" text-anchor="middle">d = 28</text>
+  <text x="470" y="92" class="t-small">left the product</text>
+  <text x="470" y="152" class="t-small">came to the product</text>
+</svg>
+<figcaption>χ² = (b − c)² / (b + c) = (24 − 8)² / 32 = 8.0; p = 0.005. The new recipe significantly <em>puts customers off</em>.</figcaption>
+</figure>
+<div class="warn"><strong>Mind the matrix orientation</strong><code>matrix(c(40, 8, 24, 28), nrow = 2)</code> is filled by columns: the first column is (40, 8). Always print the table before interpreting it.</div>
+
+<nav class="pager">
+<a class="prev" href="exercise04.html"><span>← Previous</span>4. Charts and data visualisation</a>
+<a class="next" href="exercise05b.html"><span>Next →</span>5b. Comparing several samples</a>
+</nav>
+</div>
+</body>
+</html>

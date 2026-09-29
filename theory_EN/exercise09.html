@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>9. Correspondence analysis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../teoria/style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ink-3)"/></marker></defs></svg>
+<div class="wrap">
+<header class="top"><a class="brand" href="index.html">Sensometrics in R · theory</a><span class="toplinks"><a href="index.html">All exercises</a><a class="lang" href="../teoria/cvicenie09.html">Slovensky</a></span></header>
+
+<section class="hero"><span class="num">EXERCISE 9</span><h1>Correspondence analysis</h1><p class="lead">A map of associations between the categories of a contingency table – products and target groups.</p>
+<div class="files"><a href="../cvicenie9.txt">Script (SK): cvicenie9.txt</a><a href="../exercises_EN/exercise9.txt">Script (EN): exercise9.txt</a></div></section>
+<div class="goals"><h2>What you will learn</h2><ul>
+<li>to write categorical data into a contingency table,</li>
+<li>the principle of correspondence analysis (CA) – χ² distances and inertia,</li>
+<li>to read a symmetric map of row and column categories.</li>
+</ul></div>
+
+<h2>Contingency table</h2>
+<p>Correspondence analysis works with <strong>counts</strong>: how many times a combination of two categories occurred. In the example – how many people from each target group chose product A, B or C.</p>
+<div class="tablewrap"><table>
+<tr><th></th><th>A</th><th>B</th><th>C</th><th>total</th></tr>
+<tr><th>Men</th><td><strong>15</strong></td><td>2</td><td>8</td><td>25</td></tr>
+<tr><th>Women</th><td>7</td><td><strong>14</strong></td><td>4</td><td>25</td></tr>
+<tr><th>Children</th><td>5</td><td>5</td><td><strong>15</strong></td><td>25</td></tr>
+<tr><th>Seniors</th><td>11</td><td>5</td><td>9</td><td>25</td></tr>
+<tr><th>total</th><td>38</td><td>26</td><td>36</td><td>100</td></tr>
+</table></div>
+<p>If the choice of product did not depend on the group, every row would have the same distribution as the total row (38 : 26 : 36). CA looks for and displays the <strong>deviations from this independence</strong> – the same ones the χ² test measures.</p>
+
+<h2>From the table to the map</h2>
+<figure>
+<svg viewBox="0 0 640 120" role="img" aria-label="Steps of correspondence analysis">
+  <rect x="10" y="30" width="140" height="60" rx="8" class="box"/><text x="80" y="56" text-anchor="middle" class="t-strong">table</text><text x="80" y="74" text-anchor="middle" class="t-small">counts</text>
+  <rect x="170" y="30" width="140" height="60" rx="8" class="box"/><text x="240" y="56" text-anchor="middle" class="t-strong">profiles</text><text x="240" y="74" text-anchor="middle" class="t-small">row %, column %</text>
+  <rect x="330" y="30" width="140" height="60" rx="8" class="box"/><text x="400" y="56" text-anchor="middle" class="t-strong">χ² distances</text><text x="400" y="74" text-anchor="middle" class="t-small">from the mean profile</text>
+  <rect x="490" y="30" width="140" height="60" rx="8" class="boxa"/><text x="560" y="56" text-anchor="middle" class="t-strong">2D map</text><text x="560" y="74" text-anchor="middle" class="t-small">SVD decomposition</text>
+  <line x1="150" y1="60" x2="168" y2="60" class="arrow"/><line x1="310" y1="60" x2="328" y2="60" class="arrow"/><line x1="470" y1="60" x2="488" y2="60" class="arrow"/>
+</svg>
+</figure>
+<p>The total variability of the table is called <strong>inertia</strong> (= χ² / n). The dimensions of the map decompose it much like components in PCA; a table r × c has at most min(r, c) − 1 dimensions – here 2, so the map shows 100% of the inertia.</p>
+
+<figure>
+<svg viewBox="0 0 620 330" role="img" aria-label="Correspondence analysis map">
+<line x1="20" y1="170" x2="600" y2="170" class="gridl"/><line x1="230" y1="20" x2="230" y2="320" class="gridl"/>
+<circle cx="101.6" cy="254.2" r="6" class="f3"/><text x="111.6" y="258.2" class="t-strong">Men</text>
+<circle cx="458.0" cy="190.5" r="6" class="f3"/><text x="468.0" y="194.5" class="t-strong">Women</text>
+<circle cx="174.2" cy="45.2" r="6" class="f3"/><text x="184.2" y="49.2" class="t-strong">Children</text>
+<circle cx="186.4" cy="190.0" r="6" class="f3"/><text x="196.4" y="194.0" class="t-strong">Seniors</text>
+<rect x="153.0" y="252.4" width="14" height="14" class="f2"/><text x="148.0" y="264.4" text-anchor="end" class="t-strong" style="fill:var(--c2)">A</text>
+<rect x="451.0" y="154.4" width="14" height="14" class="f2"/><text x="446.0" y="166.4" text-anchor="end" class="t-strong" style="fill:var(--c2)">B</text>
+<rect x="131.9" y="74.9" width="14" height="14" class="f2"/><text x="126.9" y="86.9" text-anchor="end" class="t-strong" style="fill:var(--c2)">C</text>
+<text x="596" y="162" text-anchor="end" class="t-small">Dim 1 (66 % of inertia)</text>
+<text x="238" y="32" class="t-small">Dim 2 (34 %)</text>
+</svg>
+<figcaption>CA map computed from the script data (blue points – target groups, orange squares – products). Women are close to product B, children to C, men to A. Seniors lie near the centre – their choice matches the average and they have no clear “favourite”. The orientation of the axes in R (<code>corresp</code>) may be mirrored.</figcaption>
+</figure>
+
+<h2>How to read the map</h2>
+<ul>
+<li><strong>Centre of the map</strong> = the average profile. The farther from the centre, the more distinctive the category (the more it differs from the average).</li>
+<li><strong>A row near a column</strong> (in the same direction from the centre) = the group chooses the product more often than independence would imply.</li>
+<li><strong>Two rows close together</strong> = groups with similar preferences.</li>
+<li>The exact distance between a group point and a product point in a symmetric map is <em>not</em> interpretable – look at the direction from the centre.</li>
+</ul>
+<div class="note"><strong>The shampoo task</strong>Generate a table of 8 shampoos × 5 groups (e.g. <code>matrix(sample(10:90, 40, replace = TRUE), ncol = 5)</code>), name the rows and columns, and for the nettle, birch and tropical shampoos find the hair colour lying in the same direction from the centre.</div>
+<div class="warn"><strong>Assumptions</strong>CA is a descriptive method without p-values. Whether the association is significant is decided by <code>chisq.test(data)</code>. With very small counts (&lt; 5), rare categories can “pull” the map to its edges.</div>
+
+<nav class="pager">
+<a class="prev" href="exercise08.html"><span>← Previous</span>8. Cluster analysis</a>
+<a class="next" href="exercise10.html"><span>Next →</span>10. Survival analysis and sensory shelf life</a>
+</nav>
+</div>
+</body>
+</html>

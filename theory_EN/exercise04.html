@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>4. Charts and data visualisation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../teoria/style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ink-3)"/></marker></defs></svg>
+<div class="wrap">
+<header class="top"><a class="brand" href="index.html">Sensometrics in R · theory</a><span class="toplinks"><a href="index.html">All exercises</a><a class="lang" href="../teoria/cvicenie04.html">Slovensky</a></span></header>
+
+<section class="hero"><span class="num">EXERCISE 4</span><h1>Charts and data visualisation</h1><p class="lead">Which chart to choose, how to read it and what it tells us before we reach for a statistical test.</p>
+<div class="files"><a href="../cvicenie4.txt">Script (SK): cvicenie4.txt</a><a href="../exercises_EN/exercise4.txt">Script (EN): exercise4.txt</a></div></section>
+<div class="goals"><h2>What you will learn</h2><ul>
+<li>to choose the right chart for the data type and the question,</li>
+<li>to read a box plot, a histogram and a density curve,</li>
+<li>to combine several layers in one chart (lines, means, grid).</li>
+</ul></div>
+
+<h2>Gallery of basic charts</h2>
+<div class="grid2">
+<figure>
+<svg viewBox="0 0 240 150" role="img" aria-label="Bar chart">
+  <line x1="20" y1="130" x2="230" y2="130" class="ax"/>
+  <rect x="30" y="60" width="30" height="70" class="f1"/><rect x="75" y="30" width="30" height="100" class="f1"/><rect x="120" y="80" width="30" height="50" class="f1"/><rect x="165" y="50" width="30" height="80" class="f1"/>
+</svg>
+<figcaption><strong>barplot</strong> – comparing values across categories (product means, counts).</figcaption>
+</figure>
+<figure>
+<svg viewBox="0 0 240 150" role="img" aria-label="Pie chart">
+  <circle cx="120" cy="75" r="60" class="f3 op2"/>
+  <path d="M120,75 L120,15 A60,60 0 0 1 177,93 Z" class="f1"/>
+  <path d="M120,75 L177,93 A60,60 0 0 1 90,127 Z" class="f2"/>
+</svg>
+<figcaption><strong>pie</strong> – shares of a whole. Only for a few categories; the eye compares angles poorly.</figcaption>
+</figure>
+<figure>
+<svg viewBox="0 0 240 150" role="img" aria-label="Histogram and density">
+  <line x1="20" y1="130" x2="230" y2="130" class="ax"/>
+  <g class="f3 op2"><rect x="30" y="115" width="30" height="15"/><rect x="60" y="80" width="30" height="50"/><rect x="90" y="40" width="30" height="90"/><rect x="120" y="30" width="30" height="100"/><rect x="150" y="70" width="30" height="60"/><rect x="180" y="110" width="30" height="20"/></g>
+  <path d="M25,128 C60,120 70,50 110,35 C140,22 160,60 185,105 C200,125 215,128 225,129" class="ln2"/>
+</svg>
+<figcaption><strong>hist</strong> + <strong>density</strong> – shape of the distribution; a first look at normality.</figcaption>
+</figure>
+<figure>
+<svg viewBox="0 0 240 150" role="img" aria-label="Line chart">
+  <line x1="20" y1="130" x2="230" y2="130" class="ax"/>
+  <polyline points="20,80 40,70 60,88 80,65 100,78 120,72 140,90 160,68 180,82 200,74 220,79" class="ln1"/>
+  <polyline points="20,75 40,85 60,72 80,80 100,70 120,86 140,74 160,80 180,70 200,84 220,76" class="ln3"/>
+  <line x1="20" y1="77" x2="230" y2="77" class="warnl dash"/>
+</svg>
+<figcaption><strong>plot(type = "l")</strong> – development over time (filling lines, storage).</figcaption>
+</figure>
+</div>
+
+<h2>Anatomy of a box plot</h2>
+<p>A box plot summarises a distribution in five numbers and is ideal for comparing several products side by side. It does not require normality.</p>
+<figure>
+<svg viewBox="0 0 620 230" role="img" aria-label="Box plot explained">
+  <line x1="60" y1="115" x2="140" y2="115" style="stroke:var(--ink-2);stroke-width:1.5"/>
+  <line x1="60" y1="95" x2="60" y2="135" style="stroke:var(--ink-2);stroke-width:1.5"/>
+  <rect x="140" y="80" width="200" height="70" class="boxa"/>
+  <line x1="230" y1="80" x2="230" y2="150" style="stroke:var(--ink);stroke-width:3"/>
+  <line x1="340" y1="115" x2="440" y2="115" style="stroke:var(--ink-2);stroke-width:1.5"/>
+  <line x1="440" y1="95" x2="440" y2="135" style="stroke:var(--ink-2);stroke-width:1.5"/>
+  <circle cx="540" cy="115" r="6" style="fill:none;stroke:var(--warn);stroke-width:2"/>
+  <g class="t-small">
+    <text x="60" y="176" text-anchor="middle">minimum</text><text x="60" y="190" text-anchor="middle">(without outliers)</text>
+    <text x="140" y="66" text-anchor="middle">Q1 (25%)</text>
+    <text x="230" y="176" text-anchor="middle" class="t-strong">median</text>
+    <text x="340" y="66" text-anchor="middle">Q3 (75%)</text>
+    <text x="440" y="176" text-anchor="middle">maximum</text>
+    <text x="540" y="176" text-anchor="middle" class="t-warn">outlier</text>
+    <text x="540" y="190" text-anchor="middle">&gt; Q3 + 1.5·IQR</text>
+  </g>
+  <line x1="140" y1="30" x2="340" y2="30" class="arrow" style="marker-start:url(#arr)"/>
+  <text x="240" y="22" text-anchor="middle" class="t-small">IQR – interquartile range (middle 50% of the data)</text>
+</svg>
+</figure>
+
+<h2>Which chart when?</h2>
+<div class="tablewrap"><table>
+<tr><th>Question</th><th>Data</th><th>Chart in R</th></tr>
+<tr><td>Which product has the highest rating?</td><td>group means</td><td><code>barplot()</code>, <code>dotchart()</code></td></tr>
+<tr><td>Do products also differ in spread?</td><td>all ratings</td><td><code>boxplot()</code></td></tr>
+<tr><td>What is the distribution of values?</td><td>1 continuous variable</td><td><code>hist()</code>, <code>plot(density())</code></td></tr>
+<tr><td>How does a value change over time?</td><td>time series</td><td><code>plot(type="l")</code> + <code>lines()</code></td></tr>
+<tr><td>Are two variables related?</td><td>2 continuous variables</td><td><code>plot(x, y)</code></td></tr>
+<tr><td>What are the category shares?</td><td>counts (≤ 5 categories)</td><td><code>pie()</code>, better <code>barplot()</code></td></tr>
+</table></div>
+
+<h2>Charts in layers</h2>
+<p>In base R graphics we first draw the “canvas” with <code>plot()</code> and then add layers to it – nothing is redrawn:</p>
+<pre>plot(line1, type = "l", main = "Filling", xlab = "s", ylab = "ml")  # canvas + line 1
+lines(line2, col = "lightblue")        # line 2
+abline(h = mean(line1), col = "red")   # horizontal line at the mean
+grid(nx = 6, ny = NA, col = "gray")    # vertical grid</pre>
+<div class="note"><strong>Financial charts</strong>A candlestick chart (<code>candleChart</code> from quantmod) shows the opening, closing, highest and lowest price for each day. Indicators such as MACD, RSI or Bollinger bands are moving statistics over these data – the same principle as a control chart in production quality control.</div>
+<div class="warn"><strong>Common mistake</strong><code>barplot(a, b)</code> does not draw two series – the second argument is the bar width. Two series are drawn as a matrix: <code>barplot(rbind(a, b), beside = TRUE)</code>.</div>
+
+<nav class="pager">
+<a class="prev" href="exercise03.html"><span>← Previous</span>3. Working with data in R</a>
+<a class="next" href="exercise05a.html"><span>Next →</span>5a. Normality and two-sample comparison</a>
+</nav>
+</div>
+</body>
+</html>

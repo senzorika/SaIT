@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>11b. Text mining and sentiment analysis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../teoria/style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ink-3)"/></marker></defs></svg>
+<div class="wrap">
+<header class="top"><a class="brand" href="index.html">Sensometrics in R · theory</a><span class="toplinks"><a href="index.html">All exercises</a><a class="lang" href="../teoria/cvicenie11b.html">Slovensky</a></span></header>
+
+<section class="hero"><span class="num">EXERCISE 11b</span><h1>Text mining and sentiment analysis</h1><p class="lead">From free-text reviews to word frequencies, a word cloud and emotions from the NRC lexicon.</p>
+<div class="files"><a href="../cvicenie11b.txt">Script (SK): cvicenie11b.txt</a><a href="../exercises_EN/exercise11b.txt">Script (EN): exercise11b.txt</a></div></section>
+<div class="goals"><h2>What you will learn</h2><ul>
+<li>to prepare free text (reviews, comments) for quantitative analysis,</li>
+<li>to build a term-document matrix, a frequency chart and a word cloud,</li>
+<li>to evaluate emotions and sentiment with the NRC lexicon.</li>
+</ul></div>
+
+<h2>From text to numbers</h2>
+<p>Open questions (“What did you like about the product?”) and online reviews are a rich source of information that a scale cannot capture. Text mining turns them into a table we can compute with.</p>
+<figure>
+<svg viewBox="0 0 640 150" role="img" aria-label="Text mining workflow">
+  <rect x="5" y="40" width="110" height="64" rx="8" class="box"/><text x="60" y="66" text-anchor="middle" class="t-strong">text</text><text x="60" y="86" text-anchor="middle" class="t-small">readLines()</text>
+  <rect x="135" y="40" width="110" height="64" rx="8" class="box"/><text x="190" y="66" text-anchor="middle" class="t-strong">corpus</text><text x="190" y="86" text-anchor="middle" class="t-small">Corpus()</text>
+  <rect x="265" y="40" width="110" height="64" rx="8" class="box"/><text x="320" y="66" text-anchor="middle" class="t-strong">cleaning</text><text x="320" y="86" text-anchor="middle" class="t-small">tm_map()</text>
+  <rect x="395" y="40" width="110" height="64" rx="8" class="box"/><text x="450" y="66" text-anchor="middle" class="t-strong">TDM matrix</text><text x="450" y="86" text-anchor="middle" class="t-small">words × lines</text>
+  <rect x="525" y="40" width="110" height="64" rx="8" class="boxa"/><text x="580" y="66" text-anchor="middle" class="t-strong">frequencies</text><text x="580" y="86" text-anchor="middle" class="t-small">chart, word cloud</text>
+  <line x1="115" y1="72" x2="133" y2="72" class="arrow"/><line x1="245" y1="72" x2="263" y2="72" class="arrow"/><line x1="375" y1="72" x2="393" y2="72" class="arrow"/><line x1="505" y1="72" x2="523" y2="72" class="arrow"/>
+  <text x="320" y="130" text-anchor="middle" class="t-small">lower case · no punctuation or numbers · no stop words (“and”, “is”, “the”) · stemming (tasty/tastes → tast)</text>
+</svg>
+</figure>
+<div class="warn"><strong>The script skips cleaning</strong>The script builds the matrix straight from the corpus, so conjunctions and punctuation will be among the most frequent “words”. Before <code>TermDocumentMatrix</code> add e.g.:
+<pre>TextDoc &lt;- tm_map(TextDoc, content_transformer(tolower))
+TextDoc &lt;- tm_map(TextDoc, removePunctuation)
+TextDoc &lt;- tm_map(TextDoc, removeNumbers)
+TextDoc &lt;- tm_map(TextDoc, removeWords, stopwords("english"))</pre></div>
+
+<h3>Term-document matrix</h3>
+<div class="tablewrap"><table>
+<tr><th>term</th><th>review 1</th><th>review 2</th><th>review 3</th><th>Σ (freq)</th></tr>
+<tr><td>creamy</td><td>1</td><td>2</td><td>0</td><td><strong>3</strong></td></tr>
+<tr><td>sweet</td><td>1</td><td>0</td><td>1</td><td><strong>2</strong></td></tr>
+<tr><td>sour</td><td>0</td><td>0</td><td>1</td><td><strong>1</strong></td></tr>
+</table></div>
+<p>Row sums (<code>rowSums</code>) give the frequency of each word in the whole text – from them come the bar chart of top words and the word cloud, where font size corresponds to frequency.</p>
+<figure>
+<svg viewBox="0 0 620 170" role="img" aria-label="Example word cloud">
+  <text x="310" y="95" text-anchor="middle" style="font-size:52px;font-weight:700;fill:var(--c1)">creamy</text>
+  <text x="140" y="60" text-anchor="middle" style="font-size:32px;font-weight:700;fill:var(--c2)">sweet</text>
+  <text x="490" y="58" text-anchor="middle" style="font-size:30px;font-weight:700;fill:var(--c3)">fresh</text>
+  <text x="130" y="130" text-anchor="middle" style="font-size:24px;fill:var(--c4)">fruity</text>
+  <text x="480" y="135" text-anchor="middle" style="font-size:22px;fill:var(--c5)">smooth</text>
+  <text x="310" y="145" text-anchor="middle" style="font-size:18px;fill:var(--ink-2)">sour</text>
+  <text x="310" y="35" text-anchor="middle" style="font-size:16px;fill:var(--ink-3)">price</text>
+  <text x="560" y="100" text-anchor="middle" style="font-size:14px;fill:var(--ink-3)">bitter</text>
+  <text x="60" y="100" text-anchor="middle" style="font-size:14px;fill:var(--ink-3)">thick</text>
+</svg>
+<figcaption>Illustrative word cloud of yogurt reviews. A quick visual overview, but not a precise measurement – to compare products use the frequency table.</figcaption>
+</figure>
+
+<h2>Sentiment analysis – the NRC lexicon</h2>
+<p>The function <code>get_nrc_sentiment()</code> (syuzhet package) looks up every word in the NRC dictionary, where each word is assigned emotions according to Plutchik’s model, and counts them in every line of text. The result is 8 emotions and 2 polarities:</p>
+<figure>
+<svg viewBox="0 0 620 300" role="img" aria-label="Plutchik's emotions">
+  <g transform="translate(160 150)">
+    <path d="M0,0 L0,-120 A120,120 0 0 1 84.9,-84.9 Z" class="f5" opacity=".75"/>
+    <path d="M0,0 L84.9,-84.9 A120,120 0 0 1 120,0 Z" class="f1" opacity=".75"/>
+    <path d="M0,0 L120,0 A120,120 0 0 1 84.9,84.9 Z" class="f1" opacity=".45"/>
+    <path d="M0,0 L84.9,84.9 A120,120 0 0 1 0,120 Z" class="f3" opacity=".6"/>
+    <path d="M0,0 L0,120 A120,120 0 0 1 -84.9,84.9 Z" class="f3" opacity=".9"/>
+    <path d="M0,0 L-84.9,84.9 A120,120 0 0 1 -120,0 Z" class="f4" opacity=".75"/>
+    <path d="M0,0 L-120,0 A120,120 0 0 1 -84.9,-84.9 Z" class="f2" opacity=".85"/>
+    <path d="M0,0 L-84.9,-84.9 A120,120 0 0 1 0,-120 Z" class="f2" opacity=".5"/>
+    <g class="t-small t-strong" text-anchor="middle">
+      <text x="32" y="-88">joy</text><text x="88" y="-30">trust</text><text x="88" y="38">fear</text><text x="34" y="96">surprise</text>
+      <text x="-34" y="96">sadness</text><text x="-88" y="38">disgust</text><text x="-88" y="-30">anger</text><text x="-32" y="-88">anticipation</text>
+    </g>
+  </g>
+  <g transform="translate(340 60)">
+    <text x="0" y="0" class="t-strong">output columns</text>
+    <g class="t-small" style="font-family:var(--mono)">
+      <text x="0" y="26">anger · anticipation</text><text x="0" y="46">disgust · fear · joy</text><text x="0" y="66">sadness · surprise · trust</text>
+      <text x="0" y="98" class="t-acc">positive · negative</text>
+    </g>
+    <text x="0" y="134" class="t-small">first 8 columns → emotion chart</text>
+    <text x="0" y="154" class="t-small">last 2 → overall polarity</text>
+    <text x="0" y="174" class="t-small">(hence <tspan style="font-family:var(--mono)">td_new[1:8, ]</tspan>)</text>
+  </g>
+</svg>
+<figcaption>The eight basic emotions of Plutchik’s wheel distinguished by the NRC lexicon.</figcaption>
+</figure>
+<div class="note"><strong>Language of the text</strong>NRC is an English lexicon by default. For texts in other languages try e.g. <code>get_nrc_sentiment(text, language = "slovak")</code> (if your syuzhet version supports it) – it is a machine translation of the dictionary without inflection, so it only catches the base forms of words. It is more reliable to analyse English reviews or translate the text.</div>
+<div class="warn"><strong>Limitations</strong>The lexicon method does not see context: “not sweet at all” is counted as sweet, and irony is not recognised. Treat the results as indicative and verify them by reading a sample of the texts.</div>
+
+<nav class="pager">
+<a class="prev" href="exercise11a.html"><span>← Previous</span>11a. TURF analysis and preference mapping</a>
+<a class="next" href="exercise12.html"><span>Next →</span>12. JAR scale and radar chart</a>
+</nav>
+</div>
+</body>
+</html>

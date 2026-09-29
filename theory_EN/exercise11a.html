@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>11a. TURF analysis and preference mapping</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../teoria/style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ink-3)"/></marker></defs></svg>
+<div class="wrap">
+<header class="top"><a class="brand" href="index.html">Sensometrics in R · theory</a><span class="toplinks"><a href="index.html">All exercises</a><a class="lang" href="../teoria/cvicenie11a.html">Slovensky</a></span></header>
+
+<section class="hero"><span class="num">EXERCISE 11a</span><h1>TURF analysis and preference mapping</h1><p class="lead">The optimal combination of ingredients (reach &amp; frequency) and linking the sensory profile with hedonic data.</p>
+<div class="files"><a href="../cvicenie11a.txt">Script (SK): cvicenie11a.txt</a><a href="../exercises_EN/exercise11a.txt">Script (EN): exercise11a.txt</a></div></section>
+<div class="goals"><h2>What you will learn</h2><ul>
+<li>to find the combination of ingredients that appeals to the most customers (TURF),</li>
+<li>to tell the <em>reach</em> and <em>frequency</em> indicators apart,</li>
+<li>to link the sensory profile of products with hedonic ratings in a preference map.</li>
+</ul></div>
+
+<h2>TURF – Total Unduplicated Reach and Frequency</h2>
+<p>A pizzeria can offer only a limited number of ingredients. It does not want to pick the three <em>most popular</em> ones – they may appeal to the same people. It wants three that together <strong>reach as many different</strong> customers as possible.</p>
+<figure>
+<svg viewBox="0 0 620 260" role="img" aria-label="Reach – unduplicated coverage">
+  <g opacity=".55">
+    <circle cx="150" cy="120" r="80" class="f1"/><circle cx="205" cy="120" r="80" class="f3"/><circle cx="178" cy="175" r="45" class="f2"/>
+  </g>
+  <text x="120" y="110" class="t-strong">cheese</text><text x="225" y="110" class="t-strong">ham</text><text x="160" y="195" class="t-strong">olives</text>
+  <text x="178" y="245" text-anchor="middle" class="t-small">two popular + overlapping</text>
+  <g opacity=".55">
+    <circle cx="420" cy="100" r="68" class="f1"/><circle cx="520" cy="130" r="62" class="f4"/><circle cx="440" cy="190" r="50" class="f5"/>
+  </g>
+  <text x="400" y="95" class="t-strong">cheese</text><text x="510" y="135" class="t-strong">corn</text><text x="420" y="200" class="t-strong">bacon</text>
+  <text x="470" y="245" text-anchor="middle" class="t-small">less popular but complementary → higher reach</text>
+</svg>
+<figcaption>Circle = customers who like the ingredient. Reach is the area of the union, not the sum of the circles.</figcaption>
+</figure>
+<div class="tablewrap"><table>
+<tr><th>Indicator</th><th>Definition</th><th>Question</th></tr>
+<tr><td><strong>Reach</strong></td><td>share of respondents who like <em>at least one</em> item of the combination</td><td>How many do we reach?</td></tr>
+<tr><td><strong>Frequency</strong></td><td>mean number of liked items of the combination per respondent</td><td>How strongly do we reach them?</td></tr>
+</table></div>
+<p>The data are binary: 1 = the ingredient is attractive for the respondent, 0 = it is not. The function <code>turf(pizza, 11, 3:4)</code> goes through all combinations of 3 and 4 items out of 11 (165 and 330 combinations) and sorts them by reach. The column <code>wgt</code> is the respondent weight (with real data, e.g. for sample representativeness).</p>
+<div class="note"><strong>Mind the random data</strong>In the script the answers are generated with <code>sample()</code>, so the results differ on every run and all combinations have a similar reach (~87 – 94%). For a meaningful result use a real questionnaire, and <code>set.seed()</code> when simulating.</div>
+
+<h2>Preference map (external preference mapping)</h2>
+<p>We have two data sources about the same 16 products:</p>
+<ul>
+<li>the <strong>sensory profile</strong> from a trained panel – <em>what</em> the product is like (13 descriptors),</li>
+<li>the <strong>hedonic rating</strong> from 100 consumers – <em>how much</em> they like it.</li>
+</ul>
+<p>The preference map connects them: from the profile we make a PCA map of products, and for every consumer we project into it the region of the map where their rating would be highest. The function <code>carto()</code> from SensoMineR computes, for every point of the map, the <strong>share of consumers</strong> whose preference exceeds their own mean there, and draws it as contour lines.</p>
+<figure>
+<svg viewBox="0 0 620 320" role="img" aria-label="Preference map with contour lines">
+  <rect x="30" y="20" width="560" height="270" class="fs op2"/>
+  <ellipse cx="430" cy="110" rx="190" ry="110" class="f2" opacity=".12"/>
+  <ellipse cx="440" cy="105" rx="130" ry="75" class="f2" opacity=".2"/>
+  <ellipse cx="450" cy="100" rx="70" ry="40" class="f2" opacity=".35"/>
+  <text x="450" y="104" text-anchor="middle" class="t-strong">80%</text>
+  <text x="560" y="70" class="t-small">60%</text><text x="600" y="150" class="t-small" text-anchor="end">40%</text>
+  <line x1="30" y1="155" x2="590" y2="155" class="gridl"/><line x1="310" y1="20" x2="310" y2="290" class="gridl"/>
+  <g class="f3">
+    <circle cx="90" cy="230" r="5"/><circle cx="140" cy="250" r="5"/><circle cx="180" cy="200" r="5"/><circle cx="120" cy="120" r="5"/><circle cx="230" cy="90" r="5"/><circle cx="260" cy="230" r="5"/><circle cx="330" cy="200" r="5"/><circle cx="360" cy="260" r="5"/><circle cx="380" cy="160" r="5"/><circle cx="420" cy="130" r="5"/><circle cx="470" cy="85" r="5"/><circle cx="500" cy="120" r="5"/><circle cx="540" cy="200" r="5"/><circle cx="200" cy="150" r="5"/><circle cx="280" cy="60" r="5"/>
+  </g>
+  <circle cx="160" cy="175" r="8" class="f1"/><text x="172" y="180" class="t-acc">our product (1)</text>
+  <text x="585" y="305" text-anchor="end" class="t-small">Dim 1 (PCA of the sensory profile)</text>
+</svg>
+<figcaption>Schema of the <code>carto()</code> output. The area with the highest percentage (80%) is the “ideal zone” – products in it are liked by the majority. Our product lies outside; the direction towards the ideal suggests which descriptors (PCA arrows) should be strengthened.</figcaption>
+</figure>
+<div class="tablewrap"><table>
+<tr><th></th><th>Internal preference mapping</th><th>External preference mapping</th></tr>
+<tr><td>map built from</td><td>hedonic data (PCA of preferences)</td><td>the panel’s sensory profile</td></tr>
+<tr><td>answers</td><td>how consumers split by taste</td><td><em>why</em> products are liked – link to descriptors</td></tr>
+<tr><td>R</td><td><code>PCA()</code> on hedonic data</td><td><code>carto()</code> (SensoMineR)</td></tr>
+</table></div>
+
+<nav class="pager">
+<a class="prev" href="exercise10.html"><span>← Previous</span>10. Survival analysis and sensory shelf life</a>
+<a class="next" href="exercise11b.html"><span>Next →</span>11b. Text mining and sentiment analysis</a>
+</nav>
+</div>
+</body>
+</html>

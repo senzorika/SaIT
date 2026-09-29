@@ -79,6 +79,10 @@ header.top {
 }
 header.top a { text-decoration: none; color: var(--ink-2); }
 header.top .brand { font-weight: 700; color: var(--ink); }
+header.top .toplinks { display: flex; gap: 14px; align-items: center; }
+header.top .lang {
+  border: 1px solid var(--line); border-radius: 99px; padding: 2px 10px; background: var(--surface);
+}
 
 .hero { padding: 40px 0 8px; }
 .hero .num {

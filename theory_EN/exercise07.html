@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>7. PCA and factor analysis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../teoria/style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ink-3)"/></marker></defs></svg>
+<div class="wrap">
+<header class="top"><a class="brand" href="index.html">Sensometrics in R · theory</a><span class="toplinks"><a href="index.html">All exercises</a><a class="lang" href="../teoria/cvicenie07.html">Slovensky</a></span></header>
+
+<section class="hero"><span class="num">EXERCISE 7</span><h1>PCA and factor analysis</h1><p class="lead">Reducing dimensionality: principal components, the Kaiser criterion and hidden factors in consumer answers.</p>
+<div class="files"><a href="../cvicenie7.txt">Script (SK): cvicenie7.txt</a><a href="../exercises_EN/exercise7.txt">Script (EN): exercise7.txt</a></div></section>
+<div class="goals"><h2>What you will learn</h2><ul>
+<li>how PCA replaces many correlated attributes with a few components,</li>
+<li>to determine the number of components/factors (Kaiser criterion, scree plot),</li>
+<li>to read a biplot and factor loadings and to name the factors.</li>
+</ul></div>
+
+<h2>Principal component analysis (PCA)</h2>
+<p>When we rate many attributes at once, many of them are related (sweetness and fruitiness, price and brand…). PCA rotates the coordinate system so that the first axis – the <strong>1st principal component</strong> – explains as much of the variability in the data as possible, the second (perpendicular to the first) as much of the rest as possible, and so on. Instead of 4, 10 or 20 attributes, 2 – 3 components are then enough and the data can be shown in a plane.</p>
+<figure>
+<svg viewBox="0 0 620 300" role="img" aria-label="Principle of PCA">
+  <line x1="40" y1="270" x2="600" y2="270" class="ax"/><line x1="40" y1="20" x2="40" y2="270" class="ax"/>
+  <text x="590" y="290" text-anchor="end" class="t-small">attribute 1</text><text x="30" y="30" text-anchor="end" class="t-small">attribute 2</text>
+  <ellipse cx="310" cy="150" rx="210" ry="60" transform="rotate(-28 310 150)" class="fa op2"/>
+  <g class="f3" opacity=".8">
+    <circle cx="150" cy="232" r="4"/><circle cx="180" cy="205" r="4"/><circle cx="205" cy="220" r="4"/><circle cx="230" cy="180" r="4"/><circle cx="250" cy="198" r="4"/><circle cx="270" cy="160" r="4"/><circle cx="290" cy="170" r="4"/><circle cx="300" cy="140" r="4"/><circle cx="320" cy="155" r="4"/><circle cx="340" cy="125" r="4"/><circle cx="360" cy="140" r="4"/><circle cx="380" cy="110" r="4"/><circle cx="400" cy="120" r="4"/><circle cx="420" cy="90" r="4"/><circle cx="445" cy="98" r="4"/><circle cx="470" cy="70" r="4"/><circle cx="230" cy="150" r="4"/><circle cx="390" cy="150" r="4"/><circle cx="330" cy="100" r="4"/><circle cx="280" cy="210" r="4"/>
+  </g>
+  <line x1="120" y1="251" x2="510" y2="44" class="ln2" marker-end="url(#arr)"/>
+  <line x1="275" y1="84" x2="345" y2="216" class="ln1" marker-end="url(#arr)"/>
+  <text x="515" y="42" class="t-strong" style="fill:var(--c2)">PC1</text>
+  <text x="350" y="232" class="t-strong" style="fill:var(--c1)">PC2</text>
+  <text x="440" y="200" class="t-small">PC1 – direction of largest variance</text>
+  <text x="440" y="218" class="t-small">PC2 – perpendicular, takes the rest</text>
+</svg>
+</figure>
+<p>Because the attributes have different units and ranges, PCA is computed from the <strong>correlation matrix</strong> (<code>princomp(data, cor = TRUE)</code>) – every attribute then has the same weight.</p>
+
+<h3>How many components to keep?</h3>
+<figure>
+<svg viewBox="0 0 620 250" role="img" aria-label="Scree plot">
+  <line x1="60" y1="210" x2="580" y2="210" class="ax"/><line x1="60" y1="20" x2="60" y2="210" class="ax"/>
+  <line x1="60" y1="120" x2="580" y2="120" class="warnl dash"/><text x="578" y="113" text-anchor="end" class="t-small t-warn">Kaiser criterion: eigenvalue = 1</text>
+  <g class="t-small"><text x="52" y="214" text-anchor="end">0</text><text x="52" y="124" text-anchor="end">1</text><text x="52" y="34" text-anchor="end">2</text></g>
+  <polyline points="140,41.9 260,115.9 380,146.1 500,176.1" class="ln3"/>
+  <g class="f3"><circle cx="140" cy="41.9" r="6"/><circle cx="260" cy="115.9" r="6"/></g>
+  <g style="fill:var(--ink-3)"><circle cx="380" cy="146.1" r="6"/><circle cx="500" cy="176.1" r="6"/></g>
+  <g class="t-small">
+    <text x="140" y="228" text-anchor="middle">Comp.1</text><text x="260" y="228" text-anchor="middle">Comp.2</text><text x="380" y="228" text-anchor="middle">Comp.3</text><text x="500" y="228" text-anchor="middle">Comp.4</text>
+    <text x="152" y="38" class="t-strong">1.87 (47%)</text><text x="272" y="110" class="t-strong">1.05 (26%)</text><text x="392" y="142">0.71 (18%)</text><text x="512" y="172">0.38 (9%)</text>
+  </g>
+</svg>
+<figcaption>Eigenvalues of the PCA from the first example in the script. We keep components with an eigenvalue &gt; 1 (they explain more than one original attribute) – together 73% of the variability. Alternatively we look for the “elbow” of the curve.</figcaption>
+</figure>
+
+<h3>Biplot</h3>
+<p>A biplot draws both the <strong>objects</strong> (respondents or products, points) and the <strong>variables</strong> (arrows). Arrows close together = positively correlated attributes; opposite direction = negative correlation; perpendicular = unrelated. A point lying in the direction of an arrow has a high value of that attribute.</p>
+<figure>
+<svg viewBox="0 0 620 300" role="img" aria-label="Biplot from the example">
+  <line x1="40" y1="150" x2="580" y2="150" class="gridl"/><line x1="310" y1="20" x2="310" y2="280" class="gridl"/>
+  <line x1="310" y1="150" x2="223" y2="207" class="ln2" marker-end="url(#arr)"/><text x="200" y="226" text-anchor="middle" class="t-strong" style="fill:var(--c2)">sensory</text>
+  <line x1="310" y1="150" x2="270" y2="21" class="ln2" marker-end="url(#arr)"/><text x="262" y="16" text-anchor="middle" class="t-strong" style="fill:var(--c2)">price</text>
+  <line x1="310" y1="150" x2="385" y2="110" class="ln2" marker-end="url(#arr)"/><text x="392" y="104" class="t-strong" style="fill:var(--c2)">package design</text>
+  <line x1="310" y1="150" x2="397" y2="182" class="ln2" marker-end="url(#arr)"/><text x="404" y="194" class="t-strong" style="fill:var(--c2)">brand</text>
+  <text x="575" y="142" text-anchor="end" class="t-small">Comp.1 (47%)</text><text x="318" y="32" class="t-small">Comp.2 (26%)</text>
+  <g class="t-small"><text x="90" y="200">“taste-driven”</text><text x="500" y="178">“image-driven”</text></g>
+</svg>
+<figcaption>Loadings from the example: Comp.1 sets <em>sensory quality</em> against <em>brand + package design</em> – it separates respondents who buy by taste from those who buy by image. Comp.2 is almost purely <em>price</em>. (The signs of components are arbitrary – the whole plot may be mirrored.)</figcaption>
+</figure>
+
+<h2>Factor analysis (FA)</h2>
+<p>PCA is <em>descriptive</em> – it only rearranges the variability. Factor analysis assumes a <strong>model</strong>: the observed answers are caused by a few unmeasurable (latent) <strong>factors</strong> plus individual noise. The aim is to reveal these factors and name them.</p>
+<figure>
+<svg viewBox="0 0 620 280" role="img" aria-label="Factor analysis model">
+  <ellipse cx="130" cy="80" rx="95" ry="36" class="boxa"/><text x="130" y="76" text-anchor="middle" class="t-strong">Factor 1</text><text x="130" y="94" text-anchor="middle" class="t-small">“the product itself”?</text>
+  <ellipse cx="130" cy="200" rx="95" ry="36" class="boxa"/><text x="130" y="196" text-anchor="middle" class="t-strong">Factor 2</text><text x="130" y="214" text-anchor="middle" class="t-small">“social influence”?</text>
+  <g>
+    <rect x="400" y="14" width="150" height="32" rx="6" class="box"/><text x="475" y="35" text-anchor="middle">sensory quality</text>
+    <rect x="400" y="56" width="150" height="32" rx="6" class="box"/><text x="475" y="77" text-anchor="middle">price</text>
+    <rect x="400" y="98" width="150" height="32" rx="6" class="box"/><text x="475" y="119" text-anchor="middle">aesthetics</text>
+    <rect x="400" y="140" width="150" height="32" rx="6" class="box"/><text x="475" y="161" text-anchor="middle">brand</text>
+    <rect x="400" y="182" width="150" height="32" rx="6" class="box"/><text x="475" y="203" text-anchor="middle">friend</text>
+    <rect x="400" y="224" width="150" height="32" rx="6" class="box"/><text x="475" y="245" text-anchor="middle">family</text>
+  </g>
+  <g>
+    <line x1="225" y1="72" x2="398" y2="30" class="arrow"/><line x1="225" y1="78" x2="398" y2="72" class="arrow"/><line x1="225" y1="86" x2="398" y2="114" class="arrow"/><line x1="222" y1="92" x2="398" y2="156" class="arrow"/>
+    <line x1="225" y1="196" x2="398" y2="198" class="arrow"/><line x1="222" y1="206" x2="398" y2="240" class="arrow"/>
+  </g>
+  <text x="310" y="272" text-anchor="middle" class="t-small">arrow = loading, correlation of the attribute with the factor</text>
+</svg>
+<figcaption>A schema – which attributes belong to which factor is shown only by the output of <code>factanal()</code>. An attribute is assigned to the factor on which it has the highest absolute loading (roughly &gt; 0.5).</figcaption>
+</figure>
+<p>For the data of the second example the eigenvalues of the correlation matrix are 2.46; 1.69; 0.89; 0.61; 0.27; 0.08 – two are greater than 1, hence <code>factanal(data, factors = 2)</code>.</p>
+<div class="tablewrap"><table>
+<tr><th><code>factanal</code> output</th><th>Meaning</th></tr>
+<tr><td><code>Uniquenesses</code></td><td>share of the variability of an attribute that the factors do <em>not</em> explain (close to 1 = the attribute stands apart)</td></tr>
+<tr><td><code>Loadings</code></td><td>loadings – we name the factors based on them</td></tr>
+<tr><td><code>Cumulative Var</code></td><td>how much variability the factors explain together</td></tr>
+<tr><td><code>p-value</code> at the end</td><td>test “are k factors enough?” – p &gt; 0.05 means yes</td></tr>
+</table></div>
+<div class="note"><strong>Varimax rotation</strong>By default <code>factanal</code> rotates the factors with varimax so that each attribute has a high loading on only one factor – which makes the factors easier to name. In the perfume task, name the factors after the scents that make them up (e.g. “floral” vs. “woody”).</div>
+
+<nav class="pager">
+<a class="prev" href="exercise06.html"><span>← Previous</span>6. Correlation and linear regression</a>
+<a class="next" href="exercise08.html"><span>Next →</span>8. Cluster analysis</a>
+</nav>
+</div>
+</body>
+</html>

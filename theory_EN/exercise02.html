@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2. BCG matrix and confidence interval</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../teoria/style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ink-3)"/></marker></defs></svg>
+<div class="wrap">
+<header class="top"><a class="brand" href="index.html">Sensometrics in R · theory</a><span class="toplinks"><a href="index.html">All exercises</a><a class="lang" href="../teoria/cvicenie02.html">Slovensky</a></span></header>
+
+<section class="hero"><span class="num">EXERCISE 2</span><h1>BCG matrix and confidence interval</h1><p class="lead">How to place products on a price × quality map and how to express the uncertainty of a panel mean.</p>
+<div class="files"><a href="../cvicenie2.txt">Script (SK): cvicenie2.txt</a><a href="../exercises_EN/exercise2.txt">Script (EN): exercise2.txt</a></div></section>
+<div class="goals"><h2>What you will learn</h2><ul>
+<li>to build a modified price × quality BCG matrix and interpret its quadrants,</li>
+<li>to compute and plot the 95% confidence interval of a mean,</li>
+<li>why a small panel needs the t-distribution instead of the number 1.96.</li>
+</ul></div>
+
+<h2>Modified BCG matrix</h2>
+<p>The original Boston Consulting Group matrix sorts products by market growth and market share. In sensory analysis we modify it: the x-axis shows <strong>price</strong>, the y-axis <strong>sensory quality</strong> (panel mean). The means of both variables split the plane into four quadrants – each product is compared with the “average product” on the market.</p>
+
+<figure>
+<svg viewBox="0 0 620 340" role="img" aria-label="BCG matrix for products A to F">
+  <rect x="60" y="20" width="268.5" height="130" class="fa op2"/>
+  <rect x="328.5" y="20" width="251.5" height="130" class="fs"/>
+  <rect x="60" y="150" width="268.5" height="130" class="fs"/>
+  <rect x="328.5" y="150" width="251.5" height="130" class="fw"/>
+  <text x="70" y="40" class="t-acc">Good value</text><text x="70" y="56" class="t-small">low price · high quality</text>
+  <text x="570" y="40" text-anchor="end" class="t-strong">Premium</text><text x="570" y="56" text-anchor="end" class="t-small">high price · high quality</text>
+  <text x="70" y="270" class="t-strong">Economy</text>
+  <text x="570" y="254" text-anchor="end" class="t-warn" style="font-weight:600">Problem</text><text x="570" y="270" text-anchor="end" class="t-small">high price · low quality</text>
+  <line x1="328.5" y1="20" x2="328.5" y2="280" class="warnl dash"/>
+  <line x1="60" y1="150" x2="580" y2="150" class="warnl dash"/>
+  <line x1="60" y1="280" x2="580" y2="280" class="ax"/><line x1="60" y1="20" x2="60" y2="280" class="ax"/>
+  <g class="t-small">
+    <text x="60" y="298" text-anchor="middle">5</text><text x="185" y="298" text-anchor="middle">6</text><text x="310" y="298" text-anchor="middle">7</text><text x="435" y="298" text-anchor="middle">8</text><text x="560" y="298" text-anchor="middle">9</text>
+    <text x="52" y="284" text-anchor="end">4</text><text x="52" y="184" text-anchor="end">6</text><text x="52" y="84" text-anchor="end">8</text>
+  </g>
+  <text x="320" y="324" text-anchor="middle">price (€)</text>
+  <text x="18" y="150" text-anchor="middle" transform="rotate(-90 18 150)">quality (points)</text>
+  <text x="332" y="16" class="t-small t-warn">mean price 7.15</text>
+  <text x="582" y="145" class="t-small t-warn" text-anchor="end">mean quality 6.6</text>
+  <g>
+    <circle cx="360" cy="255" r="6" class="f2"/><text x="370" y="259" class="t-strong">A</text>
+    <circle cx="498.75" cy="120" r="6" class="f3"/><text x="509" y="124" class="t-strong">B</text>
+    <circle cx="387.5" cy="55" r="6" class="f3"/><text x="398" y="59" class="t-strong">C</text>
+    <circle cx="127.5" cy="240" r="6" class="f5"/><text x="138" y="244" class="t-strong">D</text>
+    <circle cx="335" cy="105" r="6" class="f3"/><text x="345" y="109" class="t-strong">E</text>
+    <circle cx="262.5" cy="125" r="6" class="f1"/><text x="273" y="129" class="t-strong">F</text>
+  </g>
+</svg>
+<figcaption>Data from the script. F is “good value”; A is more expensive than average and at the same time the worst – a candidate for a recipe or price change. E lies almost on the price boundary – a small price change moves it to another quadrant.</figcaption>
+</figure>
+
+<div class="note"><strong>Why the mean and not “by eye”?</strong>The dividing lines should be computed (<code>abline(v = mean(price))</code>), not typed in by hand. When a new product is added the mean changes, and hard-coded numbers would put products in the wrong quadrant.</div>
+
+<h2>Confidence interval of the mean</h2>
+<p>The panel mean is only an <em>estimate</em> of the true rating of the product. If 7 different people had rated it, we would get a slightly different number. A <strong>confidence interval</strong> (CI) gives the range in which the true mean lies with a given certainty (usually 95%).</p>
+
+<div class="formula">CI<sub>95%</sub> = x̄ ± t<sub>0.975; n−1</sub> · s / √n
+<small>x̄ – mean, s – standard deviation, n – number of assessors, s/√n – standard error of the mean (SE)</small></div>
+
+<figure>
+<svg viewBox="0 0 620 262" role="img" aria-label="Confidence interval for 7 ratings">
+  <rect x="60" y="80.5" width="520" height="127.6" class="fa op2"/>
+  <line x1="60" y1="80.5" x2="580" y2="80.5" class="warnl dash"/>
+  <line x1="60" y1="208.1" x2="580" y2="208.1" class="warnl dash"/>
+  <line x1="60" y1="144.3" x2="580" y2="144.3" class="ln1 dash"/>
+  <line x1="60" y1="235" x2="580" y2="235" class="ax"/><line x1="60" y1="20" x2="60" y2="235" class="ax"/>
+  <g class="t-small"><text x="52" y="234" text-anchor="end">9</text><text x="52" y="134" text-anchor="end">10</text><text x="52" y="34" text-anchor="end">11</text></g>
+  <polyline points="100,130 173,230 246,30 319,130 392,130 465,230 538,130" style="stroke:var(--ink-3);stroke-width:1.5;fill:none"/>
+  <g class="f3">
+    <circle cx="100" cy="130" r="5"/><circle cx="173" cy="230" r="5"/><circle cx="246" cy="30" r="5"/><circle cx="319" cy="130" r="5"/><circle cx="392" cy="130" r="5"/><circle cx="465" cy="230" r="5"/><circle cx="538" cy="130" r="5"/>
+  </g>
+  <text x="584" y="84" class="t-small t-warn">10.50</text>
+  <text x="584" y="148" class="t-small t-acc">9.86</text>
+  <text x="584" y="212" class="t-small t-warn">9.22</text>
+  <text x="320" y="254" text-anchor="middle" class="t-small">assessor 1 … 7</text>
+</svg>
+<figcaption>Taste scores from 7 assessors (script, <code>plot(x, type = "b")</code>). Green – mean 9.86; red – limits of the 95% CI [9.22; 10.50].</figcaption>
+</figure>
+
+<h3>1.96 or t?</h3>
+<p>The number 1.96 holds for the normal distribution, i.e. for large samples. With a small panel we do not know the true variance, only its estimate <em>s</em>, so we use Student’s t-distribution, which has “heavier tails” and gives a wider interval:</p>
+<div class="tablewrap"><table>
+<tr><th>n assessors</th><th>5</th><th>7</th><th>10</th><th>20</th><th>30</th><th>∞</th></tr>
+<tr><td>t<sub>0.975; n−1</sub></td><td>2.78</td><td>2.45</td><td>2.26</td><td>2.09</td><td>2.05</td><td>1.96</td></tr>
+</table></div>
+<div class="warn"><strong>Common mistake</strong>The denominator uses the number of <em>observations</em> <code>length(x)</code>, not the number of distinct values <code>length(unique(x))</code>. For the data 10, 9, 11, 10, 10, 9, 10, n = 7 but there are only 3 distinct values – the interval would come out far too wide.</div>
+
+<nav class="pager">
+<a class="prev" href="exercise01.html"><span>← Previous</span>1. R, RStudio and collaboration</a>
+<a class="next" href="exercise03.html"><span>Next →</span>3. Working with data in R</a>
+</nav>
+</div>
+</body>
+</html>

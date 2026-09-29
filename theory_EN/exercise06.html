@@ -1,29 +1,29 @@
 <!doctype html>
-<html lang="sk">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>6. Korelácia a lineárna regresia</title>
+<title>6. Correlation and linear regression</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="../teoria/style.css">
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ink-3)"/></marker></defs></svg>
 <div class="wrap">
-<header class="top"><a class="brand" href="index.html">Senzometria v R · teória</a><span class="toplinks"><a href="index.html">Všetky cvičenia</a><a class="lang" href="../theory_EN/exercise06.html">English</a></span></header>
+<header class="top"><a class="brand" href="index.html">Sensometrics in R · theory</a><span class="toplinks"><a href="index.html">All exercises</a><a class="lang" href="../teoria/cvicenie06.html">Slovensky</a></span></header>
 
-<section class="hero"><span class="num">CVIČENIE 6</span><h1>Korelácia a lineárna regresia</h1><p class="lead">Sila a smer vzťahu medzi inštrumentálnymi a senzorickými znakmi a jednoduchý predikčný model.</p>
-<div class="files"><a href="../cvicenie6.txt">Skript (SK): cvicenie6.txt</a><a href="../exercises_EN/exercise6.txt">Script (EN): exercise6.txt</a></div></section>
-<div class="goals"><h2>Čo sa naučíte</h2><ul>
-<li>vyjadriť silu a smer vzťahu dvoch znakov korelačným koeficientom,</li>
-<li>rozlíšiť Pearsonov, Spearmanov a Kendallov koeficient,</li>
-<li>zostrojiť a čítať jednoduchý lineárny regresný model.</li>
+<section class="hero"><span class="num">EXERCISE 6</span><h1>Correlation and linear regression</h1><p class="lead">Strength and direction of the relationship between instrumental and sensory attributes, and a simple predictive model.</p>
+<div class="files"><a href="../cvicenie6.txt">Script (SK): cvicenie6.txt</a><a href="../exercises_EN/exercise6.txt">Script (EN): exercise6.txt</a></div></section>
+<div class="goals"><h2>What you will learn</h2><ul>
+<li>to express the strength and direction of a relationship with a correlation coefficient,</li>
+<li>to tell the Pearson, Spearman and Kendall coefficients apart,</li>
+<li>to build and read a simple linear regression model.</li>
 </ul></div>
 
-<h2>Korelácia – smer a sila vzťahu</h2>
-<p>Korelačný koeficient <em>r</em> nadobúda hodnoty od −1 do +1. Znamienko udáva smer (s rastom jedného znaku druhý rastie / klesá), absolútna hodnota silu vzťahu.</p>
-<div class="grid2"><figure><svg viewBox="0 0 200 170" role="img" aria-label="r ≈ +0,9 silná kladná">
+<h2>Correlation – direction and strength</h2>
+<p>The correlation coefficient <em>r</em> ranges from −1 to +1. The sign gives the direction (as one attribute grows, the other grows / falls), the absolute value the strength of the relationship.</p>
+<div class="grid2"><figure><svg viewBox="0 0 200 170" role="img" aria-label="r ≈ +0,9 strong positive">
 <line x1="15" y1="150" x2="190" y2="150" class="ax"/><line x1="15" y1="10" x2="15" y2="150" class="ax"/>
 <circle cx="173.4" cy="25.5" r="3.2" class="f1" opacity=".8"/>
 <circle cx="12.6" cy="136.6" r="3.2" class="f1" opacity=".8"/>
@@ -65,8 +65,8 @@
 <circle cx="137.7" cy="54.5" r="3.2" class="f1" opacity=".8"/>
 <circle cx="68.4" cy="108.4" r="3.2" class="f1" opacity=".8"/>
 <circle cx="43.6" cy="141.3" r="3.2" class="f1" opacity=".8"/>
-</svg><figcaption>r ≈ +0,9 silná kladná (tu r = 0,93)</figcaption></figure>
-<figure><svg viewBox="0 0 200 170" role="img" aria-label="r ≈ 0 žiadna lineárna">
+</svg><figcaption>r ≈ +0.9 strong positive (here r = 0.93)</figcaption></figure>
+<figure><svg viewBox="0 0 200 170" role="img" aria-label="r ≈ 0 no linear">
 <line x1="15" y1="150" x2="190" y2="150" class="ax"/><line x1="15" y1="10" x2="15" y2="150" class="ax"/>
 <circle cx="173.4" cy="32.9" r="3.2" class="f3" opacity=".8"/>
 <circle cx="12.6" cy="58.9" r="3.2" class="f3" opacity=".8"/>
@@ -108,8 +108,8 @@
 <circle cx="137.7" cy="47.1" r="3.2" class="f3" opacity=".8"/>
 <circle cx="68.4" cy="50.1" r="3.2" class="f3" opacity=".8"/>
 <circle cx="43.6" cy="116.5" r="3.2" class="f3" opacity=".8"/>
-</svg><figcaption>r ≈ 0 žiadna lineárna (tu r = 0,13)</figcaption></figure>
-<figure><svg viewBox="0 0 200 170" role="img" aria-label="r ≈ −0,8 silná záporná">
+</svg><figcaption>r ≈ 0 no linear (here r = 0.13)</figcaption></figure>
+<figure><svg viewBox="0 0 200 170" role="img" aria-label="r ≈ −0,8 strong negative">
 <line x1="15" y1="150" x2="190" y2="150" class="ax"/><line x1="15" y1="10" x2="15" y2="150" class="ax"/>
 <circle cx="173.4" cy="140.8" r="3.2" class="f2" opacity=".8"/>
 <circle cx="12.6" cy="35.1" r="3.2" class="f2" opacity=".8"/>
@@ -151,27 +151,27 @@
 <circle cx="137.7" cy="110.2" r="3.2" class="f2" opacity=".8"/>
 <circle cx="68.4" cy="71.1" r="3.2" class="f2" opacity=".8"/>
 <circle cx="43.6" cy="47.8" r="3.2" class="f2" opacity=".8"/>
-</svg><figcaption>r ≈ −0,8 silná záporná (tu r = -0,88)</figcaption></figure></div>
+</svg><figcaption>r ≈ −0.8 strong negative (here r = -0.88)</figcaption></figure></div>
 
 <figure>
-<svg viewBox="0 0 620 90" role="img" aria-label="Stupnica sily korelácie">
+<svg viewBox="0 0 620 90" role="img" aria-label="Scale of correlation strength">
   <rect x="20" y="30" width="58" height="26" class="fs"/><rect x="78" y="30" width="116" height="26" class="f1 op1"/><rect x="194" y="30" width="174" height="26" class="f1 op2"/><rect x="368" y="30" width="232" height="26" class="f1"/>
-  <g class="t-small"><text x="20" y="74">0</text><text x="78" y="74" text-anchor="middle">0,1</text><text x="194" y="74" text-anchor="middle">0,3</text><text x="368" y="74" text-anchor="middle">0,6</text><text x="600" y="74" text-anchor="end">1</text></g>
-  <g class="t-small t-strong"><text x="49" y="22" text-anchor="middle">triviálna</text><text x="136" y="22" text-anchor="middle">slabá</text><text x="281" y="22" text-anchor="middle">stredná</text><text x="484" y="22" text-anchor="middle">vysoká</text></g>
+  <g class="t-small"><text x="20" y="74">0</text><text x="78" y="74" text-anchor="middle">0.1</text><text x="194" y="74" text-anchor="middle">0.3</text><text x="368" y="74" text-anchor="middle">0.6</text><text x="600" y="74" text-anchor="end">1</text></g>
+  <g class="t-small t-strong"><text x="49" y="22" text-anchor="middle">trivial</text><text x="136" y="22" text-anchor="middle">weak</text><text x="281" y="22" text-anchor="middle">moderate</text><text x="484" y="22" text-anchor="middle">strong</text></g>
 </svg>
-<figcaption>Orientačná stupnica pre |r| zo skriptu. Hranice nie sú univerzálne – v senzorike sa za prakticky užitočnú považuje až |r| nad ~0,7.</figcaption>
+<figcaption>Rule-of-thumb scale for |r| from the script. The limits are not universal – in sensory analysis only |r| above ~0.7 is usually considered practically useful.</figcaption>
 </figure>
 
 <div class="tablewrap"><table>
-<tr><th>Koeficient</th><th>Meria</th><th>Kedy použiť</th></tr>
-<tr><td><strong>Pearson</strong> <code>method="pearson"</code></td><td>lineárny vzťah</td><td>spojité, približne normálne dáta bez odľahlých hodnôt</td></tr>
-<tr><td><strong>Spearman</strong> <code>method="spearman"</code></td><td>monotónny vzťah (na poradiach)</td><td>ordinálne škály, odľahlé hodnoty, nelineárny ale stále rastúci vzťah</td></tr>
-<tr><td><strong>Kendall τ</strong> <code>method="kendall"</code></td><td>zhodu poradí párov</td><td>malé vzorky, veľa zhodných hodnôt</td></tr>
+<tr><th>Coefficient</th><th>Measures</th><th>When to use</th></tr>
+<tr><td><strong>Pearson</strong> <code>method="pearson"</code></td><td>linear relationship</td><td>continuous, roughly normal data without outliers</td></tr>
+<tr><td><strong>Spearman</strong> <code>method="spearman"</code></td><td>monotonic relationship (on ranks)</td><td>ordinal scales, outliers, a non-linear but still increasing relationship</td></tr>
+<tr><td><strong>Kendall τ</strong> <code>method="kendall"</code></td><td>agreement of pair rankings</td><td>small samples, many tied values</td></tr>
 </table></div>
 
-<h3>Korelácia nie je všetko</h3>
+<h3>Correlation is not everything</h3>
 <figure>
-<svg viewBox="0 0 620 230" role="img" aria-label="Príjemnosť verzus cukor">
+<svg viewBox="0 0 620 230" role="img" aria-label="Pleasantness versus sugar">
 <line x1="40" y1="200" x2="590" y2="200" class="ax"/><line x1="40" y1="20" x2="40" y2="200" class="ax"/>
 <polyline points="80,170 120,170 160,170 200,110 240,50 280,50 320,50 360,80 400,50 440,110 480,110 520,140 560,170" class="ln2"/>
 <circle cx="80" cy="170" r="4.5" class="f2"/>
@@ -187,20 +187,20 @@
 <circle cx="480" cy="110" r="4.5" class="f2"/>
 <circle cx="520" cy="140" r="4.5" class="f2"/>
 <circle cx="560" cy="170" r="4.5" class="f2"/>
-<text x="330" y="40" class="t-strong">Spearman ρ = 0,16 (p = 0,60)</text>
-<text x="330" y="58" class="t-small">vzťah existuje, ale nie je monotónny</text>
-<text x="315" y="222" text-anchor="middle" class="t-small">množstvo cukru → (optimum okolo 5 – 9)</text>
+<text x="330" y="40" class="t-strong">Spearman ρ = 0.16 (p = 0.60)</text>
+<text x="330" y="58" class="t-small">there is a relationship, but not a monotonic one</text>
+<text x="315" y="222" text-anchor="middle" class="t-small">amount of sugar → (optimum around 5 – 9)</text>
 </svg>
-<figcaption>Príjemnosť sladkej vody (skript) rastie s cukrom len po optimum, potom klesá. Korelácia je takmer nulová, hoci vzťah je silný – len nie monotónny. Vždy si najprv nakreslite graf.</figcaption>
+<figcaption>The pleasantness of sweetened water (script) grows with sugar only up to an optimum, then falls. The correlation is almost zero although the relationship is strong – it is just not monotonic. Always plot the data first.</figcaption>
 </figure>
-<div class="warn"><strong>Korelácia ≠ príčinnosť</strong>Vysoká korelácia dvoch senzorických znakov môže vzniknúť tým, že oba závisia od tretieho faktora (napr. obsahu tuku), alebo haló efektom – hodnotiteľ, ktorému sa produkt páči, hodnotí lepšie všetky znaky.</div>
+<div class="warn"><strong>Correlation ≠ causation</strong>A high correlation between two sensory attributes can arise because both depend on a third factor (e.g. fat content), or from the halo effect – an assessor who likes the product rates all attributes higher.</div>
 
-<h2>Jednoduchá lineárna regresia</h2>
-<p>Regresia ide o krok ďalej: hľadá priamku, ktorou <strong>predikujeme</strong> závislú premennú <em>y</em> (senzorický znak) z nezávislej <em>x</em> (napr. množstvo cukru či inštrumentálne meranie). Metóda najmenších štvorcov volí priamku tak, aby súčet štvorcov <strong>rezíduí</strong> (zvislých vzdialeností bodov od priamky) bol najmenší.</p>
+<h2>Simple linear regression</h2>
+<p>Regression goes one step further: it looks for a line with which we <strong>predict</strong> the dependent variable <em>y</em> (a sensory attribute) from the independent <em>x</em> (e.g. the amount of sugar or an instrumental measurement). The least squares method chooses the line so that the sum of squared <strong>residuals</strong> (vertical distances of the points from the line) is the smallest.</p>
 <div class="formula">ŷ = b₁ + b₂ · x
-<small>b₁ – úsek (Intercept), b₂ – smernica: o koľko sa zmení y pri zvýšení x o 1</small></div>
+<small>b₁ – intercept, b₂ – slope: how much y changes when x increases by 1</small></div>
 <figure>
-<svg viewBox="0 0 620 270" role="img" aria-label="Regresia sladkosti na množstve cukru">
+<svg viewBox="0 0 620 270" role="img" aria-label="Regression of sweetness on sugar amount">
 <line x1="60" y1="230" x2="580" y2="230" class="ax"/><line x1="60" y1="20" x2="60" y2="230" class="ax"/>
 <text x="52" y="234" text-anchor="end" class="t-small">0</text>
 <text x="52" y="190" text-anchor="end" class="t-small">2</text>
@@ -239,27 +239,27 @@
 <circle cx="478" cy="32" r="4.5" class="f3"/>
 <circle cx="516" cy="32" r="4.5" class="f3"/>
 <circle cx="554" cy="54" r="4.5" class="f3"/>
-<text x="90" y="40" class="t-acc">ŷ = 1,46 + 0,63·x</text><text x="90" y="60" class="t-small">R² = 0,92</text>
-<text x="440" y="200" class="t-small t-warn">červené úsečky = rezíduá</text>
-<text x="320" y="266" text-anchor="middle" class="t-small">množstvo cukru (mcukru)</text>
-<text x="18" y="125" text-anchor="middle" transform="rotate(-90 18 125)" class="t-small">sladkosť</text>
+<text x="90" y="40" class="t-acc">ŷ = 1.46 + 0.63·x</text><text x="90" y="60" class="t-small">R² = 0.92</text>
+<text x="440" y="200" class="t-small t-warn">red segments = residuals</text>
+<text x="320" y="266" text-anchor="middle" class="t-small">amount of sugar</text>
+<text x="18" y="125" text-anchor="middle" transform="rotate(-90 18 125)" class="t-small">sweetness</text>
 </svg>
-<figcaption>Sladkosť v závislosti od množstva cukru (dáta zo skriptu): každá jednotka cukru zvýši sladkosť v priemere o 0,63 bodu.</figcaption>
+<figcaption>Sweetness as a function of the amount of sugar (script data): each unit of sugar increases sweetness by 0.63 points on average.</figcaption>
 </figure>
 
-<h3>Ako čítať <code>summary(lm(y ~ x))</code></h3>
+<h3>How to read <code>summary(lm(y ~ x))</code></h3>
 <div class="tablewrap"><table>
-<tr><th>Časť výstupu</th><th>Význam</th></tr>
-<tr><td><code>Estimate</code></td><td>koeficienty b₁ (Intercept) a b₂ (pri názve x)</td></tr>
-<tr><td><code>Pr(&gt;|t|)</code> pri x</td><td>p-hodnota testu, či je smernica rôzna od nuly (či x vôbec pomáha)</td></tr>
-<tr><td><code>Multiple R-squared</code></td><td>koeficient determinácie R² – podiel variability y vysvetlenej modelom (0 – 1)</td></tr>
-<tr><td><code>Residual standard error</code></td><td>typická chyba predikcie v jednotkách y</td></tr>
+<tr><th>Part of the output</th><th>Meaning</th></tr>
+<tr><td><code>Estimate</code></td><td>coefficients b₁ (Intercept) and b₂ (next to the name of x)</td></tr>
+<tr><td><code>Pr(&gt;|t|)</code> for x</td><td>p-value of the test whether the slope differs from zero (whether x helps at all)</td></tr>
+<tr><td><code>Multiple R-squared</code></td><td>coefficient of determination R² – share of the variability of y explained by the model (0 – 1)</td></tr>
+<tr><td><code>Residual standard error</code></td><td>typical prediction error in units of y</td></tr>
 </table></div>
-<div class="note"><strong>Poradie vo vzorci</strong><code>lm(y ~ x)</code> – vľavo to, čo predikujeme. <code>lm(sladkost ~ mcukru)</code> predikuje sladkosť z cukru; opačný zápis by dal inú priamku aj iný význam. Predikovať mimo rozsahu nameraných x (extrapolácia) je riskantné.</div>
+<div class="note"><strong>Order in the formula</strong><code>lm(y ~ x)</code> – what we predict is on the left. <code>lm(sweetness ~ sugar_amount)</code> predicts sweetness from sugar; the reversed form would give a different line and a different meaning. Predicting outside the range of measured x (extrapolation) is risky.</div>
 
 <nav class="pager">
-<a class="prev" href="cvicenie05d.html"><span>← Predchádzajúce</span>5d. Durbinov test a neúplné bloky</a>
-<a class="next" href="cvicenie07.html"><span>Nasledujúce →</span>7. PCA a faktorová analýza</a>
+<a class="prev" href="exercise05d.html"><span>← Previous</span>5d. Durbin test and incomplete blocks</a>
+<a class="next" href="exercise07.html"><span>Next →</span>7. PCA and factor analysis</a>
 </nav>
 </div>
 </body>
