@@ -100,7 +100,7 @@
 
 <section class="solutions"><h2>Task solutions</h2><p>Click to expand a solution. Try the task on your own first – results were verified in R 4.4. The code continues from the variables in the script.</p>
 <details class="sol"><summary>Example <span>– which product is most similar to our A?</span></summary>
-<pre>sensory &lt;- read.table(&quot;http://senzorika.com/sait/datasety/senzorika.txt&quot;, sep = &quot;,&quot;)
+<pre>sensory &lt;- read.table(&quot;https://raw.githubusercontent.com/senzorika/SaIT/master/datasety/senzorika.txt&quot;, sep = &quot;,&quot;)
 row.names(sensory) &lt;- c(&quot;A&quot;,&quot;B&quot;,&quot;C&quot;,&quot;D&quot;,&quot;E&quot;,&quot;F&quot;,&quot;G&quot;,&quot;H&quot;,&quot;I&quot;,&quot;J&quot;,&quot;K&quot;,&quot;L&quot;,&quot;M&quot;,&quot;N&quot;,&quot;O&quot;,&quot;X&quot;)
 fit &lt;- hclust(dist(sensory), method = &quot;ward.D&quot;)
 groups &lt;- cutree(fit, k = 5)
@@ -108,6 +108,13 @@ groups[groups == groups[&quot;A&quot;]]
 sort(as.matrix(dist(sensory))[&quot;A&quot;, ])[2:4]</pre>
 <div class="answer"><p>With 5 groups our product A is in a group with <strong>I and X</strong>. The closest one is <strong>X</strong> (Euclidean distance 2.00), then G (2.15) and I (2.52). G is close, yet Ward placed it in another group – distance to one product and group membership are not the same thing.</p></div></details>
 </section>
+
+<section class="related" id="sap"><h2>📚 Related</h2>
+<ul>
+<li><strong>The method in SAP</strong> (Sensory Analysis of Food, in Slovak): <a href="https://senzorika.github.io/SAP/kapitoly/08_spotrebitelska_veda.html">Consumer sensory science</a></li>
+<li><strong>Literature:</strong> Næs, T., Brockhoff, P. B. &amp; Tomic, O. (2010). <em>Statistics for Sensory and Consumer Science</em>. Wiley.</li>
+</ul>
+<p class="small">Editions of the standards and book titles are taken from the verified list <a href="https://senzorika.github.io/SAP/kapitoly/priloha_zdroje.html">SAP – Sources and literature</a> (in Slovak). Recalculation of the numbers on this page: <a href="verification.html">Verification</a>.</p></section>
 <nav class="pager">
 <a class="prev" href="exercise07.html"><span>← Previous</span>7. PCA and factor analysis</a>
 <a class="next" href="exercise09.html"><span>Next →</span>9. Correspondence analysis</a>

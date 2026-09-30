@@ -30,10 +30,16 @@
 # github (repozitar, na riadenu dokumentaciu/ verziovanie dokumentov)
 # https://github.com/
 
-# webkonferencie a online chat
-# https://meet.jit.si/sait2024
+# webkonferencie a online chat (nazov miestnosti si dohodnite v skupine)
+# https://meet.jit.si/
 
-# instalacia balikov pre cvicenia 1-18 (staci raz)
+# White Noise (sukromny sifrovany messenger pre timovu komunikaciu)
+# https://www.whitenoise.chat/
+
+# OpenCode (open-source AI asistent v terminali - pomoc pri pisani a vysvetlovani R kodu)
+# https://opencode.ai/
+
+# instalacia balikov pre vsetky cvicenia (staci raz)
 install.packages(c(
   "sensR", "pwr", "SensoMineR", "FactoMineR", "lmerTest", "emmeans", "DescTools",
   "PMCMRplus", "readxl", "curl", "cluster", "factoextra", "tidyverse", "quantmod",

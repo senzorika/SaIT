@@ -18,7 +18,8 @@
 <div class="goals"><h2>What you will learn</h2><ul>
 <li>to frame sensory shelf life as a survival analysis problem,</li>
 <li>to build and read a Kaplan-Meier curve,</li>
-<li>to estimate the cut-off time at which half of the consumers reject the product.</li>
+<li>to estimate the cut-off time at which half of the consumers reject the product,</li>
+<li>to estimate shelf life from interval-censored data with a Weibull model and convert it to another temperature (Q10, Arrhenius).</li>
 </ul></div>
 
 <h2>Shelf life from the consumer’s point of view</h2>
@@ -105,7 +106,103 @@
 <div class="note"><strong>Which limit to choose?</strong>50% rejections is a common choice (the median), but a producer may require a stricter limit, e.g. 25% rejections (Ŝ = 0.75). Just call <code>model(0.75)</code>.</div>
 <div class="warn"><strong>Coding the event</strong>In <code>Surv(time, event)</code>, <code>TRUE</code> must mean <em>rejection</em>. If you coded acceptance, the curve would have the opposite meaning. The script data contain <code>TRUE</code> even at 0 h – in a real experiment check whether someone really rejected the fresh product or whether it is a coding error.</div>
 
+<!-- ext -->
+<h2>Interval-censored data</h2>
+<p>The first example treats each of the 35 ratings as a separate observation with an exact event time. In a consumer shelf-life study, however, every consumer tastes samples of all storage times and the exact time at which they would first reject the product is unknown. We only know <strong>between which two times</strong> it happened (Hough, 2010):</p>
+<div class="tablewrap"><table>
+<tr><th>Consumer's answers</th><th>What we know about the rejection time</th><th>Coding (lower, upper)</th></tr>
+<tr><td>accepted at 12 h, rejected at 24 h</td><td>it lies between 12 and 24 h – interval censoring</td><td><code>12, 24</code></td></tr>
+<tr><td>rejected already at 4 h</td><td>it is shorter than 4 h – left censoring</td><td><code>NA, 4</code></td></tr>
+<tr><td>accepted everything up to 48 h</td><td>it is longer than 48 h – right censoring</td><td><code>48, NA</code></td></tr>
+</table></div>
+<pre>intervals &lt;- Surv(lower, upper, type = "interval2")
+weibull &lt;- survreg(intervals ~ 1, dist = "weibull")</pre>
 
+<h2>The Weibull model</h2>
+<p>With interval data the rejection time is described by a parametric distribution, most often the Weibull. It gives the time for any share of rejections together with a confidence interval.</p>
+<div class="formula">S(t) = exp(−(t / η)<sup>β</sup>)
+<small>S(t) – share of consumers who still accept the product at time t; η – scale parameter, β – shape parameter (β &gt; 1: the risk of rejection grows with time). In <code>survreg</code>: η = exp(Intercept), β = 1 / Scale.</small></div>
+<figure>
+<svg viewBox="0 0 640 290" role="img" aria-label="Weibull acceptance curve">
+<line x1="62.0" y1="244.0" x2="616.0" y2="244.0" class="gridl"/>
+<text x="55.0" y="248.0" text-anchor="end" class="t-small">0.00</text>
+<line x1="62.0" y1="187.5" x2="616.0" y2="187.5" class="gridl"/>
+<text x="55.0" y="191.5" text-anchor="end" class="t-small">0.25</text>
+<line x1="62.0" y1="131.0" x2="616.0" y2="131.0" class="gridl"/>
+<text x="55.0" y="135.0" text-anchor="end" class="t-small">0.50</text>
+<line x1="62.0" y1="74.5" x2="616.0" y2="74.5" class="gridl"/>
+<text x="55.0" y="78.5" text-anchor="end" class="t-small">0.75</text>
+<line x1="62.0" y1="18.0" x2="616.0" y2="18.0" class="gridl"/>
+<text x="55.0" y="22.0" text-anchor="end" class="t-small">1.00</text>
+<line x1="62.0" y1="244.0" x2="62.0" y2="248.0" class="ax"/>
+<text x="62.0" y="261.0" text-anchor="middle" class="t-small">0</text>
+<line x1="172.8" y1="244.0" x2="172.8" y2="248.0" class="ax"/>
+<text x="172.8" y="261.0" text-anchor="middle" class="t-small">12</text>
+<line x1="283.6" y1="244.0" x2="283.6" y2="248.0" class="ax"/>
+<text x="283.6" y="261.0" text-anchor="middle" class="t-small">24</text>
+<line x1="394.4" y1="244.0" x2="394.4" y2="248.0" class="ax"/>
+<text x="394.4" y="261.0" text-anchor="middle" class="t-small">36</text>
+<line x1="505.2" y1="244.0" x2="505.2" y2="248.0" class="ax"/>
+<text x="505.2" y="261.0" text-anchor="middle" class="t-small">48</text>
+<line x1="616.0" y1="244.0" x2="616.0" y2="248.0" class="ax"/>
+<text x="616.0" y="261.0" text-anchor="middle" class="t-small">60</text>
+<path d="M62.0,18.0 L62.0,244.0 L616.0,244.0" class="ax"/>
+<text x="339.0" y="282.0" text-anchor="middle">storage time (h)</text>
+<text transform="translate(16,131.0) rotate(-90)" text-anchor="middle">share accepting</text>
+<path d="M62.0,18.0 L66.6,18.3 L71.2,18.9 L75.8,19.7 L80.5,20.7 L85.1,21.9 L89.7,23.1 L94.3,24.5 L98.9,26.1 L103.5,27.7 L108.2,29.4 L112.8,31.2 L117.4,33.1 L122.0,35.1 L126.6,37.1 L131.2,39.2 L135.9,41.4 L140.5,43.6 L145.1,45.9 L149.7,48.2 L154.3,50.6 L158.9,53.0 L163.6,55.4 L168.2,57.9 L172.8,60.4 L177.4,63.0 L182.0,65.5 L186.7,68.1 L191.3,70.7 L195.9,73.3 L200.5,76.0 L205.1,78.6 L209.7,81.2 L214.4,83.9 L219.0,86.5 L223.6,89.2 L228.2,91.9 L232.8,94.5 L237.4,97.2 L242.1,99.8 L246.7,102.4 L251.3,105.1 L255.9,107.7 L260.5,110.3 L265.1,112.9 L269.8,115.4 L274.4,118.0 L279.0,120.5 L283.6,123.0 L288.2,125.5 L292.8,128.0 L297.4,130.4 L302.1,132.8 L306.7,135.2 L311.3,137.6 L315.9,139.9 L320.5,142.3 L325.1,144.5 L329.8,146.8 L334.4,149.0 L339.0,151.2 L343.6,153.4 L348.2,155.5 L352.9,157.6 L357.5,159.7 L362.1,161.8 L366.7,163.8 L371.3,165.8 L375.9,167.7 L380.5,169.6 L385.2,171.5 L389.8,173.4 L394.4,175.2 L399.0,177.0 L403.6,178.7 L408.2,180.5 L412.9,182.2 L417.5,183.8 L422.1,185.4 L426.7,187.0 L431.3,188.6 L436.0,190.1 L440.6,191.6 L445.2,193.1 L449.8,194.5 L454.4,195.9 L459.0,197.3 L463.6,198.6 L468.3,200.0 L472.9,201.2 L477.5,202.5 L482.1,203.7 L486.7,204.9 L491.4,206.1 L496.0,207.2 L500.6,208.3 L505.2,209.4 L509.8,210.5 L514.4,211.5 L519.0,212.5 L523.7,213.5 L528.3,214.5 L532.9,215.4 L537.5,216.3 L542.1,217.2 L546.8,218.1 L551.4,218.9 L556.0,219.7 L560.6,220.5 L565.2,221.3 L569.8,222.0 L574.5,222.8 L579.1,223.5 L583.7,224.2 L588.3,224.8 L592.9,225.5 L597.5,226.1 L602.1,226.7 L606.8,227.3 L611.4,227.9 L616.0,228.4" class="ln1"/>
+<line x1="62.0" y1="40.6" x2="134.0" y2="40.6" class="ax dash"/>
+<line x1="134.0" y1="244.0" x2="134.0" y2="40.6" class="ax dash"/>
+<circle cx="134.0" cy="40.6" r="4.5" class="f2"/>
+<text x="143.0" y="35.6" text-anchor="start" class="t-small t-strong">10 % reject: 7.8 h</text>
+<line x1="62.0" y1="74.5" x2="197.7" y2="74.5" class="ax dash"/>
+<line x1="197.7" y1="244.0" x2="197.7" y2="74.5" class="ax dash"/>
+<circle cx="197.7" cy="74.5" r="4.5" class="f2"/>
+<text x="206.7" y="69.5" text-anchor="start" class="t-small t-strong">25 % reject: 14.7 h</text>
+<line x1="62.0" y1="131.0" x2="298.4" y2="131.0" class="ax dash"/>
+<line x1="298.4" y1="244.0" x2="298.4" y2="131.0" class="ax dash"/>
+<circle cx="298.4" cy="131.0" r="4.5" class="f2"/>
+<text x="307.4" y="126.0" text-anchor="start" class="t-small t-strong">50 % reject: 25.6 h</text>
+</svg>
+<figcaption>Weibull curve for the 42 consumers in the script (η = 32.3 h; β = 1.59). The median sensory shelf life is 25.6 h; if at most 25 % of consumers may reject the product, it is 14.7 h.</figcaption>
+</figure>
+<div class="tablewrap"><table>
+<tr><th>Share of rejections</th><th>Time (h)</th><th>95 % confidence interval</th></tr>
+<tr><td>10 %</td><td>7.8</td><td>4.0 – 11.6</td></tr>
+<tr><td>25 %</td><td>14.7</td><td>9.9 – 19.6</td></tr>
+<tr><td>50 %</td><td>25.6</td><td>19.8 – 31.5</td></tr>
+</table></div>
+<div class="note"><strong>Kaplan-Meier or Weibull?</strong>The Kaplan-Meier curve is a quick first look at the data. For estimating a shelf life with a confidence interval, a parametric model on interval-censored data is recommended in sensory shelf-life work (Hough, 2010; ISO 16779).</div>
+
+<h2>Accelerated storage: Q10 and Arrhenius</h2>
+<p>For products with a long shelf life the test is accelerated by a higher temperature. The factor <strong>Q10</strong> says how many times the shelf life shortens when the temperature rises by 10 °C:</p>
+<div class="formula">Q10 = (t<sub>T₁</sub> / t<sub>T₂</sub>)<sup>10 / (T₂ − T₁)</sup>&emsp;&emsp;ln k = ln A − E<sub>a</sub> / (R · T)
+<small>t – shelf life at temperature T; k ~ 1/t – rate of change; E<sub>a</sub> – activation energy; R = 8.314 J/(mol·K); T in kelvin</small></div>
+<div class="tablewrap"><table>
+<tr><th>Temperature</th><th>5 °C</th><th>15 °C</th><th>25 °C</th><th>8 °C (prediction)</th></tr>
+<tr><td>shelf life (days)</td><td>28</td><td>13</td><td>6</td><td>22.1</td></tr>
+</table></div>
+<p>The script data give Q10 = 2.16 and E<sub>a</sub> = 53.1 kJ/mol.</p>
+<div class="warn"><strong>Beware of extrapolation</strong>The Arrhenius model assumes that the same spoilage mechanism operates at all temperatures. At a high temperature it may change (fat melting, a different microflora) – a prediction outside the measured range has to be verified by storage at the real temperature.</div>
+
+<section class="solutions"><h2>Task solutions</h2><p>Click to expand a solution. Try the task on your own first – results were verified in R 4.5. The code continues from the variables in the script.</p>
+<details class="sol"><summary>Task 1 <span>– shelf life with at most 25 % rejections</span></summary>
+<pre>predict(weibull, newdata = data.frame(x = 1), type = "quantile", p = 0.25, se.fit = TRUE)</pre>
+<div class="answer"><p>The time at which 25 % of consumers reject the product is <strong>14.7 h</strong> (95 % CI 9.9 – 19.6 h). The median is 25.6 h – by then half of the consumers would already reject the product. A cautious producer chooses the lower limit of the interval, i.e. about 10 h.</p></div></details>
+<details class="sol"><summary>Task 2 <span>– is Q10 constant?</span></summary>
+<pre>(28 / 13)^(10 / (15 - 5))
+(13 / 6)^(10 / (25 - 15))
+summary(arrhenius)$r.squared</pre>
+<div class="answer"><p>Q10 between 5 and 15 °C is <strong>2.15</strong>, between 15 and 25 °C <strong>2.17</strong> – practically constant, the Arrhenius model fits (R² = 0.9995). The SAP calculator gives the same Q10 and E<sub>a</sub>.</p></div></details>
+</section>
+
+<section class="related" id="sap"><h2>📚 Related</h2>
+<ul>
+<li><strong>The method in SAP</strong> (Sensory Analysis of Food, in Slovak): <a href="https://senzorika.github.io/SAP/kapitoly/10_shelf_life.html">Sensory shelf life</a> · <a href="https://senzorika.github.io/SAP/kapitoly/11_vzorce.html">Formulas and statistical calculations</a></li>
+<li><strong>Calculator</strong> to check the result from R: <a href="https://senzorika.github.io/SAP/kapitoly/10_shelf_life.html#kalkulator">Q10, Ea and the Arrhenius shelf-life estimate</a></li>
+<li><strong>Standards:</strong> ISO 16779:2015 (shelf life of foodstuffs)</li>
+<li><strong>Literature:</strong> Hough, G. (2010). <em>Sensory Shelf Life Estimation of Food Products</em>. CRC Press.</li>
+</ul>
+<p class="small">Editions of the standards and book titles are taken from the verified list <a href="https://senzorika.github.io/SAP/kapitoly/priloha_zdroje.html">SAP – Sources and literature</a> (in Slovak). Recalculation of the numbers on this page: <a href="verification.html">Verification</a>.</p></section>
 <nav class="pager">
 <a class="prev" href="exercise09.html"><span>← Previous</span>9. Correspondence analysis</a>
 <a class="next" href="exercise11a.html"><span>Next →</span>11a. TURF analysis and preference mapping</a>

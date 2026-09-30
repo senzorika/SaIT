@@ -7,7 +7,7 @@ subtitle: "Blok 5 · cvičenia 6 – 9"
 #| include: false
 source("../setup.R")
 library(MASS)
-senzorika <- read.table("http://senzorika.com/sait/datasety/senzorika.txt", sep = ",")
+senzorika <- read.table("../../datasety/senzorika.txt", sep = ",")
 ```
 
 ## Korelácia: smer a sila

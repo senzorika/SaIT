@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>22. Detection threshold – 3-AFC and the BET method</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../teoria/style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ink-3)"/></marker></defs></svg>
+<div class="wrap">
+<header class="top"><a class="brand" href="index.html">Sensometrics in R · theory</a><span class="toplinks"><a href="index.html">All exercises</a><a class="lang" href="../teoria/cvicenie22.html">Slovensky</a></span></header>
+
+<section class="hero"><span class="num">EXERCISE 22</span><h1>Detection threshold – 3-AFC and the BET method</h1><p class="lead">At which concentration does the panel detect a substance? An ascending series of 3-AFC tests, individual and group thresholds.</p>
+<div class="files"><a href="../cvicenie22.R">Script (SK): cvicenie22.R</a><a href="../exercises_EN/exercise22.R">Script (EN): exercise22.R</a></div></section>
+<div class="goals"><h2>What you will learn</h2><ul>
+<li>to distinguish the detection and the recognition threshold and explain why a threshold is a probabilistic concept,</li>
+<li>to compute the individual and the group threshold by the best-estimate (BET) method,</li>
+<li>to estimate a threshold from the psychometric function with a correction for guessing.</li>
+</ul></div>
+
+<h2>What a threshold is</h2>
+<p>The <strong>detection threshold</strong> is the lowest concentration at which an assessor can tell the sample from water – not necessarily being able to say what they perceive. The <strong>recognition threshold</strong> is the higher concentration at which the taste or odour can also be named. A threshold is not a sharp boundary: at the same concentration an assessor detects the substance once and misses it another time. It is therefore defined by a probability – the concentration detected in <strong>50 %</strong> of trials (or by 50 % of the panel).</p>
+
+<h2>The 3-AFC test in an ascending series</h2>
+<p>At each concentration the assessor receives three samples: two with water and one with the substance, and must pick the one with the substance (3-AFC, three-alternative forced choice). Without any perception the guess is right with probability 1/3. The concentrations rise geometrically, here in steps of 2: 0.5 – 1 – 2 – 4 – 8 – 16 g/l.</p>
+
+<h2>Best Estimate Threshold (BET)</h2>
+<p>The individual threshold lies between the <em>highest missed</em> concentration and the next higher one. Their geometric mean is taken as the best estimate:</p>
+<div class="formula">BET<sub>i</sub> = √(c<sub>last miss</sub> · c<sub>next</sub>)&emsp;&emsp;group threshold = geometric mean of BET<sub>i</sub>
+<small>the geometric mean, because the concentrations form a geometric series and human sensitivity is approximately log-normally distributed</small></div>
+<div class="tablewrap"><table>
+<tr><th>Assessor</th><th>0.5</th><th>1</th><th>2</th><th>4</th><th>8</th><th>16</th><th>BET threshold (g/l)</th></tr>
+<tr><td>A1</td><td>✕</td><td>✕</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>√(1 · 2) = 1.41</td></tr>
+<tr><td>A2</td><td>✕</td><td>✓</td><td>✕</td><td>✓</td><td>✓</td><td>✓</td><td>√(2 · 4) = 2.83</td></tr>
+<tr><td>A3</td><td>✕</td><td>✕</td><td>✕</td><td>✓</td><td>✓</td><td>✓</td><td>2.83</td></tr>
+<tr><td>A4</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>0.35 (below the series)</td></tr>
+<tr><td>A5</td><td>✕</td><td>✕</td><td>✓</td><td>✕</td><td>✕</td><td>✓</td><td>√(8 · 16) = 11.31</td></tr>
+<tr><td>A6</td><td>✕</td><td>✕</td><td>✕</td><td>✕</td><td>✓</td><td>✓</td><td>5.66</td></tr>
+</table></div>
+<p>The group threshold is <strong>2.52 g/l</strong>; a standard deviation of 0.52 of the log<sub>10</sub> thresholds means that the individual thresholds differ by more than an order of magnitude (0.35 to 11.3 g/l).</p>
+<div class="warn"><strong>Boundary cases</strong>An assessor who was correct at all concentrations (A4) gets an estimate half a step <em>below</em> the series; one who missed at the highest concentration, half a step <em>above</em> it. In both cases the true threshold is unknown – the series has to be extended.</div>
+
+<h2>The psychometric function</h2>
+<p>If many people are tested at each concentration, the threshold is estimated from the proportion of correct answers. One third of the assessors guess correctly without perceiving anything, so the proportion correct does not start at zero but at 1/3:</p>
+<div class="formula">P(correct) = 1/3 + 2/3 · P(detection),&emsp;&emsp;P(detection) = 1 / (1 + e<sup>−(a + b·log₂ c)</sup>)
+<small>threshold = the concentration at which P(detection) = 0.5, i.e. 2/3 correct answers</small></div>
+<figure>
+<svg viewBox="0 0 640 290" role="img" aria-label="3-AFC psychometric function">
+<line x1="62.0" y1="244.0" x2="616.0" y2="244.0" class="gridl"/>
+<text x="55.0" y="248.0" text-anchor="end" class="t-small">0</text>
+<line x1="62.0" y1="168.7" x2="616.0" y2="168.7" class="gridl"/>
+<text x="55.0" y="172.7" text-anchor="end" class="t-small">1/3</text>
+<line x1="62.0" y1="93.3" x2="616.0" y2="93.3" class="gridl"/>
+<text x="55.0" y="97.3" text-anchor="end" class="t-small">2/3</text>
+<line x1="62.0" y1="18.0" x2="616.0" y2="18.0" class="gridl"/>
+<text x="55.0" y="22.0" text-anchor="end" class="t-small">1</text>
+<line x1="100.2" y1="244.0" x2="100.2" y2="248.0" class="ax"/>
+<text x="100.2" y="261.0" text-anchor="middle" class="t-small">0.5</text>
+<line x1="195.7" y1="244.0" x2="195.7" y2="248.0" class="ax"/>
+<text x="195.7" y="261.0" text-anchor="middle" class="t-small">1</text>
+<line x1="291.2" y1="244.0" x2="291.2" y2="248.0" class="ax"/>
+<text x="291.2" y="261.0" text-anchor="middle" class="t-small">2</text>
+<line x1="386.8" y1="244.0" x2="386.8" y2="248.0" class="ax"/>
+<text x="386.8" y="261.0" text-anchor="middle" class="t-small">4</text>
+<line x1="482.3" y1="244.0" x2="482.3" y2="248.0" class="ax"/>
+<text x="482.3" y="261.0" text-anchor="middle" class="t-small">8</text>
+<line x1="577.8" y1="244.0" x2="577.8" y2="248.0" class="ax"/>
+<text x="577.8" y="261.0" text-anchor="middle" class="t-small">16</text>
+<path d="M62.0,18.0 L62.0,244.0 L616.0,244.0" class="ax"/>
+<text x="339.0" y="282.0" text-anchor="middle">concentration (g/l), log axis</text>
+<text transform="translate(16,131.0) rotate(-90)" text-anchor="middle">proportion correct</text>
+<path d="M62.0,168.6 L66.8,168.6 L71.6,168.6 L76.3,168.6 L81.1,168.5 L85.9,168.5 L90.7,168.5 L95.4,168.5 L100.2,168.5 L105.0,168.5 L109.8,168.4 L114.5,168.4 L119.3,168.4 L124.1,168.3 L128.9,168.3 L133.6,168.2 L138.4,168.2 L143.2,168.1 L148.0,168.1 L152.7,168.0 L157.5,167.9 L162.3,167.8 L167.1,167.7 L171.8,167.6 L176.6,167.5 L181.4,167.3 L186.2,167.2 L190.9,167.0 L195.7,166.8 L200.5,166.6 L205.3,166.3 L210.1,166.1 L214.8,165.7 L219.6,165.4 L224.4,165.0 L229.2,164.6 L233.9,164.1 L238.7,163.6 L243.5,163.0 L248.3,162.3 L253.0,161.6 L257.8,160.8 L262.6,159.9 L267.4,158.9 L272.1,157.7 L276.9,156.5 L281.7,155.2 L286.5,153.7 L291.2,152.1 L296.0,150.3 L300.8,148.4 L305.6,146.3 L310.3,144.1 L315.1,141.6 L319.9,139.0 L324.7,136.2 L329.4,133.1 L334.2,129.9 L339.0,126.6 L343.8,123.0 L348.6,119.3 L353.3,115.4 L358.1,111.4 L362.9,107.3 L367.7,103.1 L372.4,98.8 L377.2,94.5 L382.0,90.2 L386.8,85.9 L391.5,81.7 L396.3,77.5 L401.1,73.4 L405.9,69.5 L410.6,65.7 L415.4,62.0 L420.2,58.6 L425.0,55.3 L429.7,52.1 L434.5,49.2 L439.3,46.5 L444.1,43.9 L448.8,41.6 L453.6,39.4 L458.4,37.4 L463.2,35.5 L467.9,33.8 L472.7,32.3 L477.5,30.9 L482.3,29.6 L487.1,28.4 L491.8,27.4 L496.6,26.4 L501.4,25.5 L506.2,24.8 L510.9,24.1 L515.7,23.4 L520.5,22.9 L525.3,22.3 L530.0,21.9 L534.8,21.5 L539.6,21.1 L544.4,20.8 L549.1,20.5 L553.9,20.2 L558.7,20.0 L563.5,19.8 L568.2,19.6 L573.0,19.4 L577.8,19.3 L582.6,19.1 L587.3,19.0 L592.1,18.9 L596.9,18.8 L601.7,18.7 L606.4,18.6 L611.2,18.6 L616.0,18.5" class="ln1"/>
+<line x1="62.0" y1="93.3" x2="378.5" y2="93.3" class="warnl dash"/>
+<line x1="378.5" y1="244.0" x2="378.5" y2="93.3" class="warnl dash"/>
+<circle cx="100.2" cy="176.2" r="4.5" class="f3"/>
+<circle cx="195.7" cy="161.1" r="4.5" class="f3"/>
+<circle cx="291.2" cy="183.7" r="4.5" class="f3"/>
+<circle cx="386.8" cy="63.2" r="4.5" class="f3"/>
+<circle cx="482.3" cy="40.6" r="4.5" class="f3"/>
+<circle cx="577.8" cy="18.0" r="4.5" class="f3"/>
+<text x="68.0" y="163.7" text-anchor="start" class="t-small">chance level</text>
+<text x="385.5" y="225.9" text-anchor="start" class="t-small t-warn">threshold ≈ 3.8 g/l</text>
+<text x="68.0" y="88.3" text-anchor="start" class="t-small t-warn">50 % detection</text>
+</svg>
+<figcaption>Data from the script (30 assessors at each concentration) and the curve estimated by maximum likelihood. The threshold comes out at 3.77 g/l. At low concentrations the points scatter around the chance level of 1/3.</figcaption>
+</figure>
+<div class="note"><strong>Why not 50 % correct?</strong>In a 3-AFC test, 50 % correct answers mean only 25 % detection (0.5 = 1/3 + 2/3 · 0.25). Without the correction for guessing the threshold would be underestimated.</div>
+
+<section class="solutions"><h2>Task solutions</h2><p>Click to expand a solution. Try the task on your own first – results were verified in R 4.5. The code continues from the variables in the script.</p>
+<details class="sol"><summary>Task 1 <span>– sensitivity of the assessors</span></summary>
+<pre>round(sort(thresholds), 2)</pre>
+<div class="answer"><p>The most sensitive assessor is <strong>A4</strong> (0.35 g/l), the least sensitive <strong>A5</strong> (11.3 g/l). The estimate for A4 is unreliable – they were correct everywhere, so their threshold lies somewhere below 0.5 g/l; the series should be extended downwards (0.25; 0.125 g/l). The answers of A5 are inconsistent and the test would be worth repeating.</p></div></details>
+<details class="sol"><summary>Task 2 <span>– why the correct answer at 2 g/l does not count</span></summary>
+<pre>(1 / 3)^3</pre>
+<div class="answer"><p>After the correct answer at 2 g/l, A5 missed twice (4 and 8 g/l) – so it was probably a lucky guess. BET takes the <em>last</em> miss, not the first correct answer. An assessor who perceives nothing guesses three 3-AFC tests in a row with probability (1/3)³ = <strong>3.7 %</strong>; a single test as often as 33 %.</p></div></details>
+<details class="sol"><summary>Task 3 <span>– BET versus the psychometric function</span></summary>
+<div class="answer"><p>The SAP calculator gives the same individual thresholds and the group threshold of 2.52 g/l. The psychometric function gave 3.77 g/l – but these are different data (30 assessors) and a different definition: BET averages individual thresholds, the model looks for the concentration with 50 % detection in the whole group. With few assessors BET depends strongly on individuals (here A4 and A5).</p></div></details>
+</section>
+
+<section class="related" id="sap"><h2>📚 Related</h2>
+<ul>
+<li><strong>The method in SAP</strong> (Sensory Analysis of Food, in Slovak): <a href="https://senzorika.github.io/SAP/kapitoly/01_uvod_vnimanie_chuti.html">Introduction to sensory science and taste perception</a> · <a href="https://senzorika.github.io/SAP/kapitoly/11_vzorce.html">Formulas and statistical calculations</a></li>
+<li><strong>Calculator</strong> to check the result from R: <a href="https://senzorika.github.io/SAP/kapitoly/01_uvod_vnimanie_chuti.html#kalkulator">detection threshold (BET, 3-AFC)</a></li>
+<li><strong>Standards:</strong> ISO 13301:2018 (thresholds by the 3-AFC procedure) · ASTM E679 (thresholds by an ascending concentration series)</li>
+<li><strong>Literature:</strong> Lawless, H. T. &amp; Heymann, H. (2010). <em>Sensory Evaluation of Food: Principles and Practices</em> (2nd ed.). Springer.</li>
+</ul>
+<p class="small">Editions of the standards and book titles are taken from the verified list <a href="https://senzorika.github.io/SAP/kapitoly/priloha_zdroje.html">SAP – Sources and literature</a> (in Slovak). Recalculation of the numbers on this page: <a href="verification.html">Verification</a>.</p></section>
+<nav class="pager">
+<a class="prev" href="exercise21.html"><span>← Previous</span>21. Sample codes and the Williams design of serving order</a>
+<a class="next" href="exercise23.html"><span>Next →</span>23. Wald's sequential analysis</a>
+</nav>
+</div>
+<script>
+(function () {
+  function copy(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    return Promise.resolve();
+  }
+  document.querySelectorAll('pre:not(.out)').forEach(function (pre) {
+    var text = pre.innerText;
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'copy'; btn.textContent = 'Copy';
+    btn.addEventListener('click', function () {
+      copy(text).then(function () {
+        btn.textContent = 'Copied ✓';
+        setTimeout(function () { btn.textContent = 'Copy'; }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+  var q = document.getElementById('filter');
+  if (q) q.addEventListener('input', function () {
+    var v = q.value.toLowerCase();
+    document.querySelectorAll('.cards a').forEach(function (c) {
+      c.style.display = c.textContent.toLowerCase().indexOf(v) === -1 ? 'none' : '';
+    });
+    document.querySelectorAll('section.block').forEach(function (s) {
+      var any = Array.prototype.some.call(s.querySelectorAll('.cards a'), function (c) { return c.style.display !== 'none'; });
+      s.style.display = any ? '' : 'none';
+    });
+  });
+})();
+</script>
+</body>
+</html>

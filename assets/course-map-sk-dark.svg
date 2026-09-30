@@ -39,4 +39,9 @@
 <text x="1380" y="150" text-anchor="middle" font-size="16" font-weight="700" fill="#eceae4">Kontrolné</text>
 <text x="1380" y="170" text-anchor="middle" font-size="16" font-weight="700" fill="#eceae4">prípadové štúdie</text>
 <text x="1380" y="192" text-anchor="middle" font-size="13" fill="#b8bcc6">cvičenia 19, 20</text>
+<path d="M1235.0,160 C1253.0,160 1253.0,265 1271.0,265" fill="none" stroke="#7d828d" stroke-width="2" marker-end="url(#a)"/>
+<rect x="1275.0" y="225.0" width="210" height="80" rx="12" fill="#1d3a36" stroke="#4cc3ae" stroke-width="2"/>
+<text x="1380" y="255" text-anchor="middle" font-size="16" font-weight="700" fill="#eceae4">Doplnkové</text>
+<text x="1380" y="275" text-anchor="middle" font-size="16" font-weight="700" fill="#eceae4">metódy</text>
+<text x="1380" y="297" text-anchor="middle" font-size="13" fill="#b8bcc6">cvičenia 21 – 25</text>
 </svg>

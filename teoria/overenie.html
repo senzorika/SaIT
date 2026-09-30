@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Overenie výpočtov</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ink-3)"/></marker></defs></svg>
+<div class="wrap">
+<header class="top"><a class="brand" href="index.html">Senzometria v R · teória</a><span class="toplinks"><a href="index.html">Všetky cvičenia</a><a class="lang" href="../theory_EN/verification.html">English</a></span></header>
+
+<section class="hero"><span class="num">SaIT · OVERENIE</span><h1>Overenie výpočtov</h1><p class="lead">Záznam nezávislého prepočtu čísel uvedených v teórii a opráv z revízie 09/2026 – podľa vzoru prílohy „Overenie zdrojov“ v repozitári SAP.</p></section>
+<h2>1. Čo a ako sa overovalo</h2>
+<p>Revízia prebehla 30. 9. 2026 v R 4.5.2. Dôvodom bola skúsenosť zo sesterského repozitára <a href="https://senzorika.github.io/SAP/kapitoly/priloha_overenie.html">SAP</a>, kde kontrola našla chybné tabuľky kritických hodnôt, príklady aj citácie. Postup:</p>
+<ol>
+<li><strong>Spustiteľnosť</strong> – všetkých 58 skriptov (29 slovenských a 29 anglických) sa spustilo v čistej relácii R nástrojom <code>tools/check_scripts.R</code>; všetky prebehli bez chyby.</li>
+<li><strong>Prepočet</strong> – pre každú stránku teórie sa spustil skript cvičenia a po ňom kód zo všetkých riešení úloh; výstup sa porovnal s číslami v texte.</li>
+<li><strong>Normy a literatúra</strong> – do častí „Súvislosti“ sa prevzali len vydania noriem a tituly z overeného zoznamu SAP; DOI článku Pineau et al. (2009) bolo overené v databáze Crossref.</li>
+</ol>
+
+<h2>2. Výsledky prepočtu</h2>
+<div class="tablewrap"><table>
+<tr><th>Cvičenie</th><th>Prepočítané údaje</th><th>Stav</th></tr>
+<tr><td>2</td><td>95 % interval spoľahlivosti [9,22; 10,50]; kvantily t-rozdelenia v tabuľke</td><td>✅</td></tr>
+<tr><td>3</td><td>molové hmotnosti 150,22 a 192,12 g/mol; navážky 37,6 g a 19,2 g; počet oplátok 57 523 – 84 716; mesiace nad priemerom</td><td>✅</td></tr>
+<tr><td>5a</td><td>binomický test 34/60 (p = 0,37), hranica 39 hlasov; triangel 42/100 (p = 0,043; ako párový 0,96); χ² = 19,1; McNemar χ² = 8,0; úloha 1 (t-test p = 0,032, Wilcoxon 0,033)</td><td>✅</td></tr>
+<tr><td>5b</td><td>ANOVA F = 10,3 (p = 0,0005); Kruskal-Wallis H = 12,0 (p = 0,0025); všetkých päť testov v riešení úlohy 1</td><td>✅</td></tr>
+<tr><td>5c</td><td>skript beží (Kruskal-Wallis p = 0,009); tabuľka <code>pairwise.wilcox.test</code> v texte je označená ako ilustračná a nezodpovedá dátam skriptu</td><td>ℹ️</td></tr>
+<tr><td>5d</td><td>zhoda Friedmanovho a Durbinovho testu (χ² = 23,33); parametre plánu t = b = 7, k = r = 3, λ = 1</td><td>✅</td></tr>
+<tr><td>6</td><td>smernica 0,63; korelácie ρ = −0,72; 0,75; 0,53; regresia 0,90 + 0,77 · pevnosť, R² = 0,60</td><td>✅</td></tr>
+<tr><td>7</td><td>73 % variability; vlastné čísla oboch príkladov; 36 % pri parfumoch; priemery vôní a profil tínedžeriek</td><td>✅</td></tr>
+<tr><td>8</td><td>zhluk produktu A (s I a X); vzdialenosti 2,00; 2,15; 2,52</td><td>✅</td></tr>
+<tr><td>9</td><td>χ² test p &lt; 0,001; prvé dve dimenzie 83 % inercie</td><td>✅</td></tr>
+<tr><td>10</td><td>Kaplan-Meier: medián 24 h; Weibull η = 32,3 h, β = 1,59; percentily 7,8 / 14,7 / 25,6 h s intervalmi; Q10 = 2,16; E<sub>a</sub> = 53,1 kJ/mol; predikcia 22,1 dňa</td><td>✅</td></tr>
+<tr><td>11a</td><td>produkt 1 na 8. mieste (2,99); najlepšie 16, 3, 13; PCA 39 % (22 + 17 %); rozsah reach v TURF – <strong>opravené</strong>, pozri nižšie</td><td>🔧</td></tr>
+<tr><td>12</td><td>podiely JAR 59 / 71 / 64 / 12 / 62 / 59 %; tabuľka penalty analýzy; t-testy</td><td>✅</td></tr>
+<tr><td>13</td><td><code>discrim(42, 100)</code>: d′ = 1,01; duo-trio d′ = 1,83; počty 51 / 46 / 30; A – nie A d′ = 0,72; same-different δ = 1,58; beta-binomický model γ = 0,55</td><td>✅</td></tr>
+<tr><td>14</td><td>sila 26 % a n = 350; triangel n = 202 pre d′ = 1, sila 52 % pri n = 100; n = 34 / 64 / 45; úloha 1 (461, 638, 130, 177); δ = 0,72</td><td>✅</td></tr>
+<tr><td>15</td><td>F a p-hodnoty interakcií (MilkF 110, CocoaF 68, Bitterness 63; Melting 0,0002); Session p = 0,012; 7 slabých hodnotiteľov; F 14,6 → 19,8</td><td>✅</td></tr>
+<tr><td>16</td><td>F = 59,9 / 49,9 (140 st. v.); rozptyly 0,82 / 0,41 / 3,14; úloha 1 (singular fit, F = 14,6); úloha 2 (χ² = 2,18; p = 0,14)</td><td>✅</td></tr>
+<tr><td>17</td><td>Cochranov Q (najslabšie p = 0,016); počty začiarknutí; MFA 66 % (39 + 27 %); RV 0,36 a 0,77</td><td>✅</td></tr>
+<tr><td>18</td><td>hranica významnosti 0,32; intervaly dominancie všetkých piatich atribútov</td><td>✅</td></tr>
+<tr><td>21 – 25</td><td>všetky čísla v texte aj v riešeniach (Williamsov dizajn, BET 2,52 g/l, hranice SPRT a simulácia, čiastkové užitočnosti, testy nadradenosti a parity)</td><td>✅</td></tr>
+</table></div>
+<p class="small">✅ zhoda s textom · 🔧 nájdený rozdiel, opravené · ℹ️ bez chyby, s poznámkou. Cvičenia 1, 4 a 11b neobsahujú číselné výsledky viazané na dáta; cvičenia 19 a 20 sú zadania bez uvedených výsledkov.</p>
+
+<h2>3. Nájdené a opravené chyby</h2>
+<div class="tablewrap"><table>
+<tr><th>Kde</th><th>Pôvodný stav</th><th>Oprava</th></tr>
+<tr><td>teória 11a</td><td>poznámka tvrdila, že výsledky TURF sa pri každom spustení líšia a reach je ~87 – 94 %</td><td>skript používa <code>set.seed(123)</code>, výsledky sú reprodukovateľné; skutočný rozsah je 85 – 96 % (trojice) a 91 – 99 % (štvorice)</td></tr>
+<tr><td>teória 5a, skript 5a</td><td>tabuľka uvádzala pre duo-trio a párovú skúšku obojstranný <code>binom.test</code></td><td>rozlišovacie skúšky sú jednostranné (<code>alternative = "greater"</code>), obojstranná je len párová preferencia</td></tr>
+<tr><td>teória 5b</td><td>tabuľka v riešení úlohy 1 mala poškodené HTML (riadky mimo tabuľky)</td><td>opravená štruktúra tabuľky</td></tr>
+<tr><td>skript 10</td><td>každé z 35 hodnotení sa bralo ako nezávislé pozorovanie s presným časom udalosti</td><td>príklad ponechaný ako prvý pohľad; doplnené intervalovo cenzurované dáta, Weibullov model a Q10</td></tr>
+<tr><td>skript 12</td><td>teória odkazovala na penalty analýzu, skript ju neobsahoval</td><td>doplnený výpočet, graf a úlohy</td></tr>
+<tr><td>skripty 3, 5c, 8, 11a</td><td>dáta sa načítavali cez nešifrované <code>http://</code> z externého servera (v cvičení 3 aj spustiteľný kód)</td><td>súbory sú v priečinku <code>datasety/</code> repozitára a načítavajú sa cez <code>https://</code></td></tr>
+</table></div>
+
+<h2>4. Čo overené nebolo</h2>
+<ul>
+<li>Súradnice a popisy v obrázkoch (SVG) sa kontrolovali len tam, kde obrázok uvádza konkrétnu hodnotu z výpočtu.</li>
+<li>Slovné interpretácie a odporúčané hranice („orientačne“, „konvencia“) sú úsudok, nie výpočet.</li>
+<li>Výstupy závislé od siete alebo od voľby používateľa (Google Sheets v cvičení 4, burzové dáta, vlastný text v cvičení 11b).</li>
+<li>Prezentácie – čísla v nich počíta R pri renderovaní, s teóriou sa neporovnávali snímka po snímke.</li>
+<li>Platnosť noriem mimo zoznamu prevzatého zo SAP; pri novom vydaní normy treba údaj aktualizovať v oboch repozitároch.</li>
+</ul>
+
+<h2>5. Ako overenie zopakovať</h2>
+<pre>Rscript tools/check_scripts.R                # dáta z GitHubu, ako ich načítavajú študenti
+Rscript tools/check_scripts.R --local-data   # dáta z lokálneho priečinka datasety/</pre>
+<p>Rovnaká kontrola beží automaticky na GitHube pri každej zmene skriptov (<code>.github/workflows/check.yml</code>) spolu s kontrolou odkazov medzi SaIT a SAP. Pri úprave dát alebo skriptu treba prepočítať aj čísla v texte teórie a v riešeniach úloh.</p>
+</div>
+<script>
+(function () {
+  function copy(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    return Promise.resolve();
+  }
+  document.querySelectorAll('pre:not(.out)').forEach(function (pre) {
+    var text = pre.innerText;
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'copy'; btn.textContent = 'Kopírovať';
+    btn.addEventListener('click', function () {
+      copy(text).then(function () {
+        btn.textContent = 'Skopírované ✓';
+        setTimeout(function () { btn.textContent = 'Kopírovať'; }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+  var q = document.getElementById('filter');
+  if (q) q.addEventListener('input', function () {
+    var v = q.value.toLowerCase();
+    document.querySelectorAll('.cards a').forEach(function (c) {
+      c.style.display = c.textContent.toLowerCase().indexOf(v) === -1 ? 'none' : '';
+    });
+    document.querySelectorAll('section.block').forEach(function (s) {
+      var any = Array.prototype.some.call(s.querySelectorAll('.cards a'), function (c) { return c.style.display !== 'none'; });
+      s.style.display = any ? '' : 'none';
+    });
+  });
+})();
+</script>
+</body>
+</html>

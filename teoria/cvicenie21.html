@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>21. Kódy vzoriek a Williamsov dizajn poradia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ink-3)"/></marker></defs></svg>
+<div class="wrap">
+<header class="top"><a class="brand" href="index.html">Senzometria v R · teória</a><span class="toplinks"><a href="index.html">Všetky cvičenia</a><a class="lang" href="../theory_EN/exercise21.html">English</a></span></header>
+
+<section class="hero"><span class="num">CVIČENIE 21</span><h1>Kódy vzoriek a Williamsov dizajn poradia</h1><p class="lead">Ako pripraviť plán podávania: náhodné trojciferné kódy a poradie vyvážené na pozíciu aj na predchádzajúcu vzorku.</p>
+<div class="files"><a href="../cvicenie21.R">Skript (SK): cvicenie21.R</a><a href="../exercises_EN/exercise21.R">Script (EN): exercise21.R</a></div></section>
+<div class="goals"><h2>Čo sa naučíte</h2><ul>
+<li>vysvetliť, prečo sa vzorky kódujú a prečo záleží na poradí podávania,</li>
+<li>zostrojiť Williamsov dizajn pre párny aj nepárny počet vzoriek,</li>
+<li>overiť vyváženie plánu tabuľkou pozícií a tabuľkou prenosu.</li>
+</ul></div>
+
+<h2>Prečo kódy a prečo poradie</h2>
+<p>Hodnotiteľ nemá o vzorke vedieť nič okrem toho, čo vníma. Označenie „A“ alebo „1“ naznačuje poradie či kvalitu, preto sa vzorky označujú <strong>náhodnými trojcifernými kódmi</strong>. Druhým zdrojom skreslenia je poradie, v akom vzorky prichádzajú:</p>
+<div class="tablewrap"><table>
+<tr><th>Efekt</th><th>Čo spôsobuje</th><th>Riešenie</th></tr>
+<tr><td>očakávanie</td><td>označenie vzorky napovie, ktorá má byť „lepšia“</td><td>náhodné trojciferné kódy</td></tr>
+<tr><td>pozícia</td><td>prvá vzorka býva hodnotená inak ako posledná (hlad, únava, adaptácia)</td><td>každá vzorka rovnako často na každej pozícii</td></tr>
+<tr><td>prenos (carry-over)</td><td>vnem ovplyvní predchádzajúca vzorka – po veľmi horkej sa ďalšia zdá menej horká</td><td>každá vzorka rovnako často po každej inej</td></tr>
+</table></div>
+<p>Úplne náhodné poradie tieto efekty vyrovná len <em>v priemere</em> a pri veľkom paneli. Pri 10 – 20 hodnotiteľoch je lepšie poradie <strong>vyvážiť</strong>.</p>
+
+<h2>Williamsov dizajn</h2>
+<p>Williamsov dizajn (Williams, 1949) je latinský štvorec s vlastnosťou navyše: každá vzorka nasleduje po každej inej rovnako často. Tým vyvažuje pozíciu aj prenosový efekt prvého rádu.</p>
+<figure>
+<svg viewBox="0 0 640 204" role="img" aria-label="Williamsov dizajn pre 4 vzorky">
+<text x="192" y="24" text-anchor="middle" class="t-small">1. pozícia</text>
+<text x="276" y="24" text-anchor="middle" class="t-small">2. pozícia</text>
+<text x="360" y="24" text-anchor="middle" class="t-small">3. pozícia</text>
+<text x="444" y="24" text-anchor="middle" class="t-small">4. pozícia</text>
+<text x="138" y="59" text-anchor="end" class="t-strong">hodnotiteľ 1</text>
+<rect x="153" y="37" width="78" height="34" rx="6" class="f1 op2"/>
+<text x="192" y="59" text-anchor="middle" class="t-strong">A</text>
+<rect x="237" y="37" width="78" height="34" rx="6" class="f2 op2"/>
+<text x="276" y="59" text-anchor="middle" class="t-strong">B</text>
+<rect x="321" y="37" width="78" height="34" rx="6" class="f5 op2"/>
+<text x="360" y="59" text-anchor="middle" class="t-strong">D</text>
+<rect x="405" y="37" width="78" height="34" rx="6" class="f3 op2"/>
+<text x="444" y="59" text-anchor="middle" class="t-strong">C</text>
+<text x="138" y="99" text-anchor="end" class="t-strong">hodnotiteľ 2</text>
+<rect x="153" y="77" width="78" height="34" rx="6" class="f2 op2"/>
+<text x="192" y="99" text-anchor="middle" class="t-strong">B</text>
+<rect x="237" y="77" width="78" height="34" rx="6" class="f3 op2"/>
+<text x="276" y="99" text-anchor="middle" class="t-strong">C</text>
+<rect x="321" y="77" width="78" height="34" rx="6" class="f1 op2"/>
+<text x="360" y="99" text-anchor="middle" class="t-strong">A</text>
+<rect x="405" y="77" width="78" height="34" rx="6" class="f5 op2"/>
+<text x="444" y="99" text-anchor="middle" class="t-strong">D</text>
+<text x="138" y="139" text-anchor="end" class="t-strong">hodnotiteľ 3</text>
+<rect x="153" y="117" width="78" height="34" rx="6" class="f3 op2"/>
+<text x="192" y="139" text-anchor="middle" class="t-strong">C</text>
+<rect x="237" y="117" width="78" height="34" rx="6" class="f5 op2"/>
+<text x="276" y="139" text-anchor="middle" class="t-strong">D</text>
+<rect x="321" y="117" width="78" height="34" rx="6" class="f2 op2"/>
+<text x="360" y="139" text-anchor="middle" class="t-strong">B</text>
+<rect x="405" y="117" width="78" height="34" rx="6" class="f1 op2"/>
+<text x="444" y="139" text-anchor="middle" class="t-strong">A</text>
+<text x="138" y="179" text-anchor="end" class="t-strong">hodnotiteľ 4</text>
+<rect x="153" y="157" width="78" height="34" rx="6" class="f5 op2"/>
+<text x="192" y="179" text-anchor="middle" class="t-strong">D</text>
+<rect x="237" y="157" width="78" height="34" rx="6" class="f1 op2"/>
+<text x="276" y="179" text-anchor="middle" class="t-strong">A</text>
+<rect x="321" y="157" width="78" height="34" rx="6" class="f3 op2"/>
+<text x="360" y="179" text-anchor="middle" class="t-strong">C</text>
+<rect x="405" y="157" width="78" height="34" rx="6" class="f2 op2"/>
+<text x="444" y="179" text-anchor="middle" class="t-strong">B</text>
+</svg>
+<figcaption>Williamsov dizajn pre 4 vzorky. V každom stĺpci (pozícii) je každá vzorka práve raz a každá usporiadaná dvojica susedov (napr. A → B) sa vyskytne práve raz.</figcaption>
+</figure>
+<div class="formula">prvé poradie: 0, 1, k − 1, 2, k − 2, …&emsp;&emsp;ďalšie: + 1 (mod k)
+<small>k – počet vzoriek; pri nepárnom k sa pridá zrkadlový obraz štvorca (každé poradie odzadu)</small></div>
+<div class="tablewrap"><table>
+<tr><th>Počet vzoriek k</th><th>Počet poradí</th><th>Panel pre úplné vyváženie</th></tr>
+<tr><td>3</td><td>6</td><td>6, 12, 18, …</td></tr>
+<tr><td>4</td><td>4</td><td>4, 8, 12, …</td></tr>
+<tr><td>5</td><td>10</td><td>10, 20, 30, …</td></tr>
+<tr><td>6</td><td>6</td><td>6, 12, 18, …</td></tr>
+</table></div>
+
+<h2>Kontrola vyváženia</h2>
+<p>Plán overíme dvoma tabuľkami: <em>vzorka × pozícia</em> a <em>predchádzajúca × nasledujúca vzorka</em>. Vo vyváženom pláne sú všetky bunky rovnaké.</p>
+<pre>prenos(poradia)                  # Williamsov dizajn, 4 poradia
+
+              nasledujuca
+predchadzajuca A B C D
+             A 0 1 1 1
+             B 1 0 1 1
+             C 1 1 0 1
+             D 1 1 1 0</pre>
+<p>Rovnaká kontrola pre 12 hodnotiteľov s úplne náhodným poradím (časť 4 skriptu) ukáže, čo sa stane bez vyváženia: vzorka D je na prvej pozícii len raz, ale na tretej a štvrtej päťkrát; po vzorke C nasleduje D šesťkrát, A iba raz.</p>
+<div class="warn"><strong>Vyváženie platí len pre celé násobky</strong>Ak počet hodnotiteľov nie je násobkom počtu poradí (alebo niekto nepríde), plán je vyvážený len približne. Počet hodnotiteľov preto plánujte spolu s dizajnom.</div>
+<div class="note"><strong>Priveľa vzoriek?</strong>Ak hodnotiteľ nezvládne ochutnať všetky vzorky, použije sa vyvážené neúplné blokové usporiadanie – <a href="cvicenie05d.html">cvičenie 5d</a>.</div>
+
+<section class="solutions"><h2>Riešenia úloh</h2><p>Kliknutím rozbalíte riešenie. Skúste úlohu najprv vyriešiť sami – výsledky sú overené v R 4.5. Kód nadväzuje na premenné zo skriptu.</p>
+<details class="sol"><summary>Úloha 1 <span>– plán pre 5 vzoriek a 20 hodnotiteľov</span></summary>
+<pre>vzorky &lt;- c("A", "B", "C", "D", "E")
+poradia &lt;- williams(5)
+nrow(poradia)
+riadky &lt;- sample(rep(seq_len(nrow(poradia)), length.out = 20))
+table(riadky)</pre>
+<div class="answer"><p>Pri nepárnom počte vzoriek má Williamsov dizajn <strong>2 × 5 = 10 poradí</strong>. Pri 20 hodnotiteľoch sa každé použije <strong>dvakrát</strong> – plán je úplne vyvážený: každá vzorka je na každej pozícii 4-krát a každá dvojica susedov sa vyskytne 4-krát.</p></div></details>
+<details class="sol"><summary>Úloha 2 <span>– 6 vzoriek, 15 hodnotiteľov</span></summary>
+<pre>vzorky &lt;- LETTERS[1:6]
+poradia &lt;- williams(6)
+riadky &lt;- sample(rep(1:6, length.out = 15))
+p &lt;- poradia[riadky, ]
+table(vzorka = vzorky[p], pozicia = col(p))
+prenos(p)</pre>
+<div class="answer"><p>Pre 6 vzoriek existuje <strong>6 poradí</strong>. 15 nie je násobok 6, takže tri poradia sa použijú 3-krát a tri len 2-krát: v tabuľke pozícií aj prenosu sú hodnoty 2 a 3 namiesto rovnakých čísel. Úplné vyváženie dosiahneme s <strong>12 alebo 18</strong> hodnotiteľmi.</p></div></details>
+<details class="sol"><summary>Úloha 3 <span>– len 3 zo 6 vzoriek</span></summary>
+<div class="answer"><p>Ak každý hodnotiteľ ochutná len časť vzoriek, úplný blok nahradí <strong>vyvážený neúplný blok</strong> (BIB): každá dvojica vzoriek sa stretne u rovnakého počtu hodnotiteľov. Pre 6 vzoriek po 3 treba 10 blokov (hodnotiteľov) alebo ich násobok; vyhodnocuje sa Durbinovým testom (cvičenie 5d).</p></div></details>
+</section>
+
+<section class="related" id="sap"><h2>📚 Súvislosti</h2>
+<ul>
+<li><strong>Metóda v SAP</strong> (Senzorická analýza potravín): <a href="https://senzorika.github.io/SAP/kapitoly/02_laboratorium.html">Senzorické laboratórium a panel</a></li>
+<li><strong>Kalkulátor</strong> na overenie výsledku z R: <a href="https://senzorika.github.io/SAP/kapitoly/02_laboratorium.html#kalkulator">trojciferné kódy a Williamsov dizajn poradia</a></li>
+<li><strong>Normy:</strong> ISO 6658:2017 (všeobecné pokyny k metodike) · ISO 29842:2011 (vyvážené neúplné bloky)</li>
+<li><strong>Literatúra:</strong> Lawless, H. T. &amp; Heymann, H. (2010). <em>Sensory Evaluation of Food: Principles and Practices</em> (2nd ed.). Springer.</li>
+</ul>
+<p class="small">Vydania noriem a tituly sú prevzaté z overeného zoznamu <a href="https://senzorika.github.io/SAP/kapitoly/priloha_zdroje.html">SAP – Zdroje a literatúra</a>. Prepočet čísel na tejto stránke: <a href="overenie.html">Overenie</a>.</p></section>
+<nav class="pager">
+<a class="prev" href="cvicenie20.html"><span>← Predchádzajúce</span>20. Kontrolné prípadové štúdie II</a>
+<a class="next" href="cvicenie22.html"><span>Nasledujúce →</span>22. Prah citlivosti – 3-AFC a metóda BET</a>
+</nav>
+</div>
+<script>
+(function () {
+  function copy(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    return Promise.resolve();
+  }
+  document.querySelectorAll('pre:not(.out)').forEach(function (pre) {
+    var text = pre.innerText;
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'copy'; btn.textContent = 'Kopírovať';
+    btn.addEventListener('click', function () {
+      copy(text).then(function () {
+        btn.textContent = 'Skopírované ✓';
+        setTimeout(function () { btn.textContent = 'Kopírovať'; }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+  var q = document.getElementById('filter');
+  if (q) q.addEventListener('input', function () {
+    var v = q.value.toLowerCase();
+    document.querySelectorAll('.cards a').forEach(function (c) {
+      c.style.display = c.textContent.toLowerCase().indexOf(v) === -1 ? 'none' : '';
+    });
+    document.querySelectorAll('section.block').forEach(function (s) {
+      var any = Array.prototype.some.call(s.querySelectorAll('.cards a'), function (c) { return c.style.display !== 'none'; });
+      s.style.display = any ? '' : 'none';
+    });
+  });
+})();
+</script>
+</body>
+</html>

@@ -72,8 +72,8 @@
 <p>In a paired (duo) or triangle test every assessor has two outcomes: correct / incorrect. If everyone were only guessing, the number of “correct” answers would follow a binomial distribution with the guessing probability <em>p</em>:</p>
 <div class="tablewrap"><table>
 <tr><th>Test</th><th>Number of samples</th><th>Guessing probability</th><th>R</th></tr>
-<tr><td>paired (duo), paired preference</td><td>2</td><td>1/2</td><td><code>binom.test(x, n, p = 0.5)</code></td></tr>
-<tr><td>duo-trio</td><td>1 + 2</td><td>1/2</td><td><code>binom.test(x, n, p = 0.5)</code></td></tr>
+<tr><td>paired preference (which one tastes better?)</td><td>2</td><td>1/2</td><td><code>binom.test(x, n, p = 0.5)</code> – two-sided</td></tr>
+<tr><td>directional paired (which one is sweeter?), duo-trio</td><td>2 or 1 + 2</td><td>1/2</td><td><code>binom.test(x, n, p = 0.5, alternative = "greater")</code></td></tr>
 <tr><td>triangle</td><td>3</td><td>1/3</td><td><code>binom.test(x, n, p = 1/3, alternative = "greater")</code></td></tr>
 </table></div>
 <figure>
@@ -172,6 +172,15 @@ binom.test(42, 100, p = 1/2, alternative = &quot;greater&quot;)   # as if it wer
 <pre>chisq.test(c(strawberry = 25, chocolate = 34, vanilla = 17, blueberry = 7))</pre>
 <div class="answer"><p>χ² = 19.1; df = 3; <strong>p = 0.0003</strong> – preferences are not uniform. Chocolate is chosen more often and blueberry less often than chance would suggest.</p></div></details>
 </section>
+
+<section class="related" id="sap"><h2>📚 Related</h2>
+<ul>
+<li><strong>The method in SAP</strong> (Sensory Analysis of Food, in Slovak): <a href="https://senzorika.github.io/SAP/kapitoly/04_iso_metody.html">ISO standards and standard tests</a> · <a href="https://senzorika.github.io/SAP/kapitoly/05_diskriminacne_metody.html">Discrimination methods</a> · <a href="https://senzorika.github.io/SAP/kapitoly/11_vzorce.html">Formulas and statistical calculations</a></li>
+<li><strong>Calculator</strong> to check the result from R: <a href="https://senzorika.github.io/SAP/kapitoly/04_iso_metody.html#kalkulator">evaluation of a discrimination test (difference, similarity)</a> · <a href="https://senzorika.github.io/SAP/kapitoly/11_vzorce.html#kalkulator">descriptive statistics and t-test</a></li>
+<li><strong>Standards:</strong> ISO 4120:2021 (triangle test) · ISO 5495:2005 (paired comparison test) · ISO 10399:2017 (duo-trio test)</li>
+<li><strong>Literature:</strong> Lawless, H. T. &amp; Heymann, H. (2010). <em>Sensory Evaluation of Food: Principles and Practices</em> (2nd ed.). Springer. Bi, J. (2006). <em>Sensory Discrimination Tests and Measurements</em>. Blackwell.</li>
+</ul>
+<p class="small">Editions of the standards and book titles are taken from the verified list <a href="https://senzorika.github.io/SAP/kapitoly/priloha_zdroje.html">SAP – Sources and literature</a> (in Slovak). Recalculation of the numbers on this page: <a href="verification.html">Verification</a>.</p></section>
 <nav class="pager">
 <a class="prev" href="exercise04.html"><span>← Previous</span>4. Charts and data visualisation</a>
 <a class="next" href="exercise05b.html"><span>Next →</span>5b. Comparing several samples</a>

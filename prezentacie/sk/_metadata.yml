@@ -4,7 +4,7 @@ format:
   revealjs:
     theme: [default, ../theme.scss]
     slide-number: true
-    embed-resources: true
+    embed-resources: false
     code-copy: true
     highlight-style: github
     code-overflow: wrap

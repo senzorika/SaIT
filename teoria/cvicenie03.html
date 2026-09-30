@@ -145,15 +145,15 @@
 <div class="note"><strong>Stĺpce data.frame cez <code>$</code></strong>Po vytvorení tabuľky <code>rok</code> pristupujeme k jej stĺpcom zápisom <code>rok$spotrebacokolady</code>. Zápis bez tabuľky funguje len vtedy, ak rovnomenná premenná náhodou existuje aj samostatne – po načítaní dát zo súboru (<code>read.table</code>) už nie.</div>
 
 <h2>Načítanie dát zo siete</h2>
-<pre>source("http://senzorika.com/sait/datasety/mol.txt")        # spustí R kód zo súboru
-vysledky &lt;- read.table("http://…/export.txt", sep = ",")   # načíta tabuľku
+<pre>source("https://raw.githubusercontent.com/senzorika/SaIT/master/datasety/mol.txt")        # spustí R kód zo súboru
+vysledky &lt;- read.table("https://…/export.txt", sep = ",")   # načíta tabuľku
 str(vysledky)    # typy stĺpcov – vždy skontrolujte po načítaní
 head(vysledky)   # prvých 6 riadkov</pre>
 <p><code>source()</code> vykoná kód (definuje premenné, funkcie), <code>read.table()</code> iba načíta dáta. Súbory zo siete otvárajte len z dôveryhodných zdrojov – <code>source()</code> spustí čokoľvek, čo v súbore je.</p>
 
 <section class="solutions"><h2>Riešenia úloh</h2><p>Kliknutím rozbalíte riešenie. Skúste úlohu najprv vyriešiť sami – výsledky sú overené v R 4.4. Kód nadväzuje na premenné zo skriptu.</p>
 <details class="sol"><summary>Úloha 1 <span>– molové hmotnosti</span></summary>
-<pre>source(&quot;http://senzorika.com/sait/datasety/mol.txt&quot;)   # definuje C, H, K, O ...
+<pre>source(&quot;https://raw.githubusercontent.com/senzorika/SaIT/master/datasety/mol.txt&quot;)   # definuje C, H, K, O ...
 sorban &lt;- 6 * C + 7 * H + K + 2 * O    # sorban draselny C6H7KO2
 citronova &lt;- 6 * C + 8 * H + 7 * O     # kyselina citronova C6H8O7
 c(sorban, citronova)
@@ -168,7 +168,7 @@ melony$textura &lt;- sample(1:9, nrow(melony), replace = TRUE)
 write.table(melony, &quot;melony.txt&quot;, sep = &quot;,&quot;, row.names = FALSE)</pre>
 <div class="answer"><p><code>expand.grid()</code> vytvorí všetky kombinácie hodnotiteľ × výrobok (12 riadkov), každý znak je náhodné celé číslo 1 – 9. Súbor sa uloží do pracovného priečinka (<code>getwd()</code>).</p></div></details>
 <details class="sol"><summary>Úloha 3 <span>– počet oplátok a nadprodukcia</span></summary>
-<pre>cokolada &lt;- read.table(&quot;http://senzorika.com/sait/datasety/cokolada.txt&quot;, sep = &quot;,&quot;, header = TRUE)
+<pre>cokolada &lt;- read.table(&quot;https://raw.githubusercontent.com/senzorika/SaIT/master/datasety/cokolada.txt&quot;, sep = &quot;,&quot;, header = TRUE)
 plocha &lt;- 2 * pi * 3.5^2 + pi * 7 * 1.5        # dve podstavy + plast valca (cm2)
 na_kus &lt;- plocha / 100 * 0.02                   # litre cokolady na 1 kus
 cokolada$vyrobenekusy &lt;- round(cokolada$spotrebacokolady / na_kus)
@@ -177,6 +177,15 @@ abline(h = mean(cokolada$vyrobenekusy), col = &quot;red&quot;)
 cokolada$mesiace[cokolada$vyrobenekusy &gt; mean(cokolada$vyrobenekusy)]</pre>
 <div class="answer"><p>Povrch oplátky je 110 cm², na kus teda treba 0,022 l čokolády. Mesačne sa vyrobí 57 523 (máj) až 84 716 (november) kusov. <strong>Bonus:</strong> nad priemerom sú február, august, október, november a december.</p></div></details>
 </section>
+
+<section class="related" id="sap"><h2>📚 Súvislosti</h2>
+<ul>
+<li><strong>Metóda v SAP</strong> (Senzorická analýza potravín): <a href="https://senzorika.github.io/SAP/kapitoly/02_laboratorium.html">Senzorické laboratórium a panel</a> · <a href="https://senzorika.github.io/SAP/kapitoly/11_vzorce.html">Vzorce a štatistické výpočty</a></li>
+<li><strong>Kalkulátor</strong> na overenie výsledku z R: <a href="https://senzorika.github.io/SAP/kapitoly/02_laboratorium.html#kalkulator">trojciferné kódy a Williamsov dizajn poradia</a></li>
+<li><strong>Normy:</strong> ISO 6658:2017 (všeobecné pokyny k metodike)</li>
+<li><strong>Literatúra:</strong> Lawless, H. T. &amp; Heymann, H. (2010). <em>Sensory Evaluation of Food: Principles and Practices</em> (2nd ed.). Springer.</li>
+</ul>
+<p class="small">Vydania noriem a tituly sú prevzaté z overeného zoznamu <a href="https://senzorika.github.io/SAP/kapitoly/priloha_zdroje.html">SAP – Zdroje a literatúra</a>. Prepočet čísel na tejto stránke: <a href="overenie.html">Overenie</a>.</p></section>
 <nav class="pager">
 <a class="prev" href="cvicenie02.html"><span>← Predchádzajúce</span>2. BCG matica a interval spoľahlivosti</a>
 <a class="next" href="cvicenie04.html"><span>Nasledujúce →</span>4. Grafy a vizualizácia dát</a>

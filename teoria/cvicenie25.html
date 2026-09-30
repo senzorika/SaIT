@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>25. Senzorické tvrdenia – nadradenosť a parita</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ink-3)"/></marker></defs></svg>
+<div class="wrap">
+<header class="top"><a class="brand" href="index.html">Senzometria v R · teória</a><span class="toplinks"><a href="index.html">Všetky cvičenia</a><a class="lang" href="../theory_EN/exercise25.html">English</a></span></header>
+
+<section class="hero"><span class="num">CVIČENIE 25</span><h1>Senzorické tvrdenia – nadradenosť a parita</h1><p class="lead">Čo musí test preukázať, aby obstálo tvrdenie „chutí lepšie“ alebo „chutí rovnako“: test preferencie, test ekvivalencie a atribútové tvrdenie.</p>
+<div class="files"><a href="../cvicenie25.R">Skript (SK): cvicenie25.R</a><a href="../exercises_EN/exercise25.R">Script (EN): exercise25.R</a></div></section>
+<div class="goals"><h2>Čo sa naučíte</h2><ul>
+<li>rozlíšiť tvrdenie o nadradenosti, parite a atribútové tvrdenie a priradiť im správnu hypotézu,</li>
+<li>vyhodnotiť párový preferenčný test vrátane odpovedí „bez preferencie“,</li>
+<li>preukázať paritu testom ekvivalencie a určiť potrebný počet spotrebiteľov.</li>
+</ul></div>
+
+<h2>Typy tvrdení a ich hypotézy</h2>
+<p>Senzorické tvrdenie (claim) na obale alebo v reklame musí byť podložené testom. Rozhodujúce je, <em>čo</em> tvrdíme – od toho závisí nulová hypotéza:</p>
+<div class="tablewrap"><table>
+<tr><th>Tvrdenie</th><th>Čo treba preukázať</th><th>Test</th></tr>
+<tr><td>nadradenosť – „spotrebitelia uprednostňujú A“</td><td>podiel preferencie A &gt; 50 %</td><td>obojstranný binomický test</td></tr>
+<tr><td>parita – „rovnako obľúbený ako B“</td><td>podiel leží v úzkom pásme okolo 50 %</td><td>test ekvivalencie</td></tr>
+<tr><td>neprekonaný – „žiadny nechutí lepšie“</td><td>podiel A nie je pod 50 % − pásmo</td><td>jednostranný test</td></tr>
+<tr><td>atribútové – „intenzívna chuť“</td><td>priemer deskriptora ≥ stanovená hranica</td><td>interval spoľahlivosti, t-test</td></tr>
+</table></div>
+
+<h2>Nadradenosť</h2>
+<p>Z 300 spotrebiteľov preferovalo 172 produkt A (57,3 %). Obojstranný binomický test dá p = 0,013 a 95 % interval spoľahlivosti 51,5 – 63,0 % → tvrdenie „uprednostňovaný pred B“ je štatisticky podložené.</p>
+<div class="note"><strong>Odpovede „bez preferencie“</strong>Ak sú povolené, treba ich spracovanie určiť <em>pred</em> testom. Pri 150 : 110 a 40 odpovediach „bez preferencie“ dá vylúčenie p = 0,015 (150 z 260), rovnomerné rozdelenie p = 0,024 (170 z 300). Vyberať spôsob až podľa výsledku je neprípustné.</div>
+
+<h2>Parita – test ekvivalencie</h2>
+<p>Nepreukázaný rozdiel paritu nedokazuje – mohol byť len malý panel. Paritu treba preukázať aktívne: (1 − 2α) interval spoľahlivosti podielu musí <strong>celý</strong> ležať vo vopred určenom pásme 50 % ± pásmo (tu ± 10 percentuálnych bodov, α = 0,05, teda 90 % interval).</p>
+<figure>
+<svg viewBox="0 0 640 230" role="img" aria-label="Test parity">
+<rect x="219.8" y="18.0" width="247.6" height="166.0" class="fa"/>
+<line x1="96.0" y1="184.0" x2="96.0" y2="188.0" class="ax"/>
+<text x="96.0" y="201.0" text-anchor="middle" class="t-small">30 %</text>
+<line x1="219.8" y1="184.0" x2="219.8" y2="188.0" class="ax"/>
+<text x="219.8" y="201.0" text-anchor="middle" class="t-small">40 %</text>
+<line x1="343.6" y1="184.0" x2="343.6" y2="188.0" class="ax"/>
+<text x="343.6" y="201.0" text-anchor="middle" class="t-small">50 %</text>
+<line x1="467.4" y1="184.0" x2="467.4" y2="188.0" class="ax"/>
+<text x="467.4" y="201.0" text-anchor="middle" class="t-small">60 %</text>
+<line x1="591.2" y1="184.0" x2="591.2" y2="188.0" class="ax"/>
+<text x="591.2" y="201.0" text-anchor="middle" class="t-small">70 %</text>
+<path d="M96.0,18.0 L96.0,184.0 L616.0,184.0" class="ax"/>
+<text x="356.0" y="222.0" text-anchor="middle">podiel preferencie A (90 % interval spoľahlivosti)</text>
+<text transform="translate(16,101.0) rotate(-90)" text-anchor="middle"></text>
+<line x1="343.6" y1="184.0" x2="343.6" y2="18.0" class="ax dash"/>
+<line x1="373.3" y1="51.2" x2="493.4" y2="51.2" class="ln2"/>
+<circle cx="434.0" cy="51.2" r="5" class="f2"/>
+<text x="86.0" y="55.2" text-anchor="end" class="t-strong">172 / 300</text>
+<text x="501.4" y="55.2" text-anchor="start" class="t-small t-warn">parita ✗</text>
+<line x1="299.0" y1="96.8" x2="420.4" y2="96.8" class="ln1"/>
+<circle cx="359.7" cy="96.8" r="5" class="f1"/>
+<text x="86.0" y="100.8" text-anchor="end" class="t-strong">154 / 300</text>
+<text x="428.4" y="100.8" text-anchor="start" class="t-small t-acc">parita ✓</text>
+<line x1="223.5" y1="142.5" x2="503.3" y2="142.5" class="ln2"/>
+<circle cx="364.7" cy="142.5" r="5" class="f2"/>
+<text x="86.0" y="146.5" text-anchor="end" class="t-strong">31 / 60</text>
+<text x="511.3" y="146.5" text-anchor="start" class="t-small t-warn">parita ✗</text>
+<text x="343.6" y="31.0" text-anchor="middle" class="t-small t-acc">pásmo parity 40 – 60 %</text>
+</svg>
+<figcaption>Tri výsledky zo skriptu. 154 z 300 (51 %) paritu podkladá. 31 zo 60 má takmer rovnaký podiel (52 %), ale interval 40 – 63 % je priširoký – pri malom počte spotrebiteľov sa parita preukázať nedá. Pri 172 z 300 interval presahuje hornú hranicu pásma.</figcaption>
+</figure>
+<div class="tablewrap"><table>
+<tr><th>Počet spotrebiteľov</th><th>60</th><th>100</th><th>150</th><th>200</th><th>300</th><th>400</th></tr>
+<tr><td>sila testu parity (skutočná preferencia 50 : 50)</td><td>0 %</td><td>24 %</td><td>54 %</td><td>77 %</td><td>93 %</td><td>98 %</td></tr>
+</table></div>
+<p>Pri pásme ± 10 p. b. treba na 80 % silu približne 220 spotrebiteľov, pri prísnejšom pásme ± 5 p. b. približne 880.</p>
+
+<h2>Atribútové tvrdenie</h2>
+<p>Tvrdenie „intenzívna chuť“ definujme ako priemer aspoň 7 na 10-bodovej škále. Panel 12 hodnotiteľov dal priemer 7,5 so smerodajnou odchýlkou 1,2:</p>
+<div class="formula">95 % IS = 7,5 ± 2,201 · 1,2 / √12 = 6,74 – 8,26
+<small>dolná hranica 6,74 &lt; 7 → tvrdenie nie je podložené, hoci priemer hranicu prekračuje</small></div>
+<p>Jednostranný t-test proti hodnote 7 dá p = 0,088. Na odlíšenie priemeru 7,5 od hranice 7 so silou 80 % by bolo treba približne 38 hodnotení.</p>
+<div class="warn"><strong>Štatistika nestačí</strong>Tvrdenie musí stáť na reprezentatívnej vzorke cieľových spotrebiteľov, aktuálnych produktoch z trhu a vopred spísanom protokole (pásmo parity, α, spracovanie odpovedí „bez preferencie“). Právny rámec a metodické normy sú zhrnuté v kapitole SAP o senzorických tvrdeniach.</div>
+
+<section class="solutions"><h2>Riešenia úloh</h2><p>Kliknutím rozbalíte riešenie. Skúste úlohu najprv vyriešiť sami – výsledky sú overené v R 4.5. Kód nadväzuje na premenné zo skriptu.</p>
+<details class="sol"><summary>Úloha 1 <span>– 140 z 250 preferuje A</span></summary>
+<pre>binom.test(140, 250, p = 0.5)
+parita(140, 250)</pre>
+<div class="answer"><p>Podiel je 56 %, p = 0,066 → nadradenosť <strong>nie je podložená</strong>. 90 % interval spoľahlivosti 50,6 – 61,3 % presahuje hornú hranicu pásma 60 % → <strong>ani parita nie je podložená</strong>. Výsledok je nerozhodný: na žiadne z oboch tvrdení test nestačí.</p></div></details>
+<details class="sol"><summary>Úloha 2 <span>– počet spotrebiteľov pre paritu</span></summary>
+<pre>sapply(c(200, 214, 230), sila_parity)
+sapply(c(860, 880, 900), sila_parity, pasmo = 0.05)</pre>
+<div class="answer"><p>Pri pásme ± 10 p. b. prekročí sila 80 % pri približne <strong>220</strong> spotrebiteľoch (pre binomické rozdelenie sila s n mierne kolíše, prvýkrát pri n = 214). Pri pásme ± 5 p. b. treba približne <strong>880</strong> – polovičné pásmo znamená štvornásobný počet.</p></div></details>
+<details class="sol"><summary>Úloha 3 <span>– prečo nevýznamný rozdiel nestačí</span></summary>
+<pre>parita(31, 60)</pre>
+<div class="answer"><p>Kalkulátor SAP dá pre 172 : 128 rovnaký výsledok (p = 0,013; parita nepodložená). Nevýznamný výsledok znamená len „rozdiel sa nepodarilo preukázať“ – pri 60 spotrebiteľoch by nevýznamne vyšlo aj 60 : 40. Tvrdenie „chutí rovnako“ preto vyžaduje test ekvivalencie s vopred určeným pásmom a dostatočne veľkou vzorkou.</p></div></details>
+</section>
+
+<section class="related" id="sap"><h2>📚 Súvislosti</h2>
+<ul>
+<li><strong>Metóda v SAP</strong> (Senzorická analýza potravín): <a href="https://senzorika.github.io/SAP/kapitoly/09_claims.html">Senzorické tvrdenia (claims)</a> · <a href="https://senzorika.github.io/SAP/kapitoly/05_diskriminacne_metody.html">Diskriminačné metódy</a></li>
+<li><strong>Kalkulátor</strong> na overenie výsledku z R: <a href="https://senzorika.github.io/SAP/kapitoly/09_claims.html#kalkulator">párový preferenčný test – nadradenosť, parita</a></li>
+<li><strong>Normy:</strong> ASTM E1958 (podloženie senzorických tvrdení) · ASTM E2263 (párový preferenčný test) · ISO 5495:2005 (párová porovnávacia skúška)</li>
+</ul>
+<p class="small">Vydania noriem a tituly sú prevzaté z overeného zoznamu <a href="https://senzorika.github.io/SAP/kapitoly/priloha_zdroje.html">SAP – Zdroje a literatúra</a>. Prepočet čísel na tejto stránke: <a href="overenie.html">Overenie</a>.</p></section>
+<nav class="pager">
+<a class="prev" href="cvicenie24.html"><span>← Predchádzajúce</span>24. Conjoint analýza</a>
+</nav>
+</div>
+<script>
+(function () {
+  function copy(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    return Promise.resolve();
+  }
+  document.querySelectorAll('pre:not(.out)').forEach(function (pre) {
+    var text = pre.innerText;
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'copy'; btn.textContent = 'Kopírovať';
+    btn.addEventListener('click', function () {
+      copy(text).then(function () {
+        btn.textContent = 'Skopírované ✓';
+        setTimeout(function () { btn.textContent = 'Kopírovať'; }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+  var q = document.getElementById('filter');
+  if (q) q.addEventListener('input', function () {
+    var v = q.value.toLowerCase();
+    document.querySelectorAll('.cards a').forEach(function (c) {
+      c.style.display = c.textContent.toLowerCase().indexOf(v) === -1 ? 'none' : '';
+    });
+    document.querySelectorAll('section.block').forEach(function (s) {
+      var any = Array.prototype.some.call(s.querySelectorAll('.cards a'), function (c) { return c.style.display !== 'none'; });
+      s.style.display = any ? '' : 'none';
+    });
+  });
+})();
+</script>
+</body>
+</html>

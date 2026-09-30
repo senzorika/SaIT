@@ -18,7 +18,8 @@
 <div class="goals"><h2>Čo sa naučíte</h2><ul>
 <li>formulovať senzorickú trvanlivosť ako úlohu analýzy prežitia,</li>
 <li>zostrojiť a čítať Kaplan-Meierovu krivku,</li>
-<li>odhadnúť cut-off čas, keď produkt odmietne polovica spotrebiteľov.</li>
+<li>odhadnúť cut-off čas, keď produkt odmietne polovica spotrebiteľov,</li>
+<li>odhadnúť trvanlivosť z intervalovo cenzurovaných dát Weibullovým modelom a prepočítať ju na inú teplotu (Q10, Arrhenius).</li>
 </ul></div>
 
 <h2>Trvanlivosť z pohľadu spotrebiteľa</h2>
@@ -105,7 +106,103 @@
 <div class="note"><strong>Ktorú hranicu zvoliť?</strong>50 % odmietnutí je bežná voľba (medián), ale výrobca môže požadovať prísnejšiu hranicu, napr. 25 % odmietnutí (Ŝ = 0,75). Stačí zavolať <code>model(0.75)</code>.</div>
 <div class="warn"><strong>Kódovanie udalosti</strong>V <code>Surv(time, event)</code> musí <code>TRUE</code> znamenať <em>odmietnutie</em>. Ak by ste zakódovali akceptáciu, krivka bude mať opačný význam. V dátach skriptu je <code>TRUE</code> aj v čase 0 h – pri reálnom experimente skontrolujte, či čerstvý produkt naozaj niekto odmietol, alebo ide o chybu kódovania.</div>
 
+<!-- ext -->
+<h2>Intervalovo cenzurované dáta</h2>
+<p>Prvý príklad berie každé z 35 hodnotení ako samostatné pozorovanie s presným časom udalosti. V spotrebiteľskej štúdii trvanlivosti však každý spotrebiteľ ochutná vzorky so všetkými dobami skladovania a presný čas, keď by produkt prvý raz odmietol, nepoznáme. Vieme len, <strong>medzi ktorými dvoma časmi</strong> to nastalo (Hough, 2010):</p>
+<div class="tablewrap"><table>
+<tr><th>Odpovede spotrebiteľa</th><th>Čo vieme o čase odmietnutia</th><th>Zápis (dolná, horná)</th></tr>
+<tr><td>akceptoval pri 12 h, odmietol pri 24 h</td><td>leží medzi 12 a 24 h – intervalová cenzúra</td><td><code>12, 24</code></td></tr>
+<tr><td>odmietol už pri 4 h</td><td>je kratší ako 4 h – ľavá cenzúra</td><td><code>NA, 4</code></td></tr>
+<tr><td>akceptoval všetko do 48 h</td><td>je dlhší ako 48 h – pravá cenzúra</td><td><code>48, NA</code></td></tr>
+</table></div>
+<pre>intervaly &lt;- Surv(dolna, horna, type = "interval2")
+weibull &lt;- survreg(intervaly ~ 1, dist = "weibull")</pre>
 
+<h2>Weibullov model</h2>
+<p>Pri intervalových dátach sa čas odmietnutia opisuje parametrickým rozdelením, najčastejšie Weibullovým. Z neho sa dá vypočítať čas pre ľubovoľný podiel odmietnutí aj s intervalom spoľahlivosti.</p>
+<div class="formula">S(t) = exp(−(t / η)<sup>β</sup>)
+<small>S(t) – podiel spotrebiteľov, ktorí produkt v čase t ešte akceptujú; η – parameter mierky, β – parameter tvaru (β &gt; 1: riziko odmietnutia s časom rastie). V <code>survreg</code>: η = exp(Intercept), β = 1 / Scale.</small></div>
+<figure>
+<svg viewBox="0 0 640 290" role="img" aria-label="Weibullova krivka akceptácie">
+<line x1="62.0" y1="244.0" x2="616.0" y2="244.0" class="gridl"/>
+<text x="55.0" y="248.0" text-anchor="end" class="t-small">0,00</text>
+<line x1="62.0" y1="187.5" x2="616.0" y2="187.5" class="gridl"/>
+<text x="55.0" y="191.5" text-anchor="end" class="t-small">0,25</text>
+<line x1="62.0" y1="131.0" x2="616.0" y2="131.0" class="gridl"/>
+<text x="55.0" y="135.0" text-anchor="end" class="t-small">0,50</text>
+<line x1="62.0" y1="74.5" x2="616.0" y2="74.5" class="gridl"/>
+<text x="55.0" y="78.5" text-anchor="end" class="t-small">0,75</text>
+<line x1="62.0" y1="18.0" x2="616.0" y2="18.0" class="gridl"/>
+<text x="55.0" y="22.0" text-anchor="end" class="t-small">1,00</text>
+<line x1="62.0" y1="244.0" x2="62.0" y2="248.0" class="ax"/>
+<text x="62.0" y="261.0" text-anchor="middle" class="t-small">0</text>
+<line x1="172.8" y1="244.0" x2="172.8" y2="248.0" class="ax"/>
+<text x="172.8" y="261.0" text-anchor="middle" class="t-small">12</text>
+<line x1="283.6" y1="244.0" x2="283.6" y2="248.0" class="ax"/>
+<text x="283.6" y="261.0" text-anchor="middle" class="t-small">24</text>
+<line x1="394.4" y1="244.0" x2="394.4" y2="248.0" class="ax"/>
+<text x="394.4" y="261.0" text-anchor="middle" class="t-small">36</text>
+<line x1="505.2" y1="244.0" x2="505.2" y2="248.0" class="ax"/>
+<text x="505.2" y="261.0" text-anchor="middle" class="t-small">48</text>
+<line x1="616.0" y1="244.0" x2="616.0" y2="248.0" class="ax"/>
+<text x="616.0" y="261.0" text-anchor="middle" class="t-small">60</text>
+<path d="M62.0,18.0 L62.0,244.0 L616.0,244.0" class="ax"/>
+<text x="339.0" y="282.0" text-anchor="middle">čas skladovania (h)</text>
+<text transform="translate(16,131.0) rotate(-90)" text-anchor="middle">podiel akceptujúcich</text>
+<path d="M62.0,18.0 L66.6,18.3 L71.2,18.9 L75.8,19.7 L80.5,20.7 L85.1,21.9 L89.7,23.1 L94.3,24.5 L98.9,26.1 L103.5,27.7 L108.2,29.4 L112.8,31.2 L117.4,33.1 L122.0,35.1 L126.6,37.1 L131.2,39.2 L135.9,41.4 L140.5,43.6 L145.1,45.9 L149.7,48.2 L154.3,50.6 L158.9,53.0 L163.6,55.4 L168.2,57.9 L172.8,60.4 L177.4,63.0 L182.0,65.5 L186.7,68.1 L191.3,70.7 L195.9,73.3 L200.5,76.0 L205.1,78.6 L209.7,81.2 L214.4,83.9 L219.0,86.5 L223.6,89.2 L228.2,91.9 L232.8,94.5 L237.4,97.2 L242.1,99.8 L246.7,102.4 L251.3,105.1 L255.9,107.7 L260.5,110.3 L265.1,112.9 L269.8,115.4 L274.4,118.0 L279.0,120.5 L283.6,123.0 L288.2,125.5 L292.8,128.0 L297.4,130.4 L302.1,132.8 L306.7,135.2 L311.3,137.6 L315.9,139.9 L320.5,142.3 L325.1,144.5 L329.8,146.8 L334.4,149.0 L339.0,151.2 L343.6,153.4 L348.2,155.5 L352.9,157.6 L357.5,159.7 L362.1,161.8 L366.7,163.8 L371.3,165.8 L375.9,167.7 L380.5,169.6 L385.2,171.5 L389.8,173.4 L394.4,175.2 L399.0,177.0 L403.6,178.7 L408.2,180.5 L412.9,182.2 L417.5,183.8 L422.1,185.4 L426.7,187.0 L431.3,188.6 L436.0,190.1 L440.6,191.6 L445.2,193.1 L449.8,194.5 L454.4,195.9 L459.0,197.3 L463.6,198.6 L468.3,200.0 L472.9,201.2 L477.5,202.5 L482.1,203.7 L486.7,204.9 L491.4,206.1 L496.0,207.2 L500.6,208.3 L505.2,209.4 L509.8,210.5 L514.4,211.5 L519.0,212.5 L523.7,213.5 L528.3,214.5 L532.9,215.4 L537.5,216.3 L542.1,217.2 L546.8,218.1 L551.4,218.9 L556.0,219.7 L560.6,220.5 L565.2,221.3 L569.8,222.0 L574.5,222.8 L579.1,223.5 L583.7,224.2 L588.3,224.8 L592.9,225.5 L597.5,226.1 L602.1,226.7 L606.8,227.3 L611.4,227.9 L616.0,228.4" class="ln1"/>
+<line x1="62.0" y1="40.6" x2="134.0" y2="40.6" class="ax dash"/>
+<line x1="134.0" y1="244.0" x2="134.0" y2="40.6" class="ax dash"/>
+<circle cx="134.0" cy="40.6" r="4.5" class="f2"/>
+<text x="143.0" y="35.6" text-anchor="start" class="t-small t-strong">10 % odmietne: 7,8 h</text>
+<line x1="62.0" y1="74.5" x2="197.7" y2="74.5" class="ax dash"/>
+<line x1="197.7" y1="244.0" x2="197.7" y2="74.5" class="ax dash"/>
+<circle cx="197.7" cy="74.5" r="4.5" class="f2"/>
+<text x="206.7" y="69.5" text-anchor="start" class="t-small t-strong">25 % odmietne: 14,7 h</text>
+<line x1="62.0" y1="131.0" x2="298.4" y2="131.0" class="ax dash"/>
+<line x1="298.4" y1="244.0" x2="298.4" y2="131.0" class="ax dash"/>
+<circle cx="298.4" cy="131.0" r="4.5" class="f2"/>
+<text x="307.4" y="126.0" text-anchor="start" class="t-small t-strong">50 % odmietne: 25,6 h</text>
+</svg>
+<figcaption>Weibullova krivka pre 42 spotrebiteľov zo skriptu (η = 32,3 h; β = 1,59). Medián senzorickej trvanlivosti je 25,6 h; ak smie produkt odmietnuť najviac 25 % spotrebiteľov, je to 14,7 h.</figcaption>
+</figure>
+<div class="tablewrap"><table>
+<tr><th>Podiel odmietnutí</th><th>Čas (h)</th><th>95 % interval spoľahlivosti</th></tr>
+<tr><td>10 %</td><td>7,8</td><td>4,0 – 11,6</td></tr>
+<tr><td>25 %</td><td>14,7</td><td>9,9 – 19,6</td></tr>
+<tr><td>50 %</td><td>25,6</td><td>19,8 – 31,5</td></tr>
+</table></div>
+<div class="note"><strong>Kaplan-Meier alebo Weibull?</strong>Kaplan-Meierova krivka je rýchly prvý pohľad na dáta. Pre odhad doby spotreby s intervalom spoľahlivosti sa v senzorickej trvanlivosti odporúča parametrický model na intervalovo cenzurovaných dátach (Hough, 2010; ISO 16779).</div>
+
+<h2>Zrýchlené skladovanie: Q10 a Arrhenius</h2>
+<p>Pri produktoch s dlhou trvanlivosťou sa test urýchľuje vyššou teplotou. Faktor <strong>Q10</strong> hovorí, koľkokrát sa trvanlivosť skráti pri zvýšení teploty o 10 °C:</p>
+<div class="formula">Q10 = (t<sub>T₁</sub> / t<sub>T₂</sub>)<sup>10 / (T₂ − T₁)</sup>&emsp;&emsp;ln k = ln A − E<sub>a</sub> / (R · T)
+<small>t – trvanlivosť pri teplote T; k ~ 1/t – rýchlosť zmeny; E<sub>a</sub> – aktivačná energia; R = 8,314 J/(mol·K); T v kelvinoch</small></div>
+<div class="tablewrap"><table>
+<tr><th>Teplota</th><th>5 °C</th><th>15 °C</th><th>25 °C</th><th>8 °C (predikcia)</th></tr>
+<tr><td>trvanlivosť (dni)</td><td>28</td><td>13</td><td>6</td><td>22,1</td></tr>
+</table></div>
+<p>Z dát skriptu vychádza Q10 = 2,16 a E<sub>a</sub> = 53,1 kJ/mol.</p>
+<div class="warn"><strong>Pozor na extrapoláciu</strong>Arrheniov model predpokladá, že pri všetkých teplotách prebieha ten istý mechanizmus kazenia. Pri vysokej teplote sa môže zmeniť (topenie tuku, iná mikroflóra) – predikciu mimo meraného rozsahu treba overiť skladovaním pri reálnej teplote.</div>
+
+<section class="solutions"><h2>Riešenia úloh</h2><p>Kliknutím rozbalíte riešenie. Skúste úlohu najprv vyriešiť sami – výsledky sú overené v R 4.5. Kód nadväzuje na premenné zo skriptu.</p>
+<details class="sol"><summary>Úloha 1 <span>– doba spotreby pri najviac 25 % odmietnutí</span></summary>
+<pre>predict(weibull, newdata = data.frame(x = 1), type = "quantile", p = 0.25, se.fit = TRUE)</pre>
+<div class="answer"><p>Čas, keď produkt odmietne 25 % spotrebiteľov, je <strong>14,7 h</strong> (95 % IS 9,9 – 19,6 h). Medián je 25,6 h – pri ňom by produkt odmietla už polovica spotrebiteľov. Opatrný výrobca zvolí dolnú hranicu intervalu, teda približne 10 h.</p></div></details>
+<details class="sol"><summary>Úloha 2 <span>– je Q10 konštantné?</span></summary>
+<pre>(28 / 13)^(10 / (15 - 5))
+(13 / 6)^(10 / (25 - 15))
+summary(arrhenius)$r.squared</pre>
+<div class="answer"><p>Q10 medzi 5 a 15 °C je <strong>2,15</strong>, medzi 15 a 25 °C <strong>2,17</strong> – prakticky konštantné, Arrheniov model sedí (R² = 0,9995). Kalkulátor SAP dá rovnaké hodnoty Q10 a E<sub>a</sub>.</p></div></details>
+</section>
+
+<section class="related" id="sap"><h2>📚 Súvislosti</h2>
+<ul>
+<li><strong>Metóda v SAP</strong> (Senzorická analýza potravín): <a href="https://senzorika.github.io/SAP/kapitoly/10_shelf_life.html">Senzorická trvanlivosť (shelf-life)</a> · <a href="https://senzorika.github.io/SAP/kapitoly/11_vzorce.html">Vzorce a štatistické výpočty</a></li>
+<li><strong>Kalkulátor</strong> na overenie výsledku z R: <a href="https://senzorika.github.io/SAP/kapitoly/10_shelf_life.html#kalkulator">Q10, Ea a Arrheniov odhad trvanlivosti</a></li>
+<li><strong>Normy:</strong> ISO 16779:2015 (senzorická trvanlivosť potravín)</li>
+<li><strong>Literatúra:</strong> Hough, G. (2010). <em>Sensory Shelf Life Estimation of Food Products</em>. CRC Press.</li>
+</ul>
+<p class="small">Vydania noriem a tituly sú prevzaté z overeného zoznamu <a href="https://senzorika.github.io/SAP/kapitoly/priloha_zdroje.html">SAP – Zdroje a literatúra</a>. Prepočet čísel na tejto stránke: <a href="overenie.html">Overenie</a>.</p></section>
 <nav class="pager">
 <a class="prev" href="cvicenie09.html"><span>← Predchádzajúce</span>9. Korešpondenčná analýza</a>
 <a class="next" href="cvicenie11a.html"><span>Nasledujúce →</span>11a. TURF analýza a mapa preferencií</a>

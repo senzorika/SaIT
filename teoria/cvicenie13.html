@@ -18,7 +18,8 @@
 <div class="goals"><h2>Čo sa naučíte</h2><ul>
 <li>prečo podiel správnych odpovedí nestačí na porovnanie rôznych rozlišovacích testov,</li>
 <li>čo vyjadruje Thurstonovo d′ a ako ho vypočítať balíkom <code>sensR</code>,</li>
-<li>kedy použiť test rozdielu a kedy test podobnosti.</li>
+<li>kedy použiť test rozdielu a kedy test podobnosti,</li>
+<li>vyhodnotiť test A – nie A a opakované testy bez toho, aby sme ich zamenili za obyčajný binomický test.</li>
 </ul></div>
 
 <h2>Problém: 42 % nie je vždy 42 %</h2>
@@ -109,6 +110,30 @@ Result of difference test:
 <pre>discrim(38, 100, method = "triangle", test = "similarity", pd0 = 0.2)</pre>
 <div class="warn"><strong>Nepreukázaný rozdiel ≠ podobnosť</strong>Ak test rozdielu vyjde nevýznamne (p ≥ 0,05), neznamená to, že vzorky sú rovnaké – možno bol panel malý. Podobnosť treba preukázať testom podobnosti s vopred zvolenou hranicou pd<sub>0</sub> (napr. 0,2 – najviac 20 % rozlišovateľov).</div>
 
+<!-- ext -->
+<h2>Testy s odpoveďovou tendenciou: A – nie A a same-different</h2>
+<p>V triangli poznáme úroveň náhody vopred (1/3). V teste <strong>A – nie A</strong> dostane hodnotiteľ jednu vzorku a povie, či je to „A“. Koľko ľudí odpovie „A“ pri hádaní, vopred nevieme – závisí to od ich <em>kritéria</em> (niekto povie „A“ takmer vždy). Binomický test s p = 1/2 je tu preto nesprávny; porovnávajú sa dva podiely v tabuľke 2 × 2:</p>
+<div class="tablewrap"><table>
+<tr><th></th><th>odpoveď „A“</th><th>odpoveď „nie A“</th><th>podiel „A“</th></tr>
+<tr><td>vzorka A (50)</td><td>34</td><td>16</td><td>H = 0,68</td></tr>
+<tr><td>vzorka „nie A“ (50)</td><td>20</td><td>30</td><td>F = 0,40</td></tr>
+</table></div>
+<div class="formula">d′ = z(H) − z(F) = 0,47 − (−0,25) = 0,72
+<small>H – podiel odpovedí „A“ pri vzorke A, F – pri vzorke „nie A“; z – kvantil normálneho rozdelenia (<code>qnorm</code>)</small></div>
+<p>χ² test tabuľky dá χ² = 7,89; p = 0,005 a <code>AnotA()</code> z balíka sensR d′ = 0,72 (p = 0,004) – rozdiel je preukázaný. Podobne pri teste <strong>same-different</strong> (dvojica vzoriek: „rovnaké“ alebo „rôzne“?) odhadne <code>samediff()</code> okrem d′ (δ = 1,58) aj kritérium τ = 1,29 – aký veľký rozdiel už hodnotitelia nazvú „rôzne“.</p>
+
+<h2>Opakované testy – beta-binomický model</h2>
+<p>Ak 24 hodnotiteľov urobí po 4 triangle, máme 96 odpovedí, ale nie 96 nezávislých pokusov: odpovede toho istého človeka sú si podobné. Niektorí rozdiel vnímajú takmer vždy, iní len hádajú – rozptyl počtu správnych odpovedí je väčší, než pripúšťa binomické rozdelenie (<em>naddisperzia</em>).</p>
+<pre>bb &lt;- betabin(opakovania, method = "triangle")
+summary(bb)
+
+        Estimate Std. Error   Lower   Upper
+gamma    0.54540    0.18923 0.17451 0.91629
+d-prime  1.92585    0.32336 1.27725 2.59161
+LR-test of over-dispersion, G^2: 8.6021 df: 1 p-value: 0.003358</pre>
+<p>Parameter <code>gamma</code> meria naddisperziu (0 = žiadna, 1 = maximálna). Tu je 0,55 a test naddisperzie je preukazný (p = 0,003) – hodnotitelia sa naozaj líšia a interval spoľahlivosti pre d′ je širší, než by dal obyčajný binomický výpočet.</p>
+<div class="warn"><strong>Opakovania nesčítavajte ako nezávislé pokusy</strong>Spojiť 3 × 54 hodnotení do „162 pokusov“ umelo zvyšuje silu testu. Opakované rozlišovacie testy patria do beta-binomického modelu, alebo treba aspoň overiť, či naddisperzia nie je preukazná.</div>
+
 <section class="solutions"><h2>Riešenia úloh</h2><p>Kliknutím rozbalíte riešenie. Skúste úlohu najprv vyriešiť sami – výsledky sú overené v R 4.4. Kód nadväzuje na premenné zo skriptu.</p>
 <details class="sol"><summary>Úloha 1 <span>– d′ pre duo-trio 36/50</span></summary>
 <pre>discrim(36, 50, method = &quot;duotrio&quot;)</pre>
@@ -116,7 +141,20 @@ Result of difference test:
 <details class="sol"><summary>Úloha 2 <span>– počet správnych odpovedí pre d′ = 1,5</span></summary>
 <pre>sapply(c(&quot;twoAFC&quot;, &quot;threeAFC&quot;, &quot;triangle&quot;), function(m) round(60 * psyfun(1.5, method = m)))</pre>
 <div class="answer"><p>Zo 60 hodnotiteľov: <strong>2-AFC 51</strong>, <strong>3-AFC 46</strong>, <strong>triangel 30</strong> správnych odpovedí. Ten istý rozdiel medzi vzorkami sa v triangli prejaví výrazne menším podielom správnych.</p></div></details>
+<details class="sol"><summary>Úloha 3 <span>– A – nie A s nevyváženým počtom vzoriek</span></summary>
+<pre>AnotA(x1 = 64, n1 = 80, x2 = 30, n2 = 40)
+binom.test(64 + 10, 120, p = 0.5, alternative = "greater")   # nespravne</pre>
+<div class="answer"><p>Podiel odpovedí „A“ je 80 % pri vzorke A a 75 % pri vzorke „nie A“ – hodnotitelia hovoria „A“ takmer vždy. <code>AnotA()</code>: d′ = 0,17; p = 0,34 → rozdiel <strong>nie je preukázaný</strong>. Nesprávny binomický test (74 „správnych“ zo 120) dá p = 0,007 a falošne „preukáže“ rozdiel: väčšina správnych odpovedí vznikla len tým, že vzoriek A bolo dvakrát viac a odpoveď „A“ je obľúbená.</p></div></details>
 </section>
+
+<section class="related" id="sap"><h2>📚 Súvislosti</h2>
+<ul>
+<li><strong>Metóda v SAP</strong> (Senzorická analýza potravín): <a href="https://senzorika.github.io/SAP/kapitoly/05_diskriminacne_metody.html">Diskriminačné metódy</a> · <a href="https://senzorika.github.io/SAP/kapitoly/06_skalovanie.html#thurstone">Škálovanie</a> · <a href="https://senzorika.github.io/SAP/kapitoly/04_iso_metody.html">Normy ISO a štandardné testy</a></li>
+<li><strong>Kalkulátor</strong> na overenie výsledku z R: <a href="https://senzorika.github.io/SAP/kapitoly/04_iso_metody.html#kalkulator">vyhodnotenie rozlišovacieho testu (rozdiel, podobnosť)</a></li>
+<li><strong>Normy:</strong> ISO 4120:2021 (trojuholníková skúška) · ISO 10399:2017 (skúška duo-trio) · ISO 5495:2005 (párová porovnávacia skúška) · ISO 8588:2017 (skúška „A“ – „nie A“)</li>
+<li><strong>Literatúra:</strong> Bi, J. (2006). <em>Sensory Discrimination Tests and Measurements</em>. Blackwell. Lawless, H. T. &amp; Heymann, H. (2010). <em>Sensory Evaluation of Food: Principles and Practices</em> (2nd ed.). Springer.</li>
+</ul>
+<p class="small">Vydania noriem a tituly sú prevzaté z overeného zoznamu <a href="https://senzorika.github.io/SAP/kapitoly/priloha_zdroje.html">SAP – Zdroje a literatúra</a>. Prepočet čísel na tejto stránke: <a href="overenie.html">Overenie</a>.</p></section>
 <nav class="pager">
 <a class="prev" href="cvicenie12.html"><span>← Predchádzajúce</span>12. JAR škála a radarový graf</a>
 <a class="next" href="cvicenie14.html"><span>Nasledujúce →</span>14. Sila testu a veľkosť panelu</a>

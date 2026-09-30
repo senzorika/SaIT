@@ -45,8 +45,8 @@ assessor <- rep(c("H1", "H2", "H3", "H4"), times = 1, each = 4) # each value 4x 
 product <- rep(c("A", "B", "C", "D"), times = 4) # each value 1x in a row, in four cycles
 
 # loading data from a remote (internet) address (MOLAR MASSES)
-source("http://senzorika.com/sait/datasety/mol.txt")
-results <- read.table("http://senzorika.com/sait/datasety/export.txt", sep = ",")
+source("https://raw.githubusercontent.com/senzorika/SaIT/master/datasety/mol.txt")
+results <- read.table("https://raw.githubusercontent.com/senzorika/SaIT/master/datasety/export.txt", sep = ",")
 
 #--------------------------------------------------------------
 # removing some elements from a vector/dataset
@@ -80,7 +80,7 @@ z <- x[-c(2, 3, 5)]
 
 # task3:
 # -------------------
-# * load data from: http://senzorika.com/sait/datasety/cokolada.txt
+# * load data from: https://raw.githubusercontent.com/senzorika/SaIT/master/datasety/cokolada.txt
 # * calculate how many fully chocolate-coated wafers were produced each month when:
 #   the diameter of both wafers (top and bottom) is 7 cm, the product height is 1.5 cm
 #   and 100 cm2 of surface needs approx. 0.02 litre of chocolate coating

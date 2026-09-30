@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>24. Conjoint analýza</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ink-3)"/></marker></defs></svg>
+<div class="wrap">
+<header class="top"><a class="brand" href="index.html">Senzometria v R · teória</a><span class="toplinks"><a href="index.html">Všetky cvičenia</a><a class="lang" href="../theory_EN/exercise24.html">English</a></span></header>
+
+<section class="hero"><span class="num">CVIČENIE 24</span><h1>Conjoint analýza</h1><p class="lead">Ako spotrebiteľ skladá preferenciu z vlastností produktu: čiastkové užitočnosti, dôležitosť atribútov a simulácia trhu.</p>
+<div class="files"><a href="../cvicenie24.R">Skript (SK): cvicenie24.R</a><a href="../exercises_EN/exercise24.R">Script (EN): exercise24.R</a></div></section>
+<div class="goals"><h2>Čo sa naučíte</h2><ul>
+<li>navrhnúť profily produktu z atribútov a ich úrovní,</li>
+<li>odhadnúť čiastkové užitočnosti regresiou a vypočítať relatívnu dôležitosť atribútov,</li>
+<li>použiť individuálne užitočnosti na segmentáciu a jednoduchú simuláciu trhu.</li>
+</ul></div>
+
+<h2>Princíp</h2>
+<p>Na otázku „je pre vás dôležitá cena?“ odpovie takmer každý „áno“. Conjoint analýza sa preto nepýta na atribúty jednotlivo: spotrebiteľ hodnotí <strong>celé profily</strong> produktu (napr. „plnotučný jahodový jogurt za 0,79 €“) a dôležitosť atribútov sa vypočíta z toho, ako sa hodnotenie mení s ich úrovňami.</p>
+<div class="formula">hodnotenie = β₀ + u<sub>tuk</sub> + u<sub>príchuť</sub> + u<sub>cena</sub> + ε
+<small>u – čiastková užitočnosť (part-worth) úrovne; v rámci jedného atribútu sa užitočnosti sčítajú na nulu</small></div>
+<p>V skripte má jogurt tri atribúty s 2, 3 a 3 úrovňami, teda 2 × 3 × 3 = <strong>18 profilov</strong> (úplný faktorový plán). Hodnotí ich 40 spotrebiteľov na 9-bodovej škále.</p>
+
+<h2>Čiastkové užitočnosti a dôležitosť</h2>
+<figure>
+<svg viewBox="0 0 640 300" role="img" aria-label="Čiastkové užitočnosti">
+<line x1="62.0" y1="211.1" x2="616.0" y2="211.1" class="gridl"/>
+<text x="55.0" y="215.1" text-anchor="end" class="t-small">-1,0</text>
+<line x1="62.0" y1="172.5" x2="616.0" y2="172.5" class="gridl"/>
+<text x="55.0" y="176.5" text-anchor="end" class="t-small">-0,5</text>
+<line x1="62.0" y1="133.9" x2="616.0" y2="133.9" class="gridl"/>
+<text x="55.0" y="137.9" text-anchor="end" class="t-small">0,0</text>
+<line x1="62.0" y1="95.2" x2="616.0" y2="95.2" class="gridl"/>
+<text x="55.0" y="99.2" text-anchor="end" class="t-small">0,5</text>
+<line x1="62.0" y1="56.6" x2="616.0" y2="56.6" class="gridl"/>
+<text x="55.0" y="60.6" text-anchor="end" class="t-small">1,0</text>
+<path d="M62.0,18.0 L62.0,242.0 L616.0,242.0" class="ax"/>
+<text x="339.0" y="292.0" text-anchor="middle"></text>
+<text transform="translate(16,130.0) rotate(-90)" text-anchor="middle">čiastková užitočnosť</text>
+<line x1="62.0" y1="133.9" x2="616.0" y2="133.9" class="ax"/>
+<rect x="81.3" y="133.9" width="45.8" height="48.7" class="f1"/>
+<text x="104.2" y="196.5" text-anchor="middle" class="t-small t-strong">-0,63</text>
+<text x="104.2" y="258.0" text-anchor="middle" class="t-small">0,1 %</text>
+<rect x="141.5" y="85.2" width="45.8" height="48.7" class="f1"/>
+<text x="164.4" y="80.2" text-anchor="middle" class="t-small t-strong">0,63</text>
+<text x="164.4" y="258.0" text-anchor="middle" class="t-small">3,5 %</text>
+<rect x="231.8" y="116.1" width="45.8" height="17.8" class="f5"/>
+<text x="254.7" y="111.1" text-anchor="middle" class="t-small t-strong">0,23</text>
+<text x="254.7" y="258.0" text-anchor="middle" class="t-small">jahoda</text>
+<rect x="292.0" y="133.9" width="45.8" height="52.5" class="f5"/>
+<text x="314.9" y="200.4" text-anchor="middle" class="t-small t-strong">-0,68</text>
+<text x="314.9" y="258.0" text-anchor="middle" class="t-small">vanilka</text>
+<rect x="352.2" y="99.1" width="45.8" height="34.8" class="f5"/>
+<text x="375.1" y="94.1" text-anchor="middle" class="t-small t-strong">0,45</text>
+<text x="375.1" y="258.0" text-anchor="middle" class="t-small">čokoláda</text>
+<rect x="442.6" y="48.9" width="45.8" height="85.0" class="f3"/>
+<text x="465.5" y="43.9" text-anchor="middle" class="t-small t-strong">1,10</text>
+<text x="465.5" y="258.0" text-anchor="middle" class="t-small">0,59 €</text>
+<rect x="502.8" y="133.9" width="45.8" height="1.5" class="f3"/>
+<text x="525.7" y="149.4" text-anchor="middle" class="t-small t-strong">-0,02</text>
+<text x="525.7" y="258.0" text-anchor="middle" class="t-small">0,79 €</text>
+<rect x="563.0" y="133.9" width="45.8" height="83.4" class="f3"/>
+<text x="585.9" y="231.3" text-anchor="middle" class="t-small t-strong">-1,08</text>
+<text x="585.9" y="258.0" text-anchor="middle" class="t-small">0,99 €</text>
+<text x="134.3" y="290.0" text-anchor="middle" class="t-strong">tuk · 28 %</text>
+<text x="314.9" y="290.0" text-anchor="middle" class="t-strong">príchuť · 25 %</text>
+<text x="525.7" y="290.0" text-anchor="middle" class="t-strong">cena · 48 %</text>
+</svg>
+<figcaption>Čiastkové užitočnosti z modelu <code>lm()</code> so sumovými kontrastmi. Zmena ceny z 0,59 na 0,99 € zníži hodnotenie o 2,18 bodu, zmena tuku z 0,1 na 3,5 % ho zvýši o 1,26 bodu.</figcaption>
+</figure>
+<div class="formula">dôležitosť atribútu = rozpätie jeho užitočností / súčet rozpätí všetkých atribútov
+<small>tuk 1,26 · príchuť 1,13 · cena 2,18 → 28 % · 25 % · 48 %</small></div>
+<div class="note"><strong>Dôležitosť závisí od zvolených úrovní</strong>Keby sa cena pohybovala len medzi 0,75 a 0,79 €, jej rozpätie aj „dôležitosť“ by boli malé. Výsledok platí len pre testovaný rozsah úrovní.</div>
+
+<h2>Individuálne užitočnosti a segmenty</h2>
+<p>Priemer môže skrývať skupiny s opačnými preferenciami. Ratingový conjoint umožňuje odhadnúť model pre <em>každého respondenta</em> (18 hodnotení, 6 parametrov) a jeho užitočnosti zhlukovať (cvičenie 8):</p>
+<div class="tablewrap"><table>
+<tr><th>Zhluk</th><th>Počet</th><th>Dôležitosť tuk / príchuť / cena</th><th>Charakteristika</th></tr>
+<tr><td>„cena“</td><td>20</td><td>13 % / 19 % / 68 %</td><td>rozhoduje cena, 0,59 vs. 0,99 € je rozdiel 3,4 bodu</td></tr>
+<tr><td>„chuť“</td><td>20</td><td>42 % / 37 % / 22 %</td><td>chcú plnotučný jogurt, najradšej čokoládový</td></tr>
+</table></div>
+
+<h2>Simulácia trhu</h2>
+<p>Pre každý koncept sa sčítajú čiastkové užitočnosti respondenta; podľa pravidla <em>prvej voľby</em> si „kúpi“ koncept s najvyššou užitočnosťou.</p>
+<div class="tablewrap"><table>
+<tr><th>Koncept</th><th>Zloženie</th><th>Podiel prvej voľby</th></tr>
+<tr><td>Light</td><td>0,1 %, jahoda, 0,59 €</td><td>50 % (celý segment „cena“)</td></tr>
+<tr><td>Premium</td><td>3,5 %, čokoláda, 0,99 €</td><td>30 %</td></tr>
+<tr><td>Klasik</td><td>3,5 %, jahoda, 0,79 €</td><td>20 %</td></tr>
+</table></div>
+<div class="warn"><strong>Na čo si dať pozor</strong>Počet profilov rastie násobením úrovní – pri 5 atribútoch po 3 úrovne je to 243 profilov; vtedy sa používa čiastočný faktorový plán. Pravidlo prvej voľby je zjednodušenie (nezohľadňuje dostupnosť ani značku). Pri výberovom conjointe (choice-based), kde respondent profily nehodnotí, ale vyberá, sa namiesto regresie používa multinomický logit.</div>
+
+<section class="solutions"><h2>Riešenia úloh</h2><p>Kliknutím rozbalíte riešenie. Skúste úlohu najprv vyriešiť sami – výsledky sú overené v R 4.5. Kód nadväzuje na premenné zo skriptu.</p>
+<details class="sol"><summary>Úloha 1 <span>– dôležitosť atribútov v zhlukoch</span></summary>
+<pre>dolezitost &lt;- function(u) {
+  r &lt;- c(tuk = diff(range(u[1:2])), prichut = diff(range(u[3:5])), cena = diff(range(u[6:8])))
+  round(100 * r / sum(r), 1)
+}
+t(apply(zhluky$centers, 1, dolezitost))</pre>
+<div class="answer"><p>V celej vzorke je najdôležitejšia <strong>cena</strong> (48 %), potom tuk (28 %) a príchuť (25 %). V zhlukoch je obraz iný: v segmente „cena“ má cena <strong>68 %</strong>, v segmente „chuť“ vedie <strong>tuk (42 %)</strong> a príchuť (37 %), cena má len 22 %. Priemerný výsledok nepopisuje dobre ani jeden segment.</p></div></details>
+<details class="sol"><summary>Úloha 2 <span>– najlepší jogurt pre každý zhluk</span></summary>
+<pre>round(zhluky$centers, 2)</pre>
+<div class="answer"><p>Segment „cena“: 3,5 % tuku, jahoda, 0,59 €. Segment „chuť“: 3,5 % tuku, čokoláda, 0,59 €. Zdraženie z 0,59 na 0,99 € zníži užitočnosť o <strong>3,38 bodu</strong> v segmente „cena“, ale len o <strong>0,96 bodu</strong> v segmente „chuť“ – prémiový čokoládový jogurt cenu unesie.</p></div></details>
+<details class="sol"><summary>Úloha 3 <span>– štvrtý koncept „Akcia“</span></summary>
+<pre>koncepty &lt;- rbind(koncepty, Akcia = c("3.5 %", "cokolada", "0.59 EUR"))
+# potom znova spustite vypocet premennej celkova a podielov prvej volby</pre>
+<div class="answer"><p>Plnotučný čokoládový jogurt za 0,59 € získa <strong>90 %</strong> prvých volieb (Light 7,5 %, Klasik 2,5 %, Premium 0 %) – vyhovuje obom segmentom a kanibalizuje vlastný Premium. TURF (cvičenie 11a) odpovedá na otázku, <em>ktorá kombinácia produktov osloví najviac ľudí</em>; conjoint na otázku, <em>prečo</em> ich osloví a čo sa stane, keď zmeníme vlastnosť alebo cenu.</p></div></details>
+</section>
+
+<section class="related" id="sap"><h2>📚 Súvislosti</h2>
+<ul>
+<li><strong>Metóda v SAP</strong> (Senzorická analýza potravín): <a href="https://senzorika.github.io/SAP/kapitoly/08_spotrebitelska_veda.html">Spotrebiteľská senzorická veda</a></li>
+<li><strong>Literatúra:</strong> Næs, T., Brockhoff, P. B. &amp; Tomic, O. (2010). <em>Statistics for Sensory and Consumer Science</em>. Wiley.</li>
+</ul>
+<p class="small">Vydania noriem a tituly sú prevzaté z overeného zoznamu <a href="https://senzorika.github.io/SAP/kapitoly/priloha_zdroje.html">SAP – Zdroje a literatúra</a>. Prepočet čísel na tejto stránke: <a href="overenie.html">Overenie</a>.</p></section>
+<nav class="pager">
+<a class="prev" href="cvicenie23.html"><span>← Predchádzajúce</span>23. Waldova sekvenčná analýza</a>
+<a class="next" href="cvicenie25.html"><span>Nasledujúce →</span>25. Senzorické tvrdenia – nadradenosť a parita</a>
+</nav>
+</div>
+<script>
+(function () {
+  function copy(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    return Promise.resolve();
+  }
+  document.querySelectorAll('pre:not(.out)').forEach(function (pre) {
+    var text = pre.innerText;
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'copy'; btn.textContent = 'Kopírovať';
+    btn.addEventListener('click', function () {
+      copy(text).then(function () {
+        btn.textContent = 'Skopírované ✓';
+        setTimeout(function () { btn.textContent = 'Kopírovať'; }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+  var q = document.getElementById('filter');
+  if (q) q.addEventListener('input', function () {
+    var v = q.value.toLowerCase();
+    document.querySelectorAll('.cards a').forEach(function (c) {
+      c.style.display = c.textContent.toLowerCase().indexOf(v) === -1 ? 'none' : '';
+    });
+    document.querySelectorAll('section.block').forEach(function (s) {
+      var any = Array.prototype.some.call(s.querySelectorAll('.cards a'), function (c) { return c.style.display !== 'none'; });
+      s.style.display = any ? '' : 'none';
+    });
+  });
+})();
+</script>
+</body>
+</html>

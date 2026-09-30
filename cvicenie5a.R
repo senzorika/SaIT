@@ -42,7 +42,9 @@ wilcox.test(A, E) # Mann-Whitneyho test
 # V pripade, ze nie, kolko laikov treba na potvrdenie alternativnej hypotezy?
 # (vypocet velkosti panelu: cvicenie 14)
 
-binom.test(34, 60, p = 0.5) # pre parovy test; pre trojuholnikovy test p=1/3
+binom.test(34, 60, p = 0.5) # parova preferencia: obojstranny test (nevieme vopred, ktora vzorka vyhra)
+# rozlisovacie testy (triangel p = 1/3, duo-trio p = 1/2) su jednostranne:
+# binom.test(x, n, p = 1/3, alternative = "greater")
 
 #---------------------------------------------------------------------------------------
 # CHI-KVADRAT TEST

@@ -23,6 +23,8 @@ library("syuzhet")
 library("ggplot2")
 
 # read a txt file from the local computer
+# sample file with made-up chocolate reviews (the NRC lexicon is English, so the text must be in English):
+# https://raw.githubusercontent.com/senzorika/SaIT/master/datasety/recenzie_en.txt
 text <- readLines(file.choose())
 text
 # data cleaning and parsing

@@ -100,7 +100,7 @@
 
 <section class="solutions"><h2>Riešenia úloh</h2><p>Kliknutím rozbalíte riešenie. Skúste úlohu najprv vyriešiť sami – výsledky sú overené v R 4.4. Kód nadväzuje na premenné zo skriptu.</p>
 <details class="sol"><summary>Príklad <span>– ktorý produkt je najpodobnejší nášmu A?</span></summary>
-<pre>senzorika &lt;- read.table(&quot;http://senzorika.com/sait/datasety/senzorika.txt&quot;, sep = &quot;,&quot;)
+<pre>senzorika &lt;- read.table(&quot;https://raw.githubusercontent.com/senzorika/SaIT/master/datasety/senzorika.txt&quot;, sep = &quot;,&quot;)
 row.names(senzorika) &lt;- c(&quot;A&quot;,&quot;B&quot;,&quot;C&quot;,&quot;D&quot;,&quot;E&quot;,&quot;F&quot;,&quot;G&quot;,&quot;H&quot;,&quot;I&quot;,&quot;J&quot;,&quot;K&quot;,&quot;L&quot;,&quot;M&quot;,&quot;N&quot;,&quot;O&quot;,&quot;X&quot;)
 fit &lt;- hclust(dist(senzorika), method = &quot;ward.D&quot;)
 skupiny &lt;- cutree(fit, k = 5)
@@ -108,6 +108,13 @@ skupiny[skupiny == skupiny[&quot;A&quot;]]
 sort(as.matrix(dist(senzorika))[&quot;A&quot;, ])[2:4]</pre>
 <div class="answer"><p>Pri rozdelení do 5 skupín je náš produkt A v skupine s <strong>I a X</strong>. Najbližší je <strong>X</strong> (euklidovská vzdialenosť 2,00), potom G (2,15) a I (2,52). G je teda blízko, no Ward ho zaradil do inej skupiny – vzdialenosť k jednému produktu a príslušnosť k skupine nie sú to isté.</p></div></details>
 </section>
+
+<section class="related" id="sap"><h2>📚 Súvislosti</h2>
+<ul>
+<li><strong>Metóda v SAP</strong> (Senzorická analýza potravín): <a href="https://senzorika.github.io/SAP/kapitoly/08_spotrebitelska_veda.html">Spotrebiteľská senzorická veda</a></li>
+<li><strong>Literatúra:</strong> Næs, T., Brockhoff, P. B. &amp; Tomic, O. (2010). <em>Statistics for Sensory and Consumer Science</em>. Wiley.</li>
+</ul>
+<p class="small">Vydania noriem a tituly sú prevzaté z overeného zoznamu <a href="https://senzorika.github.io/SAP/kapitoly/priloha_zdroje.html">SAP – Zdroje a literatúra</a>. Prepočet čísel na tejto stránke: <a href="overenie.html">Overenie</a>.</p></section>
 <nav class="pager">
 <a class="prev" href="cvicenie07.html"><span>← Predchádzajúce</span>7. PCA a faktorová analýza</a>
 <a class="next" href="cvicenie09.html"><span>Nasledujúce →</span>9. Korešpondenčná analýza</a>

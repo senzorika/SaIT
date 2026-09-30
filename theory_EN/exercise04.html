@@ -106,6 +106,14 @@ grid(nx = 6, ny = NA, col = "gray")    # vertical grid</pre>
 <details class="sol"><summary>Tasks 1 <span>– 3 – approach</span></summary>
 <div class="answer"><p>The tasks are open, the result depends on the chosen data. For task 1 pick 3 or more products on <a href="https://world.openfoodfacts.org/">Open Food Facts</a>, type e.g. sugar, fat and salt content into a data.frame and use <code>barplot(as.matrix(t(tab)), beside = TRUE, legend.text = TRUE)</code>. In task 2 the script handles any numeric columns of the survey. In task 3 load stocks with <code>getSymbols()</code> (e.g. KO, PEP) and compare them with <code>chartSeries()</code>.</p></div></details>
 </section>
+
+<section class="related" id="sap"><h2>📚 Related</h2>
+<ul>
+<li><strong>The method in SAP</strong> (Sensory Analysis of Food, in Slovak): <a href="https://senzorika.github.io/SAP/kapitoly/06_skalovanie.html">Scaling</a> · <a href="https://senzorika.github.io/SAP/kapitoly/03_prehlad_metod.html">Overview of sensory methods</a></li>
+<li><strong>Standards:</strong> ISO 4121:2003 (quantitative response scales)</li>
+<li><strong>Literature:</strong> Lawless, H. T. &amp; Heymann, H. (2010). <em>Sensory Evaluation of Food: Principles and Practices</em> (2nd ed.). Springer.</li>
+</ul>
+<p class="small">Editions of the standards and book titles are taken from the verified list <a href="https://senzorika.github.io/SAP/kapitoly/priloha_zdroje.html">SAP – Sources and literature</a> (in Slovak). Recalculation of the numbers on this page: <a href="verification.html">Verification</a>.</p></section>
 <nav class="pager">
 <a class="prev" href="exercise03.html"><span>← Previous</span>3. Working with data in R</a>
 <a class="next" href="exercise05a.html"><span>Next →</span>5a. Normality and two-sample comparison</a>

@@ -7,7 +7,7 @@ subtitle: "Block 5 · exercises 6 – 9"
 #| include: false
 source("../setup.R")
 library(MASS)
-sensory <- read.table("http://senzorika.com/sait/datasety/senzorika.txt", sep = ",")
+sensory <- read.table("../../datasety/senzorika.txt", sep = ",")
 ```
 
 ## Correlation: direction and strength

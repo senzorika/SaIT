@@ -44,7 +44,7 @@
 <tr><td><strong>Frequency</strong></td><td>priemerný počet obľúbených položiek kombinácie na respondenta</td><td>Ako silno ich oslovíme?</td></tr>
 </table></div>
 <p>Dáta sú binárne: 1 = ingrediencia je pre respondenta atraktívna, 0 = nie. Funkcia <code>turf(pizza, 11, 3:4)</code> prejde všetky kombinácie 3 a 4 položiek z 11 (165 a 330 kombinácií) a zoradí ich podľa reach. Stĺpec <code>wgt</code> je váha respondenta (pri reálnych dátach napr. podľa reprezentatívnosti vzorky).</p>
-<div class="note"><strong>Pozor na náhodné dáta</strong>V skripte sú odpovede generované funkciou <code>sample()</code>, preto sa výsledky pri každom spustení líšia a všetky kombinácie majú podobný reach (~87 – 94 %). Pre zmysluplný výsledok použite reálny dotazník a <code>set.seed()</code> pri simulácii.</div>
+<div class="note"><strong>Pozor na náhodné dáta</strong>V skripte sú odpovede generované náhodne funkciou <code>sample()</code>; vďaka <code>set.seed(123)</code> sú pri každom spustení rovnaké. Náhodné odpovede nemajú žiadnu štruktúru, preto majú všetky kombinácie podobný reach (trojice 85 – 96 %, štvorice 91 – 99 %). Pre zmysluplný výsledok použite reálny dotazník.</div>
 
 <h2>Mapa preferencií (externý preference mapping)</h2>
 <p>Máme dva zdroje dát o tých istých 16 produktoch:</p>
@@ -84,6 +84,14 @@ res.pca &lt;- PCA(senzorika)
 carto(res.pca$ind$coord[, 1:2], hedonika)</pre>
 <div class="answer"><p>Náš produkt 1 je s priemerom 2,99 až na <strong>8. mieste zo 16</strong>; najlepšie hodnotené sú 16 (3,44), 3 (3,36) a 13 (3,16). Na mape <code>carto()</code> hľadajte, v ktorej zóne leží produkt 1 a ktoré deskriptory (šípky PCA) smerujú k zóne s najvyšším percentom spokojných – tie treba posilniť. Pozor: PCA mapa vysvetľuje len 39 % variability profilu (22 + 17 %), preto mapu interpretujte opatrne.</p></div></details>
 </section>
+
+<section class="related" id="sap"><h2>📚 Súvislosti</h2>
+<ul>
+<li><strong>Metóda v SAP</strong> (Senzorická analýza potravín): <a href="https://senzorika.github.io/SAP/kapitoly/08_spotrebitelska_veda.html">Spotrebiteľská senzorická veda</a></li>
+<li><strong>Normy:</strong> ISO 11136:2014 (hedonické skúšky so spotrebiteľmi)</li>
+<li><strong>Literatúra:</strong> Næs, T., Brockhoff, P. B. &amp; Tomic, O. (2010). <em>Statistics for Sensory and Consumer Science</em>. Wiley.</li>
+</ul>
+<p class="small">Vydania noriem a tituly sú prevzaté z overeného zoznamu <a href="https://senzorika.github.io/SAP/kapitoly/priloha_zdroje.html">SAP – Zdroje a literatúra</a>. Prepočet čísel na tejto stránke: <a href="overenie.html">Overenie</a>.</p></section>
 <nav class="pager">
 <a class="prev" href="cvicenie10.html"><span>← Predchádzajúce</span>10. Analýza prežitia a senzorická trvanlivosť</a>
 <a class="next" href="cvicenie11b.html"><span>Nasledujúce →</span>11b. Text mining a analýza sentimentu</a>

@@ -18,6 +18,7 @@
 <div class="goals"><h2>Čo sa naučíte</h2><ul>
 <li>navrhnúť a vyhodnotiť JAR (Just-About-Right) škálu,</li>
 <li>čítať divergentný stĺpcový (Likertov) graf a určiť, ktorý znak treba upraviť,</li>
+<li>vypočítať penalty analýzu a určiť, ktorá odchýlka od JAR znižuje príjemnosť najviac,</li>
 <li>porovnať senzorické profily produktov v radarovom grafe.</li>
 </ul></div>
 
@@ -111,7 +112,72 @@
 <tr><td>50 – 70 %</td><td>sledovať; ak je jedna strana výrazne silnejšia (&gt; 20 %), zvážiť úpravu</td></tr>
 <tr><td>&lt; 50 %</td><td>znak treba upraviť v smere prevládajúcej strany</td></tr>
 </table></div>
-<div class="note"><strong>Penalty analýza</strong>JAR sa často kombinuje s celkovým hodnotením páčenia. Pre každú skupinu „príliš málo / príliš veľa“ sa vypočíta, o koľko nižšie hodnotí produkt ako skupina JAR (<em>pokles priemeru</em>), a vynesie sa proti podielu respondentov. Znaky s veľkým poklesom aj veľkou skupinou sú kritické. Hotové riešenie ponúka napr. balík <code>SensoMineR</code> (funkcia <code>JAR()</code>).</div>
+<!-- ext -->
+<h2>Penalty analýza</h2>
+<p>JAR škála povie, <em>koľko</em> spotrebiteľov považuje znak za príliš slabý či silný. Nepovie, či im to naozaj prekáža. Penalty analýza preto spája JAR s celkovou príjemnosťou: pre každú skupinu „príliš málo“ a „príliš veľa“ vypočíta, o koľko nižšie hodnotí produkt než skupina „akurát“.</p>
+<div class="formula">pokles = x̄<sub>JAR</sub> − x̄<sub>skupina</sub>&emsp;&emsp;vážený pokles = pokles · podiel skupiny
+<small>x̄ – priemerná príjemnosť na hedonickej škále; podiel skupiny ako desatinné číslo</small></div>
+<figure>
+<svg viewBox="0 0 640 300" role="img" aria-label="Penalty graf">
+<rect x="220.3" y="18.0" width="395.7" height="104.9" class="fw op2"/>
+<line x1="62.0" y1="254.0" x2="616.0" y2="254.0" class="gridl"/>
+<text x="55.0" y="258.0" text-anchor="end" class="t-small">-2</text>
+<line x1="62.0" y1="201.6" x2="616.0" y2="201.6" class="gridl"/>
+<text x="55.0" y="205.6" text-anchor="end" class="t-small">-1</text>
+<line x1="62.0" y1="149.1" x2="616.0" y2="149.1" class="gridl"/>
+<text x="55.0" y="153.1" text-anchor="end" class="t-small">0</text>
+<line x1="62.0" y1="96.7" x2="616.0" y2="96.7" class="gridl"/>
+<text x="55.0" y="100.7" text-anchor="end" class="t-small">1</text>
+<line x1="62.0" y1="44.2" x2="616.0" y2="44.2" class="gridl"/>
+<text x="55.0" y="48.2" text-anchor="end" class="t-small">2</text>
+<line x1="62.0" y1="254.0" x2="62.0" y2="258.0" class="ax"/>
+<text x="62.0" y="271.0" text-anchor="middle" class="t-small">0 %</text>
+<line x1="141.1" y1="254.0" x2="141.1" y2="258.0" class="ax"/>
+<text x="141.1" y="271.0" text-anchor="middle" class="t-small">10 %</text>
+<line x1="220.3" y1="254.0" x2="220.3" y2="258.0" class="ax"/>
+<text x="220.3" y="271.0" text-anchor="middle" class="t-small">20 %</text>
+<line x1="299.4" y1="254.0" x2="299.4" y2="258.0" class="ax"/>
+<text x="299.4" y="271.0" text-anchor="middle" class="t-small">30 %</text>
+<line x1="378.6" y1="254.0" x2="378.6" y2="258.0" class="ax"/>
+<text x="378.6" y="271.0" text-anchor="middle" class="t-small">40 %</text>
+<line x1="457.7" y1="254.0" x2="457.7" y2="258.0" class="ax"/>
+<text x="457.7" y="271.0" text-anchor="middle" class="t-small">50 %</text>
+<line x1="536.9" y1="254.0" x2="536.9" y2="258.0" class="ax"/>
+<text x="536.9" y="271.0" text-anchor="middle" class="t-small">60 %</text>
+<line x1="616.0" y1="254.0" x2="616.0" y2="258.0" class="ax"/>
+<text x="616.0" y="271.0" text-anchor="middle" class="t-small">70 %</text>
+<path d="M62.0,18.0 L62.0,254.0 L616.0,254.0" class="ax"/>
+<text x="339.0" y="292.0" text-anchor="middle">podiel spotrebiteľov v skupine</text>
+<text transform="translate(16,136.0) rotate(-90)" text-anchor="middle">pokles priemernej príjemnosti</text>
+<line x1="220.3" y1="254.0" x2="220.3" y2="18.0" class="warnl dash"/>
+<line x1="62.0" y1="149.1" x2="616.0" y2="149.1" class="ax"/>
+<circle cx="206.8" cy="131.8" r="4.5" class="f3"/>
+<text x="214.8" y="123.8" text-anchor="start" class="t-small">sladkosť – príliš málo</text>
+<circle cx="286.0" cy="55.2" r="4.5" class="f2"/>
+<text x="294.0" y="47.2" text-anchor="start" class="t-small t-strong">sladkosť – príliš veľa</text>
+<circle cx="246.4" cy="145.4" r="4.5" class="f3"/>
+<text x="254.4" y="159.4" text-anchor="start" class="t-small">kyslosť – príliš málo</text>
+<circle cx="141.1" cy="144.4" r="4.5" class="f3"/>
+<text x="149.1" y="158.4" text-anchor="start" class="t-small">kyslosť – príliš veľa</text>
+<circle cx="510.7" cy="98.8" r="4.5" class="f2"/>
+<text x="518.7" y="90.8" text-anchor="start" class="t-small t-strong">hustota – príliš málo</text>
+<circle cx="101.6" cy="225.7" r="4.5" class="f3"/>
+<text x="109.6" y="217.7" text-anchor="start" class="t-small">hustota – príliš veľa</text>
+<text x="226.3" y="31.0" text-anchor="start" class="t-small t-warn">pravidlo 20 %</text>
+<text x="610.0" y="31.0" text-anchor="end" class="t-small t-warn">zvážiť úpravu</text>
+</svg>
+<figcaption>Dáta zo skriptu (60 spotrebiteľov, jogurt). Dôležité sú skupiny vpravo hore – veľa spotrebiteľov a veľký pokles: „sladkosť – príliš veľa“ a „hustota – príliš málo“. Naľavo od čiary 20 % sú skupiny primalé na interpretáciu.</figcaption>
+</figure>
+<div class="tablewrap"><table>
+<tr><th>Znak</th><th>Skupina</th><th>Podiel</th><th>Pokles</th><th>Vážený pokles</th></tr>
+<tr><td>sladkosť</td><td>príliš málo</td><td>18 %</td><td>0,33</td><td>0,06</td></tr>
+<tr><td>sladkosť</td><td>príliš veľa</td><td>28 %</td><td>1,79</td><td>0,51</td></tr>
+<tr><td>kyslosť</td><td>príliš málo</td><td>23 %</td><td>0,07</td><td>0,02</td></tr>
+<tr><td>kyslosť</td><td>príliš veľa</td><td>10 %</td><td>0,09</td><td>0,01</td></tr>
+<tr><td>hustota</td><td>príliš málo</td><td>57 %</td><td>0,96</td><td>0,54</td></tr>
+<tr><td>hustota</td><td>príliš veľa</td><td>5 %</td><td>−1,46</td><td>−0,07</td></tr>
+</table></div>
+<div class="note"><strong>Pravidlá sú konvencia</strong>Skupiny pod 20 % sa zvyčajne neinterpretujú (tu „hustota – príliš veľa“ sú len 3 spotrebitelia, preto aj nezmyselný záporný pokles). Za pokles hodný úpravy sa často berie 1 bod, za hraničný 0,5 bodu – nie je to norma, hranice si stanovte vopred. Hotové riešenie ponúka aj balík <code>SensoMineR</code> (funkcia <code>JAR()</code>).</div>
 
 <h2>Radarový graf (profilogram)</h2>
 <p>Radarový (pavúčí) graf zobrazuje <strong>senzorický profil</strong>: každá os je jeden deskriptor, vzdialenosť od stredu je priemerná intenzita. Tvar polygónu je „odtlačok“ produktu – podobné produkty majú podobné tvary.</p>
@@ -144,7 +210,24 @@
 </figure>
 <div class="warn"><strong>Na čo si dať pozor</strong>Plocha polygónu závisí od poradia osí – rovnaké dáta s iným poradím deskriptorov vyzerajú inak. Graf je vhodný pre 3 – 5 produktov a 5 – 12 deskriptorov; pri viacerých sa stáva neprehľadným. <code>radarchart()</code> vyžaduje v prvých dvoch riadkoch dát maximum a minimum osí – preto <code>rbind(rep(9, 5), rep(0, 5), data)</code>.</div>
 
+<section class="solutions"><h2>Riešenia úloh</h2><p>Kliknutím rozbalíte riešenie. Skúste úlohu najprv vyriešiť sami – výsledky sú overené v R 4.5. Kód nadväzuje na premenné zo skriptu.</p>
+<details class="sol"><summary>Úloha 1 <span>– ktorý znak upraviť ako prvý</span></summary>
+<pre>penalty[order(-penalty$vazeny_pokles), ]</pre>
+<div class="answer"><p>Dve skupiny spĺňajú pravidlo 20 % a majú veľký pokles: <strong>„hustota – príliš málo“</strong> (57 % spotrebiteľov, pokles 0,96 bodu, vážený pokles 0,54) a <strong>„sladkosť – príliš veľa“</strong> (28 %, pokles 1,79 bodu, vážený pokles 0,51). Jogurt treba <strong>zahustiť a ubrať na sladkosti</strong>; hustota sa týka viac ľudí, sladkosť prekáža silnejšie (t-test: p &lt; 0,001, resp. p = 0,003). Kyslosť meniť netreba – pokles je pod 0,1 bodu. Pravidlo 20 % nespĺňajú skupiny „sladkosť – príliš málo“ (18 %), „kyslosť – príliš veľa“ (10 %) a „hustota – príliš veľa“ (5 %).</p></div></details>
+<details class="sol"><summary>Úloha 2 <span>– overenie v kalkulátore</span></summary>
+<pre>table(cut(jar$sladkost, c(0, 2, 3, 5), labels = c("prilis malo", "JAR", "prilis vela")))
+tapply(prijemnost, cut(jar$sladkost, c(0, 2, 3, 5)), mean)</pre>
+<div class="answer"><p>Pre sladkosť: 11 spotrebiteľov „príliš málo“ (priemer 6,64), 32 „akurát“ (6,97), 17 „príliš veľa“ (5,18). Po zadaní týchto hodnôt dá kalkulátor SAP rovnaké poklesy 0,33 a 1,79 bodu.</p></div></details>
+</section>
 
+<section class="related" id="sap"><h2>📚 Súvislosti</h2>
+<ul>
+<li><strong>Metóda v SAP</strong> (Senzorická analýza potravín): <a href="https://senzorika.github.io/SAP/kapitoly/08_spotrebitelska_veda.html">Spotrebiteľská senzorická veda</a> · <a href="https://senzorika.github.io/SAP/kapitoly/06_skalovanie.html#jar">Škálovanie</a></li>
+<li><strong>Kalkulátor</strong> na overenie výsledku z R: <a href="https://senzorika.github.io/SAP/kapitoly/08_spotrebitelska_veda.html#kalkulator">penalty analýza (JAR)</a></li>
+<li><strong>Normy:</strong> ISO 11136:2014 (hedonické skúšky so spotrebiteľmi)</li>
+<li><strong>Literatúra:</strong> Lawless, H. T. &amp; Heymann, H. (2010). <em>Sensory Evaluation of Food: Principles and Practices</em> (2nd ed.). Springer.</li>
+</ul>
+<p class="small">Vydania noriem a tituly sú prevzaté z overeného zoznamu <a href="https://senzorika.github.io/SAP/kapitoly/priloha_zdroje.html">SAP – Zdroje a literatúra</a>. Prepočet čísel na tejto stránke: <a href="overenie.html">Overenie</a>.</p></section>
 <nav class="pager">
 <a class="prev" href="cvicenie11b.html"><span>← Predchádzajúce</span>11b. Text mining a analýza sentimentu</a>
 <a class="next" href="cvicenie13.html"><span>Nasledujúce →</span>13. Thurstonov model a d′</a>

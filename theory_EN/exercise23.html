@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>23. Wald's sequential analysis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../teoria/style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ink-3)"/></marker></defs></svg>
+<div class="wrap">
+<header class="top"><a class="brand" href="index.html">Sensometrics in R · theory</a><span class="toplinks"><a href="index.html">All exercises</a><a class="lang" href="../teoria/cvicenie23.html">Slovensky</a></span></header>
+
+<section class="hero"><span class="num">EXERCISE 23</span><h1>Wald's sequential analysis</h1><p class="lead">A discrimination test evaluated after every answer: once the result is clear, the test stops early.</p>
+<div class="files"><a href="../cvicenie23.R">Script (SK): cvicenie23.R</a><a href="../exercises_EN/exercise23.R">Script (EN): exercise23.R</a></div></section>
+<div class="goals"><h2>What you will learn</h2><ul>
+<li>to explain the difference between a test with a fixed number of assessors and a sequential test,</li>
+<li>to compute the boundaries of a sequential test from p₀, p₁, α and β,</li>
+<li>to evaluate the course of a test and know the risks of the sequential approach.</li>
+</ul></div>
+
+<h2>The idea</h2>
+<p>In a classical discrimination test the number of assessors is fixed in advance (exercise 14) and the data are evaluated only at the end. Wald's sequential probability ratio test (SPRT) decides <strong>after every answer</strong>: if there are already enough correct answers, the difference is established; if there are few enough, the test ends without a difference; otherwise the next assessor continues. It suits expensive samples or situations where assessors arrive one by one.</p>
+<div class="tablewrap"><table>
+<tr><th>Parameter</th><th>Meaning</th><th>In the script</th></tr>
+<tr><td>p₀</td><td>proportion of correct answers when guessing (H₀)</td><td>1/3 (triangle)</td></tr>
+<tr><td>p₁</td><td>proportion we already consider a difference (H₁)</td><td>0.5</td></tr>
+<tr><td>α</td><td>risk of declaring a difference that does not exist</td><td>0.05</td></tr>
+<tr><td>β</td><td>risk of missing an existing difference</td><td>0.20</td></tr>
+</table></div>
+
+<h2>Boundaries</h2>
+<div class="formula">D = ln(p₁/p₀) + ln((1 − p₀)/(1 − p₁)),&emsp;&emsp;s = ln((1 − p₀)/(1 − p₁)) / D<br>
+upper: a<sub>n</sub> = ln((1 − β)/α) / D + s·n&emsp;&emsp;lower: b<sub>n</sub> = −ln((1 − α)/β) / D + s·n
+<small>number correct ≥ a<sub>n</sub> → difference; ≤ b<sub>n</sub> → no difference; otherwise continue</small></div>
+<p>For the triangle test with the values from the script: s = 0.415; a<sub>n</sub> = 4.00 + 0.415 n; b<sub>n</sub> = −2.25 + 0.415 n. At n = 20 at least 13 correct answers are needed for a difference (a = 12.3) and at most 6 for “no difference” (b = 6.05).</p>
+<figure>
+<svg viewBox="0 0 640 300" role="img" aria-label="Sequential triangle test">
+<line x1="62.0" y1="224.5" x2="616.0" y2="224.5" class="gridl"/>
+<text x="55.0" y="228.5" text-anchor="end" class="t-small">0</text>
+<line x1="62.0" y1="195.0" x2="616.0" y2="195.0" class="gridl"/>
+<text x="55.0" y="199.0" text-anchor="end" class="t-small">2</text>
+<line x1="62.0" y1="165.5" x2="616.0" y2="165.5" class="gridl"/>
+<text x="55.0" y="169.5" text-anchor="end" class="t-small">4</text>
+<line x1="62.0" y1="136.0" x2="616.0" y2="136.0" class="gridl"/>
+<text x="55.0" y="140.0" text-anchor="end" class="t-small">6</text>
+<line x1="62.0" y1="106.5" x2="616.0" y2="106.5" class="gridl"/>
+<text x="55.0" y="110.5" text-anchor="end" class="t-small">8</text>
+<line x1="62.0" y1="77.0" x2="616.0" y2="77.0" class="gridl"/>
+<text x="55.0" y="81.0" text-anchor="end" class="t-small">10</text>
+<line x1="62.0" y1="47.5" x2="616.0" y2="47.5" class="gridl"/>
+<text x="55.0" y="51.5" text-anchor="end" class="t-small">12</text>
+<line x1="62.0" y1="18.0" x2="616.0" y2="18.0" class="gridl"/>
+<text x="55.0" y="22.0" text-anchor="end" class="t-small">14</text>
+<line x1="62.0" y1="254.0" x2="62.0" y2="258.0" class="ax"/>
+<text x="62.0" y="271.0" text-anchor="middle" class="t-small">0</text>
+<line x1="117.4" y1="254.0" x2="117.4" y2="258.0" class="ax"/>
+<text x="117.4" y="271.0" text-anchor="middle" class="t-small">2</text>
+<line x1="172.8" y1="254.0" x2="172.8" y2="258.0" class="ax"/>
+<text x="172.8" y="271.0" text-anchor="middle" class="t-small">4</text>
+<line x1="228.2" y1="254.0" x2="228.2" y2="258.0" class="ax"/>
+<text x="228.2" y="271.0" text-anchor="middle" class="t-small">6</text>
+<line x1="283.6" y1="254.0" x2="283.6" y2="258.0" class="ax"/>
+<text x="283.6" y="271.0" text-anchor="middle" class="t-small">8</text>
+<line x1="339.0" y1="254.0" x2="339.0" y2="258.0" class="ax"/>
+<text x="339.0" y="271.0" text-anchor="middle" class="t-small">10</text>
+<line x1="394.4" y1="254.0" x2="394.4" y2="258.0" class="ax"/>
+<text x="394.4" y="271.0" text-anchor="middle" class="t-small">12</text>
+<line x1="449.8" y1="254.0" x2="449.8" y2="258.0" class="ax"/>
+<text x="449.8" y="271.0" text-anchor="middle" class="t-small">14</text>
+<line x1="505.2" y1="254.0" x2="505.2" y2="258.0" class="ax"/>
+<text x="505.2" y="271.0" text-anchor="middle" class="t-small">16</text>
+<line x1="560.6" y1="254.0" x2="560.6" y2="258.0" class="ax"/>
+<text x="560.6" y="271.0" text-anchor="middle" class="t-small">18</text>
+<line x1="616.0" y1="254.0" x2="616.0" y2="258.0" class="ax"/>
+<text x="616.0" y="271.0" text-anchor="middle" class="t-small">20</text>
+<path d="M62.0,18.0 L62.0,254.0 L616.0,254.0" class="ax"/>
+<text x="339.0" y="292.0" text-anchor="middle">number of assessors n</text>
+<text transform="translate(16,136.0) rotate(-90)" text-anchor="middle">correct answers (cumulative)</text>
+<path d="M62.0,165.5 L616.0,43.1" class="ln2"/>
+<path d="M78.6,254.0 L616.0,135.2" class="ln1"/>
+<path d="M62.0,224.5 L89.7,224.5 L89.7,209.8 L117.4,209.8 L117.4,209.8 L145.1,209.8 L145.1,195.0 L172.8,195.0 L172.8,180.2 L200.5,180.2 L200.5,180.2 L228.2,180.2 L228.2,165.5 L255.9,165.5 L255.9,150.8 L283.6,150.8 L283.6,150.8 L311.3,150.8 L311.3,136.0 L339.0,136.0 L339.0,121.2 L366.7,121.2 L366.7,106.5 L394.4,106.5 L394.4,106.5 L422.1,106.5 L422.1,91.8 L449.8,91.8 L449.8,77.0" class="ln3"/>
+<circle cx="449.8" cy="77.0" r="6" class="f2"/>
+<text x="459.8" y="81.0" text-anchor="start" class="t-small t-strong">n = 14: 10 ≥ 9.81 → stop</text>
+<text x="145.1" y="54.9" text-anchor="start" class="t-small t-strong">difference established</text>
+<text x="422.1" y="218.6" text-anchor="start" class="t-small t-strong">difference not established</text>
+<text x="366.7" y="144.8" text-anchor="start" class="t-small">continue</text>
+</svg>
+<figcaption>The course of the test from the script. The step line is the cumulative number of correct answers; at the 14th assessor (10 correct) it crosses the upper boundary of 9.81 and the test ends with “difference”.</figcaption>
+</figure>
+
+<h2>How many assessors does it save?</h2>
+<p>A simulation of 5,000 tests (part 3 of the script) compared with a classical triangle test at the same risks:</p>
+<div class="tablewrap"><table>
+<tr><th>Truth</th><th>Mean number of assessors</th><th>Conclusion “difference”</th></tr>
+<tr><td>a difference exists (p = 0.5)</td><td>36.7</td><td>83 % (power)</td></tr>
+<tr><td>assessors are guessing (p = 1/3)</td><td>26.7</td><td>4 % (type I error)</td></tr>
+<tr><td>classical test with fixed n</td><td>58</td><td>power 80 %, α = 0.05</td></tr>
+</table></div>
+<p>On average, roughly a third to a half fewer assessors are needed. But it is an average: half of the tests with a real difference end within 30 assessors, 10 % need more than 69 and 1 % more than 120.</p>
+<div class="warn"><strong>Two warnings</strong>A sequential test has no end known in advance – always set a maximum number of assessors and a rule for what happens then. And sequential boundaries are not the same as “looking at the p-value after every assessor”: repeated testing with the classical binomial test would inflate the type I error considerably.</div>
+
+<section class="solutions"><h2>Task solutions</h2><p>Click to expand a solution. Try the task on your own first – results were verified in R 4.5. The code continues from the variables in the script.</p>
+<details class="sol"><summary>Task 1 <span>– boundaries for the duo-trio test</span></summary>
+<pre>p0 &lt;- 1 / 2; p1 &lt;- 0.7; alpha &lt;- 0.05; beta &lt;- 0.10
+D &lt;- log(p1 / p0) + log((1 - p0) / (1 - p1))
+slope &lt;- log((1 - p0) / (1 - p1)) / D
+c(slope = slope, upper_0 = log((1 - beta) / alpha) / D, lower_0 = -log((1 - alpha) / beta) / D)</pre>
+<div class="answer"><p>s = 0.603; a<sub>n</sub> = 3.41 + 0.603 n; b<sub>n</sub> = −2.66 + 0.603 n. The conclusion “difference” can come after <strong>9</strong> assessors at the earliest (all 9 correct: 9 ≥ 8.84), the conclusion “no difference” after <strong>5</strong> (no correct answer: 0 ≤ 0.36).</p></div></details>
+<details class="sol"><summary>Task 2 <span>– the sequence 0 1 0 0 1 0 0 0 1 0 0 0</span></summary>
+<pre>answers &lt;- c(0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+n &lt;- seq_along(answers)
+data.frame(n, correct = cumsum(answers), lower = round(lower(n), 2), upper = round(upper(n), 2))</pre>
+<div class="answer"><p>After 12 assessors there are 3 correct answers; the lower boundary is 2.73 and the upper 8.98 – the test is <strong>not decided yet</strong>. If the 13th assessor also misses (3 ≤ 3.15), the test ends with “no difference”.</p></div></details>
+<details class="sol"><summary>Task 3 <span>– a smaller difference p₁ = 0.45</span></summary>
+<div class="answer"><p>The boundaries move apart: s = 0.391; a<sub>n</sub> = 5.63 + 0.391 n; b<sub>n</sub> = −3.16 + 0.391 n. The mean number of assessors rises to about 71 (if the difference exists) and 52 (if not); a classical test would need 111. The smaller the difference we want to detect, the longer the test takes – sequential or classical.</p></div></details>
+</section>
+
+<section class="related" id="sap"><h2>📚 Related</h2>
+<ul>
+<li><strong>The method in SAP</strong> (Sensory Analysis of Food, in Slovak): <a href="https://senzorika.github.io/SAP/kapitoly/06_skalovanie.html#wald">Scaling</a> · <a href="https://senzorika.github.io/SAP/kapitoly/04_iso_metody.html">ISO standards and standard tests</a></li>
+<li><strong>Standards:</strong> ISO 16820:2019 (sequential analysis) · ISO 4120:2021 (triangle test)</li>
+<li><strong>Literature:</strong> Meilgaard, M. C., Civille, G. V. &amp; Carr, B. T. (2016). <em>Sensory Evaluation Techniques</em> (5th ed.). CRC Press.</li>
+</ul>
+<p class="small">Editions of the standards and book titles are taken from the verified list <a href="https://senzorika.github.io/SAP/kapitoly/priloha_zdroje.html">SAP – Sources and literature</a> (in Slovak). Recalculation of the numbers on this page: <a href="verification.html">Verification</a>.</p></section>
+<nav class="pager">
+<a class="prev" href="exercise22.html"><span>← Previous</span>22. Detection threshold – 3-AFC and the BET method</a>
+<a class="next" href="exercise24.html"><span>Next →</span>24. Conjoint analysis</a>
+</nav>
+</div>
+<script>
+(function () {
+  function copy(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    return Promise.resolve();
+  }
+  document.querySelectorAll('pre:not(.out)').forEach(function (pre) {
+    var text = pre.innerText;
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'copy'; btn.textContent = 'Copy';
+    btn.addEventListener('click', function () {
+      copy(text).then(function () {
+        btn.textContent = 'Copied ✓';
+        setTimeout(function () { btn.textContent = 'Copy'; }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+  var q = document.getElementById('filter');
+  if (q) q.addEventListener('input', function () {
+    var v = q.value.toLowerCase();
+    document.querySelectorAll('.cards a').forEach(function (c) {
+      c.style.display = c.textContent.toLowerCase().indexOf(v) === -1 ? 'none' : '';
+    });
+    document.querySelectorAll('section.block').forEach(function (s) {
+      var any = Array.prototype.some.call(s.querySelectorAll('.cards a'), function (c) { return c.style.display !== 'none'; });
+      s.style.display = any ? '' : 'none';
+    });
+  });
+})();
+</script>
+</body>
+</html>

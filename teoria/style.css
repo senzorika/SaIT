@@ -254,3 +254,10 @@ kbd {
 
 /* show <- literally, not as an arrow ligature */
 code, pre { font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+
+/* links to the SAP sister repository, standards and literature */
+.related { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 4px 20px 12px; margin: 28px 0; font-size: 16px; }
+.related h2 { margin-top: 18px; }
+.related ul { padding-left: 20px; }
+.related li { margin: 5px 0; }
+p.small { font-size: 14px; color: var(--ink-2); }

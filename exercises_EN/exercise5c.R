@@ -7,7 +7,7 @@
 
 # this package needs to be installed
 library(readxl)
-url <- "http://senzorika.com/sait/datasety/potraviny.xlsx"
+url <- "https://raw.githubusercontent.com/senzorika/SaIT/master/datasety/potraviny.xlsx"
 destfile <- "potraviny.xlsx"
 curl::curl_download(url, destfile)
 foods <- read_excel(destfile, sheet = "4vyrobky")

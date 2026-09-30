@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>24. Conjoint analysis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../teoria/style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ink-3)"/></marker></defs></svg>
+<div class="wrap">
+<header class="top"><a class="brand" href="index.html">Sensometrics in R · theory</a><span class="toplinks"><a href="index.html">All exercises</a><a class="lang" href="../teoria/cvicenie24.html">Slovensky</a></span></header>
+
+<section class="hero"><span class="num">EXERCISE 24</span><h1>Conjoint analysis</h1><p class="lead">How a consumer builds a preference from product features: part-worth utilities, attribute importance and a market simulation.</p>
+<div class="files"><a href="../cvicenie24.R">Script (SK): cvicenie24.R</a><a href="../exercises_EN/exercise24.R">Script (EN): exercise24.R</a></div></section>
+<div class="goals"><h2>What you will learn</h2><ul>
+<li>to design product profiles from attributes and their levels,</li>
+<li>to estimate part-worth utilities by regression and compute the relative importance of attributes,</li>
+<li>to use individual utilities for segmentation and a simple market simulation.</li>
+</ul></div>
+
+<h2>The principle</h2>
+<p>Asked “is price important to you?”, almost everyone says “yes”. Conjoint analysis therefore does not ask about attributes one by one: the consumer rates <strong>whole product profiles</strong> (e.g. “full-fat strawberry yogurt for €0.79”) and the importance of the attributes is computed from how the rating changes with their levels.</p>
+<div class="formula">rating = β₀ + u<sub>fat</sub> + u<sub>flavour</sub> + u<sub>price</sub> + ε
+<small>u – part-worth utility of a level; within one attribute the utilities sum to zero</small></div>
+<p>In the script the yogurt has three attributes with 2, 3 and 3 levels, i.e. 2 × 3 × 3 = <strong>18 profiles</strong> (a full factorial design). They are rated by 40 consumers on a 9-point scale.</p>
+
+<h2>Part-worth utilities and importance</h2>
+<figure>
+<svg viewBox="0 0 640 300" role="img" aria-label="Part-worth utilities">
+<line x1="62.0" y1="211.1" x2="616.0" y2="211.1" class="gridl"/>
+<text x="55.0" y="215.1" text-anchor="end" class="t-small">-1.0</text>
+<line x1="62.0" y1="172.5" x2="616.0" y2="172.5" class="gridl"/>
+<text x="55.0" y="176.5" text-anchor="end" class="t-small">-0.5</text>
+<line x1="62.0" y1="133.9" x2="616.0" y2="133.9" class="gridl"/>
+<text x="55.0" y="137.9" text-anchor="end" class="t-small">0.0</text>
+<line x1="62.0" y1="95.2" x2="616.0" y2="95.2" class="gridl"/>
+<text x="55.0" y="99.2" text-anchor="end" class="t-small">0.5</text>
+<line x1="62.0" y1="56.6" x2="616.0" y2="56.6" class="gridl"/>
+<text x="55.0" y="60.6" text-anchor="end" class="t-small">1.0</text>
+<path d="M62.0,18.0 L62.0,242.0 L616.0,242.0" class="ax"/>
+<text x="339.0" y="292.0" text-anchor="middle"></text>
+<text transform="translate(16,130.0) rotate(-90)" text-anchor="middle">part-worth utility</text>
+<line x1="62.0" y1="133.9" x2="616.0" y2="133.9" class="ax"/>
+<rect x="81.3" y="133.9" width="45.8" height="48.7" class="f1"/>
+<text x="104.2" y="196.5" text-anchor="middle" class="t-small t-strong">-0.63</text>
+<text x="104.2" y="258.0" text-anchor="middle" class="t-small">0.1 %</text>
+<rect x="141.5" y="85.2" width="45.8" height="48.7" class="f1"/>
+<text x="164.4" y="80.2" text-anchor="middle" class="t-small t-strong">0.63</text>
+<text x="164.4" y="258.0" text-anchor="middle" class="t-small">3.5 %</text>
+<rect x="231.8" y="116.1" width="45.8" height="17.8" class="f5"/>
+<text x="254.7" y="111.1" text-anchor="middle" class="t-small t-strong">0.23</text>
+<text x="254.7" y="258.0" text-anchor="middle" class="t-small">strawberry</text>
+<rect x="292.0" y="133.9" width="45.8" height="52.5" class="f5"/>
+<text x="314.9" y="200.4" text-anchor="middle" class="t-small t-strong">-0.68</text>
+<text x="314.9" y="258.0" text-anchor="middle" class="t-small">vanilla</text>
+<rect x="352.2" y="99.1" width="45.8" height="34.8" class="f5"/>
+<text x="375.1" y="94.1" text-anchor="middle" class="t-small t-strong">0.45</text>
+<text x="375.1" y="258.0" text-anchor="middle" class="t-small">chocolate</text>
+<rect x="442.6" y="48.9" width="45.8" height="85.0" class="f3"/>
+<text x="465.5" y="43.9" text-anchor="middle" class="t-small t-strong">1.10</text>
+<text x="465.5" y="258.0" text-anchor="middle" class="t-small">€0.59</text>
+<rect x="502.8" y="133.9" width="45.8" height="1.5" class="f3"/>
+<text x="525.7" y="149.4" text-anchor="middle" class="t-small t-strong">-0.02</text>
+<text x="525.7" y="258.0" text-anchor="middle" class="t-small">€0.79</text>
+<rect x="563.0" y="133.9" width="45.8" height="83.4" class="f3"/>
+<text x="585.9" y="231.3" text-anchor="middle" class="t-small t-strong">-1.08</text>
+<text x="585.9" y="258.0" text-anchor="middle" class="t-small">€0.99</text>
+<text x="134.3" y="290.0" text-anchor="middle" class="t-strong">fat · 28 %</text>
+<text x="314.9" y="290.0" text-anchor="middle" class="t-strong">flavour · 25 %</text>
+<text x="525.7" y="290.0" text-anchor="middle" class="t-strong">price · 48 %</text>
+</svg>
+<figcaption>Part-worth utilities from an <code>lm()</code> model with sum contrasts. Changing the price from €0.59 to €0.99 lowers the rating by 2.18 points, changing the fat content from 0.1 to 3.5 % raises it by 1.26 points.</figcaption>
+</figure>
+<div class="formula">importance of an attribute = range of its utilities / sum of the ranges of all attributes
+<small>fat 1.26 · flavour 1.13 · price 2.18 → 28 % · 25 % · 48 %</small></div>
+<div class="note"><strong>Importance depends on the chosen levels</strong>If the price varied only between €0.75 and €0.79, its range and its “importance” would be small. The result holds only for the tested range of levels.</div>
+
+<h2>Individual utilities and segments</h2>
+<p>An average can hide groups with opposite preferences. Rating-based conjoint allows a model to be estimated for <em>every respondent</em> (18 ratings, 6 parameters) and their utilities to be clustered (exercise 8):</p>
+<div class="tablewrap"><table>
+<tr><th>Cluster</th><th>Size</th><th>Importance fat / flavour / price</th><th>Description</th></tr>
+<tr><td>“price”</td><td>20</td><td>13 % / 19 % / 68 %</td><td>price decides; €0.59 vs. €0.99 is a difference of 3.4 points</td></tr>
+<tr><td>“taste”</td><td>20</td><td>42 % / 37 % / 22 %</td><td>want a full-fat yogurt, preferably chocolate</td></tr>
+</table></div>
+
+<h2>Market simulation</h2>
+<p>For every concept the respondent's part-worth utilities are added up; under the <em>first-choice</em> rule the respondent “buys” the concept with the highest utility.</p>
+<div class="tablewrap"><table>
+<tr><th>Concept</th><th>Composition</th><th>Share of first choice</th></tr>
+<tr><td>Light</td><td>0.1 %, strawberry, €0.59</td><td>50 % (the whole “price” segment)</td></tr>
+<tr><td>Premium</td><td>3.5 %, chocolate, €0.99</td><td>30 %</td></tr>
+<tr><td>Classic</td><td>3.5 %, strawberry, €0.79</td><td>20 %</td></tr>
+</table></div>
+<div class="warn"><strong>What to watch out for</strong>The number of profiles grows by multiplying the levels – 5 attributes with 3 levels each give 243 profiles; a fractional factorial design is then used. The first-choice rule is a simplification (it ignores availability and brand). In choice-based conjoint, where respondents choose among profiles instead of rating them, a multinomial logit model replaces the regression.</div>
+
+<section class="solutions"><h2>Task solutions</h2><p>Click to expand a solution. Try the task on your own first – results were verified in R 4.5. The code continues from the variables in the script.</p>
+<details class="sol"><summary>Task 1 <span>– attribute importance in the clusters</span></summary>
+<pre>importance &lt;- function(u) {
+  r &lt;- c(fat = diff(range(u[1:2])), flavour = diff(range(u[3:5])), price = diff(range(u[6:8])))
+  round(100 * r / sum(r), 1)
+}
+t(apply(clusters$centers, 1, importance))</pre>
+<div class="answer"><p>In the whole sample <strong>price</strong> is the most important attribute (48 %), followed by fat (28 %) and flavour (25 %). The clusters look different: in the “price” segment price has <strong>68 %</strong>, in the “taste” segment <strong>fat (42 %)</strong> and flavour (37 %) lead and price has only 22 %. The average result describes neither segment well.</p></div></details>
+<details class="sol"><summary>Task 2 <span>– the best yogurt for each cluster</span></summary>
+<pre>round(clusters$centers, 2)</pre>
+<div class="answer"><p>“Price” segment: 3.5 % fat, strawberry, €0.59. “Taste” segment: 3.5 % fat, chocolate, €0.59. Raising the price from €0.59 to €0.99 lowers the utility by <strong>3.38 points</strong> in the “price” segment but only by <strong>0.96 points</strong> in the “taste” segment – a premium chocolate yogurt can carry the price.</p></div></details>
+<details class="sol"><summary>Task 3 <span>– a fourth concept “Promo”</span></summary>
+<pre>concepts &lt;- rbind(concepts, Promo = c("3.5 %", "chocolate", "0.59 EUR"))
+# then re-run the computation of `total` and of the shares of first choice</pre>
+<div class="answer"><p>A full-fat chocolate yogurt for €0.59 takes <strong>90 %</strong> of first choices (Light 7.5 %, Classic 2.5 %, Premium 0 %) – it suits both segments and cannibalises the company's own Premium. TURF (exercise 11a) answers the question <em>which combination of products reaches the most people</em>; conjoint answers <em>why</em> it reaches them and what happens when a feature or the price changes.</p></div></details>
+</section>
+
+<section class="related" id="sap"><h2>📚 Related</h2>
+<ul>
+<li><strong>The method in SAP</strong> (Sensory Analysis of Food, in Slovak): <a href="https://senzorika.github.io/SAP/kapitoly/08_spotrebitelska_veda.html">Consumer sensory science</a></li>
+<li><strong>Literature:</strong> Næs, T., Brockhoff, P. B. &amp; Tomic, O. (2010). <em>Statistics for Sensory and Consumer Science</em>. Wiley.</li>
+</ul>
+<p class="small">Editions of the standards and book titles are taken from the verified list <a href="https://senzorika.github.io/SAP/kapitoly/priloha_zdroje.html">SAP – Sources and literature</a> (in Slovak). Recalculation of the numbers on this page: <a href="verification.html">Verification</a>.</p></section>
+<nav class="pager">
+<a class="prev" href="exercise23.html"><span>← Previous</span>23. Wald's sequential analysis</a>
+<a class="next" href="exercise25.html"><span>Next →</span>25. Sensory claims – superiority and parity</a>
+</nav>
+</div>
+<script>
+(function () {
+  function copy(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    return Promise.resolve();
+  }
+  document.querySelectorAll('pre:not(.out)').forEach(function (pre) {
+    var text = pre.innerText;
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'copy'; btn.textContent = 'Copy';
+    btn.addEventListener('click', function () {
+      copy(text).then(function () {
+        btn.textContent = 'Copied ✓';
+        setTimeout(function () { btn.textContent = 'Copy'; }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+  var q = document.getElementById('filter');
+  if (q) q.addEventListener('input', function () {
+    var v = q.value.toLowerCase();
+    document.querySelectorAll('.cards a').forEach(function (c) {
+      c.style.display = c.textContent.toLowerCase().indexOf(v) === -1 ? 'none' : '';
+    });
+    document.querySelectorAll('section.block').forEach(function (s) {
+      var any = Array.prototype.some.call(s.querySelectorAll('.cards a'), function (c) { return c.style.display !== 'none'; });
+      s.style.display = any ? '' : 'none';
+    });
+  });
+})();
+</script>
+</body>
+</html>

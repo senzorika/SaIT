@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>25. Sensory claims – superiority and parity</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../teoria/style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ink-3)"/></marker></defs></svg>
+<div class="wrap">
+<header class="top"><a class="brand" href="index.html">Sensometrics in R · theory</a><span class="toplinks"><a href="index.html">All exercises</a><a class="lang" href="../teoria/cvicenie25.html">Slovensky</a></span></header>
+
+<section class="hero"><span class="num">EXERCISE 25</span><h1>Sensory claims – superiority and parity</h1><p class="lead">What a test must show for the claims “tastes better” or “tastes the same” to stand: the preference test, the equivalence test and an attribute claim.</p>
+<div class="files"><a href="../cvicenie25.R">Script (SK): cvicenie25.R</a><a href="../exercises_EN/exercise25.R">Script (EN): exercise25.R</a></div></section>
+<div class="goals"><h2>What you will learn</h2><ul>
+<li>to distinguish superiority, parity and attribute claims and assign the right hypothesis to each,</li>
+<li>to evaluate a paired preference test including “no preference” answers,</li>
+<li>to establish parity with an equivalence test and determine the number of consumers needed.</li>
+</ul></div>
+
+<h2>Types of claims and their hypotheses</h2>
+<p>A sensory claim on a label or in an advertisement must be backed by a test. What matters is <em>what</em> is claimed – the null hypothesis depends on it:</p>
+<div class="tablewrap"><table>
+<tr><th>Claim</th><th>What has to be shown</th><th>Test</th></tr>
+<tr><td>superiority – “consumers prefer A”</td><td>share preferring A &gt; 50 %</td><td>two-sided binomial test</td></tr>
+<tr><td>parity – “liked as much as B”</td><td>the share lies in a narrow band around 50 %</td><td>equivalence test</td></tr>
+<tr><td>unsurpassed – “none tastes better”</td><td>the share of A is not below 50 % − margin</td><td>one-sided test</td></tr>
+<tr><td>attribute – “intense flavour”</td><td>mean of the descriptor ≥ a set limit</td><td>confidence interval, t-test</td></tr>
+</table></div>
+
+<h2>Superiority</h2>
+<p>Out of 300 consumers, 172 preferred product A (57.3 %). The two-sided binomial test gives p = 0.013 and a 95 % confidence interval of 51.5 – 63.0 % → the claim “preferred to B” is statistically supported.</p>
+<div class="note"><strong>“No preference” answers</strong>If they are allowed, their handling must be fixed <em>before</em> the test. With 150 : 110 and 40 “no preference” answers, dropping them gives p = 0.015 (150 of 260), splitting them equally gives p = 0.024 (170 of 300). Choosing the method after seeing the result is not acceptable.</div>
+
+<h2>Parity – the equivalence test</h2>
+<p>A non-significant difference does not prove parity – the panel may simply have been small. Parity has to be established actively: the (1 − 2α) confidence interval of the share must lie <strong>entirely</strong> within a pre-set band of 50 % ± margin (here ± 10 percentage points, α = 0.05, i.e. a 90 % interval).</p>
+<figure>
+<svg viewBox="0 0 640 230" role="img" aria-label="Parity test">
+<rect x="219.8" y="18.0" width="247.6" height="166.0" class="fa"/>
+<line x1="96.0" y1="184.0" x2="96.0" y2="188.0" class="ax"/>
+<text x="96.0" y="201.0" text-anchor="middle" class="t-small">30 %</text>
+<line x1="219.8" y1="184.0" x2="219.8" y2="188.0" class="ax"/>
+<text x="219.8" y="201.0" text-anchor="middle" class="t-small">40 %</text>
+<line x1="343.6" y1="184.0" x2="343.6" y2="188.0" class="ax"/>
+<text x="343.6" y="201.0" text-anchor="middle" class="t-small">50 %</text>
+<line x1="467.4" y1="184.0" x2="467.4" y2="188.0" class="ax"/>
+<text x="467.4" y="201.0" text-anchor="middle" class="t-small">60 %</text>
+<line x1="591.2" y1="184.0" x2="591.2" y2="188.0" class="ax"/>
+<text x="591.2" y="201.0" text-anchor="middle" class="t-small">70 %</text>
+<path d="M96.0,18.0 L96.0,184.0 L616.0,184.0" class="ax"/>
+<text x="356.0" y="222.0" text-anchor="middle">share preferring A (90 % confidence interval)</text>
+<text transform="translate(16,101.0) rotate(-90)" text-anchor="middle"></text>
+<line x1="343.6" y1="184.0" x2="343.6" y2="18.0" class="ax dash"/>
+<line x1="373.3" y1="51.2" x2="493.4" y2="51.2" class="ln2"/>
+<circle cx="434.0" cy="51.2" r="5" class="f2"/>
+<text x="86.0" y="55.2" text-anchor="end" class="t-strong">172 / 300</text>
+<text x="501.4" y="55.2" text-anchor="start" class="t-small t-warn">parity ✗</text>
+<line x1="299.0" y1="96.8" x2="420.4" y2="96.8" class="ln1"/>
+<circle cx="359.7" cy="96.8" r="5" class="f1"/>
+<text x="86.0" y="100.8" text-anchor="end" class="t-strong">154 / 300</text>
+<text x="428.4" y="100.8" text-anchor="start" class="t-small t-acc">parity ✓</text>
+<line x1="223.5" y1="142.5" x2="503.3" y2="142.5" class="ln2"/>
+<circle cx="364.7" cy="142.5" r="5" class="f2"/>
+<text x="86.0" y="146.5" text-anchor="end" class="t-strong">31 / 60</text>
+<text x="511.3" y="146.5" text-anchor="start" class="t-small t-warn">parity ✗</text>
+<text x="343.6" y="31.0" text-anchor="middle" class="t-small t-acc">parity band 40 – 60 %</text>
+</svg>
+<figcaption>Three results from the script. 154 of 300 (51 %) supports parity. 31 of 60 has almost the same share (52 %), but the interval of 40 – 63 % is too wide – parity cannot be established with few consumers. For 172 of 300 the interval exceeds the upper limit of the band.</figcaption>
+</figure>
+<div class="tablewrap"><table>
+<tr><th>Number of consumers</th><th>60</th><th>100</th><th>150</th><th>200</th><th>300</th><th>400</th></tr>
+<tr><td>power of the parity test (true preference 50 : 50)</td><td>0 %</td><td>24 %</td><td>54 %</td><td>77 %</td><td>93 %</td><td>98 %</td></tr>
+</table></div>
+<p>With a margin of ± 10 pp about 220 consumers are needed for 80 % power, with a stricter margin of ± 5 pp about 880.</p>
+
+<h2>Attribute claim</h2>
+<p>Let us define the claim “intense flavour” as a mean of at least 7 on a 10-point scale. A panel of 12 assessors gave a mean of 7.5 with a standard deviation of 1.2:</p>
+<div class="formula">95 % CI = 7.5 ± 2.201 · 1.2 / √12 = 6.74 – 8.26
+<small>the lower limit 6.74 &lt; 7 → the claim is not supported although the mean exceeds the limit</small></div>
+<p>A one-sided t-test against 7 gives p = 0.088. About 38 ratings would be needed to separate a mean of 7.5 from the limit of 7 with 80 % power.</p>
+<div class="warn"><strong>Statistics are not enough</strong>A claim must rest on a representative sample of target consumers, current products from the market and a protocol written in advance (parity margin, α, handling of “no preference” answers). The legal framework and the methodological standards are summarised in the SAP chapter on sensory claims (in Slovak).</div>
+
+<section class="solutions"><h2>Task solutions</h2><p>Click to expand a solution. Try the task on your own first – results were verified in R 4.5. The code continues from the variables in the script.</p>
+<details class="sol"><summary>Task 1 <span>– 140 of 250 prefer A</span></summary>
+<pre>binom.test(140, 250, p = 0.5)
+parity(140, 250)</pre>
+<div class="answer"><p>The share is 56 %, p = 0.066 → superiority is <strong>not supported</strong>. The 90 % confidence interval of 50.6 – 61.3 % exceeds the upper limit of the band (60 %) → <strong>parity is not supported either</strong>. The result is inconclusive: the test is sufficient for neither claim.</p></div></details>
+<details class="sol"><summary>Task 2 <span>– number of consumers for parity</span></summary>
+<pre>sapply(c(200, 214, 230), parity_power)
+sapply(c(860, 880, 900), parity_power, margin = 0.05)</pre>
+<div class="answer"><p>With a margin of ± 10 pp the power exceeds 80 % at about <strong>220</strong> consumers (for a binomial distribution the power fluctuates slightly with n; it first reaches 80 % at n = 214). With a margin of ± 5 pp about <strong>880</strong> are needed – half the margin means four times the sample.</p></div></details>
+<details class="sol"><summary>Task 3 <span>– why a non-significant difference is not enough</span></summary>
+<pre>parity(31, 60)</pre>
+<div class="answer"><p>The SAP calculator gives the same result for 172 : 128 (p = 0.013; parity not supported). A non-significant result only means “a difference could not be shown” – with 60 consumers even 60 : 40 would come out non-significant. The claim “tastes the same” therefore requires an equivalence test with a pre-set margin and a sufficiently large sample.</p></div></details>
+</section>
+
+<section class="related" id="sap"><h2>📚 Related</h2>
+<ul>
+<li><strong>The method in SAP</strong> (Sensory Analysis of Food, in Slovak): <a href="https://senzorika.github.io/SAP/kapitoly/09_claims.html">Sensory claims</a> · <a href="https://senzorika.github.io/SAP/kapitoly/05_diskriminacne_metody.html">Discrimination methods</a></li>
+<li><strong>Calculator</strong> to check the result from R: <a href="https://senzorika.github.io/SAP/kapitoly/09_claims.html#kalkulator">paired preference test – superiority, parity</a></li>
+<li><strong>Standards:</strong> ASTM E1958 (sensory claim substantiation) · ASTM E2263 (paired preference test) · ISO 5495:2005 (paired comparison test)</li>
+</ul>
+<p class="small">Editions of the standards and book titles are taken from the verified list <a href="https://senzorika.github.io/SAP/kapitoly/priloha_zdroje.html">SAP – Sources and literature</a> (in Slovak). Recalculation of the numbers on this page: <a href="verification.html">Verification</a>.</p></section>
+<nav class="pager">
+<a class="prev" href="exercise24.html"><span>← Previous</span>24. Conjoint analysis</a>
+</nav>
+</div>
+<script>
+(function () {
+  function copy(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    return Promise.resolve();
+  }
+  document.querySelectorAll('pre:not(.out)').forEach(function (pre) {
+    var text = pre.innerText;
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'copy'; btn.textContent = 'Copy';
+    btn.addEventListener('click', function () {
+      copy(text).then(function () {
+        btn.textContent = 'Copied ✓';
+        setTimeout(function () { btn.textContent = 'Copy'; }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+  var q = document.getElementById('filter');
+  if (q) q.addEventListener('input', function () {
+    var v = q.value.toLowerCase();
+    document.querySelectorAll('.cards a').forEach(function (c) {
+      c.style.display = c.textContent.toLowerCase().indexOf(v) === -1 ? 'none' : '';
+    });
+    document.querySelectorAll('section.block').forEach(function (s) {
+      var any = Array.prototype.some.call(s.querySelectorAll('.cards a'), function (c) { return c.style.display !== 'none'; });
+      s.style.display = any ? '' : 'none';
+    });
+  });
+})();
+</script>
+</body>
+</html>

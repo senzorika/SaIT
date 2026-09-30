@@ -8,7 +8,7 @@
 # -----------------------------------------------------------
 
 # nacitame si dataset z internetovej adresy
-senzorika <- read.table("http://senzorika.com/sait/datasety/senzorika.txt", sep = ",")
+senzorika <- read.table("https://raw.githubusercontent.com/senzorika/SaIT/master/datasety/senzorika.txt", sep = ",")
 mena <- c("pizza_1", "pizza_2", "pizza_3", "pizza_4", "pizza_5", "pizza_6", "pizza_7", "pizza_8", "pizza_9", "pizza_10", "pizza_11", "pizza_12", "pizza_13", "pizza_14", "pizza_15", "pizza_16")
 row.names(senzorika) <- mena
 # Wardovo hierarchicke zhlukovanie
@@ -29,7 +29,7 @@ library(cluster) # balik pre zhlukovacie techniky
 library(factoextra) # clustering
 
 # nacitanie dat
-senzorika <- read.table("http://senzorika.com/sait/datasety/senzorika.txt", sep = ",")
+senzorika <- read.table("https://raw.githubusercontent.com/senzorika/SaIT/master/datasety/senzorika.txt", sep = ",")
 distance <- get_dist(senzorika)
 fviz_dist(distance, gradient = list(low = "#00AFBB", mid = "white", high = "#FC4E07"))
 k2 <- kmeans(senzorika, centers = 2, nstart = 25)
@@ -50,5 +50,5 @@ k3$size
 # Senzoricka Komisia hodnotila nas produkt A, oproti konkurencnym 15 produktom na trhu. Cielom analyzy bolo zistit, ktory je nasmu produktu
 # najviac podobny, ked skupina hodnotitelov zaradila cely sortiment do 5 skupin. Okomentujete vysledky.
 
-senzorika <- read.table("http://senzorika.com/sait/datasety/senzorika.txt", sep = ",")
+senzorika <- read.table("https://raw.githubusercontent.com/senzorika/SaIT/master/datasety/senzorika.txt", sep = ",")
 mena <- c("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "X")

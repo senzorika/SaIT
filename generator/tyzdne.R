@@ -2,10 +2,10 @@
 # tasks = ids from ULOHY (their order also fixes the order of the random data in the student script)
 
 DATASETY <- list(
-  senzorika = c(url = "http://senzorika.com/sait/datasety/senzorika.txt", sk = "senzorický profil 16 pízz (13 deskriptorov)", en = "sensory profile of 16 pizzas (13 descriptors)"),
-  hedonika = c(url = "http://senzorika.com/sait/datasety/hedonika.txt", sk = "hedonické hodnotenia k profilu pízz", en = "hedonic ratings for the pizza profile"),
-  cokolada = c(url = "http://senzorika.com/sait/datasety/cokolada.txt", sk = "mesačná spotreba čokolády", en = "monthly chocolate consumption"),
-  potraviny = c(url = "http://senzorika.com/sait/datasety/potraviny.xlsx", sk = "hodnotenia 4 výrobkov (Excel)", en = "ratings of 4 products (Excel)"),
+  senzorika = c(url = "https://raw.githubusercontent.com/senzorika/SaIT/master/datasety/senzorika.txt", sk = "senzorický profil 16 pízz (13 deskriptorov)", en = "sensory profile of 16 pizzas (13 descriptors)"),
+  hedonika = c(url = "https://raw.githubusercontent.com/senzorika/SaIT/master/datasety/hedonika.txt", sk = "hedonické hodnotenia k profilu pízz", en = "hedonic ratings for the pizza profile"),
+  cokolada = c(url = "https://raw.githubusercontent.com/senzorika/SaIT/master/datasety/cokolada.txt", sk = "mesačná spotreba čokolády", en = "monthly chocolate consumption"),
+  potraviny = c(url = "https://raw.githubusercontent.com/senzorika/SaIT/master/datasety/potraviny.xlsx", sk = "hodnotenia 4 výrobkov (Excel)", en = "ratings of 4 products (Excel)"),
   datasety001 = c(url = "https://github.com/senzorika/SaIT/blob/master/datasety/001_datasety.txt", sk = "cvičné dáta na výber testu", en = "practice data for choosing a test"),
   sensochoc = c(url = "https://rdrr.io/cran/SensoMineR/man/chocolates.html", sk = "balík SensoMineR – dataset chocolates", en = "SensoMineR package – chocolates dataset")
 )

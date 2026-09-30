@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>22. Prah citlivosti – 3-AFC a metóda BET</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ink-3)"/></marker></defs></svg>
+<div class="wrap">
+<header class="top"><a class="brand" href="index.html">Senzometria v R · teória</a><span class="toplinks"><a href="index.html">Všetky cvičenia</a><a class="lang" href="../theory_EN/exercise22.html">English</a></span></header>
+
+<section class="hero"><span class="num">CVIČENIE 22</span><h1>Prah citlivosti – 3-AFC a metóda BET</h1><p class="lead">Pri akej koncentrácii panel látku zachytí? Vzostupný rad skúšok 3-AFC, individuálne a skupinové prahy.</p>
+<div class="files"><a href="../cvicenie22.R">Skript (SK): cvicenie22.R</a><a href="../exercises_EN/exercise22.R">Script (EN): exercise22.R</a></div></section>
+<div class="goals"><h2>Čo sa naučíte</h2><ul>
+<li>rozlíšiť detekčný a rozpoznávací prah a vysvetliť, prečo je prah pravdepodobnostný pojem,</li>
+<li>vypočítať individuálny a skupinový prah metódou najlepšieho odhadu (BET),</li>
+<li>odhadnúť prah z psychometrickej funkcie s korekciou na hádanie.</li>
+</ul></div>
+
+<h2>Čo je prah</h2>
+<p><strong>Detekčný prah</strong> je najnižšia koncentrácia, pri ktorej hodnotiteľ odlíši vzorku od vody – ešte nemusí vedieť povedať, čo cíti. <strong>Rozpoznávací prah</strong> je vyššia koncentrácia, pri ktorej chuť alebo vôňu aj pomenuje. Prah nie je ostrá hranica: pri tej istej koncentrácii hodnotiteľ látku raz zachytí a raz nie. Preto sa definuje pravdepodobnosťou – koncentrácia, ktorú deteguje <strong>50 %</strong> pokusov (alebo panelu).</p>
+
+<h2>Skúška 3-AFC vo vzostupnom rade</h2>
+<p>Pri každej koncentrácii dostane hodnotiteľ tri vzorky: dve s vodou a jednu s látkou, a musí označiť tú s látkou (3-AFC, nútená voľba z troch). Bez vnemu uhádne s pravdepodobnosťou 1/3. Koncentrácie stúpajú geometricky, tu s krokom 2: 0,5 – 1 – 2 – 4 – 8 – 16 g/l.</p>
+
+<h2>Metóda najlepšieho odhadu (BET)</h2>
+<p>Individuálny prah leží medzi <em>najvyššou nerozpoznanou</em> koncentráciou a nasledujúcou vyššou. Za najlepší odhad sa berie ich geometrický priemer:</p>
+<div class="formula">BET<sub>i</sub> = √(c<sub>posledná chyba</sub> · c<sub>nasledujúca</sub>)&emsp;&emsp;skupinový prah = geometrický priemer BET<sub>i</sub>
+<small>geometrický priemer preto, že koncentrácie tvoria geometrický rad a citlivosť ľudí je približne log-normálne rozdelená</small></div>
+<div class="tablewrap"><table>
+<tr><th>Hodnotiteľ</th><th>0,5</th><th>1</th><th>2</th><th>4</th><th>8</th><th>16</th><th>Prah BET (g/l)</th></tr>
+<tr><td>H1</td><td>✕</td><td>✕</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>√(1 · 2) = 1,41</td></tr>
+<tr><td>H2</td><td>✕</td><td>✓</td><td>✕</td><td>✓</td><td>✓</td><td>✓</td><td>√(2 · 4) = 2,83</td></tr>
+<tr><td>H3</td><td>✕</td><td>✕</td><td>✕</td><td>✓</td><td>✓</td><td>✓</td><td>2,83</td></tr>
+<tr><td>H4</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>0,35 (pod radom)</td></tr>
+<tr><td>H5</td><td>✕</td><td>✕</td><td>✓</td><td>✕</td><td>✕</td><td>✓</td><td>√(8 · 16) = 11,31</td></tr>
+<tr><td>H6</td><td>✕</td><td>✕</td><td>✕</td><td>✕</td><td>✓</td><td>✓</td><td>5,66</td></tr>
+</table></div>
+<p>Skupinový prah je <strong>2,52 g/l</strong>; smerodajná odchýlka log<sub>10</sub> prahov 0,52 znamená, že individuálne prahy sa líšia rádovo (0,35 až 11,3 g/l).</p>
+<div class="warn"><strong>Okrajové prípady</strong>Kto odpovedal správne pri všetkých koncentráciách (H4), dostane odhad o pol kroka <em>pod</em> radom; kto sa pomýlil pri najvyššej, o pol kroka <em>nad</em> radom. Skutočný prah v oboch prípadoch nepoznáme – rad treba rozšíriť.</div>
+
+<h2>Psychometrická funkcia</h2>
+<p>Ak pri každej koncentrácii hodnotí veľa ľudí, prah sa odhadne z podielu správnych odpovedí. Tretina hodnotiteľov uhádne aj bez vnemu, preto podiel správnych odpovedí nezačína na nule, ale na 1/3:</p>
+<div class="formula">P(správne) = 1/3 + 2/3 · P(detekcia),&emsp;&emsp;P(detekcia) = 1 / (1 + e<sup>−(a + b·log₂ c)</sup>)
+<small>prah = koncentrácia, pri ktorej P(detekcia) = 0,5, teda 2/3 správnych odpovedí</small></div>
+<figure>
+<svg viewBox="0 0 640 290" role="img" aria-label="Psychometrická funkcia 3-AFC">
+<line x1="62.0" y1="244.0" x2="616.0" y2="244.0" class="gridl"/>
+<text x="55.0" y="248.0" text-anchor="end" class="t-small">0</text>
+<line x1="62.0" y1="168.7" x2="616.0" y2="168.7" class="gridl"/>
+<text x="55.0" y="172.7" text-anchor="end" class="t-small">1/3</text>
+<line x1="62.0" y1="93.3" x2="616.0" y2="93.3" class="gridl"/>
+<text x="55.0" y="97.3" text-anchor="end" class="t-small">2/3</text>
+<line x1="62.0" y1="18.0" x2="616.0" y2="18.0" class="gridl"/>
+<text x="55.0" y="22.0" text-anchor="end" class="t-small">1</text>
+<line x1="100.2" y1="244.0" x2="100.2" y2="248.0" class="ax"/>
+<text x="100.2" y="261.0" text-anchor="middle" class="t-small">0,5</text>
+<line x1="195.7" y1="244.0" x2="195.7" y2="248.0" class="ax"/>
+<text x="195.7" y="261.0" text-anchor="middle" class="t-small">1</text>
+<line x1="291.2" y1="244.0" x2="291.2" y2="248.0" class="ax"/>
+<text x="291.2" y="261.0" text-anchor="middle" class="t-small">2</text>
+<line x1="386.8" y1="244.0" x2="386.8" y2="248.0" class="ax"/>
+<text x="386.8" y="261.0" text-anchor="middle" class="t-small">4</text>
+<line x1="482.3" y1="244.0" x2="482.3" y2="248.0" class="ax"/>
+<text x="482.3" y="261.0" text-anchor="middle" class="t-small">8</text>
+<line x1="577.8" y1="244.0" x2="577.8" y2="248.0" class="ax"/>
+<text x="577.8" y="261.0" text-anchor="middle" class="t-small">16</text>
+<path d="M62.0,18.0 L62.0,244.0 L616.0,244.0" class="ax"/>
+<text x="339.0" y="282.0" text-anchor="middle">koncentrácia (g/l), logaritmická os</text>
+<text transform="translate(16,131.0) rotate(-90)" text-anchor="middle">podiel správnych odpovedí</text>
+<path d="M62.0,168.6 L66.8,168.6 L71.6,168.6 L76.3,168.6 L81.1,168.5 L85.9,168.5 L90.7,168.5 L95.4,168.5 L100.2,168.5 L105.0,168.5 L109.8,168.4 L114.5,168.4 L119.3,168.4 L124.1,168.3 L128.9,168.3 L133.6,168.2 L138.4,168.2 L143.2,168.1 L148.0,168.1 L152.7,168.0 L157.5,167.9 L162.3,167.8 L167.1,167.7 L171.8,167.6 L176.6,167.5 L181.4,167.3 L186.2,167.2 L190.9,167.0 L195.7,166.8 L200.5,166.6 L205.3,166.3 L210.1,166.1 L214.8,165.7 L219.6,165.4 L224.4,165.0 L229.2,164.6 L233.9,164.1 L238.7,163.6 L243.5,163.0 L248.3,162.3 L253.0,161.6 L257.8,160.8 L262.6,159.9 L267.4,158.9 L272.1,157.7 L276.9,156.5 L281.7,155.2 L286.5,153.7 L291.2,152.1 L296.0,150.3 L300.8,148.4 L305.6,146.3 L310.3,144.1 L315.1,141.6 L319.9,139.0 L324.7,136.2 L329.4,133.1 L334.2,129.9 L339.0,126.6 L343.8,123.0 L348.6,119.3 L353.3,115.4 L358.1,111.4 L362.9,107.3 L367.7,103.1 L372.4,98.8 L377.2,94.5 L382.0,90.2 L386.8,85.9 L391.5,81.7 L396.3,77.5 L401.1,73.4 L405.9,69.5 L410.6,65.7 L415.4,62.0 L420.2,58.6 L425.0,55.3 L429.7,52.1 L434.5,49.2 L439.3,46.5 L444.1,43.9 L448.8,41.6 L453.6,39.4 L458.4,37.4 L463.2,35.5 L467.9,33.8 L472.7,32.3 L477.5,30.9 L482.3,29.6 L487.1,28.4 L491.8,27.4 L496.6,26.4 L501.4,25.5 L506.2,24.8 L510.9,24.1 L515.7,23.4 L520.5,22.9 L525.3,22.3 L530.0,21.9 L534.8,21.5 L539.6,21.1 L544.4,20.8 L549.1,20.5 L553.9,20.2 L558.7,20.0 L563.5,19.8 L568.2,19.6 L573.0,19.4 L577.8,19.3 L582.6,19.1 L587.3,19.0 L592.1,18.9 L596.9,18.8 L601.7,18.7 L606.4,18.6 L611.2,18.6 L616.0,18.5" class="ln1"/>
+<line x1="62.0" y1="93.3" x2="378.5" y2="93.3" class="warnl dash"/>
+<line x1="378.5" y1="244.0" x2="378.5" y2="93.3" class="warnl dash"/>
+<circle cx="100.2" cy="176.2" r="4.5" class="f3"/>
+<circle cx="195.7" cy="161.1" r="4.5" class="f3"/>
+<circle cx="291.2" cy="183.7" r="4.5" class="f3"/>
+<circle cx="386.8" cy="63.2" r="4.5" class="f3"/>
+<circle cx="482.3" cy="40.6" r="4.5" class="f3"/>
+<circle cx="577.8" cy="18.0" r="4.5" class="f3"/>
+<text x="68.0" y="163.7" text-anchor="start" class="t-small">úroveň náhody</text>
+<text x="385.5" y="225.9" text-anchor="start" class="t-small t-warn">prah ≈ 3,8 g/l</text>
+<text x="68.0" y="88.3" text-anchor="start" class="t-small t-warn">50 % detekcia</text>
+</svg>
+<figcaption>Dáta zo skriptu (30 hodnotiteľov pri každej koncentrácii) a krivka odhadnutá metódou maximálnej vierohodnosti. Prah vychádza 3,77 g/l. Pri nízkych koncentráciách sa body pohybujú okolo úrovne náhody 1/3.</figcaption>
+</figure>
+<div class="note"><strong>Prečo nie 50 % správnych?</strong>V skúške 3-AFC je 50 % správnych odpovedí len 25 % detekcie (0,5 = 1/3 + 2/3 · 0,25). Bez korekcie na hádanie by bol prah podhodnotený.</div>
+
+<section class="solutions"><h2>Riešenia úloh</h2><p>Kliknutím rozbalíte riešenie. Skúste úlohu najprv vyriešiť sami – výsledky sú overené v R 4.5. Kód nadväzuje na premenné zo skriptu.</p>
+<details class="sol"><summary>Úloha 1 <span>– citlivosť hodnotiteľov</span></summary>
+<pre>round(sort(prahy), 2)</pre>
+<div class="answer"><p>Najcitlivejší je <strong>H4</strong> (0,35 g/l), najmenej citlivý <strong>H5</strong> (11,3 g/l). Odhad pre H4 je nespoľahlivý – správne odpovedal všade, takže jeho prah leží niekde pod 0,5 g/l; rad treba predĺžiť smerom nadol (0,25; 0,125 g/l). U H5 sú odpovede nekonzistentné, skúšku by sa oplatilo zopakovať.</p></div></details>
+<details class="sol"><summary>Úloha 2 <span>– prečo sa správna odpoveď pri 2 g/l neráta</span></summary>
+<pre>(1 / 3)^3</pre>
+<div class="answer"><p>H5 po správnej odpovedi pri 2 g/l dvakrát chybil (4 a 8 g/l) – išlo teda pravdepodobne o uhádnutie. BET berie <em>poslednú</em> chybu, nie prvú správnu odpoveď. Tri skúšky 3-AFC po sebe uhádne hodnotiteľ bez vnemu s pravdepodobnosťou (1/3)³ = <strong>3,7 %</strong>; jednu skúšku až 33 %.</p></div></details>
+<details class="sol"><summary>Úloha 3 <span>– BET verzus psychometrická funkcia</span></summary>
+<div class="answer"><p>Kalkulátor SAP dá rovnaké individuálne prahy aj skupinový prah 2,52 g/l. Psychometrická funkcia dala 3,77 g/l – ide však o iné dáta (30 hodnotiteľov) a inú definíciu: BET priemeruje individuálne prahy, model hľadá koncentráciu s 50 % detekciou v celej skupine. Pri malom počte hodnotiteľov BET silno závisí od jednotlivcov (tu od H4 a H5).</p></div></details>
+</section>
+
+<section class="related" id="sap"><h2>📚 Súvislosti</h2>
+<ul>
+<li><strong>Metóda v SAP</strong> (Senzorická analýza potravín): <a href="https://senzorika.github.io/SAP/kapitoly/01_uvod_vnimanie_chuti.html">Úvod do senzoriky a vnímanie chuti</a> · <a href="https://senzorika.github.io/SAP/kapitoly/11_vzorce.html">Vzorce a štatistické výpočty</a></li>
+<li><strong>Kalkulátor</strong> na overenie výsledku z R: <a href="https://senzorika.github.io/SAP/kapitoly/01_uvod_vnimanie_chuti.html#kalkulator">prah citlivosti (BET, 3-AFC)</a></li>
+<li><strong>Normy:</strong> ISO 13301:2018 (prahy metódou 3-AFC) · ASTM E679 (prahy vo vzostupnom rade koncentrácií)</li>
+<li><strong>Literatúra:</strong> Lawless, H. T. &amp; Heymann, H. (2010). <em>Sensory Evaluation of Food: Principles and Practices</em> (2nd ed.). Springer.</li>
+</ul>
+<p class="small">Vydania noriem a tituly sú prevzaté z overeného zoznamu <a href="https://senzorika.github.io/SAP/kapitoly/priloha_zdroje.html">SAP – Zdroje a literatúra</a>. Prepočet čísel na tejto stránke: <a href="overenie.html">Overenie</a>.</p></section>
+<nav class="pager">
+<a class="prev" href="cvicenie21.html"><span>← Predchádzajúce</span>21. Kódy vzoriek a Williamsov dizajn poradia</a>
+<a class="next" href="cvicenie23.html"><span>Nasledujúce →</span>23. Waldova sekvenčná analýza</a>
+</nav>
+</div>
+<script>
+(function () {
+  function copy(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    return Promise.resolve();
+  }
+  document.querySelectorAll('pre:not(.out)').forEach(function (pre) {
+    var text = pre.innerText;
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'copy'; btn.textContent = 'Kopírovať';
+    btn.addEventListener('click', function () {
+      copy(text).then(function () {
+        btn.textContent = 'Skopírované ✓';
+        setTimeout(function () { btn.textContent = 'Kopírovať'; }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+  var q = document.getElementById('filter');
+  if (q) q.addEventListener('input', function () {
+    var v = q.value.toLowerCase();
+    document.querySelectorAll('.cards a').forEach(function (c) {
+      c.style.display = c.textContent.toLowerCase().indexOf(v) === -1 ? 'none' : '';
+    });
+    document.querySelectorAll('section.block').forEach(function (s) {
+      var any = Array.prototype.some.call(s.querySelectorAll('.cards a'), function (c) { return c.style.display !== 'none'; });
+      s.style.display = any ? '' : 'none';
+    });
+  });
+})();
+</script>
+</body>
+</html>

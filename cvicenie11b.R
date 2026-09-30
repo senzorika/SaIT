@@ -22,7 +22,9 @@ library("RColorBrewer")
 library("syuzhet")
 library("ggplot2")
 
-# nacitanie txt suboru z lokalneho pocitaca
+# nacitanie txt suboru z lokalneho pocitaca (lexikon NRC je anglicky, text musi byt v anglictine)
+# vzorovy subor s vymyslenymi recenziami cokolady: datasety/recenzie_en.txt
+# https://raw.githubusercontent.com/senzorika/SaIT/master/datasety/recenzie_en.txt
 text <- readLines(file.choose())
 text
 # osetrenie a parsovanie dat

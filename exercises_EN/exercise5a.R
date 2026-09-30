@@ -42,7 +42,9 @@ wilcox.test(A, E) # Mann-Whitney test
 # If not, how many consumers are needed to confirm the alternative hypothesis?
 # (panel size calculation: exercise 14)
 
-binom.test(34, 60, p = 0.5) # for a paired test; for a triangle test p=1/3
+binom.test(34, 60, p = 0.5) # paired preference: two-sided test (we do not know in advance which sample wins)
+# discrimination tests (triangle p = 1/3, duo-trio p = 1/2) are one-sided:
+# binom.test(x, n, p = 1/3, alternative = "greater")
 
 #---------------------------------------------------------------------------------------
 # CHI-SQUARE TEST

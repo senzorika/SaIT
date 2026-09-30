@@ -1,0 +1,5 @@
+project:
+  lib-dir: libs
+  render:
+    - "sk/*.qmd"
+    - "en/*.qmd"

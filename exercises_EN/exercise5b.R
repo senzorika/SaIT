@@ -31,7 +31,7 @@ pairwise.wilcox.test(overall_quality, chocolate, p.adj = "bonferroni", exact = F
 # Friedman test (non-parametric two-way analysis of variance) Vietoris, 2019
 #---------------------------------------------------------------------------------------
 # the PMCMR package was removed from CRAN, PMCMRplus replaces it
-require(PMCMRplus)
+library(PMCMRplus)
 # taste <- c(1,2,3,4,5,1,2,3,4,5,1,2,3,4,5,1,2,3,4,5,1,2,3,4,5) # symmetric distribution of ranks
 set.seed(123) # reproducible random data
 taste <- c(sample(1:5, size = 5, replace = FALSE), sample(1:5, size = 5, replace = FALSE), sample(1:5, size = 5, replace = FALSE), sample(1:5, size = 5, replace = FALSE), sample(1:5, size = 5, replace = FALSE)) # random

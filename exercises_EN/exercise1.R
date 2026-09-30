@@ -30,10 +30,16 @@
 # GitHub (repository for controlled documentation / document versioning)
 # https://github.com/
 
-# web conferencing and online chat
-# https://meet.jit.si/sait2024
+# web conferencing and online chat (agree on a room name within your group)
+# https://meet.jit.si/
 
-# installing packages for exercises 1-18 (once is enough)
+# White Noise (private encrypted messenger for team communication)
+# https://www.whitenoise.chat/
+
+# OpenCode (open-source AI coding agent for the terminal - help with writing and explaining R code)
+# https://opencode.ai/
+
+# installing packages for all exercises (once is enough)
 install.packages(c(
   "sensR", "pwr", "SensoMineR", "FactoMineR", "lmerTest", "emmeans", "DescTools",
   "PMCMRplus", "readxl", "curl", "cluster", "factoextra", "tidyverse", "quantmod",

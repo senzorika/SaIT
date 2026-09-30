@@ -60,8 +60,8 @@ View(TURFtabulka4)
 
 
 # nacitanie dat z internetovej adresy (profilove + hedonicke data)
-senzorika <- read.table("http://senzorika.com/sait/datasety/senzorika.txt", sep = ",")
-hedonika <- read.table("http://senzorika.com/sait/datasety/hedonika.txt", sep = ",")
+senzorika <- read.table("https://raw.githubusercontent.com/senzorika/SaIT/master/datasety/senzorika.txt", sep = ",")
+hedonika <- read.table("https://raw.githubusercontent.com/senzorika/SaIT/master/datasety/hedonika.txt", sep = ",")
 
 # overenie datasetov
 senzorika

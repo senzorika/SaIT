@@ -145,15 +145,15 @@
 <div class="note"><strong>Data frame columns with <code>$</code></strong>After creating the table <code>year</code> we access its columns as <code>year$chocolate_use</code>. Writing the name without the table only works if a variable of the same name happens to exist on its own – after loading data from a file (<code>read.table</code>) it does not.</div>
 
 <h2>Loading data from the web</h2>
-<pre>source("http://senzorika.com/sait/datasety/mol.txt")       # runs R code from a file
-results &lt;- read.table("http://…/export.txt", sep = ",")   # loads a table
+<pre>source("https://raw.githubusercontent.com/senzorika/SaIT/master/datasety/mol.txt")       # runs R code from a file
+results &lt;- read.table("https://…/export.txt", sep = ",")   # loads a table
 str(results)     # column types – always check after loading
 head(results)    # first 6 rows</pre>
 <p><code>source()</code> executes code (defines variables, functions), <code>read.table()</code> only loads data. Only open files from the web from trusted sources – <code>source()</code> runs whatever is in the file.</p>
 
 <section class="solutions"><h2>Task solutions</h2><p>Click to expand a solution. Try the task on your own first – results were verified in R 4.4. The code continues from the variables in the script.</p>
 <details class="sol"><summary>Task 1 <span>– molar masses</span></summary>
-<pre>source(&quot;http://senzorika.com/sait/datasety/mol.txt&quot;)   # defines C, H, K, O ...
+<pre>source(&quot;https://raw.githubusercontent.com/senzorika/SaIT/master/datasety/mol.txt&quot;)   # defines C, H, K, O ...
 sorbate &lt;- 6 * C + 7 * H + K + 2 * O   # potassium sorbate C6H7KO2
 citric &lt;- 6 * C + 8 * H + 7 * O        # citric acid C6H8O7
 c(sorbate, citric)
@@ -168,7 +168,7 @@ melons$texture &lt;- sample(1:9, nrow(melons), replace = TRUE)
 write.table(melons, &quot;melons.txt&quot;, sep = &quot;,&quot;, row.names = FALSE)</pre>
 <div class="answer"><p><code>expand.grid()</code> creates all assessor × product combinations (12 rows); each attribute is a random integer 1 – 9. The file is saved to the working directory (<code>getwd()</code>).</p></div></details>
 <details class="sol"><summary>Task 3 <span>– number of wafers and over-production</span></summary>
-<pre>chocolate &lt;- read.table(&quot;http://senzorika.com/sait/datasety/cokolada.txt&quot;, sep = &quot;,&quot;, header = TRUE)
+<pre>chocolate &lt;- read.table(&quot;https://raw.githubusercontent.com/senzorika/SaIT/master/datasety/cokolada.txt&quot;, sep = &quot;,&quot;, header = TRUE)
 area &lt;- 2 * pi * 3.5^2 + pi * 7 * 1.5          # two bases + cylinder side (cm2)
 per_piece &lt;- area / 100 * 0.02                  # litres of chocolate per piece
 chocolate$produced_pieces &lt;- round(chocolate$spotrebacokolady / per_piece)
@@ -177,6 +177,15 @@ abline(h = mean(chocolate$produced_pieces), col = &quot;red&quot;)
 chocolate$mesiace[chocolate$produced_pieces &gt; mean(chocolate$produced_pieces)]</pre>
 <div class="answer"><p>The wafer surface is 110 cm², so one piece needs 0.022 l of chocolate. Monthly production ranges from 57,523 (May) to 84,716 (November) pieces. <strong>Bonus:</strong> February, August, October, November and December are above average.</p></div></details>
 </section>
+
+<section class="related" id="sap"><h2>📚 Related</h2>
+<ul>
+<li><strong>The method in SAP</strong> (Sensory Analysis of Food, in Slovak): <a href="https://senzorika.github.io/SAP/kapitoly/02_laboratorium.html">Sensory laboratory and panel</a> · <a href="https://senzorika.github.io/SAP/kapitoly/11_vzorce.html">Formulas and statistical calculations</a></li>
+<li><strong>Calculator</strong> to check the result from R: <a href="https://senzorika.github.io/SAP/kapitoly/02_laboratorium.html#kalkulator">three-digit codes and the Williams design</a></li>
+<li><strong>Standards:</strong> ISO 6658:2017 (methodology – general guidance)</li>
+<li><strong>Literature:</strong> Lawless, H. T. &amp; Heymann, H. (2010). <em>Sensory Evaluation of Food: Principles and Practices</em> (2nd ed.). Springer.</li>
+</ul>
+<p class="small">Editions of the standards and book titles are taken from the verified list <a href="https://senzorika.github.io/SAP/kapitoly/priloha_zdroje.html">SAP – Sources and literature</a> (in Slovak). Recalculation of the numbers on this page: <a href="verification.html">Verification</a>.</p></section>
 <nav class="pager">
 <a class="prev" href="exercise02.html"><span>← Previous</span>2. BCG matrix and confidence interval</a>
 <a class="next" href="exercise04.html"><span>Next →</span>4. Charts and data visualisation</a>

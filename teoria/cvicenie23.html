@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>23. Waldova sekvenčná analýza</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ink-3)"/></marker></defs></svg>
+<div class="wrap">
+<header class="top"><a class="brand" href="index.html">Senzometria v R · teória</a><span class="toplinks"><a href="index.html">Všetky cvičenia</a><a class="lang" href="../theory_EN/exercise23.html">English</a></span></header>
+
+<section class="hero"><span class="num">CVIČENIE 23</span><h1>Waldova sekvenčná analýza</h1><p class="lead">Rozlišovací test vyhodnocovaný po každej odpovedi: keď je výsledok jasný, test sa skončí skôr.</p>
+<div class="files"><a href="../cvicenie23.R">Skript (SK): cvicenie23.R</a><a href="../exercises_EN/exercise23.R">Script (EN): exercise23.R</a></div></section>
+<div class="goals"><h2>Čo sa naučíte</h2><ul>
+<li>vysvetliť rozdiel medzi testom s pevným počtom hodnotiteľov a sekvenčným testom,</li>
+<li>vypočítať hranice sekvenčného testu z p₀, p₁, α a β,</li>
+<li>vyhodnotiť priebeh testu a poznať riziká sekvenčného prístupu.</li>
+</ul></div>
+
+<h2>Myšlienka</h2>
+<p>V klasickom rozlišovacom teste sa počet hodnotiteľov určí vopred (cvičenie 14) a vyhodnocuje sa až na konci. Waldov sekvenčný test pomerom vierohodností (SPRT) rozhoduje <strong>po každej odpovedi</strong>: ak je správnych odpovedí už dosť veľa, rozdiel je preukázaný; ak je ich dosť málo, test sa končí bez rozdielu; inak pokračuje ďalší hodnotiteľ. Hodí sa pri drahých vzorkách alebo keď hodnotitelia prichádzajú postupne.</p>
+<div class="tablewrap"><table>
+<tr><th>Parameter</th><th>Význam</th><th>V skripte</th></tr>
+<tr><td>p₀</td><td>podiel správnych odpovedí pri hádaní (H₀)</td><td>1/3 (triangel)</td></tr>
+<tr><td>p₁</td><td>podiel, ktorý už považujeme za rozdiel (H₁)</td><td>0,5</td></tr>
+<tr><td>α</td><td>riziko vyhlásiť rozdiel, ktorý neexistuje</td><td>0,05</td></tr>
+<tr><td>β</td><td>riziko neodhaliť existujúci rozdiel</td><td>0,20</td></tr>
+</table></div>
+
+<h2>Hranice</h2>
+<div class="formula">D = ln(p₁/p₀) + ln((1 − p₀)/(1 − p₁)),&emsp;&emsp;s = ln((1 − p₀)/(1 − p₁)) / D<br>
+horná: a<sub>n</sub> = ln((1 − β)/α) / D + s·n&emsp;&emsp;dolná: b<sub>n</sub> = −ln((1 − α)/β) / D + s·n
+<small>počet správnych ≥ a<sub>n</sub> → rozdiel; ≤ b<sub>n</sub> → bez rozdielu; inak pokračovať</small></div>
+<p>Pre triangel s hodnotami zo skriptu: s = 0,415; a<sub>n</sub> = 4,00 + 0,415 n; b<sub>n</sub> = −2,25 + 0,415 n. Pri n = 20 treba na rozdiel aspoň 13 správnych (a = 12,3), na záver „bez rozdielu“ najviac 6 (b = 6,05).</p>
+<figure>
+<svg viewBox="0 0 640 300" role="img" aria-label="Sekvenčný trojuholníkový test">
+<line x1="62.0" y1="224.5" x2="616.0" y2="224.5" class="gridl"/>
+<text x="55.0" y="228.5" text-anchor="end" class="t-small">0</text>
+<line x1="62.0" y1="195.0" x2="616.0" y2="195.0" class="gridl"/>
+<text x="55.0" y="199.0" text-anchor="end" class="t-small">2</text>
+<line x1="62.0" y1="165.5" x2="616.0" y2="165.5" class="gridl"/>
+<text x="55.0" y="169.5" text-anchor="end" class="t-small">4</text>
+<line x1="62.0" y1="136.0" x2="616.0" y2="136.0" class="gridl"/>
+<text x="55.0" y="140.0" text-anchor="end" class="t-small">6</text>
+<line x1="62.0" y1="106.5" x2="616.0" y2="106.5" class="gridl"/>
+<text x="55.0" y="110.5" text-anchor="end" class="t-small">8</text>
+<line x1="62.0" y1="77.0" x2="616.0" y2="77.0" class="gridl"/>
+<text x="55.0" y="81.0" text-anchor="end" class="t-small">10</text>
+<line x1="62.0" y1="47.5" x2="616.0" y2="47.5" class="gridl"/>
+<text x="55.0" y="51.5" text-anchor="end" class="t-small">12</text>
+<line x1="62.0" y1="18.0" x2="616.0" y2="18.0" class="gridl"/>
+<text x="55.0" y="22.0" text-anchor="end" class="t-small">14</text>
+<line x1="62.0" y1="254.0" x2="62.0" y2="258.0" class="ax"/>
+<text x="62.0" y="271.0" text-anchor="middle" class="t-small">0</text>
+<line x1="117.4" y1="254.0" x2="117.4" y2="258.0" class="ax"/>
+<text x="117.4" y="271.0" text-anchor="middle" class="t-small">2</text>
+<line x1="172.8" y1="254.0" x2="172.8" y2="258.0" class="ax"/>
+<text x="172.8" y="271.0" text-anchor="middle" class="t-small">4</text>
+<line x1="228.2" y1="254.0" x2="228.2" y2="258.0" class="ax"/>
+<text x="228.2" y="271.0" text-anchor="middle" class="t-small">6</text>
+<line x1="283.6" y1="254.0" x2="283.6" y2="258.0" class="ax"/>
+<text x="283.6" y="271.0" text-anchor="middle" class="t-small">8</text>
+<line x1="339.0" y1="254.0" x2="339.0" y2="258.0" class="ax"/>
+<text x="339.0" y="271.0" text-anchor="middle" class="t-small">10</text>
+<line x1="394.4" y1="254.0" x2="394.4" y2="258.0" class="ax"/>
+<text x="394.4" y="271.0" text-anchor="middle" class="t-small">12</text>
+<line x1="449.8" y1="254.0" x2="449.8" y2="258.0" class="ax"/>
+<text x="449.8" y="271.0" text-anchor="middle" class="t-small">14</text>
+<line x1="505.2" y1="254.0" x2="505.2" y2="258.0" class="ax"/>
+<text x="505.2" y="271.0" text-anchor="middle" class="t-small">16</text>
+<line x1="560.6" y1="254.0" x2="560.6" y2="258.0" class="ax"/>
+<text x="560.6" y="271.0" text-anchor="middle" class="t-small">18</text>
+<line x1="616.0" y1="254.0" x2="616.0" y2="258.0" class="ax"/>
+<text x="616.0" y="271.0" text-anchor="middle" class="t-small">20</text>
+<path d="M62.0,18.0 L62.0,254.0 L616.0,254.0" class="ax"/>
+<text x="339.0" y="292.0" text-anchor="middle">počet hodnotiteľov n</text>
+<text transform="translate(16,136.0) rotate(-90)" text-anchor="middle">správne odpovede (kumulatívne)</text>
+<path d="M62.0,165.5 L616.0,43.1" class="ln2"/>
+<path d="M78.6,254.0 L616.0,135.2" class="ln1"/>
+<path d="M62.0,224.5 L89.7,224.5 L89.7,209.8 L117.4,209.8 L117.4,209.8 L145.1,209.8 L145.1,195.0 L172.8,195.0 L172.8,180.2 L200.5,180.2 L200.5,180.2 L228.2,180.2 L228.2,165.5 L255.9,165.5 L255.9,150.8 L283.6,150.8 L283.6,150.8 L311.3,150.8 L311.3,136.0 L339.0,136.0 L339.0,121.2 L366.7,121.2 L366.7,106.5 L394.4,106.5 L394.4,106.5 L422.1,106.5 L422.1,91.8 L449.8,91.8 L449.8,77.0" class="ln3"/>
+<circle cx="449.8" cy="77.0" r="6" class="f2"/>
+<text x="459.8" y="81.0" text-anchor="start" class="t-small t-strong">n = 14: 10 ≥ 9,81 → stop</text>
+<text x="145.1" y="54.9" text-anchor="start" class="t-small t-strong">rozdiel preukázaný</text>
+<text x="422.1" y="218.6" text-anchor="start" class="t-small t-strong">rozdiel nepreukázaný</text>
+<text x="366.7" y="144.8" text-anchor="start" class="t-small">pokračovať</text>
+</svg>
+<figcaption>Priebeh testu zo skriptu. Schodovitá čiara je kumulatívny počet správnych odpovedí; pri 14. hodnotiteľovi (10 správnych) pretne hornú hranicu 9,81 a test sa končí záverom „rozdiel“.</figcaption>
+</figure>
+
+<h2>Koľko hodnotiteľov ušetrí?</h2>
+<p>Simulácia 5 000 testov (časť 3 skriptu) v porovnaní s klasickým triangelom pri rovnakých rizikách:</p>
+<div class="tablewrap"><table>
+<tr><th>Skutočnosť</th><th>Priemerný počet hodnotiteľov</th><th>Záver „rozdiel“</th></tr>
+<tr><td>rozdiel existuje (p = 0,5)</td><td>36,7</td><td>83 % (sila testu)</td></tr>
+<tr><td>hodnotitelia hádajú (p = 1/3)</td><td>26,7</td><td>4 % (chyba I. druhu)</td></tr>
+<tr><td>klasický test s pevným n</td><td>58</td><td>sila 80 %, α = 0,05</td></tr>
+</table></div>
+<p>V priemere teda stačí približne o tretinu až polovicu hodnotiteľov menej. Je to však priemer: polovica testov pri existujúcom rozdiele sa skončí do 30 hodnotiteľov, 10 % ich potrebuje viac ako 69 a 1 % viac ako 120.</p>
+<div class="warn"><strong>Dve upozornenia</strong>Sekvenčný test nemá vopred známy koniec – vždy si stanovte maximálny počet hodnotiteľov a pravidlo, čo potom. A sekvenčné hranice nie sú to isté ako „pozrieť sa na p-hodnotu po každom hodnotiteľovi“: opakované testovanie klasickým binomickým testom by chybu I. druhu výrazne zvýšilo.</div>
+
+<section class="solutions"><h2>Riešenia úloh</h2><p>Kliknutím rozbalíte riešenie. Skúste úlohu najprv vyriešiť sami – výsledky sú overené v R 4.5. Kód nadväzuje na premenné zo skriptu.</p>
+<details class="sol"><summary>Úloha 1 <span>– hranice pre duo-trio</span></summary>
+<pre>p0 &lt;- 1 / 2; p1 &lt;- 0.7; alfa &lt;- 0.05; beta &lt;- 0.10
+D &lt;- log(p1 / p0) + log((1 - p0) / (1 - p1))
+sklon &lt;- log((1 - p0) / (1 - p1)) / D
+c(sklon = sklon, horna_0 = log((1 - beta) / alfa) / D, dolna_0 = -log((1 - alfa) / beta) / D)</pre>
+<div class="answer"><p>s = 0,603; a<sub>n</sub> = 3,41 + 0,603 n; b<sub>n</sub> = −2,66 + 0,603 n. Záver „rozdiel“ môže padnúť najskôr po <strong>9</strong> hodnotiteľoch (všetkých 9 správne: 9 ≥ 8,84), záver „bez rozdielu“ najskôr po <strong>5</strong> (žiadna správna odpoveď: 0 ≤ 0,36).</p></div></details>
+<details class="sol"><summary>Úloha 2 <span>– postupnosť 0 1 0 0 1 0 0 0 1 0 0 0</span></summary>
+<pre>odpovede &lt;- c(0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+n &lt;- seq_along(odpovede)
+data.frame(n, spravne = cumsum(odpovede), dolna = round(dolna(n), 2), horna = round(horna(n), 2))</pre>
+<div class="answer"><p>Po 12 hodnotiteľoch sú 3 správne odpovede; dolná hranica je 2,73, horná 8,98 – test <strong>ešte nie je rozhodnutý</strong>. Ak sa pomýli aj 13. hodnotiteľ (3 ≤ 3,15), test sa skončí záverom „bez rozdielu“.</p></div></details>
+<details class="sol"><summary>Úloha 3 <span>– menší rozdiel p₁ = 0,45</span></summary>
+<div class="answer"><p>Hranice sa od seba vzdialia: s = 0,391; a<sub>n</sub> = 5,63 + 0,391 n; b<sub>n</sub> = −3,16 + 0,391 n. Priemerný počet hodnotiteľov stúpne na približne 71 (ak rozdiel existuje) a 52 (ak nie); klasický test by ich potreboval 111. Čím menší rozdiel chceme odhaliť, tým dlhšie test trvá – sekvenčný aj klasický.</p></div></details>
+</section>
+
+<section class="related" id="sap"><h2>📚 Súvislosti</h2>
+<ul>
+<li><strong>Metóda v SAP</strong> (Senzorická analýza potravín): <a href="https://senzorika.github.io/SAP/kapitoly/06_skalovanie.html#wald">Škálovanie</a> · <a href="https://senzorika.github.io/SAP/kapitoly/04_iso_metody.html">Normy ISO a štandardné testy</a></li>
+<li><strong>Normy:</strong> ISO 16820:2019 (sekvenčná analýza) · ISO 4120:2021 (trojuholníková skúška)</li>
+<li><strong>Literatúra:</strong> Meilgaard, M. C., Civille, G. V. &amp; Carr, B. T. (2016). <em>Sensory Evaluation Techniques</em> (5th ed.). CRC Press.</li>
+</ul>
+<p class="small">Vydania noriem a tituly sú prevzaté z overeného zoznamu <a href="https://senzorika.github.io/SAP/kapitoly/priloha_zdroje.html">SAP – Zdroje a literatúra</a>. Prepočet čísel na tejto stránke: <a href="overenie.html">Overenie</a>.</p></section>
+<nav class="pager">
+<a class="prev" href="cvicenie22.html"><span>← Predchádzajúce</span>22. Prah citlivosti – 3-AFC a metóda BET</a>
+<a class="next" href="cvicenie24.html"><span>Nasledujúce →</span>24. Conjoint analýza</a>
+</nav>
+</div>
+<script>
+(function () {
+  function copy(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    return Promise.resolve();
+  }
+  document.querySelectorAll('pre:not(.out)').forEach(function (pre) {
+    var text = pre.innerText;
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'copy'; btn.textContent = 'Kopírovať';
+    btn.addEventListener('click', function () {
+      copy(text).then(function () {
+        btn.textContent = 'Skopírované ✓';
+        setTimeout(function () { btn.textContent = 'Kopírovať'; }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+  var q = document.getElementById('filter');
+  if (q) q.addEventListener('input', function () {
+    var v = q.value.toLowerCase();
+    document.querySelectorAll('.cards a').forEach(function (c) {
+      c.style.display = c.textContent.toLowerCase().indexOf(v) === -1 ? 'none' : '';
+    });
+    document.querySelectorAll('section.block').forEach(function (s) {
+      var any = Array.prototype.some.call(s.querySelectorAll('.cards a'), function (c) { return c.style.display !== 'none'; });
+      s.style.display = any ? '' : 'none';
+    });
+  });
+})();
+</script>
+</body>
+</html>

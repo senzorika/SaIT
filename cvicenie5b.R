@@ -31,7 +31,7 @@ pairwise.wilcox.test(celkovakvalita, cokolada, p.adj = "bonferroni", exact = FAL
 # Friedmanov test (dvojfaktorova analyza rozptylu - neparametricka) Vietoris, 2019
 #---------------------------------------------------------------------------------------
 # balik PMCMR bol z CRAN odstraneny, nahradou je PMCMRplus
-require(PMCMRplus)
+library(PMCMRplus)
 # chut <- c(1,2,3,4,5,1,2,3,4,5,1,2,3,4,5,1,2,3,4,5,1,2,3,4,5) #symetricke rozdelenie poradi
 set.seed(123) # reprodukovatelne nahodne data
 chut <- c(sample(1:5, size = 5, replace = FALSE), sample(1:5, size = 5, replace = FALSE), sample(1:5, size = 5, replace = FALSE), sample(1:5, size = 5, replace = FALSE), sample(1:5, size = 5, replace = FALSE)) # nahodne

@@ -88,6 +88,15 @@ m3 &lt;- update(m2, . ~ . + (1 | Panelist:Session))
 anova(m2, m3, refit = FALSE)</pre>
 <div class="answer"><p>χ² = 2,18; df = 1; <strong>p = 0,14</strong>, AIC takmer rovnaké (1481,3 vs. 1481,1), BIC horšie. Efekt hodnotiteľ × sedenie model nezlepší – jednoduchší model stačí. (<code>refit = FALSE</code> porovná modely odhadnuté metódou REML, čo je pri rovnakých pevných efektoch správne.)</p></div></details>
 </section>
+
+<section class="related" id="sap"><h2>📚 Súvislosti</h2>
+<ul>
+<li><strong>Metóda v SAP</strong> (Senzorická analýza potravín): <a href="https://senzorika.github.io/SAP/kapitoly/07_deskriptivne_profily.html">Deskriptívne profily</a> · <a href="https://senzorika.github.io/SAP/kapitoly/11_vzorce.html">Vzorce a štatistické výpočty</a></li>
+<li><strong>Kalkulátor</strong> na overenie výsledku z R: <a href="https://senzorika.github.io/SAP/kapitoly/07_deskriptivne_profily.html#kalkulator">ANOVA hodnotiteľ × vzorka, LSD</a></li>
+<li><strong>Normy:</strong> ISO 11132:2021 (výkonnosť deskriptívneho panelu) · ISO 13299:2016 (stanovenie senzorického profilu)</li>
+<li><strong>Literatúra:</strong> Næs, T., Brockhoff, P. B. &amp; Tomic, O. (2010). <em>Statistics for Sensory and Consumer Science</em>. Wiley.</li>
+</ul>
+<p class="small">Vydania noriem a tituly sú prevzaté z overeného zoznamu <a href="https://senzorika.github.io/SAP/kapitoly/priloha_zdroje.html">SAP – Zdroje a literatúra</a>. Prepočet čísel na tejto stránke: <a href="overenie.html">Overenie</a>.</p></section>
 <nav class="pager">
 <a class="prev" href="cvicenie15.html"><span>← Predchádzajúce</span>15. Výkonnosť senzorického panelu</a>
 <a class="next" href="cvicenie17.html"><span>Nasledujúce →</span>17. CATA a napping</a>

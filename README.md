@@ -8,7 +8,7 @@
 <p align="center">
   <a href="https://cran.r-project.org/"><img src="https://img.shields.io/badge/R-%E2%89%A5%204.0-276DC3?logo=r&logoColor=white" alt="R"></a>
   <a href="https://posit.co/download/rstudio-desktop/"><img src="https://img.shields.io/badge/RStudio-IDE-75AADB?logo=rstudioide&logoColor=white" alt="RStudio"></a>
-  <img src="https://img.shields.io/badge/cvi%C4%8Denia%20%7C%20exercises-24-0f7b6c" alt="24 exercises">
+  <img src="https://img.shields.io/badge/cvi%C4%8Denia%20%7C%20exercises-29-0f7b6c" alt="29 exercises">
   <img src="https://img.shields.io/badge/jazyk%20%7C%20language-SK%20%C2%B7%20EN-d9622b" alt="SK · EN">
   <a href="https://senzorika.github.io/SaIT/teoria/index.html"><img src="https://img.shields.io/badge/te%C3%B3ria%20%7C%20theory-GitHub%20Pages-3a5fcd?logo=github" alt="Theory"></a>
 </p>
@@ -25,28 +25,12 @@ Materiály k cvičeniam zo **senzorickej analýzy a senzometrie** v jazyku R. Ku
 
 ### 🧭 Mapa kurzu
 
-```mermaid
-flowchart LR
-    B0["🧰 Základy práce v R<br/>cvičenia 1, 2, 3, 4"]
-    B1["🧪 Testovanie hypotéz<br/>cvičenia 5a, 5b, 5c, 5d"]
-    B2["📈 Vzťahy a modelovanie<br/>cvičenia 6, 10"]
-    B3["🗺️ Viacrozmerné metódy<br/>cvičenia 7, 8, 9"]
-    B4["🎯 Rozlišovacie testy a panel<br/>cvičenia 13, 14, 15, 16"]
-    B5["🛒 Spotrebiteľský výskum<br/>cvičenia 11a, 11b, 12"]
-    B6["⏱️ Rýchle a temporálne metódy<br/>cvičenia 17, 18"]
-    B7["📝 Kontrolné prípadové štúdie<br/>cvičenia 19, 20"]
-    B0 --> B1
-    B1 --> B2
-    B1 --> B3
-    B1 --> B4
-    B2 --> B5
-    B3 --> B5
-    B4 --> B5
-    B5 --> B6
-    B6 --> B7
-    classDef blk fill:#d6efe9,stroke:#0f7b6c,color:#1d1f24
-    class B0,B1,B2,B3,B4,B5,B6,B7 blk
-```
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/course-map-sk-dark.svg">
+    <img src="assets/course-map-sk-light.svg" alt="Mapa kurzu" width="100%">
+  </picture>
+</p>
 
 ### 🧪 Cvičenia
 
@@ -114,6 +98,36 @@ flowchart LR
 | **19** | **Kontrolné prípadové štúdie I**<br><sub>Dve praktické úlohy zo základov kurzu: rozlišovací test pri zmene dodávateľa a výber najlepšej receptúry.</sub> | [📖](https://senzorika.github.io/SaIT/teoria/cvicenie19.html) | [`cvicenie19.R`](cvicenie19.R) | [`exercise19.R`](exercises_EN/exercise19.R) |
 | **20** | **Kontrolné prípadové štúdie II**<br><sub>Tri úlohy z celého kurzu: preferencie a JAR, senzorická trvanlivosť a audit panelu s návrhom experimentu.</sub> | [📖](https://senzorika.github.io/SaIT/teoria/cvicenie20.html) | [`cvicenie20.R`](cvicenie20.R) | [`exercise20.R`](exercises_EN/exercise20.R) |
 
+#### 🧩 Doplnkové metódy
+
+| # | Téma | Teória | Skript SK | Script EN |
+|:-:|------|:------:|:---------:|:---------:|
+| **21** | **Kódy vzoriek a Williamsov dizajn poradia**<br><sub>Ako pripraviť plán podávania: náhodné trojciferné kódy a poradie vyvážené na pozíciu aj na predchádzajúcu vzorku.</sub> | [📖](https://senzorika.github.io/SaIT/teoria/cvicenie21.html) | [`cvicenie21.R`](cvicenie21.R) | [`exercise21.R`](exercises_EN/exercise21.R) |
+| **22** | **Prah citlivosti – 3-AFC a metóda BET**<br><sub>Pri akej koncentrácii panel látku zachytí? Vzostupný rad skúšok 3-AFC, individuálne a skupinové prahy.</sub> | [📖](https://senzorika.github.io/SaIT/teoria/cvicenie22.html) | [`cvicenie22.R`](cvicenie22.R) | [`exercise22.R`](exercises_EN/exercise22.R) |
+| **23** | **Waldova sekvenčná analýza**<br><sub>Rozlišovací test vyhodnocovaný po každej odpovedi: keď je výsledok jasný, test sa skončí skôr.</sub> | [📖](https://senzorika.github.io/SaIT/teoria/cvicenie23.html) | [`cvicenie23.R`](cvicenie23.R) | [`exercise23.R`](exercises_EN/exercise23.R) |
+| **24** | **Conjoint analýza**<br><sub>Ako spotrebiteľ skladá preferenciu z vlastností produktu: čiastkové užitočnosti, dôležitosť atribútov a simulácia trhu.</sub> | [📖](https://senzorika.github.io/SaIT/teoria/cvicenie24.html) | [`cvicenie24.R`](cvicenie24.R) | [`exercise24.R`](exercises_EN/exercise24.R) |
+| **25** | **Senzorické tvrdenia – nadradenosť a parita**<br><sub>Čo musí test preukázať, aby obstálo tvrdenie „chutí lepšie“ alebo „chutí rovnako“: test preferencie, test ekvivalencie a atribútové tvrdenie.</sub> | [📖](https://senzorika.github.io/SaIT/teoria/cvicenie25.html) | [`cvicenie25.R`](cvicenie25.R) | [`exercise25.R`](exercises_EN/exercise25.R) |
+
+### 🔗 Prepojenie so SAP
+
+[**SAP – Senzorická analýza potravín**](https://senzorika.github.io/SAP/index.html) ([repozitár](https://github.com/senzorika/SAP)) je sesterský projekt: vysvetľuje **metódy a ich použitie** (kapitoly s kalkulátormi a prednáškami), SaIT ukazuje **štatistické vyhodnotenie v R**. Každá stránka teórie má časť „📚 Súvislosti“ s odkazom na kapitolu SAP, kalkulátor na overenie výsledku, normy a literatúru.
+
+| Kapitola SAP | Kalkulátor | Cvičenia SaIT (📖 teória) |
+|---|---|---|
+| [Úvod do senzoriky a vnímanie chuti](https://senzorika.github.io/SAP/kapitoly/01_uvod_vnimanie_chuti.html) | [prah citlivosti (BET, 3-AFC)](https://senzorika.github.io/SAP/kapitoly/01_uvod_vnimanie_chuti.html#kalkulator) | [6](https://senzorika.github.io/SaIT/teoria/cvicenie06.html) · [11b](https://senzorika.github.io/SaIT/teoria/cvicenie11b.html) · [22](https://senzorika.github.io/SaIT/teoria/cvicenie22.html) |
+| [Senzorické laboratórium a panel](https://senzorika.github.io/SAP/kapitoly/02_laboratorium.html) | [trojciferné kódy a Williamsov dizajn poradia](https://senzorika.github.io/SAP/kapitoly/02_laboratorium.html#kalkulator) | [1](https://senzorika.github.io/SaIT/teoria/cvicenie01.html) · [3](https://senzorika.github.io/SaIT/teoria/cvicenie03.html) · [5c](https://senzorika.github.io/SaIT/teoria/cvicenie05c.html) · [5d](https://senzorika.github.io/SaIT/teoria/cvicenie05d.html) · [14](https://senzorika.github.io/SaIT/teoria/cvicenie14.html) · [15](https://senzorika.github.io/SaIT/teoria/cvicenie15.html) · [20](https://senzorika.github.io/SaIT/teoria/cvicenie20.html) · [21](https://senzorika.github.io/SaIT/teoria/cvicenie21.html) |
+| [Prehľad senzorických metód](https://senzorika.github.io/SAP/kapitoly/03_prehlad_metod.html) | [poradový test – Friedman](https://senzorika.github.io/SAP/kapitoly/03_prehlad_metod.html#kalkulator) | [1](https://senzorika.github.io/SaIT/teoria/cvicenie01.html) · [4](https://senzorika.github.io/SaIT/teoria/cvicenie04.html) · [5b](https://senzorika.github.io/SaIT/teoria/cvicenie05b.html) · [17](https://senzorika.github.io/SaIT/teoria/cvicenie17.html) · [18](https://senzorika.github.io/SaIT/teoria/cvicenie18.html) · [19](https://senzorika.github.io/SaIT/teoria/cvicenie19.html) |
+| [Normy ISO a štandardné testy](https://senzorika.github.io/SAP/kapitoly/04_iso_metody.html) | [vyhodnotenie rozlišovacieho testu (rozdiel, podobnosť)](https://senzorika.github.io/SAP/kapitoly/04_iso_metody.html#kalkulator) | [5a](https://senzorika.github.io/SaIT/teoria/cvicenie05a.html) · [13](https://senzorika.github.io/SaIT/teoria/cvicenie13.html) · [23](https://senzorika.github.io/SaIT/teoria/cvicenie23.html) |
+| [Diskriminačné metódy](https://senzorika.github.io/SAP/kapitoly/05_diskriminacne_metody.html) | [počet hodnotiteľov a sila testu](https://senzorika.github.io/SAP/kapitoly/05_diskriminacne_metody.html#kalkulator) | [5a](https://senzorika.github.io/SaIT/teoria/cvicenie05a.html) · [13](https://senzorika.github.io/SaIT/teoria/cvicenie13.html) · [14](https://senzorika.github.io/SaIT/teoria/cvicenie14.html) · [19](https://senzorika.github.io/SaIT/teoria/cvicenie19.html) · [25](https://senzorika.github.io/SaIT/teoria/cvicenie25.html) |
+| [Škálovanie](https://senzorika.github.io/SAP/kapitoly/06_skalovanie.html) | [hedonická škála – priemer, interval spoľahlivosti](https://senzorika.github.io/SAP/kapitoly/06_skalovanie.html#kalkulator) | [2](https://senzorika.github.io/SaIT/teoria/cvicenie02.html) · [4](https://senzorika.github.io/SaIT/teoria/cvicenie04.html) · [12](https://senzorika.github.io/SaIT/teoria/cvicenie12.html) · [13](https://senzorika.github.io/SaIT/teoria/cvicenie13.html) · [23](https://senzorika.github.io/SaIT/teoria/cvicenie23.html) |
+| [Deskriptívne profily](https://senzorika.github.io/SAP/kapitoly/07_deskriptivne_profily.html) | [ANOVA hodnotiteľ × vzorka, LSD](https://senzorika.github.io/SAP/kapitoly/07_deskriptivne_profily.html#kalkulator) | [5b](https://senzorika.github.io/SaIT/teoria/cvicenie05b.html) · [7](https://senzorika.github.io/SaIT/teoria/cvicenie07.html) · [9](https://senzorika.github.io/SaIT/teoria/cvicenie09.html) · [15](https://senzorika.github.io/SaIT/teoria/cvicenie15.html) · [16](https://senzorika.github.io/SaIT/teoria/cvicenie16.html) · [17](https://senzorika.github.io/SaIT/teoria/cvicenie17.html) · [18](https://senzorika.github.io/SaIT/teoria/cvicenie18.html) |
+| [Spotrebiteľská senzorická veda](https://senzorika.github.io/SAP/kapitoly/08_spotrebitelska_veda.html) | [penalty analýza (JAR)](https://senzorika.github.io/SAP/kapitoly/08_spotrebitelska_veda.html#kalkulator) | [8](https://senzorika.github.io/SaIT/teoria/cvicenie08.html) · [9](https://senzorika.github.io/SaIT/teoria/cvicenie09.html) · [11a](https://senzorika.github.io/SaIT/teoria/cvicenie11a.html) · [11b](https://senzorika.github.io/SaIT/teoria/cvicenie11b.html) · [12](https://senzorika.github.io/SaIT/teoria/cvicenie12.html) · [20](https://senzorika.github.io/SaIT/teoria/cvicenie20.html) · [24](https://senzorika.github.io/SaIT/teoria/cvicenie24.html) |
+| [Senzorické tvrdenia (claims)](https://senzorika.github.io/SAP/kapitoly/09_claims.html) | [párový preferenčný test – nadradenosť, parita](https://senzorika.github.io/SAP/kapitoly/09_claims.html#kalkulator) | [14](https://senzorika.github.io/SaIT/teoria/cvicenie14.html) · [25](https://senzorika.github.io/SaIT/teoria/cvicenie25.html) |
+| [Senzorická trvanlivosť (shelf-life)](https://senzorika.github.io/SAP/kapitoly/10_shelf_life.html) | [Q10, Ea a Arrheniov odhad trvanlivosti](https://senzorika.github.io/SAP/kapitoly/10_shelf_life.html#kalkulator) | [10](https://senzorika.github.io/SaIT/teoria/cvicenie10.html) · [20](https://senzorika.github.io/SaIT/teoria/cvicenie20.html) |
+| [Vzorce a štatistické výpočty](https://senzorika.github.io/SAP/kapitoly/11_vzorce.html) | [popisná štatistika a t-test](https://senzorika.github.io/SAP/kapitoly/11_vzorce.html#kalkulator) | [2](https://senzorika.github.io/SaIT/teoria/cvicenie02.html) · [3](https://senzorika.github.io/SaIT/teoria/cvicenie03.html) · [5a](https://senzorika.github.io/SaIT/teoria/cvicenie05a.html) · [5b](https://senzorika.github.io/SaIT/teoria/cvicenie05b.html) · [5c](https://senzorika.github.io/SaIT/teoria/cvicenie05c.html) · [6](https://senzorika.github.io/SaIT/teoria/cvicenie06.html) · [10](https://senzorika.github.io/SaIT/teoria/cvicenie10.html) · [16](https://senzorika.github.io/SaIT/teoria/cvicenie16.html) · [22](https://senzorika.github.io/SaIT/teoria/cvicenie22.html) |
+
+Čísla uvedené v teórii boli nezávisle prepočítané – pozri [✅ Overenie výpočtov](https://senzorika.github.io/SaIT/teoria/overenie.html).
+
 ### 🎓 Prezentácie k prednáškam
 
 Sedem prezentácií (Quarto, reveal.js) – jedna na každý tematický blok. Obsahujú živé výstupy z R a kvízové otázky. Zdrojové `.qmd` súbory sú v [`prezentacie/`](prezentacie/).
@@ -142,9 +156,10 @@ Sedem prezentácií (Quarto, reveal.js) – jedna na každý tematický blok. Ob
 
 | Priečinok | Obsah |
 |---|---|
-| 📊 [`datasety/`](datasety/) | datasety k praktickým úlohám (napr. [`001_datasety.txt`](datasety/001_datasety.txt) k cvičeniu 5b) |
+| 📊 [`datasety/`](datasety/) | datasety k praktickým úlohám (napr. [`001_datasety.txt`](datasety/001_datasety.txt) k cvičeniu 5b) a všetky súbory, ktoré skripty načítavajú z internetu |
 | 🖥️ [`Senzometricke_appky/`](Senzometricke_appky/) | interaktívne Shiny aplikácie (PCA, TDS, TCATA, NPS, LDA…) |
-| 🇬🇧 [`English/`](English/) | rozšírené anglické materiály a prezentácie |
+| 🛠️ [`tools/`](tools/) | [`check_scripts.R`](tools/check_scripts.R) – spustí všetky skripty a ohlási, ktorý zlyhal (beží aj automaticky na GitHube) |
+| 🗄️ [`archiv/English/`](archiv/English/) | staršie rozšírené anglické materiály (nahradené priečinkom `exercises_EN/`) |
 | 🌐 [`exercises_EN/`](exercises_EN/) · [`teoria/`](teoria/) · [`theory_EN/`](theory_EN/) | anglické skripty, zdrojové súbory teórie SK / EN |
 | 🎓 [`prezentacie/`](prezentacie/) | Quarto prezentácie (`.qmd`) a vyrenderované HTML |
 | 🎲 [`generator/`](generator/) | generátor samostatného cvičenia pre zvolený týždeň – teória, úlohy a individuálne dáta pre každého študenta |
@@ -159,6 +174,10 @@ Sedem prezentácií (Quarto, reveal.js) – jedna na každý tematický blok. Ob
 | 🗂️ | [GitHub](https://github.com/) | verziovanie skriptov a dát |
 | 🥫 | [Open Food Facts](https://world.openfoodfacts.org/) | otvorená databáza potravín (cvičenie 4) |
 
+### 📄 Licencia
+
+Kód (R skripty, Shiny aplikácie, generátor, zdrojové `.qmd`) je pod licenciou [MIT](LICENSE), texty, teória, prezentácie a obrázky pod [CC BY 4.0](LICENSE-CC-BY-4.0.txt). Pri použití uveďte zdroj: *SaIT – Senzometria v R, github.com/senzorika/SaIT*.
+
 ---
 
 ## 🇬🇧 English
@@ -169,28 +188,12 @@ Course materials for **sensory analysis and sensometrics** exercises in R. Every
 
 ### 🧭 Course map
 
-```mermaid
-flowchart LR
-    B0["🧰 Getting started with R<br/>exercises 1, 2, 3, 4"]
-    B1["🧪 Hypothesis testing<br/>exercises 5a, 5b, 5c, 5d"]
-    B2["📈 Relationships and modelling<br/>exercises 6, 10"]
-    B3["🗺️ Multivariate methods<br/>exercises 7, 8, 9"]
-    B4["🎯 Discrimination tests and the panel<br/>exercises 13, 14, 15, 16"]
-    B5["🛒 Consumer research<br/>exercises 11a, 11b, 12"]
-    B6["⏱️ Rapid and temporal methods<br/>exercises 17, 18"]
-    B7["📝 Assessment case studies<br/>exercises 19, 20"]
-    B0 --> B1
-    B1 --> B2
-    B1 --> B3
-    B1 --> B4
-    B2 --> B5
-    B3 --> B5
-    B4 --> B5
-    B5 --> B6
-    B6 --> B7
-    classDef blk fill:#d6efe9,stroke:#0f7b6c,color:#1d1f24
-    class B0,B1,B2,B3,B4,B5,B6,B7 blk
-```
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/course-map-en-dark.svg">
+    <img src="assets/course-map-en-light.svg" alt="Course map" width="100%">
+  </picture>
+</p>
 
 ### 🧪 Exercises
 
@@ -258,6 +261,36 @@ flowchart LR
 | **19** | **Assessment case studies I**<br><sub>Two practical tasks from the basics of the course: a discrimination test after a supplier change and choosing the best recipe.</sub> | [📖](https://senzorika.github.io/SaIT/theory_EN/exercise19.html) | [`exercise19.R`](exercises_EN/exercise19.R) | [`cvicenie19.R`](cvicenie19.R) |
 | **20** | **Assessment case studies II**<br><sub>Three tasks from the whole course: preferences and JAR, sensory shelf life and a panel audit with an experiment design.</sub> | [📖](https://senzorika.github.io/SaIT/theory_EN/exercise20.html) | [`exercise20.R`](exercises_EN/exercise20.R) | [`cvicenie20.R`](cvicenie20.R) |
 
+#### 🧩 Additional methods
+
+| # | Topic | Theory | Script EN | Skript SK |
+|:-:|------|:------:|:---------:|:---------:|
+| **21** | **Sample codes and the Williams design of serving order**<br><sub>How to prepare a serving plan: random three-digit codes and an order balanced for position and for the preceding sample.</sub> | [📖](https://senzorika.github.io/SaIT/theory_EN/exercise21.html) | [`exercise21.R`](exercises_EN/exercise21.R) | [`cvicenie21.R`](cvicenie21.R) |
+| **22** | **Detection threshold – 3-AFC and the BET method**<br><sub>At which concentration does the panel detect a substance? An ascending series of 3-AFC tests, individual and group thresholds.</sub> | [📖](https://senzorika.github.io/SaIT/theory_EN/exercise22.html) | [`exercise22.R`](exercises_EN/exercise22.R) | [`cvicenie22.R`](cvicenie22.R) |
+| **23** | **Wald's sequential analysis**<br><sub>A discrimination test evaluated after every answer: once the result is clear, the test stops early.</sub> | [📖](https://senzorika.github.io/SaIT/theory_EN/exercise23.html) | [`exercise23.R`](exercises_EN/exercise23.R) | [`cvicenie23.R`](cvicenie23.R) |
+| **24** | **Conjoint analysis**<br><sub>How a consumer builds a preference from product features: part-worth utilities, attribute importance and a market simulation.</sub> | [📖](https://senzorika.github.io/SaIT/theory_EN/exercise24.html) | [`exercise24.R`](exercises_EN/exercise24.R) | [`cvicenie24.R`](cvicenie24.R) |
+| **25** | **Sensory claims – superiority and parity**<br><sub>What a test must show for the claims “tastes better” or “tastes the same” to stand: the preference test, the equivalence test and an attribute claim.</sub> | [📖](https://senzorika.github.io/SaIT/theory_EN/exercise25.html) | [`exercise25.R`](exercises_EN/exercise25.R) | [`cvicenie25.R`](cvicenie25.R) |
+
+### 🔗 Links to SAP
+
+[**SAP – Sensory Analysis of Food**](https://senzorika.github.io/SAP/index.html) ([repository](https://github.com/senzorika/SAP), in Slovak) is the sister project: it explains **the methods and their use** (chapters with calculators and lectures), while SaIT shows **the statistical evaluation in R**. Every theory page has a “📚 Related” section linking to the SAP chapter, a calculator for checking the result, standards and literature.
+
+| SAP chapter | Calculator | SaIT exercises (📖 theory) |
+|---|---|---|
+| [Introduction to sensory science and taste perception](https://senzorika.github.io/SAP/kapitoly/01_uvod_vnimanie_chuti.html) | [detection threshold (BET, 3-AFC)](https://senzorika.github.io/SAP/kapitoly/01_uvod_vnimanie_chuti.html#kalkulator) | [6](https://senzorika.github.io/SaIT/theory_EN/exercise06.html) · [11b](https://senzorika.github.io/SaIT/theory_EN/exercise11b.html) · [22](https://senzorika.github.io/SaIT/theory_EN/exercise22.html) |
+| [Sensory laboratory and panel](https://senzorika.github.io/SAP/kapitoly/02_laboratorium.html) | [three-digit codes and the Williams design](https://senzorika.github.io/SAP/kapitoly/02_laboratorium.html#kalkulator) | [1](https://senzorika.github.io/SaIT/theory_EN/exercise01.html) · [3](https://senzorika.github.io/SaIT/theory_EN/exercise03.html) · [5c](https://senzorika.github.io/SaIT/theory_EN/exercise05c.html) · [5d](https://senzorika.github.io/SaIT/theory_EN/exercise05d.html) · [14](https://senzorika.github.io/SaIT/theory_EN/exercise14.html) · [15](https://senzorika.github.io/SaIT/theory_EN/exercise15.html) · [20](https://senzorika.github.io/SaIT/theory_EN/exercise20.html) · [21](https://senzorika.github.io/SaIT/theory_EN/exercise21.html) |
+| [Overview of sensory methods](https://senzorika.github.io/SAP/kapitoly/03_prehlad_metod.html) | [ranking test – Friedman](https://senzorika.github.io/SAP/kapitoly/03_prehlad_metod.html#kalkulator) | [1](https://senzorika.github.io/SaIT/theory_EN/exercise01.html) · [4](https://senzorika.github.io/SaIT/theory_EN/exercise04.html) · [5b](https://senzorika.github.io/SaIT/theory_EN/exercise05b.html) · [17](https://senzorika.github.io/SaIT/theory_EN/exercise17.html) · [18](https://senzorika.github.io/SaIT/theory_EN/exercise18.html) · [19](https://senzorika.github.io/SaIT/theory_EN/exercise19.html) |
+| [ISO standards and standard tests](https://senzorika.github.io/SAP/kapitoly/04_iso_metody.html) | [evaluation of a discrimination test (difference, similarity)](https://senzorika.github.io/SAP/kapitoly/04_iso_metody.html#kalkulator) | [5a](https://senzorika.github.io/SaIT/theory_EN/exercise05a.html) · [13](https://senzorika.github.io/SaIT/theory_EN/exercise13.html) · [23](https://senzorika.github.io/SaIT/theory_EN/exercise23.html) |
+| [Discrimination methods](https://senzorika.github.io/SAP/kapitoly/05_diskriminacne_metody.html) | [number of assessors and power](https://senzorika.github.io/SAP/kapitoly/05_diskriminacne_metody.html#kalkulator) | [5a](https://senzorika.github.io/SaIT/theory_EN/exercise05a.html) · [13](https://senzorika.github.io/SaIT/theory_EN/exercise13.html) · [14](https://senzorika.github.io/SaIT/theory_EN/exercise14.html) · [19](https://senzorika.github.io/SaIT/theory_EN/exercise19.html) · [25](https://senzorika.github.io/SaIT/theory_EN/exercise25.html) |
+| [Scaling](https://senzorika.github.io/SAP/kapitoly/06_skalovanie.html) | [hedonic scale – mean, confidence interval](https://senzorika.github.io/SAP/kapitoly/06_skalovanie.html#kalkulator) | [2](https://senzorika.github.io/SaIT/theory_EN/exercise02.html) · [4](https://senzorika.github.io/SaIT/theory_EN/exercise04.html) · [12](https://senzorika.github.io/SaIT/theory_EN/exercise12.html) · [13](https://senzorika.github.io/SaIT/theory_EN/exercise13.html) · [23](https://senzorika.github.io/SaIT/theory_EN/exercise23.html) |
+| [Descriptive profiling](https://senzorika.github.io/SAP/kapitoly/07_deskriptivne_profily.html) | [ANOVA assessor × sample, LSD](https://senzorika.github.io/SAP/kapitoly/07_deskriptivne_profily.html#kalkulator) | [5b](https://senzorika.github.io/SaIT/theory_EN/exercise05b.html) · [7](https://senzorika.github.io/SaIT/theory_EN/exercise07.html) · [9](https://senzorika.github.io/SaIT/theory_EN/exercise09.html) · [15](https://senzorika.github.io/SaIT/theory_EN/exercise15.html) · [16](https://senzorika.github.io/SaIT/theory_EN/exercise16.html) · [17](https://senzorika.github.io/SaIT/theory_EN/exercise17.html) · [18](https://senzorika.github.io/SaIT/theory_EN/exercise18.html) |
+| [Consumer sensory science](https://senzorika.github.io/SAP/kapitoly/08_spotrebitelska_veda.html) | [penalty analysis (JAR)](https://senzorika.github.io/SAP/kapitoly/08_spotrebitelska_veda.html#kalkulator) | [8](https://senzorika.github.io/SaIT/theory_EN/exercise08.html) · [9](https://senzorika.github.io/SaIT/theory_EN/exercise09.html) · [11a](https://senzorika.github.io/SaIT/theory_EN/exercise11a.html) · [11b](https://senzorika.github.io/SaIT/theory_EN/exercise11b.html) · [12](https://senzorika.github.io/SaIT/theory_EN/exercise12.html) · [20](https://senzorika.github.io/SaIT/theory_EN/exercise20.html) · [24](https://senzorika.github.io/SaIT/theory_EN/exercise24.html) |
+| [Sensory claims](https://senzorika.github.io/SAP/kapitoly/09_claims.html) | [paired preference test – superiority, parity](https://senzorika.github.io/SAP/kapitoly/09_claims.html#kalkulator) | [14](https://senzorika.github.io/SaIT/theory_EN/exercise14.html) · [25](https://senzorika.github.io/SaIT/theory_EN/exercise25.html) |
+| [Sensory shelf life](https://senzorika.github.io/SAP/kapitoly/10_shelf_life.html) | [Q10, Ea and the Arrhenius shelf-life estimate](https://senzorika.github.io/SAP/kapitoly/10_shelf_life.html#kalkulator) | [10](https://senzorika.github.io/SaIT/theory_EN/exercise10.html) · [20](https://senzorika.github.io/SaIT/theory_EN/exercise20.html) |
+| [Formulas and statistical calculations](https://senzorika.github.io/SAP/kapitoly/11_vzorce.html) | [descriptive statistics and t-test](https://senzorika.github.io/SAP/kapitoly/11_vzorce.html#kalkulator) | [2](https://senzorika.github.io/SaIT/theory_EN/exercise02.html) · [3](https://senzorika.github.io/SaIT/theory_EN/exercise03.html) · [5a](https://senzorika.github.io/SaIT/theory_EN/exercise05a.html) · [5b](https://senzorika.github.io/SaIT/theory_EN/exercise05b.html) · [5c](https://senzorika.github.io/SaIT/theory_EN/exercise05c.html) · [6](https://senzorika.github.io/SaIT/theory_EN/exercise06.html) · [10](https://senzorika.github.io/SaIT/theory_EN/exercise10.html) · [16](https://senzorika.github.io/SaIT/theory_EN/exercise16.html) · [22](https://senzorika.github.io/SaIT/theory_EN/exercise22.html) |
+
+The numbers quoted in the theory were recalculated independently – see [✅ Verification of calculations](https://senzorika.github.io/SaIT/theory_EN/verification.html).
+
 ### 🎓 Lecture slides
 
 Seven presentations (Quarto, reveal.js) – one for each thematic block, with live R output and quiz questions. The `.qmd` sources are in [`prezentacie/`](prezentacie/).
@@ -286,9 +319,10 @@ Seven presentations (Quarto, reveal.js) – one for each thematic block, with li
 
 | Folder | Contents |
 |---|---|
-| 📊 [`datasety/`](datasety/) | datasets for the practical tasks (e.g. [`001_datasety.txt`](datasety/001_datasety.txt) for exercise 5b) |
+| 📊 [`datasety/`](datasety/) | datasets for the practical tasks (e.g. [`001_datasety.txt`](datasety/001_datasety.txt) for exercise 5b) and all files the scripts load from the internet |
 | 🖥️ [`Senzometricke_appky/`](Senzometricke_appky/) | interactive Shiny apps (PCA, TDS, TCATA, NPS, LDA…) |
-| 🇬🇧 [`English/`](English/) | extended English materials and presentations |
+| 🛠️ [`tools/`](tools/) | [`check_scripts.R`](tools/check_scripts.R) – runs every script and reports which one failed (also runs automatically on GitHub) |
+| 🗄️ [`archiv/English/`](archiv/English/) | older extended English materials (superseded by `exercises_EN/`) |
 | 🌐 [`exercises_EN/`](exercises_EN/) · [`teoria/`](teoria/) · [`theory_EN/`](theory_EN/) | English scripts, theory source files SK / EN |
 | 🎓 [`prezentacie/`](prezentacie/) | Quarto presentations (`.qmd`) and rendered HTML |
 | 🎲 [`generator/`](generator/) | generator of an independent exercise for a chosen week – theory, tasks and individual data for every student |
@@ -302,3 +336,7 @@ Seven presentations (Quarto, reveal.js) – one for each thematic block, with li
 | 💬 | [White Noise](https://www.whitenoise.chat/) | private end-to-end encrypted messenger built on Nostr – team communication |
 | 🗂️ | [GitHub](https://github.com/) | versioning of scripts and data |
 | 🥫 | [Open Food Facts](https://world.openfoodfacts.org/) | open food products database (exercise 4) |
+
+### 📄 Licence
+
+Code (R scripts, Shiny apps, the generator, `.qmd` sources) is released under the [MIT](LICENSE) licence; texts, theory pages, slides and figures under [CC BY 4.0](LICENSE-CC-BY-4.0.txt). Please credit: *SaIT – Sensometrics in R, github.com/senzorika/SaIT*.

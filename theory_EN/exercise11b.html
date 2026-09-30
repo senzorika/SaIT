@@ -97,7 +97,11 @@ TextDoc &lt;- tm_map(TextDoc, removeWords, stopwords("english"))</pre></div>
 <div class="note"><strong>Language of the text</strong>NRC is an English lexicon by default. For texts in other languages try e.g. <code>get_nrc_sentiment(text, language = "slovak")</code> (if your syuzhet version supports it) – it is a machine translation of the dictionary without inflection, so it only catches the base forms of words. It is more reliable to analyse English reviews or translate the text.</div>
 <div class="warn"><strong>Limitations</strong>The lexicon method does not see context: “not sweet at all” is counted as sweet, and irony is not recognised. Treat the results as indicative and verify them by reading a sample of the texts.</div>
 
-
+<section class="related" id="sap"><h2>📚 Related</h2>
+<ul>
+<li><strong>The method in SAP</strong> (Sensory Analysis of Food, in Slovak): <a href="https://senzorika.github.io/SAP/kapitoly/08_spotrebitelska_veda.html">Consumer sensory science</a> · <a href="https://senzorika.github.io/SAP/kapitoly/01_uvod_vnimanie_chuti.html">Introduction to sensory science and taste perception</a></li>
+</ul>
+<p class="small">Editions of the standards and book titles are taken from the verified list <a href="https://senzorika.github.io/SAP/kapitoly/priloha_zdroje.html">SAP – Sources and literature</a> (in Slovak). Recalculation of the numbers on this page: <a href="verification.html">Verification</a>.</p></section>
 <nav class="pager">
 <a class="prev" href="exercise11a.html"><span>← Previous</span>11a. TURF analysis and preference mapping</a>
 <a class="next" href="exercise12.html"><span>Next →</span>12. JAR scale and radar chart</a>

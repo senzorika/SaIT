@@ -18,6 +18,7 @@
 <div class="goals"><h2>What you will learn</h2><ul>
 <li>to design and evaluate a JAR (Just-About-Right) scale,</li>
 <li>to read a diverging stacked bar (Likert) chart and decide which attribute to adjust,</li>
+<li>to run a penalty analysis and find which deviation from JAR lowers liking the most,</li>
 <li>to compare the sensory profiles of products in a radar chart.</li>
 </ul></div>
 
@@ -111,7 +112,72 @@
 <tr><td>50 – 70%</td><td>monitor; if one side is clearly stronger (&gt; 20%), consider adjusting</td></tr>
 <tr><td>&lt; 50%</td><td>adjust the attribute in the direction of the dominant side</td></tr>
 </table></div>
-<div class="note"><strong>Penalty analysis</strong>JAR is often combined with an overall liking score. For each “too little / too much” group we compute how much lower it rates the product than the JAR group (<em>mean drop</em>) and plot it against the share of respondents. Attributes with a large drop and a large group are critical. A ready-made solution is offered e.g. by the <code>SensoMineR</code> package (function <code>JAR()</code>).</div>
+<!-- ext -->
+<h2>Penalty analysis</h2>
+<p>A JAR scale tells us <em>how many</em> consumers find an attribute too weak or too strong. It does not tell us whether that really bothers them. Penalty analysis therefore combines JAR with overall liking: for each “too little” and “too much” group it computes how much lower the group rates the product than the “just about right” group.</p>
+<div class="formula">mean drop = x̄<sub>JAR</sub> − x̄<sub>group</sub>&emsp;&emsp;weighted drop = mean drop · share of the group
+<small>x̄ – mean liking on the hedonic scale; share of the group as a decimal number</small></div>
+<figure>
+<svg viewBox="0 0 640 300" role="img" aria-label="Penalty plot">
+<rect x="220.3" y="18.0" width="395.7" height="104.9" class="fw op2"/>
+<line x1="62.0" y1="254.0" x2="616.0" y2="254.0" class="gridl"/>
+<text x="55.0" y="258.0" text-anchor="end" class="t-small">-2</text>
+<line x1="62.0" y1="201.6" x2="616.0" y2="201.6" class="gridl"/>
+<text x="55.0" y="205.6" text-anchor="end" class="t-small">-1</text>
+<line x1="62.0" y1="149.1" x2="616.0" y2="149.1" class="gridl"/>
+<text x="55.0" y="153.1" text-anchor="end" class="t-small">0</text>
+<line x1="62.0" y1="96.7" x2="616.0" y2="96.7" class="gridl"/>
+<text x="55.0" y="100.7" text-anchor="end" class="t-small">1</text>
+<line x1="62.0" y1="44.2" x2="616.0" y2="44.2" class="gridl"/>
+<text x="55.0" y="48.2" text-anchor="end" class="t-small">2</text>
+<line x1="62.0" y1="254.0" x2="62.0" y2="258.0" class="ax"/>
+<text x="62.0" y="271.0" text-anchor="middle" class="t-small">0 %</text>
+<line x1="141.1" y1="254.0" x2="141.1" y2="258.0" class="ax"/>
+<text x="141.1" y="271.0" text-anchor="middle" class="t-small">10 %</text>
+<line x1="220.3" y1="254.0" x2="220.3" y2="258.0" class="ax"/>
+<text x="220.3" y="271.0" text-anchor="middle" class="t-small">20 %</text>
+<line x1="299.4" y1="254.0" x2="299.4" y2="258.0" class="ax"/>
+<text x="299.4" y="271.0" text-anchor="middle" class="t-small">30 %</text>
+<line x1="378.6" y1="254.0" x2="378.6" y2="258.0" class="ax"/>
+<text x="378.6" y="271.0" text-anchor="middle" class="t-small">40 %</text>
+<line x1="457.7" y1="254.0" x2="457.7" y2="258.0" class="ax"/>
+<text x="457.7" y="271.0" text-anchor="middle" class="t-small">50 %</text>
+<line x1="536.9" y1="254.0" x2="536.9" y2="258.0" class="ax"/>
+<text x="536.9" y="271.0" text-anchor="middle" class="t-small">60 %</text>
+<line x1="616.0" y1="254.0" x2="616.0" y2="258.0" class="ax"/>
+<text x="616.0" y="271.0" text-anchor="middle" class="t-small">70 %</text>
+<path d="M62.0,18.0 L62.0,254.0 L616.0,254.0" class="ax"/>
+<text x="339.0" y="292.0" text-anchor="middle">share of consumers in the group</text>
+<text transform="translate(16,136.0) rotate(-90)" text-anchor="middle">drop in mean liking</text>
+<line x1="220.3" y1="254.0" x2="220.3" y2="18.0" class="warnl dash"/>
+<line x1="62.0" y1="149.1" x2="616.0" y2="149.1" class="ax"/>
+<circle cx="206.8" cy="131.8" r="4.5" class="f3"/>
+<text x="214.8" y="123.8" text-anchor="start" class="t-small">sweetness – too little</text>
+<circle cx="286.0" cy="55.2" r="4.5" class="f2"/>
+<text x="294.0" y="47.2" text-anchor="start" class="t-small t-strong">sweetness – too much</text>
+<circle cx="246.4" cy="145.4" r="4.5" class="f3"/>
+<text x="254.4" y="159.4" text-anchor="start" class="t-small">sourness – too little</text>
+<circle cx="141.1" cy="144.4" r="4.5" class="f3"/>
+<text x="149.1" y="158.4" text-anchor="start" class="t-small">sourness – too much</text>
+<circle cx="510.7" cy="98.8" r="4.5" class="f2"/>
+<text x="518.7" y="90.8" text-anchor="start" class="t-small t-strong">thickness – too little</text>
+<circle cx="101.6" cy="225.7" r="4.5" class="f3"/>
+<text x="109.6" y="217.7" text-anchor="start" class="t-small">thickness – too much</text>
+<text x="226.3" y="31.0" text-anchor="start" class="t-small t-warn">20 % rule</text>
+<text x="610.0" y="31.0" text-anchor="end" class="t-small t-warn">consider adjusting</text>
+</svg>
+<figcaption>Data from the script (60 consumers, yogurt). The groups that matter are top right – many consumers and a large drop: “sweetness – too much” and “thickness – too little”. Groups to the left of the 20 % line are too small to interpret.</figcaption>
+</figure>
+<div class="tablewrap"><table>
+<tr><th>Attribute</th><th>Group</th><th>Share</th><th>Mean drop</th><th>Weighted drop</th></tr>
+<tr><td>sweetness</td><td>too little</td><td>18 %</td><td>0.33</td><td>0.06</td></tr>
+<tr><td>sweetness</td><td>too much</td><td>28 %</td><td>1.79</td><td>0.51</td></tr>
+<tr><td>sourness</td><td>too little</td><td>23 %</td><td>0.07</td><td>0.02</td></tr>
+<tr><td>sourness</td><td>too much</td><td>10 %</td><td>0.09</td><td>0.01</td></tr>
+<tr><td>thickness</td><td>too little</td><td>57 %</td><td>0.96</td><td>0.54</td></tr>
+<tr><td>thickness</td><td>too much</td><td>5 %</td><td>−1.46</td><td>−0.07</td></tr>
+</table></div>
+<div class="note"><strong>The rules are conventions</strong>Groups below 20 % are usually not interpreted (here “thickness – too much” is only 3 consumers, hence the meaningless negative drop). A drop of 1 point is often taken as worth acting on and 0.5 point as borderline – this is not a standard, set your limits in advance. A ready-made solution is also offered by the <code>SensoMineR</code> package (function <code>JAR()</code>).</div>
 
 <h2>Radar chart (profile chart)</h2>
 <p>A radar (spider) chart shows the <strong>sensory profile</strong>: each axis is one descriptor, the distance from the centre is the mean intensity. The shape of the polygon is the “fingerprint” of the product – similar products have similar shapes.</p>
@@ -144,7 +210,24 @@
 </figure>
 <div class="warn"><strong>Watch out</strong>The area of the polygon depends on the order of the axes – the same data with a different descriptor order look different. The chart suits 3 – 5 products and 5 – 12 descriptors; with more it becomes cluttered. <code>radarchart()</code> requires the maximum and minimum of the axes in the first two rows of the data – hence <code>rbind(rep(9, 5), rep(0, 5), data)</code>.</div>
 
+<section class="solutions"><h2>Task solutions</h2><p>Click to expand a solution. Try the task on your own first – results were verified in R 4.5. The code continues from the variables in the script.</p>
+<details class="sol"><summary>Task 1 <span>– which attribute to adjust first</span></summary>
+<pre>penalty[order(-penalty$weighted_drop), ]</pre>
+<div class="answer"><p>Two groups pass the 20 % rule and show a large drop: <strong>“thickness – too little”</strong> (57 % of consumers, drop 0.96 points, weighted drop 0.54) and <strong>“sweetness – too much”</strong> (28 %, drop 1.79 points, weighted drop 0.51). The yogurt should be made <strong>thicker and less sweet</strong>; thickness affects more people, sweetness bothers them more strongly (t-test: p &lt; 0.001 and p = 0.003). Sourness needs no change – the drop is below 0.1 points. The groups “sweetness – too little” (18 %), “sourness – too much” (10 %) and “thickness – too much” (5 %) fail the 20 % rule.</p></div></details>
+<details class="sol"><summary>Task 2 <span>– check in the calculator</span></summary>
+<pre>table(cut(jar$sweetness, c(0, 2, 3, 5), labels = c("too little", "JAR", "too much")))
+tapply(liking, cut(jar$sweetness, c(0, 2, 3, 5)), mean)</pre>
+<div class="answer"><p>For sweetness: 11 consumers “too little” (mean 6.64), 32 “just about right” (6.97), 17 “too much” (5.18). With these values the SAP calculator gives the same drops of 0.33 and 1.79 points.</p></div></details>
+</section>
 
+<section class="related" id="sap"><h2>📚 Related</h2>
+<ul>
+<li><strong>The method in SAP</strong> (Sensory Analysis of Food, in Slovak): <a href="https://senzorika.github.io/SAP/kapitoly/08_spotrebitelska_veda.html">Consumer sensory science</a> · <a href="https://senzorika.github.io/SAP/kapitoly/06_skalovanie.html#jar">Scaling</a></li>
+<li><strong>Calculator</strong> to check the result from R: <a href="https://senzorika.github.io/SAP/kapitoly/08_spotrebitelska_veda.html#kalkulator">penalty analysis (JAR)</a></li>
+<li><strong>Standards:</strong> ISO 11136:2014 (hedonic tests with consumers)</li>
+<li><strong>Literature:</strong> Lawless, H. T. &amp; Heymann, H. (2010). <em>Sensory Evaluation of Food: Principles and Practices</em> (2nd ed.). Springer.</li>
+</ul>
+<p class="small">Editions of the standards and book titles are taken from the verified list <a href="https://senzorika.github.io/SAP/kapitoly/priloha_zdroje.html">SAP – Sources and literature</a> (in Slovak). Recalculation of the numbers on this page: <a href="verification.html">Verification</a>.</p></section>
 <nav class="pager">
 <a class="prev" href="exercise11b.html"><span>← Previous</span>11b. Text mining and sentiment analysis</a>
 <a class="next" href="exercise13.html"><span>Next →</span>13. Thurstonian model and d′</a>

@@ -60,8 +60,8 @@ View(TURFtable4)
 
 
 # load the data from an internet address (profile + hedonic data)
-sensory <- read.table("http://senzorika.com/sait/datasety/senzorika.txt", sep = ",")
-hedonic <- read.table("http://senzorika.com/sait/datasety/hedonika.txt", sep = ",")
+sensory <- read.table("https://raw.githubusercontent.com/senzorika/SaIT/master/datasety/senzorika.txt", sep = ",")
+hedonic <- read.table("https://raw.githubusercontent.com/senzorika/SaIT/master/datasety/hedonika.txt", sep = ",")
 
 # check the datasets
 sensory

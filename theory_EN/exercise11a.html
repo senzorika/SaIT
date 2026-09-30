@@ -44,7 +44,7 @@
 <tr><td><strong>Frequency</strong></td><td>mean number of liked items of the combination per respondent</td><td>How strongly do we reach them?</td></tr>
 </table></div>
 <p>The data are binary: 1 = the ingredient is attractive for the respondent, 0 = it is not. The function <code>turf(pizza, 11, 3:4)</code> goes through all combinations of 3 and 4 items out of 11 (165 and 330 combinations) and sorts them by reach. The column <code>wgt</code> is the respondent weight (with real data, e.g. for sample representativeness).</p>
-<div class="note"><strong>Mind the random data</strong>In the script the answers are generated with <code>sample()</code>, so the results differ on every run and all combinations have a similar reach (~87 – 94%). For a meaningful result use a real questionnaire, and <code>set.seed()</code> when simulating.</div>
+<div class="note"><strong>Mind the random data</strong>In the script the answers are generated at random with <code>sample()</code>; thanks to <code>set.seed(123)</code> they are the same on every run. Random answers have no structure, so all combinations have a similar reach (triples 85 – 96 %, quadruples 91 – 99 %). For a meaningful result use a real questionnaire.</div>
 
 <h2>Preference map (external preference mapping)</h2>
 <p>We have two data sources about the same 16 products:</p>
@@ -84,6 +84,14 @@ res.pca &lt;- PCA(sensory)
 carto(res.pca$ind$coord[, 1:2], hedonic)</pre>
 <div class="answer"><p>Our product 1 has a mean of 2.99 and ranks only <strong>8th of 16</strong>; the best rated are 16 (3.44), 3 (3.36) and 13 (3.16). On the <code>carto()</code> map look at the zone product 1 lies in and which descriptors (PCA arrows) point to the zone with the highest share of satisfied consumers – those should be strengthened. Note: the PCA map explains only 39% of the profile variability (22 + 17%), so interpret it with care.</p></div></details>
 </section>
+
+<section class="related" id="sap"><h2>📚 Related</h2>
+<ul>
+<li><strong>The method in SAP</strong> (Sensory Analysis of Food, in Slovak): <a href="https://senzorika.github.io/SAP/kapitoly/08_spotrebitelska_veda.html">Consumer sensory science</a></li>
+<li><strong>Standards:</strong> ISO 11136:2014 (hedonic tests with consumers)</li>
+<li><strong>Literature:</strong> Næs, T., Brockhoff, P. B. &amp; Tomic, O. (2010). <em>Statistics for Sensory and Consumer Science</em>. Wiley.</li>
+</ul>
+<p class="small">Editions of the standards and book titles are taken from the verified list <a href="https://senzorika.github.io/SAP/kapitoly/priloha_zdroje.html">SAP – Sources and literature</a> (in Slovak). Recalculation of the numbers on this page: <a href="verification.html">Verification</a>.</p></section>
 <nav class="pager">
 <a class="prev" href="exercise10.html"><span>← Previous</span>10. Survival analysis and sensory shelf life</a>
 <a class="next" href="exercise11b.html"><span>Next →</span>11b. Text mining and sentiment analysis</a>

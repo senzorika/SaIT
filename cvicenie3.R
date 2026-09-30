@@ -45,8 +45,8 @@ hodnotitel <- rep(c("H1", "H2", "H3", "H4"), times = 1, each = 4) # kazda premen
 produkt <- rep(c("A", "B", "C", "D"), times = 4) # kazda premenna 1x po sebe v styroch cykloch
 
 # nacitanie dat zo vzdialenej (internetovej) adresy (MOLOVE HMOTNOSTI)
-source("http://senzorika.com/sait/datasety/mol.txt")
-vysledky <- read.table("http://senzorika.com/sait/datasety/export.txt", sep = ",")
+source("https://raw.githubusercontent.com/senzorika/SaIT/master/datasety/mol.txt")
+vysledky <- read.table("https://raw.githubusercontent.com/senzorika/SaIT/master/datasety/export.txt", sep = ",")
 
 #--------------------------------------------------------------
 # odstranenie niektorych elementov z vektora/ datasetu
@@ -79,7 +79,7 @@ z <- x[-c(2, 3, 5)]
 
 # uloha3:
 # -------------------
-# * nacitajte data z internetovej adresy: http://senzorika.com/sait/datasety/cokolada.txt
+# * nacitajte data z internetovej adresy: https://raw.githubusercontent.com/senzorika/SaIT/master/datasety/cokolada.txt
 # * vypocitajte kolko sme vyrobili mesacne celomacanych oplatiek ked:
 #   priemer oboch oplatok (vrchnej a spodnej) je 7 cm, vyska vyrobku je 1,5 cm
 #   na 100 cm2 potrebujeme cca 0,02 litra cokoladovej zmesy

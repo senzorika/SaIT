@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Verification of calculations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../teoria/style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ink-3)"/></marker></defs></svg>
+<div class="wrap">
+<header class="top"><a class="brand" href="index.html">Sensometrics in R · theory</a><span class="toplinks"><a href="index.html">All exercises</a><a class="lang" href="../teoria/overenie.html">Slovensky</a></span></header>
+
+<section class="hero"><span class="num">SaIT · VERIFICATION</span><h1>Verification of calculations</h1><p class="lead">A record of the independent recalculation of the numbers quoted in the theory and of the corrections from the 09/2026 review – modelled on the “Verification of sources” appendix of the SAP repository.</p></section>
+<h2>1. What was verified and how</h2>
+<p>The review took place on 30 September 2026 in R 4.5.2. It was prompted by the experience of the sister repository <a href="https://senzorika.github.io/SAP/kapitoly/priloha_overenie.html">SAP</a> (in Slovak), where a check found wrong tables of critical values, examples and citations. The procedure:</p>
+<ol>
+<li><strong>Runnability</strong> – all 58 scripts (29 Slovak and 29 English) were run in a clean R session with <code>tools/check_scripts.R</code>; all of them finished without an error.</li>
+<li><strong>Recalculation</strong> – for every theory page the exercise script was run, followed by the code from all task solutions; the output was compared with the numbers in the text.</li>
+<li><strong>Standards and literature</strong> – the “Related” sections only use editions of standards and book titles from the verified SAP list; the DOI of Pineau et al. (2009) was checked in Crossref.</li>
+</ol>
+
+<h2>2. Results of the recalculation</h2>
+<div class="tablewrap"><table>
+<tr><th>Exercise</th><th>Recalculated values</th><th>Status</th></tr>
+<tr><td>2</td><td>95 % confidence interval [9.22; 10.50]; t quantiles in the table</td><td>✅</td></tr>
+<tr><td>3</td><td>molar masses 150.22 and 192.12 g/mol; amounts 37.6 g and 19.2 g; number of wafers 57,523 – 84,716; months above the mean</td><td>✅</td></tr>
+<tr><td>5a</td><td>binomial test 34/60 (p = 0.37), limit of 39 votes; triangle 42/100 (p = 0.043; as a paired test 0.96); χ² = 19.1; McNemar χ² = 8.0; task 1 (t-test p = 0.032, Wilcoxon 0.033)</td><td>✅</td></tr>
+<tr><td>5b</td><td>ANOVA F = 10.3 (p = 0.0005); Kruskal-Wallis H = 12.0 (p = 0.0025); all five tests in the solution of task 1</td><td>✅</td></tr>
+<tr><td>5c</td><td>the script runs (Kruskal-Wallis p = 0.009); the <code>pairwise.wilcox.test</code> table in the text is marked as illustrative and does not correspond to the script data</td><td>ℹ️</td></tr>
+<tr><td>5d</td><td>agreement of the Friedman and Durbin tests (χ² = 23.33); design parameters t = b = 7, k = r = 3, λ = 1</td><td>✅</td></tr>
+<tr><td>6</td><td>slope 0.63; correlations ρ = −0.72; 0.75; 0.53; regression 0.90 + 0.77 · firmness, R² = 0.60</td><td>✅</td></tr>
+<tr><td>7</td><td>73 % of variance; eigenvalues of both examples; 36 % for the perfumes; mean ratings and the teenagers' profile</td><td>✅</td></tr>
+<tr><td>8</td><td>cluster of product A (with I and X); distances 2.00; 2.15; 2.52</td><td>✅</td></tr>
+<tr><td>9</td><td>χ² test p &lt; 0.001; first two dimensions 83 % of inertia</td><td>✅</td></tr>
+<tr><td>10</td><td>Kaplan-Meier: median 24 h; Weibull η = 32.3 h, β = 1.59; percentiles 7.8 / 14.7 / 25.6 h with intervals; Q10 = 2.16; E<sub>a</sub> = 53.1 kJ/mol; prediction 22.1 days</td><td>✅</td></tr>
+<tr><td>11a</td><td>product 1 in 8th place (2.99); best 16, 3, 13; PCA 39 % (22 + 17 %); range of reach in TURF – <strong>corrected</strong>, see below</td><td>🔧</td></tr>
+<tr><td>12</td><td>JAR shares 59 / 71 / 64 / 12 / 62 / 59 %; penalty analysis table; t-tests</td><td>✅</td></tr>
+<tr><td>13</td><td><code>discrim(42, 100)</code>: d′ = 1.01; duo-trio d′ = 1.83; counts 51 / 46 / 30; A – not A d′ = 0.72; same-different δ = 1.58; beta-binomial model γ = 0.55</td><td>✅</td></tr>
+<tr><td>14</td><td>power 26 % and n = 350; triangle n = 202 for d′ = 1, power 52 % at n = 100; n = 34 / 64 / 45; task 1 (461, 638, 130, 177); δ = 0.72</td><td>✅</td></tr>
+<tr><td>15</td><td>F and interaction p-values (MilkF 110, CocoaF 68, Bitterness 63; Melting 0.0002); Session p = 0.012; 7 weak assessors; F 14.6 → 19.8</td><td>✅</td></tr>
+<tr><td>16</td><td>F = 59.9 / 49.9 (140 d.f.); variances 0.82 / 0.41 / 3.14; task 1 (singular fit, F = 14.6); task 2 (χ² = 2.18; p = 0.14)</td><td>✅</td></tr>
+<tr><td>17</td><td>Cochran's Q (weakest p = 0.016); citation counts; MFA 66 % (39 + 27 %); RV 0.36 and 0.77</td><td>✅</td></tr>
+<tr><td>18</td><td>significance limit 0.32; dominance intervals of all five attributes</td><td>✅</td></tr>
+<tr><td>21 – 25</td><td>all numbers in the text and in the solutions (Williams design, BET 2.52 g/l, SPRT boundaries and simulation, part-worth utilities, superiority and parity tests)</td><td>✅</td></tr>
+</table></div>
+<p class="small">✅ agrees with the text · 🔧 difference found and corrected · ℹ️ no error, with a note. Exercises 1, 4 and 11b contain no numerical results tied to data; exercises 19 and 20 are assignments without stated results.</p>
+
+<h2>3. Errors found and corrected</h2>
+<div class="tablewrap"><table>
+<tr><th>Where</th><th>Original state</th><th>Correction</th></tr>
+<tr><td>theory 11a</td><td>a note claimed that the TURF results differ on every run and that the reach is ~87 – 94 %</td><td>the script uses <code>set.seed(123)</code>, so the results are reproducible; the actual range is 85 – 96 % (triples) and 91 – 99 % (quadruples)</td></tr>
+<tr><td>theory 5a, script 5a</td><td>the table showed a two-sided <code>binom.test</code> for the duo-trio and the paired test</td><td>discrimination tests are one-sided (<code>alternative = "greater"</code>); only the paired preference test is two-sided</td></tr>
+<tr><td>theory 5b</td><td>the table in the solution of task 1 had broken HTML (rows outside the table)</td><td>table structure repaired</td></tr>
+<tr><td>script 10</td><td>each of the 35 ratings was treated as an independent observation with an exact event time</td><td>the example is kept as a first look; interval-censored data, the Weibull model and Q10 were added</td></tr>
+<tr><td>script 12</td><td>the theory referred to penalty analysis, but the script did not contain it</td><td>calculation, plot and tasks added</td></tr>
+<tr><td>scripts 3, 5c, 8, 11a</td><td>data were loaded over unencrypted <code>http://</code> from an external server (in exercise 3 also executable code)</td><td>the files are in the <code>datasety/</code> folder of the repository and are loaded over <code>https://</code></td></tr>
+</table></div>
+
+<h2>4. What was not verified</h2>
+<ul>
+<li>Coordinates and labels in the figures (SVG) were checked only where a figure states a specific computed value.</li>
+<li>Verbal interpretations and recommended limits (“as a rule of thumb”, “convention”) are judgement, not calculation.</li>
+<li>Outputs that depend on the network or on the user's choice (Google Sheets in exercise 4, stock data, the user's own text in exercise 11b).</li>
+<li>Slides – their numbers are computed by R at render time and were not compared with the theory slide by slide.</li>
+<li>The validity of standards outside the list taken from SAP; when a standard is revised, the entry has to be updated in both repositories.</li>
+</ul>
+
+<h2>5. How to repeat the verification</h2>
+<pre>Rscript tools/check_scripts.R                # data from GitHub, as students load them
+Rscript tools/check_scripts.R --local-data   # data from the local datasety/ folder</pre>
+<p>The same check runs automatically on GitHub whenever the scripts change (<code>.github/workflows/check.yml</code>), together with a check of the links between SaIT and SAP. When data or a script change, the numbers in the theory text and in the task solutions have to be recalculated as well.</p>
+</div>
+<script>
+(function () {
+  function copy(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    return Promise.resolve();
+  }
+  document.querySelectorAll('pre:not(.out)').forEach(function (pre) {
+    var text = pre.innerText;
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'copy'; btn.textContent = 'Copy';
+    btn.addEventListener('click', function () {
+      copy(text).then(function () {
+        btn.textContent = 'Copied ✓';
+        setTimeout(function () { btn.textContent = 'Copy'; }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+  var q = document.getElementById('filter');
+  if (q) q.addEventListener('input', function () {
+    var v = q.value.toLowerCase();
+    document.querySelectorAll('.cards a').forEach(function (c) {
+      c.style.display = c.textContent.toLowerCase().indexOf(v) === -1 ? 'none' : '';
+    });
+    document.querySelectorAll('section.block').forEach(function (s) {
+      var any = Array.prototype.some.call(s.querySelectorAll('.cards a'), function (c) { return c.style.display !== 'none'; });
+      s.style.display = any ? '' : 'none';
+    });
+  });
+})();
+</script>
+</body>
+</html>
